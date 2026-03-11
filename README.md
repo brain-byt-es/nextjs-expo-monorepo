@@ -1,180 +1,245 @@
 # Template Monorepo
 
-A modern monorepo setup with **Next.js + shadcn/ui** for web and **Expo + NativeWind UI** for mobile.
+> 🚀 A production-ready monorepo template with **Next.js + shadcn/ui** for web and **Expo + NativeWind UI** for mobile. Built with pnpm & Turborepo.
+
+[![GitHub](https://img.shields.io/badge/GitHub-brain--byt--es%2Ftemplate--monorepo-blue?logo=github)](https://github.com/brain-byt-es/template-monorepo)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Node 20+](https://img.shields.io/badge/Node-20%2B-green)](https://nodejs.org/)
+[![pnpm](https://img.shields.io/badge/pnpm-10.32%2B-blue)](https://pnpm.io/)
+
+## ✨ Features
+
+- 🏗️ **Modern Monorepo Setup** - pnpm workspaces + Turborepo for fast builds
+- 🌐 **Full-Stack Web** - Next.js 16 with React 19 & Tailwind CSS v4
+- 📱 **Cross-Platform Mobile** - Expo 54 with Expo Router & React Native 0.81
+- 🎨 **Unified Design System** - shadcn/ui for web, NativeWind UI for mobile
+- 📦 **Shared Packages** - Reusable components & configuration
+- ⚡ **High Performance** - Optimized builds with Turborepo caching
+- 🔒 **Type Safe** - Full TypeScript setup with shared configs
+- 📝 **Production Ready** - Best practices, CI/CD ready, comprehensive docs
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **Node.js** >= 20.0.0 (use [nvm](https://github.com/nvm-sh/nvm) or [asdf](https://asdf-vm.com/))
-- **pnpm** >= 10.32.0 (enforced via corepack)
 
-### Setup
+- **Node.js** >= 20.0.0 ([nvm](https://github.com/nvm-sh/nvm) / [asdf](https://asdf-vm.com/))
+- **pnpm** >= 10.32.0 (auto via Corepack)
+
+### Installation
+
 ```bash
+# Clone the repository
+git clone https://github.com/brain-byt-es/template-monorepo.git
+cd template-monorepo
+
+# Use correct Node version (nvm / asdf)
+nvm use  # or: asdf install
+
 # Install dependencies
 pnpm install
 
-# Start all apps in dev mode (Turborepo TUI)
+# Start development (Turborepo TUI)
 pnpm dev
-
-# Or run individually:
-pnpm --filter @repo/web dev      # Next.js on http://localhost:3003
-pnpm --filter @repo/mobile dev   # Expo dev server
 ```
+
+**That's it!** 🎉 Both apps will start in parallel.
+
+## 📦 What's Included
+
+### Applications
+
+| App | Tech Stack | Port |
+|-----|-----------|------|
+| **Web** | Next.js 16 + React 19 + Tailwind v4 + shadcn/ui | 3003 |
+| **Mobile** | Expo 54 + React Native 0.81 + NativeWind v4 | 8081 |
+
+### Shared Packages
+
+| Package | Purpose |
+|---------|---------|
+| `@repo/shadcn-ui` | 52+ Web components (Radix UI) |
+| `@repo/nativewindui` | Native components (React Native) |
+| `@repo/typescript-config` | Shared TypeScript presets |
+| `@repo/eslint-config` | Shared ESLint rules |
 
 ## 📁 Project Structure
 
 ```
 Template Monorepo/
 ├── apps/
-│   ├── web/              Next.js 16 + React 19 + shadcn/ui
-│   └── mobile/           Expo 54 + React Native 0.81 + NativeWind UI
+│   ├── web/                    Next.js app with shadcn/ui
+│   └── mobile/                 Expo app with NativeWind UI
 ├── packages/
-│   ├── shadcn-ui/        52+ shadcn/ui Web Components
-│   ├── nativewindui/      Native Components (React Native)
-│   ├── typescript-config/ Shared TypeScript presets
-│   └── eslint-config/    Shared ESLint configuration
-├── pnpm-workspace.yaml    pnpm workspace definition
-├── turbo.json            Turborepo tasks & caching
-└── .npmrc                pnpm configuration
+│   ├── shadcn-ui/              Web component library
+│   ├── nativewindui/           Mobile component library
+│   ├── typescript-config/      Shared TS configs
+│   └── eslint-config/          Shared ESLint configs
+├── pnpm-workspace.yaml         Workspace definition
+├── turbo.json                  Build pipeline config
+├── package.json                Root package config
+└── README.md                   This file
 ```
 
 ## 🛠️ Available Commands
 
 ### Root Level (Turborepo)
+
 ```bash
-pnpm dev          # Start all apps in dev mode
-pnpm build        # Build all apps
-pnpm lint         # Lint all apps & packages
-pnpm typecheck    # TypeScript check all apps
+pnpm dev           # 🚀 Start all apps (dev mode)
+pnpm build         # 📦 Build all apps & packages
+pnpm lint          # 🔍 Lint all code
+pnpm typecheck     # ✓ TypeScript check
 ```
 
-### Web App
+### Web App (Next.js)
+
 ```bash
 cd apps/web
-pnpm dev          # Start Next.js dev server
-pnpm build        # Build for production
-pnpm start        # Run production server
+
+pnpm dev           # Start dev server (http://localhost:3003)
+pnpm build         # Production build
+pnpm start         # Run production server
+pnpm lint          # Lint & format
 ```
 
-### Mobile App
+### Mobile App (Expo)
+
 ```bash
 cd apps/mobile
-pnpm dev          # Start Expo dev server
-npx expo prebuild --clean  # Build native code (first time only)
-npx expo run:ios           # Build & run on iOS
-npx expo run:android       # Build & run on Android
+
+pnpm dev                       # Start Expo dev server
+npx expo prebuild --clean      # Setup native code
+npx expo run:ios               # Build & run on iOS
+npx expo run:android           # Build & run on Android
 ```
 
-## 📦 Workspace Packages
+## 🎨 Styling & Components
 
-### @repo/shadcn-ui
-Web components library based on Radix UI + Tailwind CSS.
+### Web (shadcn/ui)
 
-```typescript
-import { Button, Card, Input } from "@repo/shadcn-ui/components";
+Built on **Radix UI** + **Tailwind CSS v4** (CSS-first):
+
+```tsx
+import { Button, Card } from "@repo/shadcn-ui/components";
 import { cn } from "@repo/shadcn-ui/lib/utils";
+
+export function MyComponent() {
+  return (
+    <Card>
+      <Button className={cn("w-full", "bg-blue-500")}>
+        Click me
+      </Button>
+    </Card>
+  );
+}
 ```
 
-### @repo/nativewindui
-Native components library for React Native with NativeWind styling.
+### Mobile (NativeWind UI)
 
-```typescript
-import { Button, Card, Input } from "@repo/nativewindui";
+Built on **React Native** + **NativeWind v4** + **Tailwind CSS v3**:
+
+```tsx
+import { Button, Card } from "@repo/nativewindui";
+import { View, Text } from "react-native";
+
+export function MyScreen() {
+  return (
+    <View className="flex-1 items-center justify-center bg-background">
+      <Card>
+        <Button className="w-full bg-blue-500">
+          <Text>Click me</Text>
+        </Button>
+      </Card>
+    </View>
+  );
+}
 ```
-
-### @repo/typescript-config
-Shared TypeScript configuration presets.
-
-- `base.json` - Base strict config
-- `nextjs.json` - Next.js specific
-- `react-native.json` - React Native specific
-
-### @repo/eslint-config
-Shared ESLint configuration.
-
-- `next.mjs` - Next.js rules
-- `react-native.mjs` - React Native rules
-
-## 🎨 Styling
-
-### Web (apps/web)
-- **Framework**: Tailwind CSS v4 (CSS-first)
-- **UI Library**: shadcn/ui (Radix UI components)
-- **Theme**: Light/Dark mode via `next-themes`
-
-### Mobile (apps/mobile)
-- **Framework**: NativeWind v4 (Tailwind for React Native)
-- **UI Library**: Custom NativeWindUI components
-- **Theme**: System dark/light mode
 
 ## 🔧 Technology Stack
 
-### Core
-- **pnpm** - Fast, disk space efficient package manager
-- **Turborepo** - High-performance build system & monorepo
+### Core Tools
+- **[pnpm](https://pnpm.io/)** - Fast package manager
+- **[Turborepo](https://turbo.build/)** - High-performance build system
+- **[TypeScript](https://www.typescriptlang.org/)** - Type safety
 
 ### Web
-- Next.js 16.0.4
-- React 19.2.0
-- Tailwind CSS v4
-- shadcn/ui components
+- **[Next.js 16](https://nextjs.org/)** - React framework
+- **[React 19](https://react.dev/)** - UI library
+- **[Tailwind CSS v4](https://tailwindcss.com/)** - Styling
+- **[shadcn/ui](https://ui.shadcn.com/)** - Component library
+- **[next-themes](https://github.com/pacocoursey/next-themes)** - Theme management
 
 ### Mobile
-- Expo SDK 54
-- React Native 0.81.0
-- Expo Router v4
-- NativeWind v4
+- **[Expo 54](https://expo.dev/)** - React Native platform
+- **[React Native 0.81](https://reactnative.dev/)** - Mobile framework
+- **[Expo Router v4](https://docs.expo.dev/router/)** - Navigation
+- **[NativeWind v4](https://www.nativewind.dev/)** - Tailwind for RN
+- **[react-native-reanimated](https://docs.swmansion.com/react-native-reanimated/)** - Animations
 
-## 📋 Requirements
+## 📚 Documentation
 
-- **Node.js**: `>=20.0.0` (specified in `.nvmrc` and `package.json`)
-- **pnpm**: `>=10.32.0` (auto-enforced via `packageManager` field)
+- **[Contributing Guide](CONTRIBUTING.md)** - How to contribute
+- **[License](LICENSE)** - MIT License
+- [pnpm Docs](https://pnpm.io/)
+- [Turborepo Docs](https://turbo.build/)
+- [Next.js Docs](https://nextjs.org/docs)
+- [Expo Docs](https://docs.expo.dev/)
 
-To use the correct Node version:
+## 🚀 Deployment
+
+### Deploy Web App
+
+**Vercel (Recommended)**
 ```bash
-# Using nvm
-nvm use
-
-# Using asdf
-asdf install
-```
-
-## 🚢 Deployment
-
-### Web (Next.js)
-```bash
-# Deploy to Vercel
 pnpm build
-# Push to Vercel via GitHub integration
-
-# Or build Docker image
-docker build -f apps/web/Dockerfile -t my-web-app .
+# Push to GitHub → auto-deploy via Vercel
 ```
 
-### Mobile (Expo)
+**Docker**
+```bash
+docker build -f apps/web/Dockerfile -t my-web-app .
+docker run -p 3000:3000 my-web-app
+```
+
+### Deploy Mobile App
+
+**EAS Build** (Expo's cloud build service)
 ```bash
 cd apps/mobile
-
-# Build for iOS
 eas build --platform ios
-
-# Build for Android
 eas build --platform android
-
-# Submit to App Store / Google Play
-eas submit
+eas submit  # Submit to stores
 ```
 
-## 📚 Resources
+## 🤝 Contributing
 
-- [pnpm Documentation](https://pnpm.io/)
-- [Turborepo Documentation](https://turbo.build)
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Expo Documentation](https://docs.expo.dev)
-- [Expo Router](https://docs.expo.dev/router/introduction/)
-- [NativeWind Documentation](https://www.nativewind.dev)
-- [shadcn/ui](https://ui.shadcn.com)
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
+- Setting up your development environment
+- Code style guidelines
+- Pull request process
+- Commit message conventions
 
 ## 📝 License
 
-MIT
+MIT © 2026 Template Monorepo Contributors
+
+See [LICENSE](LICENSE) for details.
+
+## 🙏 Acknowledgments
+
+- [shadcn/ui](https://ui.shadcn.com/) - Component design inspiration
+- [NativeWind UI](https://nativewindui.com/) - Mobile components
+- [Expo](https://expo.dev/) - Cross-platform framework
+- [Vercel](https://vercel.com/) - Inspiration for monorepo setup
+
+## 📞 Support
+
+- 📖 Check the [Documentation](README.md)
+- 💬 [GitHub Discussions](https://github.com/brain-byt-es/template-monorepo/discussions)
+- 🐛 [Report Issues](https://github.com/brain-byt-es/template-monorepo/issues)
+
+---
+
+<p align="center">
+  Made with ❤️ by <a href="https://github.com/brain-byt-es">brain-byt-es</a>
+</p>
