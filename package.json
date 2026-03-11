@@ -13,5 +13,8 @@
   "packageManager": "pnpm@10.32.1",
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "expo-splash-screen": "^55.0.10"
   }
 }
