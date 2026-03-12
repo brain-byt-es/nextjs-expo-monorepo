@@ -1,15 +1,9 @@
 import { View, Text } from "react-native";
-import { styled } from "nativewind";
 
-const StyledView = styled(View);
-const StyledText = styled(Text);
-
-export default function Index() {
+export default function Home() {
   return (
-    <StyledView className="flex-1 items-center justify-center bg-background">
-      <StyledText className="text-foreground text-2xl font-bold">
-        Mobile App
-      </StyledText>
-    </StyledView>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>Hello</Text>
+    </View>
   );
 }

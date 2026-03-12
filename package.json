@@ -8,6 +8,7 @@
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
+    "baseline-browser-mapping": "^2.10.0",
     "turbo": "^2.5.0"
   },
   "packageManager": "pnpm@10.32.1",

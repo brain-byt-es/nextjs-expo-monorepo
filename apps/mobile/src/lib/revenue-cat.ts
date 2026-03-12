@@ -1,4 +1,4 @@
-import Purchases from "@revenuecat/react-native-purchases";
+import Purchases from "react-native-purchases";
 
 /**
  * RevenueCat Configuration for In-App Purchases

@@ -2,17 +2,30 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2024-12-15",
-});
+// Lazy initialize Stripe client (only when needed)
+let stripeClient: Stripe | null = null;
 
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+function getStripe() {
+  if (!stripeClient && process.env.STRIPE_SECRET_KEY) {
+    stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: "2025-02-24.acacia",
+    });
+  }
+  return stripeClient;
+}
 
-// Initialize Supabase with service role key for server-side operations
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ""
-);
+// Lazy initialize Supabase client (only when needed)
+let supabaseClient: ReturnType<typeof createClient> | null = null;
+
+function getSupabase() {
+  if (!supabaseClient && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    supabaseClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
+  }
+  return supabaseClient;
+}
 
 /**
  * POST /api/webhooks/stripe
@@ -26,6 +39,17 @@ const supabase = createClient(
  * - invoice.payment_failed
  */
 export async function POST(request: NextRequest) {
+  const stripe = getStripe();
+  const supabase = getSupabase();
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  if (!stripe || !supabase || !webhookSecret) {
+    return NextResponse.json(
+      { error: "Stripe or Supabase is not configured" },
+      { status: 500 }
+    );
+  }
+
   const body = await request.text();
   const signature = request.headers.get("stripe-signature");
 
@@ -62,14 +86,14 @@ export async function POST(request: NextRequest) {
             );
 
             // Update user subscription in Supabase
-            const { error } = await supabase
+            const { error } = await (supabase as any)
               .from("user_subscriptions")
               .upsert(
                 {
                   stripe_customer_id: session.customer as string,
                   stripe_subscription_id: session.subscription as string,
                   status: "active",
-                  email: customer.email,
+                  email: "deleted" in customer ? null : customer.email,
                   updated_at: new Date().toISOString(),
                 },
                 { onConflict: "stripe_customer_id" }
@@ -90,7 +114,7 @@ export async function POST(request: NextRequest) {
         console.log("Subscription updated:", subscription.id);
 
         try {
-          const { error } = await supabase
+          const { error } = await (supabase as any)
             .from("user_subscriptions")
             .update({
               status: subscription.status,
@@ -112,7 +136,7 @@ export async function POST(request: NextRequest) {
         console.log("Subscription deleted:", subscription.id);
 
         try {
-          const { error } = await supabase
+          const { error } = await (supabase as any)
             .from("user_subscriptions")
             .update({
               status: "canceled",
@@ -136,7 +160,7 @@ export async function POST(request: NextRequest) {
 
         try {
           // Record payment in Supabase
-          const { error } = await supabase
+          const { error } = await (supabase as any)
             .from("payments")
             .insert({
               stripe_invoice_id: invoice.id,
@@ -144,7 +168,7 @@ export async function POST(request: NextRequest) {
               amount: invoice.amount_paid,
               currency: invoice.currency,
               status: "paid",
-              paid_at: new Date(invoice.paid_date! * 1000).toISOString(),
+              paid_at: new Date().toISOString(),
             });
 
           if (error) {
@@ -162,7 +186,7 @@ export async function POST(request: NextRequest) {
 
         try {
           // Record failed payment in Supabase
-          const { error } = await supabase
+          const { error } = await (supabase as any)
             .from("payments")
             .insert({
               stripe_invoice_id: invoice.id,

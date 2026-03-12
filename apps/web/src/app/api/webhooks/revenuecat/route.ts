@@ -15,10 +15,18 @@ import { createClient } from "@supabase/supabase-js";
  * - TRANSFER - Subscription transferred from another store
  */
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-  process.env.SUPABASE_SERVICE_ROLE_KEY || ""
-);
+// Lazy initialize Supabase client (only when needed)
+let supabaseClient: ReturnType<typeof createClient> | null = null;
+
+function getSupabase() {
+  if (!supabaseClient && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    supabaseClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
+  }
+  return supabaseClient;
+}
 
 // RevenueCat webhook signature verification
 const REVENUECAT_API_KEY = process.env.REVENUECAT_API_KEY || "";
@@ -40,6 +48,14 @@ function verifyWebhookSignature(request: NextRequest): boolean {
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = getSupabase();
+    if (!supabase) {
+      return NextResponse.json(
+        { error: "Supabase is not configured" },
+        { status: 500 }
+      );
+    }
+
     // Verify webhook signature
     if (!verifyWebhookSignature(request)) {
       console.warn("Invalid RevenueCat webhook signature");
@@ -70,7 +86,7 @@ export async function POST(request: NextRequest) {
         console.log("Initial subscription purchase:", eventData.product_id);
 
         try {
-          const { error } = await supabase
+          const { error } = await (supabase as any)
             .from("mobile_subscriptions")
             .upsert(
               {
@@ -99,7 +115,7 @@ export async function POST(request: NextRequest) {
         console.log("Subscription renewal:", eventData.product_id);
 
         try {
-          const { error } = await supabase
+          const { error } = await (supabase as any)
             .from("mobile_subscriptions")
             .update({
               status: "active",
@@ -121,7 +137,7 @@ export async function POST(request: NextRequest) {
         console.log("Subscription cancelled:", eventData.product_id);
 
         try {
-          const { error } = await supabase
+          const { error } = await (supabase as any)
             .from("mobile_subscriptions")
             .update({
               status: "canceled",
@@ -143,7 +159,7 @@ export async function POST(request: NextRequest) {
         console.log("Billing issue:", eventData.product_id);
 
         try {
-          const { error } = await supabase
+          const { error } = await (supabase as any)
             .from("mobile_subscriptions")
             .update({
               status: "payment_failed",
@@ -171,7 +187,7 @@ export async function POST(request: NextRequest) {
         );
 
         try {
-          const { error } = await supabase
+          const { error } = await (supabase as any)
             .from("mobile_subscriptions")
             .update({
               product_id: eventData.new_product_id,
@@ -192,7 +208,7 @@ export async function POST(request: NextRequest) {
         console.log("Subscription transferred:", eventData.product_id);
 
         try {
-          const { error } = await supabase
+          const { error } = await (supabase as any)
             .from("mobile_subscriptions")
             .update({
               store: eventData.store,
