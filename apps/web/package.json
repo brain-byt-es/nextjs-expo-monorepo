@@ -15,6 +15,7 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "^5.2.2",
+    "@repo/db": "workspace:*",
     "@repo/shadcn-ui": "workspace:*",
     "@sentry/nextjs": "^10.43.0",
     "@stripe/react-stripe-js": "^4.0.0",
