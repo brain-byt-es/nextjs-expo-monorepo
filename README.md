@@ -1,6 +1,29 @@
 # SaaS Monorepo Template
 
-Production-ready SaaS starter with a **Next.js 16** web app and **Expo** React Native mobile app, orchestrated by **Turborepo** + **pnpm workspaces**.
+<p align="center">
+  <a href="https://github.com/brain-byt-es/nextjs-expo-monorepo/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+  <a href="https://github.com/brain-byt-es/nextjs-expo-monorepo/stargazers"><img src="https://img.shields.io/github/stars/brain-byt-es/nextjs-expo-monorepo?style=flat" alt="Stars"></a>
+  <a href="https://github.com/brain-byt-es/nextjs-expo-monorepo/actions"><img src="https://img.shields.io/github/actions/workflow/status/brain-byt-es/nextjs-expo-monorepo/ci.yml?label=CI" alt="CI"></a>
+  <img src="https://img.shields.io/badge/Next.js-16-black?logo=next.js" alt="Next.js 16">
+  <img src="https://img.shields.io/badge/Expo-SDK%2055-000020?logo=expo" alt="Expo SDK 55">
+  <img src="https://img.shields.io/badge/TypeScript-5-blue?logo=typescript" alt="TypeScript">
+</p>
+
+<p align="center">
+  <strong>Production-ready SaaS starter — web + mobile, batteries included.</strong><br>
+  Next.js 16 · Expo SDK 55 · Stripe · RevenueCat · Better-Auth · Drizzle ORM · Turborepo
+</p>
+
+<p align="center">
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#whats-included">What's included</a> ·
+  <a href="#features-walkthrough">Features</a> ·
+  <a href="#deployment">Deploy</a>
+</p>
+
+---
+
+> **Use this template** to ship a full SaaS product — web dashboard + iOS/Android app — in days instead of months. Every integration is wired up and working out of the box.
 
 ## What's included
 
