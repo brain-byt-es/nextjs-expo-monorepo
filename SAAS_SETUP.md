@@ -1,403 +1,177 @@
 # SaaS Setup Guide
 
-This template includes production-ready integrations for **Better-Auth**, **Stripe**, and **Supabase**. Follow this guide to set up each service.
-
-## Quick Start
-
-1. Copy `.env.example` to `.env.local`
-2. Fill in credentials for the services you want to use
-3. Run `pnpm install` to install dependencies
-4. Follow service-specific setup steps below
+Step-by-step instructions for configuring all third-party services. Copy `.env.example` to `.env.local` and fill in values as you go.
 
 ---
 
-## 🔐 Better-Auth (Authentication)
+## 1. PostgreSQL Database
 
-Better-Auth provides a secure, open-source authentication solution with support for email/password, OAuth, and more.
+You need a PostgreSQL instance. Options:
+- **Supabase** (free tier): Create project at [supabase.com](https://supabase.com), copy the connection string
+- **Neon** (free tier): [neon.tech](https://neon.tech)
+- **Local**: `docker run -p 5432:5432 -e POSTGRES_PASSWORD=postgres postgres:16`
 
-### Setup
-
-1. **Generate Secret Key**
-   ```bash
-   openssl rand -hex 32
-   ```
-   Copy the output to `BETTER_AUTH_SECRET` in `.env.local`
-
-2. **Configure Database**
-   Edit `apps/web/src/lib/auth.ts` to set up your database:
-
-   **SQLite (Development)**
-   ```typescript
-   database: {
-     type: "sqlite",
-     db: new Database("auth.db")
-   }
-   ```
-
-   **PostgreSQL (Production)**
-   ```typescript
-   database: {
-     type: "postgres",
-     db: postgres({
-       connectionString: process.env.DATABASE_URL
-     })
-   }
-   ```
-
-3. **Run Migrations**
-   ```bash
-   cd apps/web
-   npx better-auth migrate
-   ```
-
-### Usage
-
-**Web App** (`apps/web`)
-```tsx
-import { signIn, signUp, useSession } from "@/lib/auth-client";
-
-export function LoginComponent() {
-  const { data: session } = useSession();
-
-  if (!session) {
-    return (
-      <button onClick={() => signIn({ email: "user@example.com", password: "password" })}>
-        Sign In
-      </button>
-    );
-  }
-
-  return (
-    <div>
-      Welcome {session.user.name}!
-      <button onClick={() => signOut()}>Sign Out</button>
-    </div>
-  );
-}
+```env
+DATABASE_URL=postgresql://user:password@host:5432/dbname
 ```
 
-**Mobile App** (`apps/mobile`)
-```tsx
-import { signIn, signUp, useSession } from "@/lib/auth-client";
-import { View, Text, Pressable } from "react-native";
-
-export function LoginScreen() {
-  const { data: session } = useSession();
-
-  if (!session) {
-    return (
-      <View className="flex-1 justify-center items-center">
-        <Pressable
-          onPress={() => signIn({ email: "user@example.com", password: "password" })}
-          className="bg-blue-500 px-4 py-2 rounded"
-        >
-          <Text className="text-white">Sign In</Text>
-        </Pressable>
-      </View>
-    );
-  }
-
-  return (
-    <View className="flex-1 justify-center items-center">
-      <Text>Welcome {session.user.name}!</Text>
-    </View>
-  );
-}
+Then run migrations:
+```bash
+pnpm db:migrate
 ```
 
-### Documentation
-- [Better-Auth Docs](https://www.better-auth.com/)
-- [API Reference](https://www.better-auth.com/docs/api)
+## 2. Better-Auth (Authentication)
+
+Generate a secret:
+```bash
+openssl rand -hex 32
+```
+
+```env
+BETTER_AUTH_SECRET=<generated-secret>
+BETTER_AUTH_URL=http://localhost:3003
+```
+
+Better-Auth auto-creates its tables on first run. The admin plugin is pre-configured for RBAC.
+
+## 3. Stripe (Web Payments)
+
+1. Create account at [stripe.com](https://stripe.com)
+2. Get API keys from [dashboard.stripe.com/apikeys](https://dashboard.stripe.com/apikeys)
+3. Create products/prices in the Stripe dashboard
+4. Set up webhook endpoint: `https://yourdomain.com/api/webhooks/stripe`
+   - Events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`
+
+```env
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_PRICE_PRO=price_...
+STRIPE_PRICE_ENTERPRISE=price_...
+```
+
+For local testing: `stripe listen --forward-to localhost:3003/api/webhooks/stripe`
+
+## 4. RevenueCat (Mobile In-App Purchases)
+
+1. Create account at [revenuecat.com](https://www.revenuecat.com)
+2. Set up your App Store / Play Store apps
+3. Configure products and offerings
+4. Set up webhook: `https://yourdomain.com/api/webhooks/revenuecat`
+
+```env
+EXPO_PUBLIC_REVENUECAT_API_KEY=appl_...
+REVENUECAT_API_KEY=...
+REVENUECAT_WEBHOOK_SECRET=...
+```
+
+## 5. Resend (Email)
+
+1. Create account at [resend.com](https://resend.com)
+2. Verify your domain
+3. Get API key from [resend.com/api-keys](https://resend.com/api-keys)
+
+```env
+RESEND_API_KEY=re_...
+RESEND_FROM_EMAIL=noreply@yourdomain.com
+```
+
+## 6. Upstash Redis (Rate Limiting)
+
+1. Create account at [console.upstash.com](https://console.upstash.com)
+2. Create a Redis database
+
+```env
+UPSTASH_REDIS_REST_URL=https://...upstash.io
+UPSTASH_REDIS_REST_TOKEN=...
+```
+
+## 7. Sentry (Error Tracking)
+
+1. Create projects at [sentry.io](https://sentry.io) (one for web, one for mobile)
+2. Get DSNs from project settings
+
+```env
+NEXT_PUBLIC_SENTRY_DSN=https://...@sentry.io/...
+SENTRY_AUTH_TOKEN=sntrys_...
+EXPO_PUBLIC_SENTRY_DSN=https://...@sentry.io/...
+```
+
+## 8. PostHog (Analytics & Feature Flags)
+
+1. Create account at [posthog.com](https://posthog.com)
+2. Get project API key from Settings
+
+```env
+NEXT_PUBLIC_POSTHOG_KEY=phc_...
+NEXT_PUBLIC_POSTHOG_HOST=https://us.posthog.com
+EXPO_PUBLIC_POSTHOG_KEY=phc_...
+EXPO_PUBLIC_POSTHOG_HOST=https://us.posthog.com
+```
+
+Feature flags are managed in the PostHog dashboard. Use `useFeatureFlag("flag-name")` client-side or `isFeatureEnabled("flag-name", userId)` server-side.
+
+## 9. Inngest (Background Jobs)
+
+1. Create account at [inngest.com](https://www.inngest.com)
+2. Get keys from dashboard
+
+```env
+INNGEST_EVENT_KEY=...
+INNGEST_SIGNING_KEY=...
+```
+
+For local development, run the Inngest dev server:
+```bash
+npx inngest-cli@latest dev
+```
+
+## 10. OpenTelemetry (Tracing) — Optional
+
+Export traces to any OTLP-compatible backend (Jaeger, Grafana Tempo, Honeycomb, etc.).
+
+```env
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318/v1/traces
+```
+
+For local dev with Jaeger:
+```bash
+docker run -p 16686:16686 -p 4318:4318 jaegertracing/all-in-one:latest
+```
+
+Then open `http://localhost:16686` to view traces.
+
+## 11. Vercel Edge Config (Canary Rollouts) — Optional
+
+1. Create Edge Config in Vercel dashboard
+2. Link it to your project (auto-sets `EDGE_CONFIG` env var)
+3. Add keys via dashboard or API:
+   - `maintenance_mode`: `true`/`false`
+   - `new_feature_rollout`: `0`-`100` (percentage)
+
+## 12. Vercel Deployment
+
+1. Import repo in [vercel.com](https://vercel.com)
+2. Set root directory to `apps/web`
+3. Add all env vars from `.env.example`
+4. Deploy
+
+For Turborepo remote caching, set `TURBO_TOKEN` and `TURBO_TEAM` in CI.
 
 ---
 
-## 💳 Stripe (Payments)
-
-Stripe enables subscription management, one-time payments, and more.
-
-### Setup
-
-1. **Get API Keys**
-   - Go to [Stripe Dashboard](https://dashboard.stripe.com/apikeys)
-   - Copy **Publishable Key** → `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
-   - Copy **Secret Key** → `STRIPE_SECRET_KEY`
-
-2. **Setup Webhooks**
-   - Go to [Webhooks Settings](https://dashboard.stripe.com/webhooks)
-   - Create a new endpoint: `https://yourdomain.com/api/webhooks/stripe`
-   - Select events: `checkout.session.completed`, `customer.subscription.*`, `invoice.*`
-   - Copy signing secret → `STRIPE_WEBHOOK_SECRET`
-
-3. **Install Stripe CLI** (for local testing)
-   ```bash
-   brew install stripe/stripe-cli/stripe  # macOS
-   stripe login
-   stripe listen --forward-to localhost:3003/api/webhooks/stripe
-   ```
-
-### Usage
-
-**Create Checkout Session**
-```tsx
-import { getStripe } from "@/lib/stripe";
-import { loadStripe } from "@stripe/stripe-js";
-
-async function handleCheckout(priceId: string) {
-  const response = await fetch("/api/checkout", {
-    method: "POST",
-    body: JSON.stringify({ priceId }),
-  });
-  const { sessionId } = await response.json();
-
-  const stripe = await getStripe();
-  await stripe?.redirectToCheckout({ sessionId });
-}
-```
-
-**Customer Portal**
-```tsx
-async function handlePortal() {
-  const response = await fetch("/api/portal", { method: "POST" });
-  const { url } = await response.json();
-  window.location.href = url;
-}
-```
-
-### Webhook Handling
-
-The webhook endpoint at `/api/webhooks/stripe` handles:
-- `checkout.session.completed` - Update subscription in database
-- `customer.subscription.updated` - Sync subscription status
-- `customer.subscription.deleted` - Cancel subscription
-- `invoice.payment_succeeded` - Mark invoice as paid
-- `invoice.payment_failed` - Handle failed payments
-
-Update the webhook handlers to sync with your database.
-
-### Documentation
-- [Stripe Docs](https://stripe.com/docs)
-- [Checkout Sessions](https://stripe.com/docs/payments/checkout)
-- [Subscriptions](https://stripe.com/docs/billing/subscriptions)
-- [Webhooks](https://stripe.com/docs/webhooks)
-
----
-
-## 🗄️ Supabase (Database & Auth)
-
-Supabase provides PostgreSQL database, real-time APIs, and authentication.
-
-### Setup (Optional)
-
-1. **Create Project**
-   - Sign up at [supabase.com](https://supabase.com)
-   - Create a new project
-   - Copy project URL → `NEXT_PUBLIC_SUPABASE_URL`
-   - Copy anon key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-
-2. **Optional: Server-Side Access**
-   - Go to project settings → API
-   - Copy service role key → `SUPABASE_SERVICE_ROLE_KEY`
-
-3. **Create Tables**
-   Use Supabase dashboard or SQL:
-   ```sql
-   -- Example: Users table
-   CREATE TABLE users (
-     id UUID PRIMARY KEY,
-     email TEXT UNIQUE NOT NULL,
-     stripe_customer_id TEXT,
-     subscription_status TEXT,
-     created_at TIMESTAMP DEFAULT NOW()
-   );
-
-   -- Enable RLS
-   ALTER TABLE users ENABLE ROW LEVEL SECURITY;
-
-   CREATE POLICY "Users can view own data"
-     ON users FOR SELECT
-     USING (auth.uid() = id);
-   ```
-
-### Usage
-
-**Web App** (`apps/web`)
-```tsx
-import { supabase } from "@/lib/supabase";
-
-// Fetch data
-const { data, error } = await supabase
-  .from("users")
-  .select("*")
-  .eq("id", userId);
-
-// Insert data
-const { data, error } = await supabase
-  .from("users")
-  .insert([{ email: "user@example.com" }]);
-
-// Real-time subscription
-supabase
-  .from("users")
-  .on("*", (payload) => {
-    console.log("Change:", payload);
-  })
-  .subscribe();
-```
-
-**Mobile App** (`apps/mobile`)
-```tsx
-import { supabase } from "@/lib/supabase";
-
-// Works the same as web
-// AsyncStorage is used for session persistence
-const { data, error } = await supabase
-  .from("users")
-  .select("*");
-```
-
-### Documentation
-- [Supabase Docs](https://supabase.com/docs)
-- [Database Guide](https://supabase.com/docs/guides/database)
-- [Auth Guide](https://supabase.com/docs/guides/auth)
-- [Real-time](https://supabase.com/docs/guides/realtime)
-
----
-
-## 🔄 Integration Example: Complete Flow
-
-Here's how to combine all services:
-
-### 1. User Signs Up (Better-Auth)
-```tsx
-const { user } = await signUp({
-  email: "user@example.com",
-  password: "secure_password",
-  name: "John Doe",
-});
-```
-
-### 2. Create Stripe Customer (Webhook or Server Action)
-```tsx
-// In server action or webhook
-const stripeCustomer = await stripe.customers.create({
-  email: user.email,
-  metadata: { userId: user.id },
-});
-
-// Store in Supabase
-await supabase.from("users").insert({
-  id: user.id,
-  email: user.email,
-  stripe_customer_id: stripeCustomer.id,
-});
-```
-
-### 3. User Subscribes (Stripe Checkout)
-```tsx
-const { sessionId } = await createCheckoutSession("price_1234567890");
-await stripe?.redirectToCheckout({ sessionId });
-```
-
-### 4. Webhook Updates Subscription (Stripe Webhook)
-```typescript
-case "checkout.session.completed": {
-  const { customer, subscription } = session;
-  await supabase
-    .from("users")
-    .update({ subscription_status: "active" })
-    .eq("stripe_customer_id", customer);
-  break;
-}
-```
-
-### 5. User Views Dashboard
-```tsx
-const { data: user } = await supabase
-  .from("users")
-  .select("*")
-  .eq("id", session.user.id)
-  .single();
-
-return <Dashboard subscription={user.subscription_status} />;
-```
-
----
-
-## 🛡️ Security Checklist
-
-- [ ] All secrets are in `.env.local` (never commit)
-- [ ] Database URLs use secure connections
-- [ ] Row-level security (RLS) enabled on Supabase
-- [ ] Webhook signatures verified
-- [ ] API keys rotated regularly
-- [ ] Stripe test mode used during development
-- [ ] CORS properly configured
-- [ ] Rate limiting implemented for auth endpoints
-- [ ] HTTPS enforced in production
-- [ ] Sensitive operations require authentication
-
----
-
-## 🚀 Deployment
-
-### Environment Variables
-
-Set in your deployment platform:
-1. All `NEXT_PUBLIC_*` variables (public)
-2. All secret variables (private):
-   - `BETTER_AUTH_SECRET`
-   - `STRIPE_SECRET_KEY`
-   - `STRIPE_WEBHOOK_SECRET`
-   - `SUPABASE_SERVICE_ROLE_KEY`
-
-### Stripe Webhook for Production
-
-1. Update webhook URL to production domain:
-   ```
-   https://yourdomain.com/api/webhooks/stripe
-   ```
-
-2. Create separate webhook signing secret for production
-
-3. Store in `STRIPE_WEBHOOK_SECRET` on production
-
-### Database Migration
-
-For production Supabase/PostgreSQL:
-
-1. Update connection in auth.ts
-2. Run migrations: `npx better-auth migrate`
-3. Set up automated backups in Supabase dashboard
-4. Enable point-in-time recovery
-
----
-
-## ❓ Troubleshooting
-
-**"Better-Auth secret is not set"**
-→ Add `BETTER_AUTH_SECRET` to `.env.local`
-
-**"Stripe API key missing"**
-→ Add `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` and `STRIPE_SECRET_KEY`
-
-**"Supabase connection error"**
-→ Check `NEXT_PUBLIC_SUPABASE_URL` and anon key
-
-**"Webhook signature verification failed"**
-→ Ensure `STRIPE_WEBHOOK_SECRET` matches Stripe dashboard
-
-**"Session not persisting on mobile"**
-→ Ensure AsyncStorage is installed: `pnpm add @react-native-async-storage/async-storage`
-
----
-
-## 📚 Next Steps
-
-1. Review database schema in Supabase
-2. Set up proper RLS policies
-3. Implement user profile management
-4. Add subscription tiers/pricing
-5. Set up email notifications
-6. Add analytics/monitoring
-7. Deploy to production
-
+## Quick Checklist
+
+| Service | Required | Free Tier |
+|---------|----------|-----------|
+| PostgreSQL | Yes | Supabase / Neon |
+| Better-Auth | Yes | Self-hosted (free) |
+| Stripe | Yes (web billing) | Test mode free |
+| RevenueCat | Yes (mobile billing) | Free up to $2.5k MRR |
+| Resend | Yes (email) | 3,000 emails/mo free |
+| Upstash Redis | Yes (rate limiting) | 10,000 commands/day free |
+| Sentry | Recommended | 5,000 errors/mo free |
+| PostHog | Recommended | 1M events/mo free |
+| Inngest | Recommended | 25,000 runs/mo free |
+| OpenTelemetry | Optional | Self-hosted |
+| Vercel Edge Config | Optional | Included with Vercel |
