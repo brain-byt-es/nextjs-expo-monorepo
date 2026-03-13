@@ -15,7 +15,7 @@
     "@hookform/resolvers": "^5.2.2",
     "@react-native-async-storage/async-storage": "^2.1.0",
     "@repo/nativewindui": "workspace:*",
-    "@sentry/react-native": "^8.4.0",
+    "@sentry/react-native": "~7.11.0",
     "better-auth": "^1.0.0",
     "clsx": "^2.1.0",
     "expo": "latest",
@@ -43,7 +43,7 @@
     "babel-preset-expo": "latest",
     "eslint": "^9",
     "nativewind": "latest",
-    "tailwindcss": "latest",
+    "tailwindcss": "^3.4.0",
     "typescript": "^5"
   },
   "overrides": {

@@ -15,7 +15,8 @@
       "package": "com.repo.mobile"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "@sentry/react-native"
     ],
     "experiments": {
       "typedRoutes": true

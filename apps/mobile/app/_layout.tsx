@@ -1,7 +1,9 @@
+import "../global.css";
 import { useEffect } from "react";
 import { Slot } from "expo-router";
 import * as Sentry from "@sentry/react-native";
 import { PostHogProvider } from "posthog-react-native";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import { loadSession } from "@/lib/session-store";
 import { initializeRevenueCat } from "@/lib/revenue-cat";
 
@@ -20,7 +22,11 @@ function RootLayout() {
     initializeRevenueCat();
   }, []);
 
-  return <Slot />;
+  return (
+    <KeyboardProvider>
+      <Slot />
+    </KeyboardProvider>
+  );
 }
 
 function App() {

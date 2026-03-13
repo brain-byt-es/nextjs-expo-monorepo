@@ -10,11 +10,12 @@
     "./subscription-canceled": "./src/subscription-canceled.tsx"
   },
   "scripts": {
-    "dev": "email dev",
+    "dev": "email dev --dir src",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@react-email/components": "^0.0.36",
+    "@react-email/preview-server": "^4.3.2",
     "react": "19.2.3"
   },
   "devDependencies": {
