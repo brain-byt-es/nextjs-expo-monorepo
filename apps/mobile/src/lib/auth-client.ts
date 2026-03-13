@@ -1,82 +1,79 @@
 /**
- * Better-Auth Client for React Native / Expo
- * Lazy-initialized to avoid module load errors in React Native
- * Falls back to mock client if better-auth/react is not available
+ * Auth Client for React Native / Expo
+ * Uses Better-Auth API via HTTP + local session store
  */
 
 import * as Sentry from "@sentry/react-native";
+import {
+  setSession,
+  getSession,
+  useSession,
+  type Session,
+} from "./session-store";
 
-let authClientInstance: any = null;
+export { useSession } from "./session-store";
 
-function getAuthClient() {
-  if (authClientInstance) return authClientInstance;
+const API_URL = process.env.EXPO_PUBLIC_APP_URL || "http://localhost:3003";
 
-  try {
-    const { createAuthClient } = require("better-auth/react");
-    authClientInstance = createAuthClient({
-      baseURL: process.env.EXPO_PUBLIC_APP_URL || "http://localhost:3003",
-    });
-  } catch (error) {
-    console.warn(
-      "Better-Auth client not available in React Native context, using mock:",
-      error instanceof Error ? error.message : error
-    );
-    // Return mock client for React Native
-    authClientInstance = {
-      getSession: async () => null,
-      signIn: async () => null,
-      signUp: async () => null,
-      signOut: async () => null,
-    };
+async function authFetch<T = unknown>(
+  path: string,
+  options?: RequestInit
+): Promise<T> {
+  const session = getSession();
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(session?.token ? { Authorization: `Bearer ${session.token}` } : {}),
+  };
+
+  const res = await fetch(`${API_URL}${path}`, {
+    ...options,
+    headers: { ...headers, ...(options?.headers as Record<string, string>) },
+  });
+
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(body || res.statusText);
   }
 
-  return authClientInstance;
+  return res.json();
 }
 
-export const authClient = getAuthClient();
-
-/**
- * Send welcome email via the web API
- */
-async function sendWelcomeEmail(name: string, email: string) {
-  try {
-    const apiUrl = process.env.EXPO_PUBLIC_APP_URL || "http://localhost:3003";
-    const response = await fetch(`${apiUrl}/api/email/welcome`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to send welcome email: ${response.statusText}`);
-    }
-
-    return response.json();
-  } catch (error) {
-    console.error("Error sending welcome email:", error);
-    Sentry.captureException(error, { tags: { action: "send_welcome_email" } });
-    // Don't throw - email failure shouldn't break signup
-  }
-}
-
-// Export auth methods
 export async function signIn(email: string, password: string) {
   try {
-    return await getAuthClient().signIn?.({ email, password });
+    const result = await authFetch<{ user: Session["user"]; token: string }>(
+      "/api/auth/sign-in/email",
+      {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      }
+    );
+
+    await setSession({ user: result.user, token: result.token });
+    return result;
   } catch (error) {
     Sentry.captureException(error, { tags: { action: "sign_in" } });
     throw error;
   }
 }
 
-export async function signUp(email: string, password: string, name?: string) {
+export async function signUp(
+  email: string,
+  password: string,
+  name?: string
+) {
   try {
-    const result = await getAuthClient().signUp?.({ email, password, name });
+    const result = await authFetch<{ user: Session["user"]; token: string }>(
+      "/api/auth/sign-up/email",
+      {
+        method: "POST",
+        body: JSON.stringify({ email, password, name }),
+      }
+    );
 
-    // Send welcome email after successful signup
-    if (result && email && name) {
-      await sendWelcomeEmail(name, email);
-    }
+    await setSession({ user: result.user, token: result.token });
+
+    // Send welcome email (fire-and-forget)
+    sendWelcomeEmail(name || "", email).catch(() => {});
 
     return result;
   } catch (error) {
@@ -86,33 +83,26 @@ export async function signUp(email: string, password: string, name?: string) {
 }
 
 export async function signOut() {
-  return getAuthClient().signOut?.();
-}
-
-// Mock useSession hook for React Native (better-auth/react hooks don't work in RN)
-export function useSession() {
-  return { data: null, status: "unauthenticated" };
-}
-
-/**
- * Check if user is authenticated
- */
-export async function isAuthenticated() {
   try {
-    const session = await getAuthClient().getSession?.();
-    return !!session;
+    await authFetch("/api/auth/sign-out", { method: "POST" });
   } catch {
-    return false;
+    // Best-effort server logout
   }
+  await setSession(null);
 }
 
-/**
- * Get current user session
- */
-export async function getCurrentSession() {
+export function isAuthenticated(): boolean {
+  return getSession() !== null;
+}
+
+async function sendWelcomeEmail(name: string, email: string) {
   try {
-    return await getAuthClient().getSession?.();
-  } catch {
-    return null;
+    await fetch(`${API_URL}/api/email/welcome`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email }),
+    });
+  } catch (error) {
+    Sentry.captureException(error, { tags: { action: "send_welcome_email" } });
   }
 }
