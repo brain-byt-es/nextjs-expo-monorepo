@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 
 // Initialize Better-Auth with fallback if not configured
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let authInstance: any;
 
 try {
@@ -28,4 +29,5 @@ export function getAuth() {
   return auth;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Session = any;

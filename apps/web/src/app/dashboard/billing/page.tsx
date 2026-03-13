@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useSession } from "@/lib/auth-client"
 import { createPortalSession } from "@/lib/stripe"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -63,8 +62,6 @@ const plans: Plan[] = [
 ]
 
 export default function BillingPage() {
-  const { data: session } = useSession()
-  const [currentPlan, setCurrentPlan] = useState<string>("free")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 

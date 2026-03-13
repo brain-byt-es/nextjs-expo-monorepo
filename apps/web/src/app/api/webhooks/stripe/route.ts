@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { createClient } from "@supabase/supabase-js";
 import * as Sentry from "@sentry/nextjs";
 import { sendPaymentFailedEmail, sendSubscriptionCanceledEmail } from "@/lib/email";
 import { trackEvent } from "@/lib/posthog";
+import { getSupabaseClient } from "@/lib/supabase";
 
 // Lazy initialize Stripe client (only when needed)
 let stripeClient: Stripe | null = null;
@@ -15,24 +15,6 @@ function getStripe() {
     });
   }
   return stripeClient;
-}
-
-// Lazy initialize Supabase client (only when needed)
-let supabaseClient: ReturnType<typeof createClient> | null = null;
-
-function getSupabase() {
-  if (!supabaseClient && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    supabaseClient = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE_KEY
-    );
-  }
-  return supabaseClient;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getSupabaseTyped(): any {
-  return getSupabase();
 }
 
 /**
@@ -48,7 +30,7 @@ function getSupabaseTyped(): any {
  */
 export async function POST(request: NextRequest) {
   const stripe = getStripe();
-  const supabase = getSupabaseTyped();
+  const supabase = getSupabaseClient();
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   if (!stripe || !supabase || !webhookSecret) {
@@ -130,7 +112,7 @@ export async function POST(request: NextRequest) {
         console.log("Subscription updated:", subscription.id);
 
         try {
-          const { error } = await (supabase as any)
+          const { error } = await supabase!
             .from("user_subscriptions")
             .update({
               status: subscription.status,
@@ -156,7 +138,7 @@ export async function POST(request: NextRequest) {
           const customer = await stripe.customers.retrieve(subscription.customer as string);
           const customerEmail = "deleted" in customer ? null : customer.email;
 
-          const { error } = await (supabase as any)
+          const { error } = await supabase!
             .from("user_subscriptions")
             .update({
               status: "canceled",
@@ -193,7 +175,7 @@ export async function POST(request: NextRequest) {
 
         try {
           // Record payment in Supabase
-          const { error } = await (supabase as any)
+          const { error } = await supabase!
             .from("payments")
             .insert({
               stripe_invoice_id: invoice.id,
@@ -219,7 +201,7 @@ export async function POST(request: NextRequest) {
 
         try {
           // Record failed payment in Supabase
-          const { error } = await (supabase as any)
+          const { error } = await supabase!
             .from("payments")
             .insert({
               stripe_invoice_id: invoice.id,

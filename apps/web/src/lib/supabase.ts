@@ -30,26 +30,53 @@ export function getSupabaseClient() {
   return initSupabase();
 }
 
+/**
+ * Typed helper for database operations
+ */
+export async function dbUpdate<T extends Record<string, unknown>>(
+  table: string,
+  data: T,
+  filter: { column: string; value: string }
+) {
+  const client = getSupabaseClient();
+  if (!client) return { error: "Supabase not configured", data: null };
+
+  return client
+    .from(table)
+    .update(data)
+    .eq(filter.column, filter.value);
+}
+
+export async function dbInsert<T extends Record<string, unknown>>(
+  table: string,
+  data: T
+) {
+  const client = getSupabaseClient();
+  if (!client) return { error: "Supabase not configured", data: null };
+
+  return client.from(table).insert(data);
+}
+
 // Export client getter as default export for convenience
 export const supabase = {
   auth: {
     getUser: async () => {
       const client = getSupabaseClient();
       if (!client) return { data: { user: null } };
-      return client.auth.getUser();
+      return client!.auth.getUser();
     },
     getSession: async () => {
       const client = getSupabaseClient();
       if (!client) return { data: { session: null } };
-      return client.auth.getSession();
+      return client!.auth.getSession();
     },
   },
   from: (table: string) => {
     const client = getSupabaseClient();
     if (!client) throw new Error("Supabase is not configured");
-    return client.from(table);
+    return client!.from(table);
   },
-} as any;
+};
 
 /**
  * Helper to get authenticated user from session
