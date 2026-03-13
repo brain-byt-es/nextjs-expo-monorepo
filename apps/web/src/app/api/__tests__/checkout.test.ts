@@ -35,9 +35,9 @@ vi.mock("@sentry/nextjs", () => ({
   captureException: vi.fn(),
 }));
 
-const mockGetAuthUser = vi.fn();
-vi.mock("@/lib/supabase", () => ({
-  getAuthUser: () => mockGetAuthUser(),
+const mockGetSession = vi.fn();
+vi.mock("@/lib/auth", () => ({
+  auth: { api: { getSession: (...args: unknown[]) => mockGetSession(...args) } },
 }));
 
 process.env.STRIPE_SECRET_KEY = "sk_test_fake";
@@ -60,7 +60,7 @@ describe("POST /api/checkout", () => {
   });
 
   it("returns 401 if user is not authenticated", async () => {
-    mockGetAuthUser.mockResolvedValue(null);
+    mockGetSession.mockResolvedValue(null);
 
     const res = await POST(makeRequest({ priceId: "price_123" }) as unknown as NextRequest);
     const json = await res.json();
@@ -70,7 +70,7 @@ describe("POST /api/checkout", () => {
   });
 
   it("returns 429 if rate limited", async () => {
-    mockGetAuthUser.mockResolvedValue({ id: "u1", email: "a@b.com" });
+    mockGetSession.mockResolvedValue({ user: { id: "u1", email: "a@b.com" } });
     mockLimit.mockResolvedValue({ success: false });
 
     const res = await POST(makeRequest({ priceId: "price_123" }) as unknown as NextRequest);
@@ -81,7 +81,7 @@ describe("POST /api/checkout", () => {
   });
 
   it("returns 400 if priceId is missing", async () => {
-    mockGetAuthUser.mockResolvedValue({ id: "u1", email: "a@b.com" });
+    mockGetSession.mockResolvedValue({ user: { id: "u1", email: "a@b.com" } });
 
     const res = await POST(makeRequest({}) as unknown as NextRequest);
     const json = await res.json();
@@ -91,7 +91,7 @@ describe("POST /api/checkout", () => {
   });
 
   it("creates checkout session and returns url", async () => {
-    mockGetAuthUser.mockResolvedValue({ id: "u1", email: "test@example.com" });
+    mockGetSession.mockResolvedValue({ user: { id: "u1", email: "test@example.com" } });
 
     const res = await POST(makeRequest({ priceId: "price_pro" }) as unknown as NextRequest);
     const json = await res.json();

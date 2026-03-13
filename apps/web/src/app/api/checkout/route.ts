@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { getAuthUser } from "@/lib/supabase";
+import { auth } from "@/lib/auth";
 import { checkRateLimit } from "@/lib/rate-limit";
 import * as Sentry from "@sentry/nextjs";
 
@@ -29,8 +29,8 @@ function getStripe() {
  */
 export async function POST(request: NextRequest) {
   try {
-    // Get user for rate limiting
-    const user = await getAuthUser();
+    const authSession = await auth.api.getSession({ headers: request.headers });
+    const user = authSession?.user;
     if (!user) {
       return NextResponse.json(
         { error: "User not authenticated" },
