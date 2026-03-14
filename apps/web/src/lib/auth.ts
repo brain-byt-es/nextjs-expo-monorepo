@@ -1,25 +1,21 @@
 import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { admin } from "better-auth/plugins";
+import { getDb } from "@repo/db";
 import type { Auth } from "better-auth";
 
 // Construct the full auth type from better-auth's exported Auth generic,
 // parameterised with the plugins we actually use. No runtime variable needed.
 type AuthInstance = Auth<{
   plugins: [ReturnType<typeof nextCookies>, ReturnType<typeof admin>];
-  database: { type: "postgres"; url: string };
+  database: ReturnType<typeof drizzleAdapter>;
 }>;
 
 let authInstance: AuthInstance | null = null;
 
 function initAuth(): AuthInstance {
   if (authInstance) return authInstance;
-
-  const databaseUrl = process.env.DATABASE_URL;
-
-  if (!databaseUrl) {
-    throw new Error("DATABASE_URL environment variable is not set");
-  }
 
   authInstance = betterAuth({
     baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3003",
@@ -29,10 +25,9 @@ function initAuth(): AuthInstance {
       nextCookies(),
       admin(),
     ],
-    database: {
-      type: "postgres",
-      url: databaseUrl,
-    },
+    database: drizzleAdapter(getDb(), {
+      provider: "pg",
+    }),
   }) as unknown as AuthInstance;
 
   return authInstance;
