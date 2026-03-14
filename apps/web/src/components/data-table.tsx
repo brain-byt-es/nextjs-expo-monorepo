@@ -669,7 +669,6 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
             <>
               <ChartContainer config={chartConfig}>
                 <AreaChart
-                  accessibilityLayer
                   data={chartData}
                   margin={{
                     left: 0,
