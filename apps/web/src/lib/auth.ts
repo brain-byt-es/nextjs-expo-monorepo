@@ -3,10 +3,9 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { admin, bearer } from "better-auth/plugins";
 import { getDb } from "@repo/db";
+import * as schema from "@repo/db/schema";
 import type { Auth } from "better-auth";
 
-// Construct the full auth type from better-auth's exported Auth generic,
-// parameterised with the plugins we actually use. No runtime variable needed.
 type AuthInstance = Auth<{
   plugins: [ReturnType<typeof nextCookies>, ReturnType<typeof admin>, ReturnType<typeof bearer>];
   database: ReturnType<typeof drizzleAdapter>;
@@ -24,6 +23,14 @@ function initAuth(): AuthInstance {
     // Allow requests with missing/null Origin (React Native doesn't send one).
     // TODO: restrict to specific origins in production.
     trustedOrigins: ["*"],
+    emailAndPassword: {
+      enabled: true,
+    },
+    advanced: {
+      database: {
+        generateId: "uuid",
+      },
+    },
     plugins: [
       nextCookies(),
       admin(),
@@ -31,6 +38,8 @@ function initAuth(): AuthInstance {
     ],
     database: drizzleAdapter(getDb(), {
       provider: "pg",
+      schema,
+      usePlural: true,
     }),
   }) as unknown as AuthInstance;
 
