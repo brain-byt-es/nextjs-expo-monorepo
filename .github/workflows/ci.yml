@@ -101,6 +101,10 @@ jobs:
         env:
           PLAYWRIGHT_BASE_URL: http://localhost:3003
           CI: true
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testdb
+          BETTER_AUTH_SECRET: ci-test-secret-not-real
+          BETTER_AUTH_URL: http://localhost:3003
+          NEXT_PUBLIC_APP_URL: http://localhost:3003
 
       - name: Upload test results
         uses: actions/upload-artifact@v4

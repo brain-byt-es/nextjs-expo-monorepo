@@ -12,7 +12,9 @@ type AuthInstance = Auth<{
 
 let authInstance: AuthInstance | null = null;
 
-try {
+function initAuth(): AuthInstance {
+  if (authInstance) return authInstance;
+
   const databaseUrl = process.env.DATABASE_URL;
 
   if (!databaseUrl) {
@@ -20,7 +22,7 @@ try {
   }
 
   authInstance = betterAuth({
-    baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
+    baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3003",
     basePath: "/api/auth",
     secret: process.env.BETTER_AUTH_SECRET || "dev-secret-key",
     plugins: [
@@ -32,14 +34,18 @@ try {
       url: databaseUrl,
     },
   }) as unknown as AuthInstance;
-} catch (error) {
-  authInstance = null;
-  if (process.env.NODE_ENV === "development") {
-    console.warn("Better-Auth initialization failed:", error);
-  }
+
+  return authInstance;
 }
 
-export const auth = authInstance as AuthInstance;
+export const auth = new Proxy({} as AuthInstance, {
+  get(_, prop) {
+    return (initAuth() as Record<string | symbol, unknown>)[prop];
+  },
+  has(_, prop) {
+    return prop in initAuth();
+  },
+});
 
 export function getAuth() {
   return auth;
