@@ -40,16 +40,25 @@ async function authFetch<T = unknown>(
 
 export async function signIn(email: string, password: string) {
   try {
-    const result = await authFetch<{ user: Session["user"]; token: string }>(
-      "/api/auth/sign-in/email",
-      {
-        method: "POST",
-        body: JSON.stringify({ email, password }),
-      }
-    );
+    const res = await fetch(`${API_URL}/api/auth/sign-in/email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-    await setSession({ user: result.user, token: result.token });
-    return result;
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(body || res.statusText);
+    }
+
+    const data = await res.json();
+
+    // Bearer plugin returns token in header; fallback to top-level body field
+    const headerToken = res.headers.get("set-auth-token");
+    const token = headerToken || data.token || "";
+
+    await setSession({ user: data.user, token });
+    return { user: data.user, token };
   } catch (error) {
     Sentry.captureException(error, { tags: { action: "sign_in" } });
     throw error;
@@ -62,20 +71,29 @@ export async function signUp(
   name?: string
 ) {
   try {
-    const result = await authFetch<{ user: Session["user"]; token: string }>(
-      "/api/auth/sign-up/email",
-      {
-        method: "POST",
-        body: JSON.stringify({ email, password, name }),
-      }
-    );
+    const res = await fetch(`${API_URL}/api/auth/sign-up/email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, name }),
+    });
 
-    await setSession({ user: result.user, token: result.token });
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(body || res.statusText);
+    }
+
+    const data = await res.json();
+
+    // Bearer plugin returns token in header; fallback to top-level body field
+    const headerToken = res.headers.get("set-auth-token");
+    const token = headerToken || data.token || "";
+
+    await setSession({ user: data.user, token });
 
     // Send welcome email (fire-and-forget)
     sendWelcomeEmail(name || "", email).catch(() => {});
 
-    return result;
+    return { user: data.user, token };
   } catch (error) {
     Sentry.captureException(error, { tags: { action: "sign_up" } });
     throw error;
