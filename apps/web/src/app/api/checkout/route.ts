@@ -9,9 +9,7 @@ let stripeClient: Stripe | null = null;
 
 function getStripe() {
   if (!stripeClient && process.env.STRIPE_SECRET_KEY) {
-    stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: "2025-02-24.acacia",
-    });
+    stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY);
   }
   return stripeClient;
 }
@@ -67,7 +65,6 @@ export async function POST(request: NextRequest) {
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
-      payment_method_types: ["card"],
       line_items: [
         {
           price: priceId,
