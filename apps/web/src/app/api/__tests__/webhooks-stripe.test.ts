@@ -127,7 +127,10 @@ describe("POST /api/webhooks/stripe", () => {
       data: {
         object: {
           id: "inv_123",
-          subscription: "sub_123",
+          parent: {
+            subscription_details: { subscription: "sub_123" },
+            type: "subscription_details",
+          },
           amount_paid: 2900,
           currency: "usd",
         },
@@ -144,7 +147,10 @@ describe("POST /api/webhooks/stripe", () => {
       data: {
         object: {
           id: "inv_123",
-          subscription: "sub_123",
+          parent: {
+            subscription_details: { subscription: "sub_123" },
+            type: "subscription_details",
+          },
           amount_due: 2900,
           currency: "usd",
           customer_email: "user@example.com",

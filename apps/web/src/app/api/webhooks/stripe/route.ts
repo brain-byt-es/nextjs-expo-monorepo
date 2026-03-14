@@ -5,14 +5,23 @@ import { sendPaymentFailedEmail, sendSubscriptionCanceledEmail } from "@/lib/ema
 import { trackEvent } from "@/lib/posthog";
 import { getDb, userSubscriptions, payments, eq } from "@repo/db";
 
+/**
+ * Extract subscription ID from an invoice.
+ * In Stripe SDK v20+ (API 2025-09-30.clover), `invoice.subscription` was
+ * replaced by `invoice.parent.subscription_details.subscription`.
+ */
+function getInvoiceSubscriptionId(invoice: Stripe.Invoice): string | null {
+  const sub = invoice.parent?.subscription_details?.subscription;
+  if (!sub) return null;
+  return typeof sub === "string" ? sub : sub.id;
+}
+
 // Lazy initialize Stripe client (only when needed)
 let stripeClient: Stripe | null = null;
 
 function getStripe() {
   if (!stripeClient && process.env.STRIPE_SECRET_KEY) {
-    stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: "2025-02-24.acacia",
-    });
+    stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY);
   }
   return stripeClient;
 }
@@ -179,7 +188,7 @@ export async function POST(request: NextRequest) {
         try {
           await db.insert(payments).values({
             stripeInvoiceId: invoice.id,
-            stripeSubscriptionId: invoice.subscription as string,
+            stripeSubscriptionId: getInvoiceSubscriptionId(invoice),
             amount: invoice.amount_paid,
             currency: invoice.currency,
             status: "paid",
@@ -198,7 +207,7 @@ export async function POST(request: NextRequest) {
         try {
           await db.insert(payments).values({
             stripeInvoiceId: invoice.id,
-            stripeSubscriptionId: invoice.subscription as string,
+            stripeSubscriptionId: getInvoiceSubscriptionId(invoice),
             amount: invoice.amount_due,
             currency: invoice.currency,
             status: "failed",
