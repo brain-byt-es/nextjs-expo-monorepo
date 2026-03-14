@@ -4,9 +4,10 @@ test.describe("Billing & Pricing", () => {
   test("pricing page renders with three plans", async ({ page }) => {
     await page.goto("/pricing");
 
-    await expect(page.getByText("Free")).toBeVisible();
-    await expect(page.getByText("Pro")).toBeVisible();
-    await expect(page.getByText("Enterprise")).toBeVisible();
+    // Match plan names in card titles
+    await expect(page.getByRole("heading", { name: "Free" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Pro" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Enterprise" })).toBeVisible();
   });
 
   test("pricing page shows plan prices", async ({ page }) => {
@@ -19,18 +20,15 @@ test.describe("Billing & Pricing", () => {
   test("pricing page has subscribe buttons", async ({ page }) => {
     await page.goto("/pricing");
 
-    const buttons = page.getByRole("button");
-    await expect(buttons).toHaveCount(await buttons.count());
-
     // Should have "Get Started" for free and "Subscribe Now" for paid
-    await expect(page.getByText("Get Started")).toBeVisible();
-    await expect(page.getByText("Subscribe Now").first()).toBeVisible();
+    await expect(page.getByRole("button", { name: "Get Started" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Subscribe Now" }).first()).toBeVisible();
   });
 
   test("free plan button redirects to signup", async ({ page }) => {
     await page.goto("/pricing");
 
-    await page.getByText("Get Started").click();
+    await page.getByRole("button", { name: "Get Started" }).click();
 
     await expect(page).toHaveURL(/\/signup/);
   });
@@ -40,7 +38,7 @@ test.describe("Billing & Pricing", () => {
   }) => {
     await page.goto("/pricing");
 
-    await page.getByText("Subscribe Now").first().click();
+    await page.getByRole("button", { name: "Subscribe Now" }).first().click();
 
     // Unauthenticated users should be redirected to signup
     await expect(page).toHaveURL(/\/signup/);
