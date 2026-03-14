@@ -1,14 +1,14 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { admin } from "better-auth/plugins";
+import { admin, bearer } from "better-auth/plugins";
 import { getDb } from "@repo/db";
 import type { Auth } from "better-auth";
 
 // Construct the full auth type from better-auth's exported Auth generic,
 // parameterised with the plugins we actually use. No runtime variable needed.
 type AuthInstance = Auth<{
-  plugins: [ReturnType<typeof nextCookies>, ReturnType<typeof admin>];
+  plugins: [ReturnType<typeof nextCookies>, ReturnType<typeof admin>, ReturnType<typeof bearer>];
   database: ReturnType<typeof drizzleAdapter>;
 }>;
 
@@ -24,6 +24,7 @@ function initAuth(): AuthInstance {
     plugins: [
       nextCookies(),
       admin(),
+      bearer(),
     ],
     database: drizzleAdapter(getDb(), {
       provider: "pg",
