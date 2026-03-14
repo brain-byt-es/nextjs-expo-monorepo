@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? "github" : "html",
   use: {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:3003",
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:3000",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
   },
@@ -30,7 +30,7 @@ export default defineConfig({
     ? undefined
     : {
         command: "pnpm --filter @repo/web dev",
-        port: 3003,
+        port: 3000,
         reuseExistingServer: true,
       },
 });

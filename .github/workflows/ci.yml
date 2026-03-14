@@ -94,9 +94,12 @@ jobs:
         run: pnpm build --filter=@repo/web
 
       - name: Run E2E tests
-        run: pnpm test:e2e
+        run: |
+          pnpm --filter @repo/web start &
+          npx wait-on http://localhost:3000 --timeout 30000
+          pnpm test:e2e
         env:
-          PLAYWRIGHT_BASE_URL: http://localhost:3003
+          PLAYWRIGHT_BASE_URL: http://localhost:3000
           CI: true
 
       - name: Upload test results
