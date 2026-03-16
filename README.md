@@ -1,14 +1,14 @@
 # SaaS Monorepo Template
 
 <p align="center">
-  <a href="https://github.com/brain-byt-es/nextjs-expo-monorepo/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
-  <a href="https://github.com/brain-byt-es/nextjs-expo-monorepo/stargazers"><img src="https://img.shields.io/github/stars/brain-byt-es/nextjs-expo-monorepo?style=flat" alt="Stars"></a>
-  <a href="https://github.com/brain-byt-es/nextjs-expo-monorepo/actions"><img src="https://img.shields.io/github/actions/workflow/status/brain-byt-es/nextjs-expo-monorepo/ci.yml?label=CI" alt="CI"></a>
+  <a href="https://github.com/brainbytes-dev/nextjs-expo-saas-starter/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+  <a href="https://github.com/brainbytes-dev/nextjs-expo-saas-starter/stargazers"><img src="https://img.shields.io/github/stars/brainbytes-dev/nextjs-expo-saas-starter?style=flat" alt="Stars"></a>
+  <a href="https://github.com/brainbytes-dev/nextjs-expo-saas-starter/actions"><img src="https://img.shields.io/github/actions/workflow/status/brainbytes-dev/nextjs-expo-saas-starter/ci.yml?label=CI" alt="CI"></a>
   <img src="https://img.shields.io/badge/Next.js-16-black?logo=next.js" alt="Next.js 16">
   <img src="https://img.shields.io/badge/Expo-SDK%2055-000020?logo=expo" alt="Expo SDK 55">
   <img src="https://img.shields.io/badge/TypeScript-5-blue?logo=typescript" alt="TypeScript">
   <a href="https://buymeacoffee.com/brainbytes"><img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-☕-yellow" alt="Buy me a coffee"></a>
-  <a href="https://twitter.com/intent/tweet?text=Open-source%20SaaS%20starter%20with%20Next.js%2016%20%2B%20Expo%20%E2%80%94%20auth%2C%20payments%2C%20database%2C%20email%2C%20analytics%20all%20wired%20up&url=https%3A%2F%2Fgithub.com%2Fbrain-byt-es%2Fnextjs-expo-monorepo&hashtags=nextjs,expo,saas,opensource"><img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social" alt="Tweet"></a>
+  <a href="https://twitter.com/intent/tweet?text=Open-source%20SaaS%20starter%20with%20Next.js%2016%20%2B%20Expo%20%E2%80%94%20auth%2C%20payments%2C%20database%2C%20email%2C%20analytics%20all%20wired%20up&url=https%3A%2F%2Fgithub.com%2Fbrainbytes-dev%2Fnextjs-expo-saas-starter&hashtags=nextjs,expo,saas,opensource"><img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social" alt="Tweet"></a>
 </p>
 
 <p align="center">
@@ -26,7 +26,7 @@
 </p>
 
 <p align="center">
-  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fbrain-byt-es%2Fnextjs-expo-monorepo&env=DATABASE_URL,BETTER_AUTH_SECRET&envDescription=Minimum%20required%20env%20vars%20to%20get%20started&envLink=https%3A%2F%2Fgithub.com%2Fbrain-byt-es%2Fnextjs-expo-monorepo%23environment-variables"><img src="https://vercel.com/button" alt="Deploy with Vercel" height="32"></a>
+  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fbrainbytes-dev%2Fnextjs-expo-saas-starter&env=DATABASE_URL,BETTER_AUTH_SECRET&envDescription=Minimum%20required%20env%20vars%20to%20get%20started&envLink=https%3A%2F%2Fgithub.com%2Fbrainbytes-dev%2Fnextjs-expo-saas-starter%23environment-variables"><img src="https://vercel.com/button" alt="Deploy with Vercel" height="32"></a>
 </p>
 
 <p align="center">
@@ -215,13 +215,13 @@ CI automatically builds on `v*` git tags via `.github/workflows/mobile.yml`.
 
 We welcome contributions! Check out [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
 
-Looking for something to work on? Browse issues labeled [`good first issue`](https://github.com/brain-byt-es/nextjs-expo-monorepo/labels/good%20first%20issue) or [`help wanted`](https://github.com/brain-byt-es/nextjs-expo-monorepo/labels/help%20wanted).
+Looking for something to work on? Browse issues labeled [`good first issue`](https://github.com/brainbytes-dev/nextjs-expo-saas-starter/labels/good%20first%20issue) or [`help wanted`](https://github.com/brainbytes-dev/nextjs-expo-saas-starter/labels/help%20wanted).
 
 ## Support the project
 
 If this template saved you time, consider supporting its development:
 
-- [GitHub Sponsors](https://github.com/sponsors/brain-byt-es)
+- [GitHub Sponsors](https://github.com/sponsors/brainbytes-dev)
 - [Buy me a coffee](https://buymeacoffee.com/brainbytes)
 - Star this repo — it helps others discover it
 
