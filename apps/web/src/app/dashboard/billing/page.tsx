@@ -107,7 +107,7 @@ export default function BillingPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 px-4 py-4 md:px-6 md:py-6 lg:px-8 lg:py-8">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Billing & Plans</h1>
         <p className="text-muted-foreground mt-2">Manage your subscription and billing information</p>
