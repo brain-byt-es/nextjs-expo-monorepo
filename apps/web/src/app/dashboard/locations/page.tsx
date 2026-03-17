@@ -19,6 +19,10 @@ import {
   IconTool,
   IconKey,
   IconSearch,
+  IconDownload,
+  IconChevronUp,
+  IconChevronDown,
+  IconSelector,
 } from "@tabler/icons-react"
 
 import { Button } from "@/components/ui/button"
@@ -82,6 +86,7 @@ const LOCATION_TYPES = {
 } as const
 
 type LocationType = keyof typeof LOCATION_TYPES
+type LocationSortKey = "name" | "type" | "category" | "materialCount" | "toolCount"
 
 // ─── Mock data (replace with real API call) ──────────────────────────
 interface LocationItem {
@@ -115,6 +120,34 @@ const TYPE_I18N_MAP: Record<LocationType, string> = {
   user: "user",
 }
 
+// ─── CSV helper ───────────────────────────────────────────────────────
+function downloadCsv(headers: string[], rows: (string | number | null | undefined)[][], filename: string) {
+  const lines = [
+    headers.join(";"),
+    ...rows.map(row => row.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(";"))
+  ]
+  const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a")
+  a.href = url; a.download = filename; a.click()
+  URL.revokeObjectURL(url)
+}
+
+function cmpStr(a: string | null | undefined, b: string | null | undefined): number {
+  if (a == null && b == null) return 0
+  if (a == null) return 1
+  if (b == null) return -1
+  return a.toLowerCase().localeCompare(b.toLowerCase(), "de")
+}
+
+// ─── Sort Icon ────────────────────────────────────────────────────────
+function SortIcon({ active, dir }: { active: boolean; dir: "asc" | "desc" }) {
+  if (!active) return <IconSelector className="ml-1 size-3.5 text-muted-foreground/50" />
+  return dir === "asc"
+    ? <IconChevronUp className="ml-1 size-3.5" />
+    : <IconChevronDown className="ml-1 size-3.5" />
+}
+
 export default function LocationsPage() {
   const t = useTranslations("locations")
   const tCommon = useTranslations("common")
@@ -123,15 +156,67 @@ export default function LocationsPage() {
   const [view, setView] = React.useState<string>("table")
   const [typeFilter, setTypeFilter] = React.useState<string>("all")
   const [search, setSearch] = React.useState("")
+  const [sortKey, setSortKey] = React.useState<LocationSortKey | null>(null)
+  const [sortDir, setSortDir] = React.useState<"asc" | "desc">("asc")
 
-  const filteredLocations = MOCK_LOCATIONS.filter((loc) => {
-    const matchesType = typeFilter === "all" || loc.type === typeFilter
-    const matchesSearch =
-      search === "" ||
-      loc.name.toLowerCase().includes(search.toLowerCase()) ||
-      (loc.category?.toLowerCase().includes(search.toLowerCase()) ?? false)
-    return matchesType && matchesSearch
-  })
+  function handleSort(key: LocationSortKey) {
+    if (sortKey === key) {
+      setSortDir(d => d === "asc" ? "desc" : "asc")
+    } else {
+      setSortKey(key)
+      setSortDir("asc")
+    }
+  }
+
+  const filteredLocations = React.useMemo(() => {
+    return MOCK_LOCATIONS.filter((loc) => {
+      const matchesType = typeFilter === "all" || loc.type === typeFilter
+      const matchesSearch =
+        search === "" ||
+        loc.name.toLowerCase().includes(search.toLowerCase()) ||
+        (loc.category?.toLowerCase().includes(search.toLowerCase()) ?? false)
+      return matchesType && matchesSearch
+    })
+  }, [typeFilter, search])
+
+  const sortedLocations = React.useMemo(() => {
+    if (!sortKey) return filteredLocations
+    return [...filteredLocations].sort((a, b) => {
+      let result = 0
+      switch (sortKey) {
+        case "name":
+          result = cmpStr(a.name, b.name)
+          break
+        case "type":
+          result = cmpStr(a.type, b.type)
+          break
+        case "category":
+          result = cmpStr(a.category, b.category)
+          break
+        case "materialCount":
+          result = a.materialCount - b.materialCount
+          break
+        case "toolCount":
+          result = a.toolCount - b.toolCount
+          break
+      }
+      return sortDir === "asc" ? result : -result
+    })
+  }, [filteredLocations, sortKey, sortDir])
+
+  function handleExportCsv() {
+    const headers = ["Name", "Typ", "Kategorie", "Adresse", "Materialien", "Werkzeuge", "Schlüssel"]
+    const rows = sortedLocations.map(loc => [
+      loc.name,
+      loc.type,
+      loc.category,
+      null,
+      loc.materialCount,
+      loc.toolCount,
+      loc.keyCount,
+    ])
+    downloadCsv(headers, rows, "lagerorte.csv")
+  }
 
   return (
     <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
@@ -143,10 +228,15 @@ export default function LocationsPage() {
             {filteredLocations.length} {t("title")}
           </p>
         </div>
-        <Button onClick={() => router.push("/dashboard/locations/new")}>
-          <IconPlus className="size-4" />
-          {t("addLocation")}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="icon" onClick={handleExportCsv} title="CSV exportieren">
+            <IconDownload className="size-4" />
+          </Button>
+          <Button onClick={() => router.push("/dashboard/locations/new")}>
+            <IconPlus className="size-4" />
+            {t("addLocation")}
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -204,9 +294,12 @@ export default function LocationsPage() {
           />
         ) : view === "table" ? (
           <LocationTable
-            locations={filteredLocations}
+            locations={sortedLocations}
             t={t}
             onRowClick={(id) => router.push(`/dashboard/locations/${id}`)}
+            sortKey={sortKey}
+            sortDir={sortDir}
+            onSort={handleSort}
           />
         ) : (
           <LocationGrid
@@ -225,21 +318,41 @@ function LocationTable({
   locations,
   t,
   onRowClick,
+  sortKey,
+  sortDir,
+  onSort,
 }: {
   locations: LocationItem[]
   t: ReturnType<typeof useTranslations<"locations">>
   onRowClick: (id: string) => void
+  sortKey: LocationSortKey | null
+  sortDir: "asc" | "desc"
+  onSort: (key: LocationSortKey) => void
 }) {
+  function SortableHead({ label, sk, className }: { label: string; sk: LocationSortKey; className?: string }) {
+    return (
+      <TableHead
+        className={`cursor-pointer select-none ${className ?? ""}`}
+        onClick={() => onSort(sk)}
+      >
+        <span className="inline-flex items-center">
+          {label}
+          <SortIcon active={sortKey === sk} dir={sortDir} />
+        </span>
+      </TableHead>
+    )
+  }
+
   return (
     <div className="rounded-lg border">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t("name")}</TableHead>
-            <TableHead>{t("type")}</TableHead>
-            <TableHead>{t("category")}</TableHead>
-            <TableHead className="text-right">{t("materialCount")}</TableHead>
-            <TableHead className="text-right">{t("toolCount")}</TableHead>
+            <SortableHead label={t("name")} sk="name" />
+            <SortableHead label={t("type")} sk="type" />
+            <SortableHead label={t("category")} sk="category" />
+            <SortableHead label={t("materialCount")} sk="materialCount" className="text-right" />
+            <SortableHead label={t("toolCount")} sk="toolCount" className="text-right" />
             <TableHead className="text-right">{t("keyCount")}</TableHead>
           </TableRow>
         </TableHeader>

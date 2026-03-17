@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { useSession } from "@/lib/auth-client"
 import { AppSidebar } from "@/components/app-sidebar"
+import { CommandPalette } from "@/components/command-palette"
 import { DemoBanner } from "@/components/demo-banner"
 import { SiteHeader } from "@/components/site-header"
 import {
@@ -56,6 +57,7 @@ export default function DashboardLayout({
           </div>
         </div>
       </SidebarInset>
+      <CommandPalette />
     </SidebarProvider>
   )
 }

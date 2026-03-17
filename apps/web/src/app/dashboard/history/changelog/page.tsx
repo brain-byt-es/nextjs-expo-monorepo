@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { useTranslations } from "next-intl"
 import {
   IconSearch,
@@ -13,6 +13,10 @@ import {
   IconClipboardList,
   IconDownload,
   IconArrowRight,
+  IconChevronUp,
+  IconChevronDown,
+  IconChevronLeft,
+  IconChevronRight,
 } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -59,17 +63,71 @@ const ENTITY_CFG: Record<EntityType, { icon: React.ComponentType<{ className?: s
   commission: { icon: IconClipboardList, label: "Kommission", color: "text-muted-foreground bg-muted" },
 }
 
+type SortKey = keyof ChangelogEntry | null
+
+const PAGE_SIZE = 25
+
+function downloadCsv(headers: string[], rows: (string | number | null | undefined)[][], filename: string) {
+  const lines = [
+    headers.join(";"),
+    ...rows.map(row => row.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(";"))
+  ]
+  const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a"); a.href = url; a.download = filename; a.click()
+  URL.revokeObjectURL(url)
+}
+
 export default function HistoryChangelogPage() {
   const t = useTranslations("history")
   const [search, setSearch] = useState("")
   const [entityFilter, setEntityFilter] = useState("all")
+  const [dateFrom, setDateFrom] = useState("")
+  const [dateTo, setDateTo] = useState("")
+  const [sortKey, setSortKey] = useState<SortKey>(null)
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc")
+  const [page, setPage] = useState(1)
   const [loading] = useState(false)
+
+  useEffect(() => setPage(1), [search, entityFilter, dateFrom, dateTo, sortKey])
 
   const filtered = useMemo(() => MOCK.filter(c => {
     const ms = !search || c.entityName.toLowerCase().includes(search.toLowerCase()) || c.field.toLowerCase().includes(search.toLowerCase()) || c.changedBy.toLowerCase().includes(search.toLowerCase())
     const me = entityFilter === "all" || c.entityType === entityFilter
-    return ms && me
-  }), [search, entityFilter])
+    const mdf = !dateFrom || c.date >= dateFrom
+    const mdt = !dateTo || c.date <= dateTo + "T23:59:59"
+    return ms && me && mdf && mdt
+  }), [search, entityFilter, dateFrom, dateTo])
+
+  const sorted = useMemo(() => {
+    if (!sortKey) return [...filtered]
+    return [...filtered].sort((a, b) => {
+      const av = a[sortKey] ?? ""
+      const bv = b[sortKey] ?? ""
+      const cmp = String(av).localeCompare(String(bv), "de", { numeric: true })
+      return sortDir === "asc" ? cmp : -cmp
+    })
+  }, [filtered, sortKey, sortDir])
+
+  const total = sorted.length
+  const paged = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+
+  function toggleSort(key: SortKey) {
+    if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc")
+    else { setSortKey(key); setSortDir("asc") }
+  }
+
+  function SortIcon({ col }: { col: SortKey }) {
+    if (sortKey !== col) return null
+    return sortDir === "asc" ? <IconChevronUp className="size-3 ml-1 inline" /> : <IconChevronDown className="size-3 ml-1 inline" />
+  }
+
+  function handleExport() {
+    downloadCsv(
+      ["Datum", "Benutzer", "Aktion", "Entität", "Details"],
+      sorted.map(c => [c.date, c.changedBy, c.field, `${ENTITY_CFG[c.entityType].label}: ${c.entityName}`, `${c.oldValue ?? "—"} → ${c.newValue}`])
+    , "changelog.csv")
+  }
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -78,12 +136,12 @@ export default function HistoryChangelogPage() {
           <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{t("title")}</p>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("changelog")}</h1>
         </div>
-        <Button variant="outline" className="gap-2 text-sm">
+        <Button variant="outline" className="gap-2 text-sm" onClick={handleExport}>
           <IconDownload className="size-4" /> Export CSV
         </Button>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 max-w-sm">
           <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input placeholder="Artikel, Feld oder Benutzer…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
@@ -102,6 +160,24 @@ export default function HistoryChangelogPage() {
             <SelectItem value="supplier">Lieferant</SelectItem>
           </SelectContent>
         </Select>
+        <div className="flex items-center gap-2">
+          <label className="text-sm text-muted-foreground whitespace-nowrap">Von</label>
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={e => setDateFrom(e.target.value)}
+            className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm font-mono"
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <label className="text-sm text-muted-foreground whitespace-nowrap">Bis</label>
+          <input
+            type="date"
+            value={dateTo}
+            onChange={e => setDateTo(e.target.value)}
+            className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm font-mono"
+          />
+        </div>
       </div>
 
       <Card className="border-0 shadow-sm">
@@ -112,16 +188,26 @@ export default function HistoryChangelogPage() {
             <Table>
               <TableHeader>
                 <TableRow className="hover:bg-transparent border-b border-border">
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[150px]">{t("date")}</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[110px]">Typ</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Artikel</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[130px]">{t("field")}</TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[150px] cursor-pointer select-none" onClick={() => toggleSort("date")}>
+                    {t("date")}<SortIcon col="date" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[110px] cursor-pointer select-none" onClick={() => toggleSort("entityType")}>
+                    Typ<SortIcon col="entityType" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer select-none" onClick={() => toggleSort("entityName")}>
+                    Artikel<SortIcon col="entityName" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[130px] cursor-pointer select-none" onClick={() => toggleSort("field")}>
+                    {t("field")}<SortIcon col="field" />
+                  </TableHead>
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Änderung</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[130px]">{t("user")}</TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[130px] cursor-pointer select-none" onClick={() => toggleSort("changedBy")}>
+                    {t("user")}<SortIcon col="changedBy" />
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map(c => {
+                {paged.map(c => {
                   const cfg = ENTITY_CFG[c.entityType]
                   const Icon = cfg.icon
                   return (
@@ -166,6 +252,34 @@ export default function HistoryChangelogPage() {
           )}
         </CardContent>
       </Card>
+
+      <div className="flex items-center justify-between text-sm text-muted-foreground">
+        <span>
+          {total === 0
+            ? "Keine Einträge"
+            : `Zeige ${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, total)} von ${total} Einträgen`}
+        </span>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+          >
+            <IconChevronLeft className="size-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+            onClick={() => setPage(p => Math.min(Math.ceil(total / PAGE_SIZE), p + 1))}
+            disabled={page >= Math.ceil(total / PAGE_SIZE)}
+          >
+            <IconChevronRight className="size-4" />
+          </Button>
+        </div>
+      </div>
     </div>
   )
 }

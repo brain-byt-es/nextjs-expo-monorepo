@@ -6,8 +6,10 @@ import { useTranslations } from "next-intl"
 import {
   useReactTable,
   getCoreRowModel,
+  getSortedRowModel,
   flexRender,
   type ColumnDef,
+  type SortingState,
 } from "@tanstack/react-table"
 import {
   IconPlus,
@@ -20,6 +22,10 @@ import {
   IconPhoto,
   IconChevronLeft,
   IconChevronRight,
+  IconChevronUp,
+  IconChevronDown,
+  IconSelector,
+  IconDownload,
 } from "@tabler/icons-react"
 
 import { Button } from "@/components/ui/button"
@@ -27,6 +33,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Toggle } from "@/components/ui/toggle"
 import {
   Table,
   TableBody,
@@ -121,6 +128,58 @@ function formatDate(dateStr: string | null): string {
   })
 }
 
+function downloadCsv(rows: MaterialRow[], filename: string) {
+  const headers = [
+    "Nummer",
+    "Name",
+    "Gruppe",
+    "Standort",
+    "Bestand",
+    "Einheit",
+    "Meldebestand",
+    "Ablaufdatum",
+  ]
+  const lines = [
+    headers.join(";"),
+    ...rows.map((r) =>
+      [
+        r.number ?? "",
+        r.name,
+        r.group?.name ?? "",
+        r.mainLocation?.name ?? "",
+        r.totalStock,
+        r.unit ?? "",
+        r.reorderLevel ?? "",
+        r.nearestExpiry ?? "",
+      ]
+        .map((v) => `"${String(v).replace(/"/g, '""')}"`)
+        .join(";")
+    ),
+  ]
+  const blob = new Blob(["\uFEFF" + lines.join("\n")], {
+    type: "text/csv;charset=utf-8;",
+  })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a")
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+// Sort indicator component
+function SortIcon({
+  sorted,
+}: {
+  sorted: false | "asc" | "desc"
+}) {
+  if (sorted === "asc")
+    return <IconChevronUp className="ml-1 inline size-3.5 text-foreground" />
+  if (sorted === "desc")
+    return <IconChevronDown className="ml-1 inline size-3.5 text-foreground" />
+  return <IconSelector className="ml-1 inline size-3.5 text-muted-foreground/50" />
+}
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
@@ -139,7 +198,11 @@ export default function MaterialsPage() {
   const [debouncedSearch, setDebouncedSearch] = useState("")
   const [groupFilter, setGroupFilter] = useState<string>("all")
   const [locationFilter, setLocationFilter] = useState<string>("all")
+  const [lowStockOnly, setLowStockOnly] = useState(false)
   const [page, setPage] = useState(1)
+
+  // Sorting state
+  const [sorting, setSorting] = useState<SortingState>([])
 
   // Reference data
   const [groups, setGroups] = useState<MaterialGroup[]>([])
@@ -168,11 +231,11 @@ export default function MaterialsPage() {
         ])
         if (groupsRes.ok) {
           const g = await groupsRes.json()
-          setGroups(Array.isArray(g) ? g : g.data ?? [])
+          setGroups(Array.isArray(g) ? g : (g.data ?? []))
         }
         if (locationsRes.ok) {
           const l = await locationsRes.json()
-          setLocations(Array.isArray(l) ? l : l.data ?? [])
+          setLocations(Array.isArray(l) ? l : (l.data ?? []))
         }
       } catch {
         // silently fail — filters will just be empty
@@ -230,6 +293,38 @@ export default function MaterialsPage() {
     }
   }, [deleteTarget])
 
+  // Low-stock filter applied client-side to the current page data
+  const filteredMaterials = useMemo(() => {
+    if (!lowStockOnly) return materials
+    return materials.filter(
+      (m) => m.reorderLevel > 0 && m.totalStock <= m.reorderLevel
+    )
+  }, [materials, lowStockOnly])
+
+  // CSV export: fetch all pages then download
+  const handleExport = useCallback(async () => {
+    try {
+      const params = new URLSearchParams({ page: "1", limit: "9999" })
+      if (debouncedSearch) params.set("search", debouncedSearch)
+      if (groupFilter && groupFilter !== "all") params.set("groupId", groupFilter)
+      if (locationFilter && locationFilter !== "all")
+        params.set("locationId", locationFilter)
+
+      const res = await fetch(`/api/materials?${params.toString()}`)
+      if (!res.ok) return
+      const json: MaterialsResponse = await res.json()
+      let allRows = json.data ?? []
+      if (lowStockOnly) {
+        allRows = allRows.filter(
+          (m) => m.reorderLevel > 0 && m.totalStock <= m.reorderLevel
+        )
+      }
+      downloadCsv(allRows, "materialien.csv")
+    } catch {
+      // silently fail
+    }
+  }, [debouncedSearch, groupFilter, locationFilter, lowStockOnly])
+
   const totalPages = Math.max(1, Math.ceil(total / ITEMS_PER_PAGE))
 
   // ---------------------------------------------------------------------------
@@ -241,6 +336,7 @@ export default function MaterialsPage() {
         accessorKey: "image",
         header: () => t("image"),
         size: 60,
+        enableSorting: false,
         cell: ({ row }) => {
           const src = row.original.image
           return (
@@ -260,7 +356,17 @@ export default function MaterialsPage() {
       },
       {
         accessorKey: "number",
-        header: () => t("number"),
+        header: ({ column }) => (
+          <button
+            className="flex cursor-pointer select-none items-center"
+            onClick={() =>
+              column.toggleSorting(column.getIsSorted() === "asc")
+            }
+          >
+            {t("number")}
+            <SortIcon sorted={column.getIsSorted()} />
+          </button>
+        ),
         size: 100,
         cell: ({ getValue }) => (
           <span className="font-mono text-xs text-muted-foreground">
@@ -270,7 +376,17 @@ export default function MaterialsPage() {
       },
       {
         accessorKey: "name",
-        header: () => t("name"),
+        header: ({ column }) => (
+          <button
+            className="flex cursor-pointer select-none items-center"
+            onClick={() =>
+              column.toggleSorting(column.getIsSorted() === "asc")
+            }
+          >
+            {t("name")}
+            <SortIcon sorted={column.getIsSorted()} />
+          </button>
+        ),
         size: 220,
         cell: ({ row }) => (
           <button
@@ -285,11 +401,27 @@ export default function MaterialsPage() {
       },
       {
         accessorKey: "group",
-        header: () => t("group"),
+        header: ({ column }) => (
+          <button
+            className="flex cursor-pointer select-none items-center"
+            onClick={() =>
+              column.toggleSorting(column.getIsSorted() === "asc")
+            }
+          >
+            {t("group")}
+            <SortIcon sorted={column.getIsSorted()} />
+          </button>
+        ),
         size: 150,
+        sortingFn: (a, b) => {
+          const nameA = a.original.group?.name ?? ""
+          const nameB = b.original.group?.name ?? ""
+          return nameA.localeCompare(nameB)
+        },
         cell: ({ row }) => {
           const group = row.original.group
-          if (!group) return <span className="text-muted-foreground">\u2014</span>
+          if (!group)
+            return <span className="text-muted-foreground">\u2014</span>
           return (
             <Badge
               variant="secondary"
@@ -313,6 +445,7 @@ export default function MaterialsPage() {
         accessorKey: "mainLocation",
         header: () => t("mainLocation"),
         size: 150,
+        enableSorting: false,
         cell: ({ row }) => (
           <span className="text-sm">
             {row.original.mainLocation?.name ?? "\u2014"}
@@ -321,7 +454,17 @@ export default function MaterialsPage() {
       },
       {
         accessorKey: "totalStock",
-        header: () => t("stock"),
+        header: ({ column }) => (
+          <button
+            className="flex cursor-pointer select-none items-center"
+            onClick={() =>
+              column.toggleSorting(column.getIsSorted() === "asc")
+            }
+          >
+            {t("stock")}
+            <SortIcon sorted={column.getIsSorted()} />
+          </button>
+        ),
         size: 90,
         cell: ({ row }) => {
           const stock = row.original.totalStock
@@ -342,7 +485,17 @@ export default function MaterialsPage() {
       },
       {
         accessorKey: "reorderLevel",
-        header: () => t("reorderLevel"),
+        header: ({ column }) => (
+          <button
+            className="flex cursor-pointer select-none items-center"
+            onClick={() =>
+              column.toggleSorting(column.getIsSorted() === "asc")
+            }
+          >
+            {t("reorderLevel")}
+            <SortIcon sorted={column.getIsSorted()} />
+          </button>
+        ),
         size: 110,
         cell: ({ getValue }) => (
           <span className="text-sm text-muted-foreground">
@@ -352,7 +505,17 @@ export default function MaterialsPage() {
       },
       {
         accessorKey: "nearestExpiry",
-        header: () => t("expiryDate"),
+        header: ({ column }) => (
+          <button
+            className="flex cursor-pointer select-none items-center"
+            onClick={() =>
+              column.toggleSorting(column.getIsSorted() === "asc")
+            }
+          >
+            {t("expiryDate")}
+            <SortIcon sorted={column.getIsSorted()} />
+          </button>
+        ),
         size: 130,
         cell: ({ row }) => {
           const expiry = row.original.nearestExpiry
@@ -388,6 +551,7 @@ export default function MaterialsPage() {
         id: "actions",
         header: () => tc("actions"),
         size: 60,
+        enableSorting: false,
         cell: ({ row }) => (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -422,9 +586,14 @@ export default function MaterialsPage() {
   )
 
   const table = useReactTable({
-    data: materials,
+    data: filteredMaterials,
     columns,
+    state: {
+      sorting,
+    },
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     manualPagination: true,
     pageCount: totalPages,
   })
@@ -444,14 +613,20 @@ export default function MaterialsPage() {
             {total} {t("title")}
           </p>
         </div>
-        <Button onClick={() => router.push("/dashboard/materials/new")}>
-          <IconPlus className="size-4" />
-          {t("addMaterial")}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={handleExport}>
+            <IconDownload className="size-4" />
+            CSV
+          </Button>
+          <Button onClick={() => router.push("/dashboard/materials/new")}>
+            <IconPlus className="size-4" />
+            {t("addMaterial")}
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:flex-wrap">
         <div className="relative flex-1 sm:max-w-sm">
           <IconSearch className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -461,7 +636,13 @@ export default function MaterialsPage() {
             className="pl-9"
           />
         </div>
-        <Select value={groupFilter} onValueChange={(v) => { setGroupFilter(v); setPage(1) }}>
+        <Select
+          value={groupFilter}
+          onValueChange={(v) => {
+            setGroupFilter(v)
+            setPage(1)
+          }}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder={t("group")} />
           </SelectTrigger>
@@ -474,7 +655,13 @@ export default function MaterialsPage() {
             ))}
           </SelectContent>
         </Select>
-        <Select value={locationFilter} onValueChange={(v) => { setLocationFilter(v); setPage(1) }}>
+        <Select
+          value={locationFilter}
+          onValueChange={(v) => {
+            setLocationFilter(v)
+            setPage(1)
+          }}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder={t("mainLocation")} />
           </SelectTrigger>
@@ -487,6 +674,24 @@ export default function MaterialsPage() {
             ))}
           </SelectContent>
         </Select>
+        <Toggle
+          pressed={lowStockOnly}
+          onPressedChange={(pressed) => {
+            setLowStockOnly(pressed)
+            setPage(1)
+          }}
+          aria-label="Nur Meldebestand anzeigen"
+          className={
+            lowStockOnly
+              ? "border border-orange-500/40 bg-orange-500/10 text-orange-600 hover:bg-orange-500/20 hover:text-orange-600 data-[state=on]:bg-orange-500/10 data-[state=on]:text-orange-600"
+              : "border border-border"
+          }
+        >
+          <IconAlertTriangle
+            className={`size-4 ${lowStockOnly ? "text-orange-500" : "text-muted-foreground"}`}
+          />
+          <span className="ml-1.5 text-sm">Nur Meldebestand</span>
+        </Toggle>
       </div>
 
       {/* Table */}
@@ -507,23 +712,25 @@ export default function MaterialsPage() {
               </div>
             ))}
           </div>
-        ) : materials.length === 0 ? (
+        ) : filteredMaterials.length === 0 ? (
           /* Empty state */
           <div className="flex flex-col items-center justify-center py-20">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
               <IconPackage className="size-8 text-muted-foreground" />
             </div>
             <h3 className="mt-4 text-lg font-medium">
-              {debouncedSearch
+              {debouncedSearch || lowStockOnly
                 ? tc("noData")
                 : "Erstellen Sie Ihr erstes Material"}
             </h3>
             <p className="mt-1 text-sm text-muted-foreground">
               {debouncedSearch
                 ? "Versuchen Sie einen anderen Suchbegriff"
-                : "Beginnen Sie mit dem Aufbau Ihres Materialbestands"}
+                : lowStockOnly
+                  ? "Kein Material hat aktuell einen kritischen Bestand"
+                  : "Beginnen Sie mit dem Aufbau Ihres Materialbestands"}
             </p>
-            {!debouncedSearch && (
+            {!debouncedSearch && !lowStockOnly && (
               <Button
                 className="mt-6"
                 onClick={() => router.push("/dashboard/materials/new")}
@@ -570,7 +777,7 @@ export default function MaterialsPage() {
       </Card>
 
       {/* Pagination */}
-      {!loading && materials.length > 0 && (
+      {!loading && filteredMaterials.length > 0 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
             {(page - 1) * ITEMS_PER_PAGE + 1}&ndash;

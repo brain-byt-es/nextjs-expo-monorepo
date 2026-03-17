@@ -1,8 +1,19 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { useTranslations } from "next-intl"
-import { IconSearch, IconClipboardList, IconCheck, IconMapPin, IconUser, IconDownload } from "@tabler/icons-react"
+import {
+  IconSearch,
+  IconClipboardList,
+  IconCheck,
+  IconMapPin,
+  IconUser,
+  IconDownload,
+  IconChevronUp,
+  IconChevronDown,
+  IconChevronLeft,
+  IconChevronRight,
+} from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
@@ -34,17 +45,72 @@ function fmt(iso: string) {
   return new Date(iso).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric" })
 }
 
+type SortKey = keyof CommissionEntry | null
+
+const PAGE_SIZE = 25
+
+function downloadCsv(headers: string[], rows: (string | number | null | undefined)[][], filename: string) {
+  const lines = [
+    headers.join(";"),
+    ...rows.map(row => row.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(";"))
+  ]
+  const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a"); a.href = url; a.download = filename; a.click()
+  URL.revokeObjectURL(url)
+}
+
 export default function HistoryCommissionsPage() {
   const t = useTranslations("history")
   const [search, setSearch] = useState("")
+  const [dateFrom, setDateFrom] = useState("")
+  const [dateTo, setDateTo] = useState("")
+  const [sortKey, setSortKey] = useState<SortKey>(null)
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc")
+  const [page, setPage] = useState(1)
   const [loading] = useState(false)
 
-  const filtered = useMemo(() => MOCK.filter(c =>
-    !search ||
-    c.commissionName.toLowerCase().includes(search.toLowerCase()) ||
-    c.commissionNumber.toLowerCase().includes(search.toLowerCase()) ||
-    (c.customer ?? "").toLowerCase().includes(search.toLowerCase())
-  ), [search])
+  useEffect(() => setPage(1), [search, dateFrom, dateTo, sortKey])
+
+  const filtered = useMemo(() => MOCK.filter(c => {
+    const ms = !search ||
+      c.commissionName.toLowerCase().includes(search.toLowerCase()) ||
+      c.commissionNumber.toLowerCase().includes(search.toLowerCase()) ||
+      (c.customer ?? "").toLowerCase().includes(search.toLowerCase())
+    const mdf = !dateFrom || c.closedAt >= dateFrom
+    const mdt = !dateTo || c.closedAt <= dateTo + "T23:59:59"
+    return ms && mdf && mdt
+  }), [search, dateFrom, dateTo])
+
+  const sorted = useMemo(() => {
+    if (!sortKey) return [...filtered]
+    return [...filtered].sort((a, b) => {
+      const av = a[sortKey] ?? ""
+      const bv = b[sortKey] ?? ""
+      const cmp = String(av).localeCompare(String(bv), "de", { numeric: true })
+      return sortDir === "asc" ? cmp : -cmp
+    })
+  }, [filtered, sortKey, sortDir])
+
+  const total = sorted.length
+  const paged = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+
+  function toggleSort(key: SortKey) {
+    if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc")
+    else { setSortKey(key); setSortDir("asc") }
+  }
+
+  function SortIcon({ col }: { col: SortKey }) {
+    if (sortKey !== col) return null
+    return sortDir === "asc" ? <IconChevronUp className="size-3 ml-1 inline" /> : <IconChevronDown className="size-3 ml-1 inline" />
+  }
+
+  function handleExport() {
+    downloadCsv(
+      ["Datum", "Komissionsnummer", "Status", "Standort", "Benutzer"],
+      sorted.map(c => [c.closedAt, c.commissionNumber, "Abgeschlossen", c.targetLocation, c.responsible])
+    , "kommissionen.csv")
+  }
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -53,14 +119,34 @@ export default function HistoryCommissionsPage() {
           <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{t("title")}</p>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("commissions")}</h1>
         </div>
-        <Button variant="outline" className="gap-2 text-sm">
+        <Button variant="outline" className="gap-2 text-sm" onClick={handleExport}>
           <IconDownload className="size-4" /> Export CSV
         </Button>
       </div>
 
-      <div className="relative max-w-sm">
-        <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-        <Input placeholder="Kommission oder Kunde suchen…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
+      <div className="flex flex-wrap gap-3">
+        <div className="relative flex-1 max-w-sm">
+          <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+          <Input placeholder="Kommission oder Kunde suchen…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
+        </div>
+        <div className="flex items-center gap-2">
+          <label className="text-sm text-muted-foreground whitespace-nowrap">Von</label>
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={e => setDateFrom(e.target.value)}
+            className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm font-mono"
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <label className="text-sm text-muted-foreground whitespace-nowrap">Bis</label>
+          <input
+            type="date"
+            value={dateTo}
+            onChange={e => setDateTo(e.target.value)}
+            className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm font-mono"
+          />
+        </div>
       </div>
 
       <Card className="border-0 shadow-sm">
@@ -71,17 +157,31 @@ export default function HistoryCommissionsPage() {
             <Table>
               <TableHeader>
                 <TableRow className="hover:bg-transparent border-b border-border">
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[130px]">Nummer</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Kommission</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[140px]">Kunde</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[150px]">Ziel Lagerort</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[130px]">Verantwortlich</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[80px] text-center">Einträge</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[110px]">Abgeschlossen</TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[130px] cursor-pointer select-none" onClick={() => toggleSort("commissionNumber")}>
+                    Nummer<SortIcon col="commissionNumber" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer select-none" onClick={() => toggleSort("commissionName")}>
+                    Kommission<SortIcon col="commissionName" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[140px] cursor-pointer select-none" onClick={() => toggleSort("customer")}>
+                    Kunde<SortIcon col="customer" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[150px] cursor-pointer select-none" onClick={() => toggleSort("targetLocation")}>
+                    Ziel Lagerort<SortIcon col="targetLocation" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[130px] cursor-pointer select-none" onClick={() => toggleSort("responsible")}>
+                    Verantwortlich<SortIcon col="responsible" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[80px] text-center cursor-pointer select-none" onClick={() => toggleSort("totalEntries")}>
+                    Einträge<SortIcon col="totalEntries" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[110px] cursor-pointer select-none" onClick={() => toggleSort("closedAt")}>
+                    Abgeschlossen<SortIcon col="closedAt" />
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map(c => (
+                {paged.map(c => (
                   <TableRow key={c.id} className="hover:bg-muted/80 border-b border-border">
                     <TableCell className="font-mono text-sm font-medium text-foreground">{c.commissionNumber}</TableCell>
                     <TableCell>
@@ -116,6 +216,34 @@ export default function HistoryCommissionsPage() {
           )}
         </CardContent>
       </Card>
+
+      <div className="flex items-center justify-between text-sm text-muted-foreground">
+        <span>
+          {total === 0
+            ? "Keine Einträge"
+            : `Zeige ${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, total)} von ${total} Einträgen`}
+        </span>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+          >
+            <IconChevronLeft className="size-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+            onClick={() => setPage(p => Math.min(Math.ceil(total / PAGE_SIZE), p + 1))}
+            disabled={page >= Math.ceil(total / PAGE_SIZE)}
+          >
+            <IconChevronRight className="size-4" />
+          </Button>
+        </div>
+      </div>
     </div>
   )
 }

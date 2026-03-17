@@ -180,3 +180,22 @@
     letter-spacing: var(--tracking-normal);
   }
 }
+
+@media print {
+  [data-sidebar],
+  nav,
+  header,
+  .no-print,
+  button:not(.print-visible) {
+    display: none !important;
+  }
+  main,
+  .print-area {
+    width: 100% !important;
+    padding: 0 !important;
+  }
+  @page {
+    margin: 1.5cm;
+    size: A4;
+  }
+}

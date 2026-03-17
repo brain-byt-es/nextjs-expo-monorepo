@@ -13,6 +13,9 @@ import {
   IconPackage,
   IconChevronDown,
   IconChevronRight,
+  IconDownload,
+  IconChevronUp,
+  IconSelector,
 } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -63,6 +66,8 @@ interface SourceItem {
   inCart: boolean
 }
 
+type SupplierSortKey = "materialName" | "supplierName" | "articleNumber" | "purchasePrice"
+
 // ── Mock Data ──────────────────────────────────────────────────────────
 const MOCK_SOURCES: SourceItem[] = [
   { id: "1", materialName: "Kabelrohr 20mm grau", materialNumber: "M-001", supplierName: "Hilti AG", supplierId: "S1", articleNumber: "KR-20G-100", purchasePrice: 1.20, priceDate: "2025-01-15", quantityPerOrder: 100, orderUnit: "m", inCart: false },
@@ -87,6 +92,34 @@ function formatDate(iso: string | null) {
   return new Date(iso).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric" })
 }
 
+// ── CSV helper ─────────────────────────────────────────────────────────
+function downloadCsv(headers: string[], rows: (string | number | null | undefined)[][], filename: string) {
+  const lines = [
+    headers.join(";"),
+    ...rows.map(row => row.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(";"))
+  ]
+  const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a")
+  a.href = url; a.download = filename; a.click()
+  URL.revokeObjectURL(url)
+}
+
+function cmpStr(a: string | null | undefined, b: string | null | undefined): number {
+  if (a == null && b == null) return 0
+  if (a == null) return 1
+  if (b == null) return -1
+  return a.toLowerCase().localeCompare(b.toLowerCase(), "de")
+}
+
+// ── Sort Icon ──────────────────────────────────────────────────────────
+function SortIcon({ active, dir }: { active: boolean; dir: "asc" | "desc" }) {
+  if (!active) return <IconSelector className="ml-1 size-3.5 text-muted-foreground/50" />
+  return dir === "asc"
+    ? <IconChevronUp className="ml-1 size-3.5" />
+    : <IconChevronDown className="ml-1 size-3.5" />
+}
+
 // ── Page ───────────────────────────────────────────────────────────────
 export default function SuppliersPage() {
   const t = useTranslations("suppliers")
@@ -96,6 +129,17 @@ export default function SuppliersPage() {
   const [supplierFilter, setSupplierFilter] = useState("Alle Lieferanten")
   const [cartItems, setCartItems] = useState<Set<string>>(new Set(MOCK_SOURCES.filter(s => s.inCart).map(s => s.id)))
   const [loading] = useState(false)
+  const [sortKey, setSortKey] = useState<SupplierSortKey | null>(null)
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc")
+
+  function handleSort(key: SupplierSortKey) {
+    if (sortKey === key) {
+      setSortDir(d => d === "asc" ? "desc" : "asc")
+    } else {
+      setSortKey(key)
+      setSortDir("asc")
+    }
+  }
 
   const filtered = useMemo(() => {
     return MOCK_SOURCES.filter((s) => {
@@ -109,8 +153,40 @@ export default function SuppliersPage() {
     })
   }, [search, supplierFilter])
 
-  // Group by material
+  // When a sort is active, sort the flat list first, then group; otherwise group directly
   const grouped = useMemo(() => {
+    if (sortKey) {
+      // Sort flat, then re-group preserving sorted order
+      const sorted = [...filtered].sort((a, b) => {
+        let result = 0
+        switch (sortKey) {
+          case "materialName":
+            result = cmpStr(a.materialName, b.materialName)
+            break
+          case "supplierName":
+            result = cmpStr(a.supplierName, b.supplierName)
+            break
+          case "articleNumber":
+            result = cmpStr(a.articleNumber, b.articleNumber)
+            break
+          case "purchasePrice":
+            result = (a.purchasePrice ?? -Infinity) - (b.purchasePrice ?? -Infinity)
+            break
+        }
+        return sortDir === "asc" ? result : -result
+      })
+      // Re-group preserving order of first appearance
+      const map = new Map<string, { materialName: string; materialNumber: string; sources: SourceItem[] }>()
+      sorted.forEach(s => {
+        if (!map.has(s.materialNumber)) {
+          map.set(s.materialNumber, { materialName: s.materialName, materialNumber: s.materialNumber, sources: [] })
+        }
+        map.get(s.materialNumber)!.sources.push(s)
+      })
+      return Array.from(map.values())
+    }
+
+    // Default: group by material in original order
     const map = new Map<string, { materialName: string; materialNumber: string; sources: SourceItem[] }>()
     filtered.forEach(s => {
       if (!map.has(s.materialNumber)) {
@@ -119,7 +195,7 @@ export default function SuppliersPage() {
       map.get(s.materialNumber)!.sources.push(s)
     })
     return Array.from(map.values())
-  }, [filtered])
+  }, [filtered, sortKey, sortDir])
 
   const [expandedMaterials, setExpandedMaterials] = useState<Set<string>>(new Set())
 
@@ -141,6 +217,34 @@ export default function SuppliersPage() {
     })
   }
 
+  function handleExportCsv() {
+    const headers = ["Material", "Materialnummer", "Lieferant", "Artikelnummer", "Einkaufspreis (CHF)", "Bestellmenge", "Bestelleinheit"]
+    const rows = filtered.map(s => [
+      s.materialName,
+      s.materialNumber,
+      s.supplierName,
+      s.articleNumber,
+      s.purchasePrice != null ? s.purchasePrice.toFixed(2) : null,
+      s.quantityPerOrder,
+      s.orderUnit,
+    ])
+    downloadCsv(headers, rows, "lieferanten.csv")
+  }
+
+  function SortableHead({ label, sk, className }: { label: string; sk: SupplierSortKey; className?: string }) {
+    return (
+      <TableHead
+        className={`text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer select-none ${className ?? ""}`}
+        onClick={() => handleSort(sk)}
+      >
+        <span className="inline-flex items-center">
+          {label}
+          <SortIcon active={sortKey === sk} dir={sortDir} />
+        </span>
+      </TableHead>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-6 p-6">
       {/* Header */}
@@ -152,6 +256,9 @@ export default function SuppliersPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="outline" size="icon" onClick={handleExportCsv} title="CSV exportieren">
+            <IconDownload className="size-4" />
+          </Button>
           <Button variant="outline" className="gap-2" asChild>
             <a href="/dashboard/cart">
               <IconShoppingCart className="size-4" />
@@ -212,10 +319,10 @@ export default function SuppliersPage() {
               <TableHeader>
                 <TableRow className="hover:bg-transparent border-b border-border">
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[32px]" />
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("materialName")}</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[120px]">{t("supplier")}</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[140px]">{t("articleNumber")}</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[120px] text-right">{t("purchasePrice")}</TableHead>
+                  <SortableHead label={t("materialName")} sk="materialName" />
+                  <SortableHead label={t("supplier")} sk="supplierName" className="w-[120px]" />
+                  <SortableHead label={t("articleNumber")} sk="articleNumber" className="w-[140px]" />
+                  <SortableHead label={t("purchasePrice")} sk="purchasePrice" className="w-[120px] text-right" />
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[100px]">{t("priceDate")}</TableHead>
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[80px] text-right">{t("quantityPerOrder")}</TableHead>
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[80px]">{t("orderUnit")}</TableHead>

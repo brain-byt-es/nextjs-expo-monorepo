@@ -45,6 +45,10 @@ import {
   IconEye,
   IconEdit,
   IconTrash,
+  IconDownload,
+  IconChevronUp,
+  IconChevronDown,
+  IconSelector,
 } from "@tabler/icons-react"
 
 // ── Types ──────────────────────────────────────────────────────────────
@@ -70,6 +74,8 @@ interface ToolItem {
   lastMaintenance: string | null
   nextMaintenance: string | null
 }
+
+type SortKey = "name" | "group" | "homeLocation" | "assignedTo" | "condition" | "nextMaintenance"
 
 // ── Mock Data ──────────────────────────────────────────────────────────
 const MOCK_GROUPS: ToolGroup[] = [
@@ -183,6 +189,33 @@ function formatDate(dateStr: string | null): string {
   })
 }
 
+function downloadCsv(headers: string[], rows: (string | number | null | undefined)[][], filename: string) {
+  const lines = [
+    headers.join(";"),
+    ...rows.map(row => row.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(";"))
+  ]
+  const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a")
+  a.href = url; a.download = filename; a.click()
+  URL.revokeObjectURL(url)
+}
+
+function cmp(a: string | null | undefined, b: string | null | undefined): number {
+  if (a == null && b == null) return 0
+  if (a == null) return 1
+  if (b == null) return -1
+  return a.toLowerCase().localeCompare(b.toLowerCase(), "de")
+}
+
+// ── Sort Icon ──────────────────────────────────────────────────────────
+function SortIcon({ active, dir }: { active: boolean; dir: "asc" | "desc" }) {
+  if (!active) return <IconSelector className="ml-1 size-3.5 text-muted-foreground/50" />
+  return dir === "asc"
+    ? <IconChevronUp className="ml-1 size-3.5" />
+    : <IconChevronDown className="ml-1 size-3.5" />
+}
+
 // ── Component ──────────────────────────────────────────────────────────
 export default function ToolsPage() {
   const t = useTranslations("tools")
@@ -193,6 +226,17 @@ export default function ToolsPage() {
   const [groupFilter, setGroupFilter] = useState<string>("all")
   const [conditionFilter, setConditionFilter] = useState<string>("all")
   const [assignedFilter, setAssignedFilter] = useState<string>("all")
+  const [sortKey, setSortKey] = useState<SortKey | null>(null)
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc")
+
+  function handleSort(key: SortKey) {
+    if (sortKey === key) {
+      setSortDir(d => d === "asc" ? "desc" : "asc")
+    } else {
+      setSortKey(key)
+      setSortDir("asc")
+    }
+  }
 
   const filteredTools = useMemo(() => {
     return MOCK_TOOLS.filter((tool) => {
@@ -216,6 +260,63 @@ export default function ToolsPage() {
     })
   }, [search, groupFilter, conditionFilter, assignedFilter])
 
+  const sortedTools = useMemo(() => {
+    if (!sortKey) return filteredTools
+    return [...filteredTools].sort((a, b) => {
+      let result = 0
+      switch (sortKey) {
+        case "name":
+          result = cmp(a.name, b.name)
+          break
+        case "group":
+          result = cmp(a.group?.name, b.group?.name)
+          break
+        case "homeLocation":
+          result = cmp(a.homeLocation, b.homeLocation)
+          break
+        case "assignedTo":
+          result = cmp(a.assignedTo, b.assignedTo)
+          break
+        case "condition":
+          result = cmp(a.condition, b.condition)
+          break
+        case "nextMaintenance":
+          result = cmp(a.nextMaintenance, b.nextMaintenance)
+          break
+      }
+      return sortDir === "asc" ? result : -result
+    })
+  }, [filteredTools, sortKey, sortDir])
+
+  function handleExportCsv() {
+    const headers = ["Nummer", "Name", "Gruppe", "Heimstandort", "Zugewiesen An", "Zustand", "Letzte Wartung", "Nächste Wartung"]
+    const rows = sortedTools.map(tool => [
+      tool.number,
+      tool.name,
+      tool.group?.name ?? null,
+      tool.homeLocation,
+      tool.assignedTo,
+      conditionConfig[tool.condition].label,
+      tool.lastMaintenance,
+      tool.nextMaintenance,
+    ])
+    downloadCsv(headers, rows, "werkzeuge.csv")
+  }
+
+  function SortableHead({ label, sortKeyValue, className }: { label: string; sortKeyValue: SortKey; className?: string }) {
+    return (
+      <TableHead
+        className={`cursor-pointer select-none ${className ?? ""}`}
+        onClick={() => handleSort(sortKeyValue)}
+      >
+        <span className="inline-flex items-center">
+          {label}
+          <SortIcon active={sortKey === sortKeyValue} dir={sortDir} />
+        </span>
+      </TableHead>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-6 px-4 py-4 md:px-6 md:py-6 lg:px-8">
       {/* Header */}
@@ -226,10 +327,15 @@ export default function ToolsPage() {
             {filteredTools.length} {t("title")}
           </p>
         </div>
-        <Button onClick={() => router.push("/dashboard/tools/new")}>
-          <IconPlus className="size-4" />
-          {t("addTool")}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="icon" onClick={handleExportCsv} title="CSV exportieren">
+            <IconDownload className="size-4" />
+          </Button>
+          <Button onClick={() => router.push("/dashboard/tools/new")}>
+            <IconPlus className="size-4" />
+            {t("addTool")}
+          </Button>
+        </div>
       </div>
 
       {/* Search & Filters */}
@@ -313,19 +419,19 @@ export default function ToolsPage() {
                 <TableRow>
                   <TableHead className="w-[50px]">{t("tabs.general") === "Allgemeine Daten" ? "Bild" : "Bild"}</TableHead>
                   <TableHead>{t("number")}</TableHead>
-                  <TableHead>{t("name")}</TableHead>
-                  <TableHead>{t("group")}</TableHead>
-                  <TableHead>{t("home")}</TableHead>
-                  <TableHead>{t("assignedTo")}</TableHead>
+                  <SortableHead label={t("name")} sortKeyValue="name" />
+                  <SortableHead label={t("group")} sortKeyValue="group" />
+                  <SortableHead label={t("home")} sortKeyValue="homeLocation" />
+                  <SortableHead label={t("assignedTo")} sortKeyValue="assignedTo" />
                   <TableHead className="text-center">{t("isHome")}</TableHead>
-                  <TableHead>{t("condition")}</TableHead>
+                  <SortableHead label={t("condition")} sortKeyValue="condition" />
                   <TableHead>{t("lastMaintenance")}</TableHead>
-                  <TableHead>{t("maintenanceDue")}</TableHead>
+                  <SortableHead label={t("maintenanceDue")} sortKeyValue="nextMaintenance" />
                   <TableHead className="w-[50px]">{tc("actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredTools.map((tool) => {
+                {sortedTools.map((tool) => {
                   const cond = conditionConfig[tool.condition]
                   return (
                     <TableRow

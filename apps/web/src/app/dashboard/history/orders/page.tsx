@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { useTranslations } from "next-intl"
 import {
   IconSearch,
@@ -10,6 +10,10 @@ import {
   IconX,
   IconAlertCircle,
   IconDownload,
+  IconChevronUp,
+  IconChevronDown,
+  IconChevronLeft,
+  IconChevronRight,
 } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -66,17 +70,71 @@ function fmt(iso: string) {
 }
 function fmtCHF(v: number) { return `CHF ${v.toFixed(2)}` }
 
+type SortKey = keyof HistoryOrder | null
+
+const PAGE_SIZE = 25
+
+function downloadCsv(headers: string[], rows: (string | number | null | undefined)[][], filename: string) {
+  const lines = [
+    headers.join(";"),
+    ...rows.map(row => row.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(";"))
+  ]
+  const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a"); a.href = url; a.download = filename; a.click()
+  URL.revokeObjectURL(url)
+}
+
 export default function HistoryOrdersPage() {
   const t = useTranslations("history")
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
+  const [dateFrom, setDateFrom] = useState("")
+  const [dateTo, setDateTo] = useState("")
+  const [sortKey, setSortKey] = useState<SortKey>(null)
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc")
+  const [page, setPage] = useState(1)
   const [loading] = useState(false)
+
+  useEffect(() => setPage(1), [search, statusFilter, dateFrom, dateTo, sortKey])
 
   const filtered = useMemo(() => MOCK.filter(o => {
     const ms = !search || o.orderNumber.toLowerCase().includes(search.toLowerCase()) || o.supplierName.toLowerCase().includes(search.toLowerCase())
     const mst = statusFilter === "all" || o.status === statusFilter
-    return ms && mst
-  }), [search, statusFilter])
+    const mdf = !dateFrom || o.orderDate >= dateFrom
+    const mdt = !dateTo || o.orderDate <= dateTo + "T23:59:59"
+    return ms && mst && mdf && mdt
+  }), [search, statusFilter, dateFrom, dateTo])
+
+  const sorted = useMemo(() => {
+    if (!sortKey) return [...filtered]
+    return [...filtered].sort((a, b) => {
+      const av = a[sortKey] ?? ""
+      const bv = b[sortKey] ?? ""
+      const cmp = String(av).localeCompare(String(bv), "de", { numeric: true })
+      return sortDir === "asc" ? cmp : -cmp
+    })
+  }, [filtered, sortKey, sortDir])
+
+  const total = sorted.length
+  const paged = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+
+  function toggleSort(key: SortKey) {
+    if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc")
+    else { setSortKey(key); setSortDir("asc") }
+  }
+
+  function SortIcon({ col }: { col: SortKey }) {
+    if (sortKey !== col) return null
+    return sortDir === "asc" ? <IconChevronUp className="size-3 ml-1 inline" /> : <IconChevronDown className="size-3 ml-1 inline" />
+  }
+
+  function handleExport() {
+    downloadCsv(
+      ["Datum", "Bestellnummer", "Lieferant", "Status", "Betrag", "Erstellt von"],
+      sorted.map(o => [o.orderDate, o.orderNumber, o.supplierName, STATUS[o.status].label, o.total, o.createdBy])
+    , "bestellungen.csv")
+  }
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -85,12 +143,12 @@ export default function HistoryOrdersPage() {
           <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{t("title")}</p>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("orders")}</h1>
         </div>
-        <Button variant="outline" className="gap-2 text-sm">
+        <Button variant="outline" className="gap-2 text-sm" onClick={handleExport}>
           <IconDownload className="size-4" /> Export CSV
         </Button>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 max-w-sm">
           <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input placeholder="Suchen…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
@@ -105,6 +163,24 @@ export default function HistoryOrdersPage() {
             <SelectItem value="cancelled">Storniert</SelectItem>
           </SelectContent>
         </Select>
+        <div className="flex items-center gap-2">
+          <label className="text-sm text-muted-foreground whitespace-nowrap">Von</label>
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={e => setDateFrom(e.target.value)}
+            className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm font-mono"
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <label className="text-sm text-muted-foreground whitespace-nowrap">Bis</label>
+          <input
+            type="date"
+            value={dateTo}
+            onChange={e => setDateTo(e.target.value)}
+            className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm font-mono"
+          />
+        </div>
       </div>
 
       <Card className="border-0 shadow-sm">
@@ -115,18 +191,32 @@ export default function HistoryOrdersPage() {
             <Table>
               <TableHeader>
                 <TableRow className="hover:bg-transparent border-b border-border">
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("orderNumber")}</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[110px]">{t("date")}</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("supplier")}</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[110px]">Lieferdatum</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[120px]">{t("status")}</TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer select-none" onClick={() => toggleSort("orderNumber")}>
+                    {t("orderNumber")}<SortIcon col="orderNumber" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[110px] cursor-pointer select-none" onClick={() => toggleSort("orderDate")}>
+                    {t("date")}<SortIcon col="orderDate" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer select-none" onClick={() => toggleSort("supplierName")}>
+                    {t("supplier")}<SortIcon col="supplierName" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[110px] cursor-pointer select-none" onClick={() => toggleSort("deliveryDate")}>
+                    Lieferdatum<SortIcon col="deliveryDate" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[120px] cursor-pointer select-none" onClick={() => toggleSort("status")}>
+                    {t("status")}<SortIcon col="status" />
+                  </TableHead>
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[80px] text-center">Pos.</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[110px] text-right">Total</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[140px]">{t("user")}</TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[110px] text-right cursor-pointer select-none" onClick={() => toggleSort("total")}>
+                    Total<SortIcon col="total" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[140px] cursor-pointer select-none" onClick={() => toggleSort("createdBy")}>
+                    {t("user")}<SortIcon col="createdBy" />
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map(o => {
+                {paged.map(o => {
                   const s = STATUS[o.status]
                   const Icon = s.icon
                   return (
@@ -156,6 +246,34 @@ export default function HistoryOrdersPage() {
           )}
         </CardContent>
       </Card>
+
+      <div className="flex items-center justify-between text-sm text-muted-foreground">
+        <span>
+          {total === 0
+            ? "Keine Einträge"
+            : `Zeige ${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, total)} von ${total} Einträgen`}
+        </span>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+          >
+            <IconChevronLeft className="size-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+            onClick={() => setPage(p => Math.min(Math.ceil(total / PAGE_SIZE), p + 1))}
+            disabled={page >= Math.ceil(total / PAGE_SIZE)}
+          >
+            <IconChevronRight className="size-4" />
+          </Button>
+        </div>
+      </div>
     </div>
   )
 }

@@ -38,6 +38,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { PrintButton } from "@/components/print-button"
 
 // ── Types ────────────────────────────────────────────────────────────
 interface DashboardStats {
@@ -207,22 +208,17 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // TODO: Replace with real API call once /api/dashboard/stats is implemented
-    // fetch(`/api/dashboard/stats?orgId=${orgId}`)
-    const timer = setTimeout(() => {
-      setStats({
-        materials: 1284,
-        tools: 347,
-        keys: 86,
-        users: 12,
-        maxUsers: 25,
-        lowStockCount: 7,
-        expiringCount: 3,
-        overdueToolsCount: 2,
+    setLoading(true)
+    fetch("/api/dashboard/stats")
+      .then((r) => r.json())
+      .then((data: DashboardStats) => {
+        setStats(data)
+        setLoading(false)
       })
-      setLoading(false)
-    }, 600)
-    return () => clearTimeout(timer)
+      .catch(() => {
+        // Keep loading false so the page is usable; stats remain null (no cards shown)
+        setLoading(false)
+      })
   }, [])
 
   const userName = session?.user?.name?.split(" ")[0] ?? ""
@@ -230,11 +226,14 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-6 py-4 md:py-6">
       {/* Greeting */}
-      <div className="px-4 lg:px-6">
-        <h1 className="text-2xl font-bold tracking-tight">
-          {t("greeting", { name: userName })}
-        </h1>
-        <p className="text-muted-foreground text-sm mt-1">{t("title")}</p>
+      <div className="flex items-start justify-between gap-4 px-4 lg:px-6">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">
+            {t("greeting", { name: userName })}
+          </h1>
+          <p className="text-muted-foreground text-sm mt-1">{t("title")}</p>
+        </div>
+        <PrintButton className="no-print shrink-0" />
       </div>
 
       {/* KPI Cards */}

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { useTranslations } from "next-intl"
 import {
   IconSearch,
@@ -10,6 +10,10 @@ import {
   IconUser,
   IconMapPin,
   IconDownload,
+  IconChevronUp,
+  IconChevronDown,
+  IconChevronLeft,
+  IconChevronRight,
 } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -65,17 +69,71 @@ function fmt(iso: string) {
   return new Date(iso).toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit", year: "numeric" })
 }
 
+type SortKey = keyof ToolBooking | null
+
+const PAGE_SIZE = 25
+
+function downloadCsv(headers: string[], rows: (string | number | null | undefined)[][], filename: string) {
+  const lines = [
+    headers.join(";"),
+    ...rows.map(row => row.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(";"))
+  ]
+  const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a"); a.href = url; a.download = filename; a.click()
+  URL.revokeObjectURL(url)
+}
+
 export default function HistoryToolBookingsPage() {
   const t = useTranslations("history")
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
+  const [dateFrom, setDateFrom] = useState("")
+  const [dateTo, setDateTo] = useState("")
+  const [sortKey, setSortKey] = useState<SortKey>(null)
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc")
+  const [page, setPage] = useState(1)
   const [loading] = useState(false)
+
+  useEffect(() => setPage(1), [search, statusFilter, dateFrom, dateTo, sortKey])
 
   const filtered = useMemo(() => MOCK.filter(b => {
     const ms = !search || b.toolName.toLowerCase().includes(search.toLowerCase()) || b.assignedTo.toLowerCase().includes(search.toLowerCase())
     const mst = statusFilter === "all" || b.status === statusFilter
-    return ms && mst
-  }), [search, statusFilter])
+    const mdf = !dateFrom || b.checkOutDate >= dateFrom
+    const mdt = !dateTo || b.checkOutDate <= dateTo + "T23:59:59"
+    return ms && mst && mdf && mdt
+  }), [search, statusFilter, dateFrom, dateTo])
+
+  const sorted = useMemo(() => {
+    if (!sortKey) return [...filtered]
+    return [...filtered].sort((a, b) => {
+      const av = a[sortKey] ?? ""
+      const bv = b[sortKey] ?? ""
+      const cmp = String(av).localeCompare(String(bv), "de", { numeric: true })
+      return sortDir === "asc" ? cmp : -cmp
+    })
+  }, [filtered, sortKey, sortDir])
+
+  const total = sorted.length
+  const paged = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+
+  function toggleSort(key: SortKey) {
+    if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc")
+    else { setSortKey(key); setSortDir("asc") }
+  }
+
+  function SortIcon({ col }: { col: SortKey }) {
+    if (sortKey !== col) return null
+    return sortDir === "asc" ? <IconChevronUp className="size-3 ml-1 inline" /> : <IconChevronDown className="size-3 ml-1 inline" />
+  }
+
+  function handleExport() {
+    downloadCsv(
+      ["Datum", "Werkzeug", "Nummer", "Typ", "Von Standort", "Nach Standort", "Benutzer", "Notizen"],
+      sorted.map(b => [b.checkOutDate, b.toolName, b.toolNumber, STATUS_CFG[b.status].label, b.location, b.returnedDate ?? "", b.assignedTo, ""])
+    , "werkzeugbuchungen.csv")
+  }
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -84,12 +142,12 @@ export default function HistoryToolBookingsPage() {
           <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{t("title")}</p>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("toolBookings")}</h1>
         </div>
-        <Button variant="outline" className="gap-2 text-sm">
+        <Button variant="outline" className="gap-2 text-sm" onClick={handleExport}>
           <IconDownload className="size-4" /> Export CSV
         </Button>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 max-w-sm">
           <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input placeholder="Werkzeug oder Person…" value={search} onChange={e => setSearch(e.target.value)} className="pl-9" />
@@ -105,6 +163,24 @@ export default function HistoryToolBookingsPage() {
             <SelectItem value="overdue">Überfällig</SelectItem>
           </SelectContent>
         </Select>
+        <div className="flex items-center gap-2">
+          <label className="text-sm text-muted-foreground whitespace-nowrap">Von</label>
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={e => setDateFrom(e.target.value)}
+            className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm font-mono"
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <label className="text-sm text-muted-foreground whitespace-nowrap">Bis</label>
+          <input
+            type="date"
+            value={dateTo}
+            onChange={e => setDateTo(e.target.value)}
+            className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm font-mono"
+          />
+        </div>
       </div>
 
       <Card className="border-0 shadow-sm">
@@ -115,17 +191,31 @@ export default function HistoryToolBookingsPage() {
             <Table>
               <TableHeader>
                 <TableRow className="hover:bg-transparent border-b border-border">
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Werkzeug</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[120px]">Status</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[130px]">{t("assignedTo")}</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[160px]">Standort</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[110px]">Ausgecheckt</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[110px]">{t("returnedAt")}</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[80px] text-right">Tage</TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider cursor-pointer select-none" onClick={() => toggleSort("toolName")}>
+                    Werkzeug<SortIcon col="toolName" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[120px] cursor-pointer select-none" onClick={() => toggleSort("status")}>
+                    Status<SortIcon col="status" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[130px] cursor-pointer select-none" onClick={() => toggleSort("assignedTo")}>
+                    {t("assignedTo")}<SortIcon col="assignedTo" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[160px] cursor-pointer select-none" onClick={() => toggleSort("location")}>
+                    Standort<SortIcon col="location" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[110px] cursor-pointer select-none" onClick={() => toggleSort("checkOutDate")}>
+                    Ausgecheckt<SortIcon col="checkOutDate" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[110px] cursor-pointer select-none" onClick={() => toggleSort("returnedDate")}>
+                    {t("returnedAt")}<SortIcon col="returnedDate" />
+                  </TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[80px] text-right cursor-pointer select-none" onClick={() => toggleSort("daysOut")}>
+                    Tage<SortIcon col="daysOut" />
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map(b => {
+                {paged.map(b => {
                   const cfg = STATUS_CFG[b.status]
                   const Icon = cfg.icon
                   return (
@@ -169,6 +259,34 @@ export default function HistoryToolBookingsPage() {
           )}
         </CardContent>
       </Card>
+
+      <div className="flex items-center justify-between text-sm text-muted-foreground">
+        <span>
+          {total === 0
+            ? "Keine Einträge"
+            : `Zeige ${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, total)} von ${total} Einträgen`}
+        </span>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+          >
+            <IconChevronLeft className="size-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+            onClick={() => setPage(p => Math.min(Math.ceil(total / PAGE_SIZE), p + 1))}
+            disabled={page >= Math.ceil(total / PAGE_SIZE)}
+          >
+            <IconChevronRight className="size-4" />
+          </Button>
+        </div>
+      </div>
     </div>
   )
 }
