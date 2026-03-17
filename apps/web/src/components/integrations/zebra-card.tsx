@@ -5,7 +5,7 @@ import { IconCheck } from "@tabler/icons-react"
 export function ZebraCard() {
   return (
     <Card className="relative overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#474747]/60 to-secondary/60" />
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-primary" />
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">

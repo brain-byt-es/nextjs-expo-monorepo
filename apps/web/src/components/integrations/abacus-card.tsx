@@ -96,7 +96,7 @@ export function AbacusCard() {
   return (
     <Card className="relative overflow-hidden border-border/60 transition-shadow hover:shadow-md">
       {/* Accent bar — Abacus brand dark blue */}
-      <div className="absolute top-0 inset-x-0 h-[3px] bg-[#003087]" />
+      <div className="absolute top-0 inset-x-0 h-[3px] bg-primary" />
 
       <CardHeader className="pb-3 pt-5">
         <div className="flex items-start justify-between gap-3">
