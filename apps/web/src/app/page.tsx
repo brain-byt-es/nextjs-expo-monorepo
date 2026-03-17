@@ -1,338 +1,692 @@
+"use client"
+
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Logo, LogoMark } from "@/components/logo"
 import { ModeToggle } from "@/components/theme/theme-toggle"
+import {
+  IconBuildingWarehouse,
+  IconPackage,
+  IconTool,
+  IconMapPin,
+  IconShoppingCart,
+  IconHistory,
+  IconTruck,
+  IconCheck,
+  IconArrowUpRight,
+} from "@tabler/icons-react"
 
-const features = [
-  {
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="size-5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
-      </svg>
-    ),
-    title: "Materialien & Bestand",
-    description: "Vollständige Bestandsführung mit Meldebeständen, Ablaufdaten, Chargen- und Seriennummern.",
-    color: "text-primary bg-primary/10",
-  },
-  {
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="size-5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
-      </svg>
-    ),
-    title: "Werkzeug-Tracking",
-    description: "Aus- und Einchecken, Buchungshistorie, Wartungsfristen und Zustandsverfolgung für jedes Gerät.",
-    color: "text-secondary bg-secondary/10",
-  },
-  {
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="size-5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-      </svg>
-    ),
-    title: "Fahrzeug-Bestände",
-    description: "Jedes Fahrzeug als eigener Lagerort. Immer wissen, was im Transporter ist.",
-    color: "text-muted-foreground bg-muted",
-  },
-  {
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="size-5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-      </svg>
-    ),
-    title: "Mehrere Standorte",
-    description: "Lager, Fahrzeuge, Baustellen und Stationen — alle Bestände zentral in einer Ansicht.",
-    color: "text-primary bg-primary/10",
-  },
-  {
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="size-5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
-      </svg>
-    ),
-    title: "Bestellwesen",
-    description: "Bezugsquellen, Warenkorb und Bestellpositionen — von der Anfrage bis zum Wareneingang.",
-    color: "text-secondary bg-secondary/10",
-  },
-  {
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="size-5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 8.25h3m-3 3h3m-3 3h1.5m-1.5-9h3m-6 3.75h.008v.008H7.5v-.008zm0 3h.008v.008H7.5v-.008zm0 3h.008v.008H7.5v-.008z" />
-      </svg>
-    ),
-    title: "Lückenlose Historie",
-    description: "Jede Buchung, jede Änderung, jeder Auftrag — vollständig protokolliert und jederzeit abrufbar.",
-    color: "text-muted-foreground bg-muted",
-  },
-]
+/* ─── Global styles injected at runtime ─────────────────────── */
+const STYLES = `
+  *, *::before, *::after { cursor: none !important; }
 
-const plans = [
-  {
-    name: "Starter",
-    price: "CHF 49",
-    period: "/ Monat",
-    description: "Für kleine Teams und Einsteiger.",
-    features: ["Bis 3 Benutzer", "500 Artikel", "2 Standorte", "E-Mail Support"],
-    cta: "Kostenlos starten",
-    href: "/signup",
-    highlight: false,
-  },
-  {
-    name: "Professional",
-    price: "CHF 149",
-    period: "/ Monat",
-    description: "Für wachsende Betriebe.",
-    features: ["Bis 15 Benutzer", "Unbegrenzte Artikel", "Unbegrenzte Standorte", "Mobile App inklusive", "Prioritäts-Support"],
-    cta: "14 Tage kostenlos testen",
-    href: "/signup",
-    highlight: true,
-  },
-  {
-    name: "Enterprise",
-    price: "Auf Anfrage",
-    period: "",
-    description: "Für Unternehmen mit besonderen Anforderungen.",
-    features: ["Unbegrenzte Benutzer", "SSO / SAML", "SLA-Garantie", "API-Zugang", "Dedizierter Support"],
-    cta: "Kontakt aufnehmen",
-    href: "/signup",
-    highlight: false,
-  },
-]
+  @keyframes reveal-clip {
+    from { clip-path: inset(0 0 100% 0); transform: translateY(12px); opacity: 0; }
+    to   { clip-path: inset(0 0 0%   0); transform: translateY(0);    opacity: 1; }
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0);    }
+  }
+  @keyframes cell-pulse {
+    0%, 100% { opacity: 0.25; }
+    50%       { opacity: 0.7; }
+  }
+  @keyframes scanline {
+    0%   { top: -4px; opacity: 0; }
+    4%   { opacity: 0.5; }
+    96%  { opacity: 0.5; }
+    100% { top: 100%; opacity: 0; }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  @keyframes blink-cursor {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
 
-export default function LandingPage() {
+  .hero-word-1 { animation: reveal-clip 0.9s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
+  .hero-word-2 { animation: reveal-clip 0.9s cubic-bezier(0.16,1,0.3,1) 0.20s both; }
+  .hero-word-3 { animation: reveal-clip 0.9s cubic-bezier(0.16,1,0.3,1) 0.35s both; }
+  .hero-word-4 { animation: reveal-clip 0.9s cubic-bezier(0.16,1,0.3,1) 0.50s both; }
+  .hero-sub-1  { animation: fade-up 0.8s cubic-bezier(0.16,1,0.3,1) 0.80s both; }
+  .hero-sub-2  { animation: fade-up 0.8s cubic-bezier(0.16,1,0.3,1) 0.95s both; }
+  .hero-sub-3  { animation: fade-up 0.8s cubic-bezier(0.16,1,0.3,1) 1.10s both; }
+
+  /* Custom cursor */
+  .c-dot  {
+    position: fixed; z-index: 9999; pointer-events: none;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--primary);
+    transform: translate(-50%, -50%);
+    transition: none;
+  }
+  .c-ring {
+    position: fixed; z-index: 9998; pointer-events: none;
+    width: 38px; height: 38px; border-radius: 50%;
+    border: 1.5px solid var(--foreground);
+    transform: translate(-50%, -50%);
+    opacity: 0.28;
+    transition: width .22s ease, height .22s ease, border-color .22s ease, opacity .22s ease;
+    will-change: transform;
+  }
+  .c-ring.is-hovering {
+    width: 58px; height: 58px;
+    border-color: var(--primary);
+    opacity: 0.7;
+  }
+
+  /* Feature card spotlight */
+  .feat-card { position: relative; overflow: hidden; }
+  .feat-card::after {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(circle at var(--mx,50%) var(--my,50%), color-mix(in oklch, var(--primary) 12%, transparent) 0%, transparent 65%);
+    opacity: 0; transition: opacity .3s ease;
+  }
+  .feat-card:hover::after { opacity: 1; }
+
+  /* Blinking terminal cursor */
+  .term-blink { animation: blink-cursor 1.1s step-end infinite; }
+`
+
+/* ─── Custom Cursor ──────────────────────────────────────────── */
+function CustomCursor() {
+  const dotRef  = useRef<HTMLDivElement>(null)
+  const ringRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const dot  = dotRef.current
+    const ring = ringRef.current
+    if (!dot || !ring) return
+
+    let mx = -200, my = -200
+    let rx = -200, ry = -200
+    let raf: number
+
+    const onMove = (e: MouseEvent) => {
+      mx = e.clientX; my = e.clientY
+      dot.style.left = mx + "px"
+      dot.style.top  = my + "px"
+      const t = e.target as Element
+      const hovering = !!t.closest("a,button,input,select,textarea,label,[role='button']")
+      ring.classList.toggle("is-hovering", hovering)
+    }
+
+    const lerp = () => {
+      rx += (mx - rx) * 0.13
+      ry += (my - ry) * 0.13
+      ring.style.left = rx + "px"
+      ring.style.top  = ry + "px"
+      raf = requestAnimationFrame(lerp)
+    }
+
+    window.addEventListener("mousemove", onMove, { passive: true })
+    raf = requestAnimationFrame(lerp)
+    return () => { window.removeEventListener("mousemove", onMove); cancelAnimationFrame(raf) }
+  }, [])
+
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
-      {/* Nav */}
-      <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
-          <Logo />
-          <nav className="flex items-center gap-1">
-            <Link href="#features" className="text-sm text-muted-foreground hover:text-foreground px-3 py-1.5 rounded-md hover:bg-muted transition-colors">
-              Features
-            </Link>
-            <Link href="#pricing" className="text-sm text-muted-foreground hover:text-foreground px-3 py-1.5 rounded-md hover:bg-muted transition-colors">
-              Preise
-            </Link>
-            <div className="ml-3 flex items-center gap-2">
+    <>
+      <div ref={dotRef}  className="c-dot"  aria-hidden />
+      <div ref={ringRef} className="c-ring" aria-hidden />
+    </>
+  )
+}
+
+/* ─── Scroll Progress + Back-to-top ─────────────────────────── */
+function ScrollUI() {
+  const [progress, setProgress] = useState(0)
+  const [show, setShow]         = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => {
+      const total = document.documentElement.scrollHeight - window.innerHeight
+      const p = total > 0 ? (window.scrollY / total) * 100 : 0
+      setProgress(p)
+      setShow(window.scrollY > 280)
+    }
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
+
+  const R = 22
+  const circ = 2 * Math.PI * R
+
+  return (
+    <>
+      {/* Top bar */}
+      <div className="fixed top-0 left-0 right-0 z-[100] h-[2px] bg-border">
+        <div className="h-full bg-primary transition-[width] duration-75" style={{ width: `${progress}%` }} />
+      </div>
+
+      {/* Scroll-to-top */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        aria-label="Zum Seitenanfang"
+        className={`fixed bottom-8 right-8 z-50 size-[56px] rounded-full bg-background border border-border flex items-center justify-center group transition-all duration-500 hover:border-primary ${show ? "translate-y-0 opacity-100" : "translate-y-16 opacity-0 pointer-events-none"}`}
+      >
+        <svg className="absolute inset-0 size-full -rotate-90" viewBox="0 0 56 56">
+          <circle cx="28" cy="28" r={R} fill="none" stroke="var(--border)" strokeWidth="1.5" />
+          <circle
+            cx="28" cy="28" r={R}
+            fill="none"
+            stroke="var(--primary)"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeDasharray={circ}
+            strokeDashoffset={circ * (1 - progress / 100)}
+            style={{ transition: "stroke-dashoffset 0.1s linear" }}
+          />
+        </svg>
+        <IconBuildingWarehouse className="size-5 text-muted-foreground group-hover:text-primary transition-colors relative z-10" />
+      </button>
+    </>
+  )
+}
+
+/* ─── Animated counter (scroll-triggered) ───────────────────── */
+function Counter({ target, suffix = "" }: { target: number; suffix?: string }) {
+  const ref   = useRef<HTMLSpanElement>(null)
+  const [val, setVal]       = useState(0)
+  const [active, setActive] = useState(false)
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setActive(true) }, { threshold: 0.5 })
+    if (ref.current) obs.observe(ref.current)
+    return () => obs.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (!active) return
+    const dur = 1800; const t0 = Date.now()
+    const tick = () => {
+      const progress = Math.min((Date.now() - t0) / dur, 1)
+      setVal(Math.round((1 - Math.pow(1 - progress, 3)) * target))
+      if (progress < 1) requestAnimationFrame(tick)
+    }
+    requestAnimationFrame(tick)
+  }, [active, target])
+
+  return <span ref={ref}>{val.toLocaleString("de-CH")}{suffix}</span>
+}
+
+/* ─── Inventory grid for hero bg ────────────────────────────── */
+const CELLS = Array.from({ length: 48 }, (_, i) => ({
+  id: i,
+  filled: Math.random() > 0.38,
+  level: 0.15 + Math.random() * 0.75,
+  value: Math.floor(Math.random() * 900) + 100,
+  delay: Math.random() * 5,
+  dur: 2.5 + Math.random() * 3,
+}))
+
+/* ─── Data ───────────────────────────────────────────────────── */
+const FEATURES = [
+  { icon: IconPackage,  code: "MAT", title: "Materialien & Bestand",    desc: "Meldebestände, Ablaufdaten, Chargen- und Seriennummern. Vollständige Bestandsführung auf Knopfdruck." },
+  { icon: IconTool,     code: "WRK", title: "Werkzeug-Tracking",         desc: "Aus- und Einchecken, Buchungshistorie, Wartungsfristen und Zustandsverfolgung für jedes Gerät." },
+  { icon: IconTruck,    code: "FAH", title: "Fahrzeug-Bestände",          desc: "Jedes Fahrzeug als eigener Lagerort. Immer wissen, was im Transporter ist." },
+  { icon: IconMapPin,   code: "STO", title: "Mehrere Standorte",          desc: "Lager, Fahrzeuge, Baustellen — alle Bestände zentral in einer Ansicht." },
+  { icon: IconShoppingCart, code: "ORD", title: "Bestellwesen",           desc: "Bezugsquellen, Warenkorb und Bestellpositionen — von der Anfrage bis zum Wareneingang." },
+  { icon: IconHistory,  code: "HIS", title: "Lückenlose Historie",        desc: "Jede Buchung, jede Änderung — vollständig protokolliert und jederzeit abrufbar." },
+]
+
+const PLANS = [
+  {
+    name: "Starter", price: "CHF 49", per: "/Mo",
+    desc: "Für kleine Teams und Einsteiger.",
+    features: ["Bis 3 Benutzer", "500 Artikel", "2 Standorte", "E-Mail Support"],
+    cta: "Kostenlos starten", href: "/signup", highlight: false,
+  },
+  {
+    name: "Professional", price: "CHF 149", per: "/Mo",
+    desc: "Für wachsende Betriebe.",
+    features: ["Bis 15 Benutzer", "Unbegrenzte Artikel", "Unbegrenzte Standorte", "Mobile App inklusive", "Prioritäts-Support"],
+    cta: "14 Tage testen", href: "/signup", highlight: true,
+  },
+  {
+    name: "Enterprise", price: "Anfrage", per: "",
+    desc: "Für Unternehmen mit besonderen Anforderungen.",
+    features: ["Unbegrenzte Benutzer", "SSO / SAML", "SLA-Garantie", "API-Zugang", "Dedizierter Support"],
+    cta: "Kontakt aufnehmen", href: "/signup", highlight: false,
+  },
+]
+
+const TRUST_SPECS = [
+  ["RECHTSRAHMEN",    "nDSG / DSGVO"],
+  ["SERVERSTANDORT",  "Zürich, Schweiz"],
+  ["ZERTIFIZIERUNG",  "ISO 27001"],
+  ["US CLOUD ACT",    "Nicht anwendbar"],
+  ["BACKUP-FREQUENZ", "Stündlich"],
+  ["UPTIME SLA",      "99.9 %"],
+]
+
+/* ─── Page ───────────────────────────────────────────────────── */
+export default function LandingPage() {
+  const [navSolid, setNavSolid] = useState(false)
+
+  useEffect(() => {
+    const fn = () => setNavSolid(window.scrollY > 32)
+    window.addEventListener("scroll", fn, { passive: true })
+    return () => window.removeEventListener("scroll", fn)
+  }, [])
+
+  return (
+    <>
+      <style>{STYLES}</style>
+      <CustomCursor />
+      <ScrollUI />
+
+      <div className="flex min-h-screen flex-col bg-background text-foreground overflow-x-hidden">
+
+        {/* ══ NAV ══════════════════════════════════════════ */}
+        <header className={`sticky top-[2px] z-50 transition-all duration-300 ${navSolid ? "bg-background/95 backdrop-blur-md border-b border-border" : "bg-transparent"}`}>
+          <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
+            <Logo />
+            <nav className="hidden md:flex items-center gap-8 font-mono text-[11px] tracking-[0.15em] uppercase text-muted-foreground">
+              <a href="#features" className="hover:text-foreground transition-colors">Funktionen</a>
+              <a href="#pricing"  className="hover:text-foreground transition-colors">Preise</a>
+              <a href="#trust"    className="hover:text-foreground transition-colors">Sicherheit</a>
+            </nav>
+            <div className="flex items-center gap-1.5">
               <ModeToggle />
               <Link href="/login">
-                <Button variant="ghost" size="sm" className="text-sm">
-                  Anmelden
-                </Button>
+                <Button variant="ghost" size="sm" className="font-mono text-[11px] tracking-widest uppercase">Anmelden</Button>
               </Link>
               <Link href="/signup">
-                <Button size="sm" className="text-sm">
-                  Kostenlos starten
+                <Button size="sm" className="font-mono text-[11px] tracking-widest uppercase gap-1.5">
+                  Starten <IconArrowUpRight className="size-3.5" />
                 </Button>
               </Link>
             </div>
-          </nav>
-        </div>
-      </header>
-
-      <main className="flex-1">
-        {/* Hero */}
-        <section className="mx-auto max-w-6xl px-6 py-24">
-          <div className="mx-auto max-w-3xl text-center">
-            <Badge variant="outline" className="mb-6 text-primary border-primary/20 bg-primary/10 gap-1.5">
-              <span className="size-1.5 rounded-full bg-primary inline-block" />
-              Schweizer Inventar-Software für KMU
-            </Badge>
-            <h1 className="mb-6 text-5xl font-bold tracking-tight text-foreground sm:text-6xl leading-tight">
-              Immer wissen,
-              <br />
-              <span className="text-primary">was wo ist.</span>
-            </h1>
-            <p className="mx-auto mb-10 max-w-2xl text-lg text-muted-foreground leading-relaxed">
-              Werkzeuge, Materialien, Fahrzeugbestände und Schlüssel — alles in einer App.
-              Für Handwerksbetriebe, Elektriker, Installateure und Serviceteams.
-            </p>
-            <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-              <Link href="/signup">
-                <Button size="lg" className="px-8 h-12 text-base">
-                  14 Tage kostenlos testen
-                </Button>
-              </Link>
-              <Link href="/dashboard">
-                <Button size="lg" variant="outline" className="px-8 h-12 text-base">
-                  Demo ansehen
-                </Button>
-              </Link>
-            </div>
-            <p className="mt-4 text-xs text-muted-foreground">Keine Kreditkarte nötig · In 5 Minuten einsatzbereit</p>
           </div>
+        </header>
 
-          {/* Dashboard preview placeholder */}
-          <div className="mt-20 rounded-2xl border border-border bg-muted overflow-hidden shadow-2xl shadow-foreground/5">
-            <div className="flex items-center gap-1.5 px-4 py-3 bg-background border-b border-border">
-              <span className="size-3 rounded-full bg-border" />
-              <span className="size-3 rounded-full bg-border" />
-              <span className="size-3 rounded-full bg-border" />
-              <span className="ml-3 text-xs text-muted-foreground font-mono">logistikapp.ch/dashboard</span>
-            </div>
-            <div className="p-8 grid grid-cols-4 gap-4">
-              {[
-                { label: "Materialien", value: "1'247", color: "text-primary" },
-                { label: "Werkzeuge", value: "84", color: "text-secondary" },
-                { label: "Standorte", value: "12", color: "text-foreground" },
-                { label: "Buchungen", value: "38", color: "text-primary" },
-              ].map(({ label, value, color }) => (
-                <div key={label} className="bg-background rounded-xl p-4 border border-border">
-                  <p className="text-xs text-muted-foreground">{label}</p>
-                  <p className={`text-2xl font-bold mt-1 ${color}`}>{value}</p>
+        {/* ══ HERO ═════════════════════════════════════════ */}
+        <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
+
+          {/* Crosshair grid */}
+          <div className="absolute inset-0 pointer-events-none" style={{
+            backgroundImage: `linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)`,
+            backgroundSize: "72px 72px",
+            opacity: 0.45,
+          }} />
+
+          {/* Inventory cell visualization (right half) */}
+          <div className="absolute right-0 top-0 bottom-0 w-1/2 pointer-events-none overflow-hidden opacity-[0.18] dark:opacity-[0.22]">
+            <div className="grid grid-cols-8 gap-1 p-6 h-full content-center">
+              {CELLS.map(cell => (
+                <div
+                  key={cell.id}
+                  className="relative border border-border rounded-sm overflow-hidden"
+                  style={{
+                    height: "46px",
+                    ...(cell.filled ? {
+                      animationName: "cell-pulse",
+                      animationDuration: `${cell.dur}s`,
+                      animationDelay: `${cell.delay}s`,
+                      animationTimingFunction: "ease-in-out",
+                      animationIterationCount: "infinite",
+                    } : {}),
+                  }}
+                >
+                  {cell.filled && (
+                    <>
+                      <div
+                        className="absolute bottom-0 left-0 right-0 bg-primary"
+                        style={{ height: `${cell.level * 100}%`, opacity: 0.5 }}
+                      />
+                      <span className="absolute top-0.5 left-0.5 text-[7px] font-mono text-primary leading-none">
+                        {cell.value}
+                      </span>
+                    </>
+                  )}
                 </div>
               ))}
-              <div className="col-span-4 bg-background rounded-xl border border-border h-32 flex items-center justify-center">
-                <div className="flex gap-2 items-end">
-                  {[40, 65, 45, 80, 55, 90, 70, 85, 60, 75, 95, 72].map((h, i) => (
-                    <div key={i} className="w-5 bg-primary/20 rounded-sm" style={{ height: `${h * 0.9}px` }}>
-                      <div className="w-full bg-primary rounded-sm" style={{ height: `${h * 0.5}px` }} />
+            </div>
+          </div>
+
+          {/* Scanline sweep */}
+          <div
+            className="absolute left-0 right-0 h-[1px] pointer-events-none z-10"
+            style={{
+              background: `linear-gradient(90deg, transparent, var(--primary), transparent)`,
+              animation: "scanline 9s linear infinite",
+              opacity: 0.35,
+            }}
+          />
+
+          {/* Content */}
+          <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-28">
+            <div className="grid lg:grid-cols-[1fr_auto] gap-16 items-center">
+
+              {/* Left: Headline */}
+              <div className="max-w-3xl">
+                {/* Label */}
+                <div className="hero-sub-1 flex items-center gap-3 mb-10">
+                  <span className="size-1.5 rounded-full bg-primary shrink-0 animate-pulse" />
+                  <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-muted-foreground">
+                    v1.0 // Schweizer Inventar-Software für KMU
+                  </span>
+                </div>
+
+                {/* Staggered words */}
+                <div className="mb-10">
+                  {[
+                    { text: "IMMER",   cls: "hero-word-1" },
+                    { text: "WISSEN,", cls: "hero-word-2" },
+                    { text: "WAS",     cls: "hero-word-3" },
+                    { text: "WO IST.", cls: "hero-word-4", accent: true },
+                  ].map(({ text, cls, accent }) => (
+                    <div key={text} className="overflow-hidden leading-[0.88]">
+                      <div className={`font-bold tracking-tight ${cls}`} style={{ fontSize: "clamp(3.2rem, 9.5vw, 8rem)" }}>
+                        {accent ? <span className="text-primary">{text}</span> : text}
+                      </div>
                     </div>
                   ))}
                 </div>
+
+                <p className="hero-sub-2 font-mono text-sm text-muted-foreground leading-relaxed max-w-lg mb-10">
+                  Werkzeuge, Materialien, Fahrzeugbestände und Schlüssel —<br />
+                  alles in einer App. Für Handwerksbetriebe und Serviceteams<br />
+                  in der ganzen Schweiz.
+                </p>
+
+                <div className="hero-sub-3 flex flex-wrap gap-3 mb-4">
+                  <Link href="/signup">
+                    <Button size="lg" className="font-mono text-xs tracking-widest uppercase gap-2 px-7 h-12">
+                      14 Tage kostenlos <IconArrowUpRight className="size-4" />
+                    </Button>
+                  </Link>
+                  <Link href="/dashboard">
+                    <Button size="lg" variant="outline" className="font-mono text-xs tracking-widest uppercase h-12 px-7">
+                      Demo ansehen
+                    </Button>
+                  </Link>
+                </div>
+
+                <p className="hero-sub-3 font-mono text-[10px] text-muted-foreground tracking-widest">
+                  — Keine Kreditkarte · Setup in 5 Minuten
+                </p>
+              </div>
+
+              {/* Right: Terminal readout */}
+              <div className="hidden lg:block w-72">
+                <div
+                  className="border border-border rounded-lg overflow-hidden bg-background/70 backdrop-blur-sm"
+                  style={{ animation: "fade-up 0.8s cubic-bezier(0.16,1,0.3,1) 1.0s both" }}
+                >
+                  {/* Terminal header */}
+                  <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-border bg-muted/50">
+                    <span className="size-2.5 rounded-full bg-destructive/60" />
+                    <span className="size-2.5 rounded-full bg-primary/60" />
+                    <span className="size-2.5 rounded-full bg-secondary/60" />
+                    <span className="ml-2 font-mono text-[10px] text-muted-foreground tracking-widest">SYSTEM STATUS</span>
+                  </div>
+
+                  {/* Rows */}
+                  <div className="p-4 space-y-0 font-mono">
+                    {[
+                      { code: "MAT_TOTAL",  label: "Materialien",      val: "1'247", unit: "Artikel"  },
+                      { code: "WRK_TOTAL",  label: "Werkzeuge",        val: "84",    unit: "Geräte"   },
+                      { code: "LOC_ACTIVE", label: "Standorte",        val: "12",    unit: "aktiv"    },
+                      { code: "BOOK_TODAY", label: "Buchungen heute",  val: "38",    unit: "Vorgänge" },
+                    ].map(({ code, label, val, unit }, i) => (
+                      <div
+                        key={code}
+                        className="flex items-center justify-between py-2.5 border-b border-border last:border-0"
+                        style={{ animation: `fade-up 0.6s cubic-bezier(0.16,1,0.3,1) ${1.1 + i * 0.12}s both` }}
+                      >
+                        <div>
+                          <div className="text-[9px] text-muted-foreground tracking-widest uppercase">{code}</div>
+                          <div className="text-[11px] text-muted-foreground">{label}</div>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-xl font-bold text-primary">{val}</span>
+                          <span className="text-[10px] text-muted-foreground ml-1">{unit}</span>
+                        </div>
+                      </div>
+                    ))}
+
+                    <div className="pt-2 flex items-center gap-2">
+                      <span className="text-[10px] text-muted-foreground term-blink">█</span>
+                      <span className="text-[10px] text-muted-foreground tracking-widest">SYSTEM BEREIT</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Geo label */}
+          <div
+            className="absolute bottom-8 left-6 font-mono text-[10px] text-muted-foreground flex items-center gap-3"
+            style={{ animation: "fade-up 0.8s cubic-bezier(0.16,1,0.3,1) 1.4s both" }}
+          >
+            <span>47.3769°N, 8.5417°E</span>
+            <span className="text-border">·</span>
+            <span>ZÜRICH, CH</span>
+            <span className="text-border">·</span>
+            <span className="text-primary">● LIVE</span>
+          </div>
+        </section>
+
+        {/* ══ MARQUEE ══════════════════════════════════════ */}
+        <div className="border-y border-border py-3.5 overflow-hidden bg-muted/20">
+          <div style={{ animation: "marquee 22s linear infinite", whiteSpace: "nowrap", display: "flex" }}>
+            {[0, 1].map(r => (
+              <div key={r} className="flex items-center gap-12 pr-12">
+                {["Elektro Müller AG", "Keller Haustechnik GmbH", "Sanitär Huber", "Bau & Service GmbH", "Schreinerei Lüthi", "Transport Bärtschi AG", "Elektro Berger & Co."].map(n => (
+                  <span key={n + r} className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground whitespace-nowrap">
+                    {n}
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ══ STATS ════════════════════════════════════════ */}
+        <section className="mx-auto w-full max-w-7xl px-6 py-24">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-border">
+            {[
+              { label: "Aktive Betriebe",   target: 240,    suffix: "+"     },
+              { label: "Artikel im System", target: 890000, suffix: "+"     },
+              { label: "Buchungen / Tag",   target: 4700,   suffix: "+"     },
+              { label: "Ø Zeitersparnis",   target: 3,      suffix: "h/Tag" },
+            ].map(({ label, target, suffix }) => (
+              <div key={label} className="bg-background p-8 text-center">
+                <div className="text-4xl lg:text-5xl font-bold font-mono text-primary mb-2 tabular-nums">
+                  <Counter target={target} suffix={suffix} />
+                </div>
+                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted-foreground">{label}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ══ FEATURES ═════════════════════════════════════ */}
+        <section id="features" className="mx-auto w-full max-w-7xl px-6 pb-24">
+          <div className="mb-14 flex items-end justify-between border-b border-border pb-6">
+            <div>
+              <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-2">// 01 — Funktionen</div>
+              <h2 className="text-3xl lg:text-4xl font-bold leading-tight">
+                Alles was ein<br />
+                <span className="text-primary">Handwerksbetrieb</span> braucht.
+              </h2>
+            </div>
+            <div className="hidden md:flex flex-col items-end font-mono text-[10px] tracking-widest text-muted-foreground">
+              <div>06 MODULE</div>
+              <div>01 SYSTEM</div>
+            </div>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
+            {FEATURES.map(f => (
+              <div
+                key={f.code}
+                className="feat-card bg-background p-8 group"
+                onMouseMove={e => {
+                  const r = e.currentTarget.getBoundingClientRect()
+                  e.currentTarget.style.setProperty("--mx", `${((e.clientX - r.left) / r.width) * 100}%`)
+                  e.currentTarget.style.setProperty("--my", `${((e.clientY - r.top) / r.height) * 100}%`)
+                }}
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <div className="size-10 border border-border rounded flex items-center justify-center group-hover:border-primary group-hover:bg-primary/5 transition-all duration-200">
+                    <f.icon className="size-5 text-muted-foreground group-hover:text-primary transition-colors duration-200" />
+                  </div>
+                  <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground">{f.code}</span>
+                </div>
+                <h3 className="font-bold text-base mb-2 group-hover:text-primary transition-colors duration-200">{f.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
+                <div className="mt-6 h-px bg-border group-hover:bg-primary transition-colors duration-300" />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ══ HOW IT WORKS ═════════════════════════════════ */}
+        <section className="border-y border-border bg-muted/20 py-24">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="mb-14">
+              <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-2">// 02 — In 3 Schritten</div>
+              <h2 className="text-3xl lg:text-4xl font-bold">In 5 Minuten einsatzbereit.</h2>
+            </div>
+            <div className="grid md:grid-cols-3 gap-0 relative">
+              {/* Connecting line */}
+              <div className="hidden md:block absolute top-8 left-[16.666%] right-[16.666%] h-px bg-border" />
+              {[
+                { n: "01", title: "Konto erstellen",   desc: "Registrierung in unter einer Minute. Keine Kreditkarte erforderlich." },
+                { n: "02", title: "Team & Artikel",    desc: "Mitarbeiter einladen, Lagerorte definieren, Artikel und Werkzeuge erfassen." },
+                { n: "03", title: "Sofort produktiv",  desc: "Buchungen tätigen, Bestände prüfen, Bestellungen auslösen — vom ersten Tag an." },
+              ].map(({ n, title, desc }) => (
+                <div key={n} className="p-8">
+                  <div className="size-16 border border-border rounded flex items-center justify-center font-mono text-2xl font-bold text-primary bg-background mb-6 relative z-10">
+                    {n}
+                  </div>
+                  <h3 className="font-bold text-lg mb-2">{title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ══ SWISS TRUST (inverted) ════════════════════════ */}
+        <section id="trust" className="bg-foreground py-24">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="grid lg:grid-cols-2 gap-20 items-center">
+              <div>
+                <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-background/40 mb-4">// 03 — Datensouveränität</div>
+                <h2 className="text-3xl lg:text-4xl font-bold text-background mb-6 leading-tight">
+                  Ihre Daten<br />
+                  gehören <span className="text-primary">Ihnen.</span>
+                </h2>
+                <p className="font-mono text-sm text-background/55 leading-relaxed max-w-md">
+                  LogistikApp speichert ausnahmslos alle Daten auf Servern in der Schweiz.
+                  Vollständig konform mit dem revidierten Datenschutzgesetz (nDSG).
+                </p>
+              </div>
+
+              {/* Spec sheet */}
+              <div className="font-mono space-y-0">
+                {TRUST_SPECS.map(([key, val]) => (
+                  <div key={key} className="flex items-center py-3.5 border-b border-background/10">
+                    <span className="text-[10px] tracking-[0.18em] text-background/35 w-44 shrink-0">{key}</span>
+                    <div
+                      className="flex-1 mx-4 h-px"
+                      style={{ background: "repeating-linear-gradient(90deg, rgba(255,255,255,0.12) 0, rgba(255,255,255,0.12) 3px, transparent 3px, transparent 8px)" }}
+                    />
+                    <span className="text-[11px] font-bold tracking-wider text-background">{val}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-        {/* Social proof / trust strip */}
-        <section className="border-y border-border py-8 bg-muted">
-          <div className="mx-auto max-w-6xl px-6">
-            <p className="text-center text-xs font-medium text-muted-foreground uppercase tracking-widest mb-6">Vertraut von Schweizer Handwerksbetrieben</p>
-            <div className="flex items-center justify-center gap-12 flex-wrap">
-              {["Elektro Müller AG", "Keller Haustechnik", "Sanitär Huber", "Bau & Service GmbH"].map(name => (
-                <span key={name} className="text-sm font-semibold text-muted-foreground">{name}</span>
-              ))}
-            </div>
+        {/* ══ PRICING ══════════════════════════════════════ */}
+        <section id="pricing" className="mx-auto w-full max-w-7xl px-6 py-24">
+          <div className="mb-14 border-b border-border pb-6">
+            <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-2">// 04 — Preise</div>
+            <h2 className="text-3xl lg:text-4xl font-bold">Einfach. Transparent.</h2>
           </div>
-        </section>
 
-        {/* Features */}
-        <section id="features" className="mx-auto max-w-6xl px-6 py-24">
-          <div className="mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold tracking-tight">Alles was ein Handwerksbetrieb braucht</h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">
-              Keine generische Lagersoftware. LogistikApp ist speziell für mobile, verteilte Bestände gebaut.
-            </p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((f) => (
-              <Card key={f.title} className="border-border hover:shadow-md transition-shadow">
-                <CardHeader className="pb-3">
-                  <div className={`size-9 rounded-lg flex items-center justify-center mb-3 ${f.color}`}>
-                    {f.icon}
-                  </div>
-                  <CardTitle className="text-base font-semibold">{f.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-sm leading-relaxed">{f.description}</CardDescription>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        {/* Swiss trust section — inverted band */}
-        <section className="bg-foreground py-20">
-          <div className="mx-auto max-w-6xl px-6 text-center">
-            <div className="mb-6">
-              <LogoMark size={48} className="mx-auto" />
-            </div>
-            <h2 className="text-2xl font-bold text-background mb-4">Schweizer Datensouveränität</h2>
-            <p className="text-background/60 max-w-xl mx-auto text-sm leading-relaxed">
-              Ihre Daten werden ausschliesslich auf Servern in der Schweiz gespeichert.
-              Vollständig konform mit dem Schweizer nDSG.
-            </p>
-            <div className="flex items-center justify-center gap-8 mt-8 flex-wrap">
-              {["nDSG-konform", "Server in CH", "ISO 27001", "Kein US-Cloud Act"].map(label => (
-                <div key={label} className="flex items-center gap-2 text-sm text-background/70">
-                  <svg className="size-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  {label}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Pricing */}
-        <section id="pricing" className="mx-auto max-w-6xl px-6 py-24">
-          <div className="mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold tracking-tight">Einfache, transparente Preise</h2>
-            <p className="text-muted-foreground">Keine versteckten Kosten. Monatlich kündbar.</p>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-3">
-            {plans.map((plan) => (
-              <Card
+          <div className="grid md:grid-cols-3 gap-px bg-border">
+            {PLANS.map(plan => (
+              <div
                 key={plan.name}
-                className={`relative ${plan.highlight ? "border-primary shadow-lg shadow-primary/10" : "border-border"}`}
+                className={`bg-background p-8 flex flex-col relative ${plan.highlight ? "outline outline-1 outline-primary z-10" : ""}`}
               >
-                {plan.highlight && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <Badge className="bg-primary text-primary-foreground px-3">Empfohlen</Badge>
-                  </div>
-                )}
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-lg">{plan.name}</CardTitle>
-                  <div className="flex items-baseline gap-1 mt-2">
-                    <span className="text-3xl font-bold">{plan.price}</span>
-                    {plan.period && <span className="text-sm text-muted-foreground">{plan.period}</span>}
-                  </div>
-                  <CardDescription className="text-sm">{plan.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-4">
-                  <ul className="space-y-2.5 text-sm">
-                    {plan.features.map((feat) => (
-                      <li key={feat} className="flex items-center gap-2.5 text-muted-foreground">
-                        <svg className="size-4 text-primary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                        </svg>
-                        {feat}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link href={plan.href} className="mt-2">
-                    <Button className="w-full" variant={plan.highlight ? "default" : "outline"}>
-                      {plan.cta}
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
+                {plan.highlight && <div className="absolute top-0 left-0 right-0 h-[2px] bg-primary" />}
+                <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-4">{plan.name}</div>
+                <div className="mb-1 font-mono">
+                  <span className="text-4xl font-bold">{plan.price}</span>
+                  {plan.per && <span className="text-sm text-muted-foreground ml-1">{plan.per}</span>}
+                </div>
+                <p className="text-xs text-muted-foreground mb-8">{plan.desc}</p>
+                <ul className="space-y-3 mb-8 flex-1">
+                  {plan.features.map(f => (
+                    <li key={f} className="flex items-center gap-3 text-sm">
+                      <IconCheck className="size-3.5 text-primary shrink-0" />
+                      <span className="text-muted-foreground">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link href={plan.href}>
+                  <Button className="w-full font-mono text-[11px] tracking-widest uppercase" variant={plan.highlight ? "default" : "outline"}>
+                    {plan.cta}
+                  </Button>
+                </Link>
+              </div>
             ))}
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="mx-auto max-w-6xl px-6 pb-24">
-          <div className="rounded-2xl bg-primary p-12 text-center">
-            <h2 className="text-2xl font-bold text-primary-foreground mb-3">Bereit loszulegen?</h2>
-            <p className="text-primary-foreground/70 mb-8 max-w-md mx-auto text-sm">
-              Starten Sie jetzt mit 14 Tagen kostenlos — ohne Kreditkarte, ohne Verpflichtung.
-            </p>
-            <Link href="/signup">
-              <Button size="lg" className="bg-background text-foreground hover:bg-background/90 px-8">
-                Jetzt kostenlos starten
-              </Button>
-            </Link>
+        {/* ══ CTA ══════════════════════════════════════════ */}
+        <section className="mx-auto w-full max-w-7xl px-6 pb-24">
+          <div className="relative overflow-hidden border border-primary/20 rounded-lg p-16 text-center">
+            {/* Grid overlay */}
+            <div className="absolute inset-0 pointer-events-none" style={{
+              backgroundImage: `linear-gradient(color-mix(in oklch, var(--primary) 18%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklch, var(--primary) 18%, transparent) 1px, transparent 1px)`,
+              backgroundSize: "44px 44px",
+            }} />
+            <div className="absolute inset-0 bg-primary/3 pointer-events-none" />
+
+            <div className="relative z-10">
+              <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-muted-foreground mb-4">READY TO START?</div>
+              <h2 className="text-3xl lg:text-4xl font-bold mb-4">Bereit loszulegen?</h2>
+              <p className="font-mono text-sm text-muted-foreground mb-8 max-w-sm mx-auto">
+                14 Tage kostenlos — ohne Kreditkarte, ohne Verpflichtung.
+              </p>
+              <Link href="/signup">
+                <Button size="lg" className="font-mono text-[11px] tracking-widest uppercase gap-2 px-10 h-12">
+                  Jetzt starten <IconArrowUpRight className="size-4" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </section>
-      </main>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-10">
-        <div className="mx-auto max-w-6xl px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <Logo iconSize={24} />
-          <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} LogistikApp. Alle Rechte vorbehalten.</p>
-          <div className="flex gap-4 text-sm text-muted-foreground">
-            <Link href="/login" className="hover:text-foreground transition-colors">Anmelden</Link>
-            <Link href="/signup" className="hover:text-foreground transition-colors">Registrieren</Link>
+        {/* ══ FOOTER ═══════════════════════════════════════ */}
+        <footer className="border-t border-border">
+          <div className="mx-auto max-w-7xl px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <Logo iconSize={20} />
+            <p className="font-mono text-[10px] tracking-widest text-muted-foreground">
+              © {new Date().getFullYear()} LogistikApp · Schweizer Datenschutz
+            </p>
+            <div className="flex gap-6 font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
+              <Link href="/login"  className="hover:text-foreground transition-colors">Anmelden</Link>
+              <Link href="/signup" className="hover:text-foreground transition-colors">Registrieren</Link>
+            </div>
           </div>
-        </div>
-      </footer>
-    </div>
+        </footer>
+
+      </div>
+    </>
   )
 }
