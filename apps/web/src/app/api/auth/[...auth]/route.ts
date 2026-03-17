@@ -16,8 +16,8 @@ if (DEMO_MODE) {
   handlers = { POST: demoHandler, GET: demoHandler };
 } else {
   // Dynamic import to avoid pulling in DB dependencies in demo mode
-  const { auth } = require("@/lib/auth");
-  const { toNextJsHandler } = require("better-auth/next-js");
+  const { auth } = await import("@/lib/auth");
+  const { toNextJsHandler } = await import("better-auth/next-js");
   handlers = toNextJsHandler(auth);
 }
 

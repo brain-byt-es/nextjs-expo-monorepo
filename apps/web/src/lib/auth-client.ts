@@ -50,16 +50,11 @@ export const signOut = DEMO_MODE ? demoSignOut : realAuthClient!.signOut;
 // Re-export useSession — consumers import { useSession } from "@/lib/auth-client".
 // In demo mode we re-export the hook from the demo module.
 // In real mode we re-export from the Better-Auth client.
-export { useSessionImpl as useSession };
+import { useSession as useDemoSession } from "@/lib/demo/auth-client";
 
-function useSessionImpl() {
-  if (DEMO_MODE) {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    return require("@/lib/demo/auth-client").useSession();
-  }
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  return realAuthClient!.useSession();
-}
+export const useSession = DEMO_MODE
+  ? useDemoSession
+  : () => realAuthClient!.useSession();
 
 /**
  * Update user profile

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { DEMO_SESSION } from "./data";
 
 const DEMO_STORAGE_KEY = "demo-session";
@@ -27,19 +27,14 @@ function setDemoSession(session: typeof DEMO_SESSION | null) {
 }
 
 export function useSession() {
-  const [session, setSession] = useState<typeof DEMO_SESSION | null>(null);
-  const [isPending, setIsPending] = useState(true);
-
-  const refresh = useCallback(() => {
-    setSession(getDemoSession());
-    setIsPending(false);
-  }, []);
+  const [session, setSession] = useState<typeof DEMO_SESSION | null>(() => getDemoSession());
+  const [isPending] = useState(false);
 
   useEffect(() => {
-    refresh();
-    window.addEventListener("demo-session-change", refresh);
-    return () => window.removeEventListener("demo-session-change", refresh);
-  }, [refresh]);
+    const onChange = () => setSession(getDemoSession());
+    window.addEventListener("demo-session-change", onChange);
+    return () => window.removeEventListener("demo-session-change", onChange);
+  }, []);
 
   return {
     data: session,
@@ -79,6 +74,7 @@ export async function updateProfile(_data: { name?: string }) {
   return { success: true, user: { ...DEMO_SESSION.user, ..._data } };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function changePassword(_data: {
   currentPassword: string;
   newPassword: string;
