@@ -33,18 +33,11 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <div className="relative z-10 grid grid-cols-2 gap-3 max-w-xs">
-          {[
-            { label: "Materialien",     value: "1'247", accent: "text-primary" },
-            { label: "Werkzeuge",       value: "84",    accent: "text-secondary" },
-            { label: "Standorte",       value: "12",    accent: "text-foreground" },
-            { label: "Buchungen heute", value: "38",    accent: "text-primary" },
-          ].map(({ label, value, accent }) => (
-            <div key={label} className="rounded-lg p-4 border border-border bg-background/60">
-              <p className="text-[10px] text-muted-foreground font-mono tracking-widest uppercase mb-1.5">{label}</p>
-              <p className={`text-xl font-bold font-mono ${accent}`}>{value}</p>
-            </div>
-          ))}
+        <div className="relative z-10 flex items-center gap-2 text-xs text-muted-foreground font-mono">
+          <svg className="size-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+          </svg>
+          Server in der Schweiz · nDSG-konform
         </div>
       </div>
 
