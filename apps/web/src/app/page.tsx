@@ -344,7 +344,7 @@ export default function LandingPage() {
                 <div className="hero-sub-1 flex items-center gap-3 mb-10">
                   <span className="size-1.5 rounded-full bg-primary shrink-0 animate-pulse" />
                   <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-muted-foreground">
-                    v1.0 // Schweizer Inventar-Software für KMU
+                    Schweizer Inventar-Software für KMU
                   </span>
                 </div>
 
