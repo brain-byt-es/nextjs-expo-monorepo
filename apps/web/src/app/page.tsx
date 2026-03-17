@@ -188,31 +188,6 @@ function ScrollUI() {
   )
 }
 
-/* ─── Animated counter (scroll-triggered) ───────────────────── */
-function Counter({ target, suffix = "" }: { target: number; suffix?: string }) {
-  const ref   = useRef<HTMLSpanElement>(null)
-  const [val, setVal]       = useState(0)
-  const [active, setActive] = useState(false)
-
-  useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setActive(true) }, { threshold: 0.5 })
-    if (ref.current) obs.observe(ref.current)
-    return () => obs.disconnect()
-  }, [])
-
-  useEffect(() => {
-    if (!active) return
-    const dur = 1800; const t0 = Date.now()
-    const tick = () => {
-      const progress = Math.min((Date.now() - t0) / dur, 1)
-      setVal(Math.round((1 - Math.pow(1 - progress, 3)) * target))
-      if (progress < 1) requestAnimationFrame(tick)
-    }
-    requestAnimationFrame(tick)
-  }, [active, target])
-
-  return <span ref={ref}>{val.toLocaleString("de-CH")}{suffix}</span>
-}
 
 /* ─── Inventory grid for hero bg ────────────────────────────── */
 const CELLS = Array.from({ length: 48 }, (_, i) => ({
@@ -489,20 +464,19 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* ══ STATS ════════════════════════════════════════ */}
+        {/* ══ VALUE PROPS ══════════════════════════════════════ */}
         <section className="mx-auto w-full max-w-7xl px-6 py-24">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-border">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-border">
             {[
-              { label: "Aktive Betriebe",   target: 240,    suffix: "+"     },
-              { label: "Artikel im System", target: 890000, suffix: "+"     },
-              { label: "Buchungen / Tag",   target: 4700,   suffix: "+"     },
-              { label: "Ø Zeitersparnis",   target: 3,      suffix: "h/Tag" },
-            ].map(({ label, target, suffix }) => (
-              <div key={label} className="bg-background p-8 text-center">
-                <div className="text-4xl lg:text-5xl font-bold font-mono text-primary mb-2 tabular-nums">
-                  <Counter target={target} suffix={suffix} />
-                </div>
-                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-muted-foreground">{label}</div>
+              { icon: IconPackage,      title: "Alles an einem Ort",     desc: "Materialien, Werkzeuge, Schlüssel — eine App, keine Zettelwirtschaft." },
+              { icon: IconMapPin,       title: "Mehrere Standorte",       desc: "Lager, Fahrzeuge und Baustellen immer im Blick — ohne Raterei." },
+              { icon: IconTruck,        title: "Mobil einsetzbar",        desc: "Vom Büro oder direkt auf der Baustelle — funktioniert auf jedem Gerät." },
+              { icon: IconHistory,      title: "Lückenlose Rückverfolgung", desc: "Wer hat was, wann und wohin bewegt? Die Historie antwortet immer." },
+            ].map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="bg-background p-8">
+                <Icon className="size-6 text-primary mb-4" />
+                <div className="font-bold text-sm mb-2">{title}</div>
+                <div className="font-mono text-xs text-muted-foreground leading-relaxed">{desc}</div>
               </div>
             ))}
           </div>
@@ -576,17 +550,17 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ══ SWISS TRUST (inverted) ════════════════════════ */}
-        <section id="trust" className="bg-foreground py-24">
+        {/* ══ SWISS TRUST (always dark) ════════════════════════ */}
+        <section id="trust" className="py-24" style={{ background: "oklch(0.14 0.005 264)" }}>
           <div className="mx-auto max-w-7xl px-6">
             <div className="grid lg:grid-cols-2 gap-20 items-center">
               <div>
-                <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-background/40 mb-4">// 03 — Datensouveränität</div>
-                <h2 className="text-3xl lg:text-4xl font-bold text-background mb-6 leading-tight">
+                <div className="font-mono text-[10px] tracking-[0.2em] uppercase mb-4" style={{ color: "rgba(255,255,255,0.35)" }}>// 03 — Datensouveränität</div>
+                <h2 className="text-3xl lg:text-4xl font-bold mb-6 leading-tight" style={{ color: "rgba(255,255,255,0.92)" }}>
                   Ihre Daten<br />
                   gehören <span className="text-primary">Ihnen.</span>
                 </h2>
-                <p className="font-mono text-sm text-background/55 leading-relaxed max-w-md">
+                <p className="font-mono text-sm leading-relaxed max-w-md" style={{ color: "rgba(255,255,255,0.50)" }}>
                   LogistikApp speichert ausnahmslos alle Daten auf Servern in der Schweiz.
                   Vollständig konform mit dem revidierten Datenschutzgesetz (nDSG).
                 </p>
@@ -595,13 +569,13 @@ export default function LandingPage() {
               {/* Spec sheet */}
               <div className="font-mono space-y-0">
                 {TRUST_SPECS.map(([key, val]) => (
-                  <div key={key} className="flex items-center py-3.5 border-b border-background/10">
-                    <span className="text-[10px] tracking-[0.18em] text-background/35 w-44 shrink-0">{key}</span>
+                  <div key={key} className="flex items-center py-3.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+                    <span className="text-[10px] tracking-[0.18em] w-44 shrink-0" style={{ color: "rgba(255,255,255,0.30)" }}>{key}</span>
                     <div
                       className="flex-1 mx-4 h-px"
-                      style={{ background: "repeating-linear-gradient(90deg, rgba(255,255,255,0.12) 0, rgba(255,255,255,0.12) 3px, transparent 3px, transparent 8px)" }}
+                      style={{ background: "repeating-linear-gradient(90deg, rgba(255,255,255,0.10) 0, rgba(255,255,255,0.10) 3px, transparent 3px, transparent 8px)" }}
                     />
-                    <span className="text-[11px] font-bold tracking-wider text-background">{val}</span>
+                    <span className="text-[11px] font-bold tracking-wider" style={{ color: "rgba(255,255,255,0.88)" }}>{val}</span>
                   </div>
                 ))}
               </div>
