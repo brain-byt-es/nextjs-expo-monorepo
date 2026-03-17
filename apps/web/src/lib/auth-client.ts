@@ -21,6 +21,10 @@ const demoSignIn = {
     const mod = await import("@/lib/demo/auth-client");
     return mod.signIn.email(credentials, callbacks);
   },
+  social: async (options: { provider: string; callbackURL?: string }) => {
+    // Social sign-in is not available in demo mode
+    console.warn("Social sign-in is not available in demo mode", options);
+  },
 };
 
 const demoSignUp = {

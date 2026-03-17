@@ -1,23 +1,27 @@
 "use client"
 
 import * as React from "react"
+import { usePathname } from "next/navigation"
+import { LogoMark } from "@/components/logo"
 import {
-  IconCamera,
-  IconChartBar,
+  IconCalendar,
+  IconChecklist,
+  IconChevronRight,
+  IconClipboardList,
   IconDashboard,
   IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
-  IconFolder,
+  IconFileInvoice,
   IconHelp,
-  IconInnerShadowTop,
-  IconListDetails,
-  IconReport,
-  IconSearch,
+  IconHistory,
+  IconKey,
+  IconMapPin,
+  IconPackage,
   IconSettings,
-  IconUsers,
+  IconShoppingCart,
+  IconTool,
+  IconTruck,
 } from "@tabler/icons-react"
+import { useTranslations } from "next-intl"
 
 import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
@@ -27,130 +31,147 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: IconDashboard,
-    },
-    {
-      title: "Lifecycle",
-      url: "#",
-      icon: IconListDetails,
-    },
-    {
-      title: "Analytics",
-      url: "#",
-      icon: IconChartBar,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: IconUsers,
-    },
-  ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: IconFileDescription,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: IconFileAi,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: IconHelp,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
-    },
-  ],
-  documents: [
-    {
-      name: "Data Library",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: IconReport,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: IconFileWord,
-    },
-  ],
-}
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const t = useTranslations("nav")
+
+  const data = {
+    user: {
+      name: "shadcn",
+      email: "m@example.com",
+      avatar: "/avatars/shadcn.jpg",
+    },
+    navMain: [
+      {
+        title: t("overview"),
+        url: "/dashboard",
+        icon: IconDashboard,
+      },
+      {
+        title: t("materials"),
+        url: "/dashboard/materials",
+        icon: IconPackage,
+      },
+      {
+        title: t("tools"),
+        url: "/dashboard/tools",
+        icon: IconTool,
+      },
+      {
+        title: t("keys"),
+        url: "/dashboard/keys",
+        icon: IconKey,
+      },
+      {
+        title: t("tasks"),
+        url: "/dashboard/tasks",
+        icon: IconChecklist,
+      },
+      {
+        title: t("calendar"),
+        url: "/dashboard/calendar",
+        icon: IconCalendar,
+      },
+    ],
+    documents: [
+      {
+        name: t("locations"),
+        url: "/dashboard/locations",
+        icon: IconMapPin,
+      },
+      {
+        name: t("suppliers"),
+        url: "/dashboard/suppliers",
+        icon: IconTruck,
+      },
+      {
+        name: t("commissions"),
+        url: "/dashboard/commissions",
+        icon: IconClipboardList,
+      },
+      {
+        name: t("cart"),
+        url: "/dashboard/cart",
+        icon: IconShoppingCart,
+      },
+      {
+        name: t("openOrders"),
+        url: "/dashboard/orders",
+        icon: IconFileInvoice,
+      },
+    ],
+    navClouds: [
+      {
+        title: t("masterData"),
+        icon: IconDatabase,
+        items: [
+          { title: t("masterLocations"), url: "/dashboard/master/locations" },
+          { title: t("masterSuppliers"), url: "/dashboard/master/suppliers" },
+          { title: t("masterProjects"), url: "/dashboard/master/projects" },
+          { title: t("masterCustomers"), url: "/dashboard/master/customers" },
+          {
+            title: t("masterMaterialGroups"),
+            url: "/dashboard/master/material-groups",
+          },
+          {
+            title: t("masterToolGroups"),
+            url: "/dashboard/master/tool-groups",
+          },
+        ],
+      },
+      {
+        title: t("history"),
+        icon: IconHistory,
+        items: [
+          { title: t("historyOrders"), url: "/dashboard/history/orders" },
+          {
+            title: t("historyOrderItems"),
+            url: "/dashboard/history/order-items",
+          },
+          {
+            title: t("historyStockChanges"),
+            url: "/dashboard/history/stock-changes",
+          },
+          {
+            title: t("historyToolBookings"),
+            url: "/dashboard/history/tool-bookings",
+          },
+          {
+            title: t("historyCommissions"),
+            url: "/dashboard/history/commissions",
+          },
+          {
+            title: t("historyChangelog"),
+            url: "/dashboard/history/changelog",
+          },
+        ],
+      },
+    ],
+    navSecondary: [
+      {
+        title: t("settings"),
+        url: "/dashboard/settings",
+        icon: IconSettings,
+      },
+      {
+        title: t("help"),
+        url: "/dashboard/help",
+        icon: IconHelp,
+      },
+    ],
+  }
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -160,9 +181,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
-              <a href="#">
-                <IconInnerShadowTop className="size-5!" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+              <a href="/dashboard">
+                <LogoMark size={20} />
+                <span className="text-base font-semibold">Logistik<span className="text-blue-600">App</span></span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -171,11 +192,72 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavDocuments items={data.documents} />
+        <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+          {data.navClouds.map((section) => (
+            <CollapsibleSection
+              key={section.title}
+              title={section.title}
+              icon={section.icon}
+              items={section.items}
+            />
+          ))}
+        </SidebarGroup>
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>
+  )
+}
+
+function CollapsibleSection({
+  title,
+  icon: Icon,
+  items,
+}: {
+  title: string
+  icon: React.ComponentType<{ className?: string }>
+  items: { title: string; url: string }[]
+}) {
+  const pathname = usePathname()
+  const hasActive = items.some(
+    (item) => pathname === item.url || pathname.startsWith(item.url)
+  )
+  const [open, setOpen] = React.useState(hasActive)
+
+  return (
+    <>
+      <SidebarGroupLabel className="sr-only">{title}</SidebarGroupLabel>
+      <SidebarGroupContent>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton onClick={() => setOpen(!open)} isActive={hasActive && !open}>
+              <Icon />
+              <span>{title}</span>
+              <IconChevronRight
+                className={`ml-auto size-4 transition-transform ${open ? "rotate-90" : ""}`}
+              />
+            </SidebarMenuButton>
+            {open && (
+              <SidebarMenuSub>
+                {items.map((item) => {
+                  const isActive = pathname === item.url || pathname.startsWith(item.url)
+                  return (
+                    <SidebarMenuSubItem key={item.url}>
+                      <SidebarMenuSubButton asChild isActive={isActive}>
+                        <a href={item.url}>
+                          <span>{item.title}</span>
+                        </a>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  )
+                })}
+              </SidebarMenuSub>
+            )}
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarGroupContent>
+    </>
   )
 }

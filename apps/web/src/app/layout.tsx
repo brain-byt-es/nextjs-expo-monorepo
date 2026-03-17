@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,27 +19,32 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: process.env.NEXT_PUBLIC_APP_NAME || "SaaS Platform",
-    template: `%s | ${process.env.NEXT_PUBLIC_APP_NAME || "SaaS Platform"}`,
+    default: "LogistikApp",
+    template: "%s | LogistikApp",
   },
-  description: "Modern SaaS platform with web and mobile apps.",
+  description: "Inventar- und Werkzeugverwaltung für Schweizer KMU.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <PostHogProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-            <TooltipProvider>
-              {children}
-            </TooltipProvider>
-          </ThemeProvider>
-        </PostHogProvider>
+        <NextIntlClientProvider messages={messages}>
+          <PostHogProvider>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+              <TooltipProvider>
+                {children}
+              </TooltipProvider>
+            </ThemeProvider>
+          </PostHogProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

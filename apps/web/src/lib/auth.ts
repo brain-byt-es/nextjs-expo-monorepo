@@ -26,6 +26,25 @@ function initAuth(): AuthInstance {
     emailAndPassword: {
       enabled: true,
     },
+    socialProviders: {
+      google: {
+        clientId: process.env.GOOGLE_CLIENT_ID || "",
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+        enabled: !!process.env.GOOGLE_CLIENT_ID,
+      },
+      microsoft: {
+        clientId: process.env.MICROSOFT_CLIENT_ID || "",
+        clientSecret: process.env.MICROSOFT_CLIENT_SECRET || "",
+        enabled: !!process.env.MICROSOFT_CLIENT_ID,
+        // Use common tenant to allow any Microsoft account
+        tenantId: process.env.MICROSOFT_TENANT_ID || "common",
+      },
+      apple: {
+        clientId: process.env.APPLE_CLIENT_ID || "",
+        clientSecret: process.env.APPLE_CLIENT_SECRET || "",
+        enabled: !!process.env.APPLE_CLIENT_ID,
+      },
+    },
     advanced: {
       database: {
         generateId: "uuid",

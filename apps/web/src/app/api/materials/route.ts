@@ -1,0 +1,137 @@
+import { NextResponse } from "next/server";
+import { getSessionAndOrg } from "@/app/api/_helpers/auth";
+import { materials, materialGroups, locations } from "@repo/db/schema";
+import { eq, and, ilike, sql } from "drizzle-orm";
+
+export async function GET(request: Request) {
+  try {
+    const result = await getSessionAndOrg(request);
+    if (result.error) return result.error;
+    const { db, orgId } = result;
+
+    const url = new URL(request.url);
+    const page = Math.max(1, parseInt(url.searchParams.get("page") || "1"));
+    const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get("limit") || "20")));
+    const search = url.searchParams.get("search") || "";
+    const groupId = url.searchParams.get("groupId");
+    const offset = (page - 1) * limit;
+
+    const conditions = [
+      eq(materials.organizationId, orgId),
+      eq(materials.isActive, true),
+    ];
+
+    if (search) {
+      conditions.push(
+        ilike(materials.name, `%${search}%`)
+      );
+    }
+    if (groupId) {
+      conditions.push(eq(materials.groupId, groupId));
+    }
+
+    const [items, countResult] = await Promise.all([
+      db
+        .select({
+          id: materials.id,
+          number: materials.number,
+          name: materials.name,
+          groupId: materials.groupId,
+          groupName: materialGroups.name,
+          mainLocationId: materials.mainLocationId,
+          mainLocationName: locations.name,
+          unit: materials.unit,
+          barcode: materials.barcode,
+          image: materials.image,
+          manufacturer: materials.manufacturer,
+          reorderLevel: materials.reorderLevel,
+          isActive: materials.isActive,
+          createdAt: materials.createdAt,
+          updatedAt: materials.updatedAt,
+        })
+        .from(materials)
+        .leftJoin(materialGroups, eq(materials.groupId, materialGroups.id))
+        .leftJoin(locations, eq(materials.mainLocationId, locations.id))
+        .where(and(...conditions))
+        .orderBy(materials.name)
+        .limit(limit)
+        .offset(offset),
+      db
+        .select({ count: sql<number>`count(*)` })
+        .from(materials)
+        .where(and(...conditions)),
+    ]);
+
+    return NextResponse.json({
+      data: items,
+      pagination: {
+        page,
+        limit,
+        total: Number(countResult[0]?.count ?? 0),
+        totalPages: Math.ceil(Number(countResult[0]?.count ?? 0) / limit),
+      },
+    });
+  } catch (error) {
+    console.error("GET /api/materials error:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch materials" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const result = await getSessionAndOrg(request);
+    if (result.error) return result.error;
+    const { db, orgId } = result;
+
+    const body = await request.json();
+    const {
+      number,
+      name,
+      groupId,
+      mainLocationId,
+      unit,
+      barcode,
+      image,
+      manufacturer,
+      manufacturerNumber,
+      reorderLevel,
+      notes,
+    } = body;
+
+    if (!name) {
+      return NextResponse.json(
+        { error: "Name is required" },
+        { status: 400 }
+      );
+    }
+
+    const [material] = await db
+      .insert(materials)
+      .values({
+        organizationId: orgId,
+        number,
+        name,
+        groupId,
+        mainLocationId,
+        unit,
+        barcode,
+        image,
+        manufacturer,
+        manufacturerNumber,
+        reorderLevel,
+        notes,
+      })
+      .returning();
+
+    return NextResponse.json(material, { status: 201 });
+  } catch (error) {
+    console.error("POST /api/materials error:", error);
+    return NextResponse.json(
+      { error: "Failed to create material" },
+      { status: 500 }
+    );
+  }
+}
