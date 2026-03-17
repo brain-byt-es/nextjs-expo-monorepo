@@ -19,7 +19,7 @@ export default function DashboardLayout({
   const router = useRouter()
   const { data: session, isPending } = useSession()
 
-  const devBypass = process.env.NODE_ENV === "development"
+  const devBypass = process.env.NODE_ENV === "development" || process.env.NEXT_PUBLIC_DEMO_MODE === "true"
 
   useEffect(() => {
     if (!devBypass && !isPending && !session) {
