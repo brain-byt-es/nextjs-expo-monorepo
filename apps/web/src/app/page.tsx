@@ -461,7 +461,7 @@ export default function LandingPage() {
           <div style={{ animation: "marquee 22s linear infinite", whiteSpace: "nowrap", display: "flex" }}>
             {[0, 1].map(r => (
               <div key={r} className="flex items-center gap-12 pr-12">
-                {["Elektro Müller AG", "Keller Haustechnik GmbH", "Sanitär Huber", "Bau & Service GmbH", "Schreinerei Lüthi", "Transport Bärtschi AG", "Elektro Berger & Co."].map(n => (
+                {["Schreinerei", "Maurer", "Sanitär", "Elektro", "Feuerwehr", "Rettungsdienste", "Metallbau", "Haustechnik", "Tiefbau", "Gärtnerei", "Holzbau", "Gebäudereinigung", "Malerei", "Fahrzeugflotten"].map(n => (
                   <span key={n + r} className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground whitespace-nowrap">
                     {n}
                   </span>
