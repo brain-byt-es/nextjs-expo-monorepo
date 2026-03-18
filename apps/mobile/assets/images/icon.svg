@@ -1,0 +1,18 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Orange background with rounded corners -->
+  <rect width="1024" height="1024" rx="224" fill="#F97316"/>
+  
+  <!-- Warehouse grid - stacked inventory boxes, scaled from 32x32 to 1024x1024 -->
+  <!-- Top row: 2 boxes -->
+  <rect x="192" y="192" width="256" height="256" rx="48" fill="white" fill-opacity="0.30"/>
+  <rect x="576" y="192" width="256" height="256" rx="48" fill="white" fill-opacity="0.90"/>
+  
+  <!-- Middle row: wide bar -->
+  <rect x="192" y="544" width="640" height="128" rx="48" fill="white" fill-opacity="0.65"/>
+  
+  <!-- Bottom row -->
+  <rect x="192" y="768" width="384" height="64" rx="32" fill="white" fill-opacity="0.90"/>
+  
+  <!-- Location pin dot - teal secondary accent -->
+  <circle cx="800" cy="800" r="80" fill="#2C9FA6"/>
+</svg>

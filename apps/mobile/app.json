@@ -1,21 +1,40 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
+    "name": "LogistikApp",
+    "slug": "logistikapp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "scheme": "mobile",
+    "icon": "./assets/images/icon.png",
+    "scheme": "logistikapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": false,
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFFFF",
+      "dark": {
+        "image": "./assets/images/splash-dark.png",
+        "backgroundColor": "#16181D"
+      }
+    },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.repo.mobile"
+      "bundleIdentifier": "ch.logistikapp.mobile",
+      "icon": {
+        "light": "./assets/images/icon.png",
+        "dark": "./assets/images/icon.png",
+        "tinted": true
+      }
     },
     "android": {
-      "package": "com.repo.mobile",
+      "package": "ch.logistikapp.mobile",
       "adaptiveIcon": {
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#F97316"
       }
+    },
+    "web": {
+      "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
       "expo-router",
@@ -30,7 +49,7 @@
       [
         "expo-notifications",
         {
-          "color": "#2563eb",
+          "color": "#F97316",
           "defaultChannel": "default",
           "androidMode": "default",
           "androidCollapsedTitle": "#{unread_notifications} neue Mitteilungen"
