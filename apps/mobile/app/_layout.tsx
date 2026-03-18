@@ -25,7 +25,7 @@ const POSTHOG_HOST =
   process.env.EXPO_PUBLIC_POSTHOG_HOST || "https://app.posthog.com";
 
 function RootLayout() {
-  const { colorScheme } = useColorScheme();
+  const { colorScheme, colors } = useColorScheme();
 
   useEffect(() => {
     loadSession();
@@ -58,7 +58,7 @@ function RootLayout() {
   const themeStyle = colorScheme === "dark" ? darkVars : lightVars;
 
   return (
-    <View style={[{ flex: 1 }, themeStyle]}>
+    <View style={[{ flex: 1, backgroundColor: colors.background }, themeStyle]}>
       <KeyboardProvider>
         <Slot />
         <ToastOverlay />

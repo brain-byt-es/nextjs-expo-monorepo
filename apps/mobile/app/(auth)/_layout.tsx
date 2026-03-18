@@ -1,25 +1,19 @@
 import { Stack } from "expo-router";
+import { useColorScheme } from "@/lib/useColorScheme";
 
 export default function AuthLayout() {
+  const { colors } = useColorScheme();
+
   return (
-    <Stack screenOptions={SCREEN_OPTIONS}>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: colors.background },
+      }}
+    >
       <Stack.Screen name="index" />
-      <Stack.Screen name="(login)" options={LOGIN_MODAL_OPTIONS} />
-      <Stack.Screen name="(create-account)" options={CREATE_ACCOUNT_MODAL_OPTIONS} />
+      <Stack.Screen name="(login)" options={{ presentation: "modal" }} />
+      <Stack.Screen name="(create-account)" options={{ presentation: "modal" }} />
     </Stack>
   );
 }
-
-const SCREEN_OPTIONS = {
-  headerShown: false,
-} as const;
-
-const LOGIN_MODAL_OPTIONS = {
-  presentation: "modal",
-  headerShown: false,
-} as const;
-
-const CREATE_ACCOUNT_MODAL_OPTIONS = {
-  presentation: "modal",
-  headerShown: false,
-} as const;
