@@ -16,6 +16,9 @@ import {
   IconCheck,
   IconArrowUpRight,
   IconPlugConnected,
+  IconScan,
+  IconDatabase,
+  IconCurrencyFranc,
 } from "@tabler/icons-react"
 import { BrandLogo } from "@/components/integrations/brand-logo"
 
@@ -374,7 +377,7 @@ export default function LandingPage() {
             <Logo />
             <nav className="hidden md:flex items-center gap-8 font-mono text-[11px] tracking-[0.15em] uppercase text-muted-foreground">
               <a href="#features"      className="hover:text-foreground transition-colors">Funktionen</a>
-              <a href="#calculator"   className="hover:text-foreground transition-colors">Rechner</a>
+              <a href="#scan"         className="hover:text-foreground transition-colors">Scan</a>
               <a href="#integrations" className="hover:text-foreground transition-colors">Integrationen</a>
               <a href="#pricing"      className="hover:text-foreground transition-colors">Preise</a>
               <a href="#trust"        className="hover:text-foreground transition-colors">Sicherheit</a>
@@ -682,6 +685,124 @@ export default function LandingPage() {
 
             {/* Right: Calculator */}
             <CostCalculator />
+          </div>
+        </section>
+
+        {/* ══ SCAN & ERKENNUNG ════════════════════════════════ */}
+        <section id="scan" className="relative py-28 overflow-hidden bg-[#0c0e12] text-white">
+          {/* Animated scan grid background */}
+          <div className="absolute inset-0 pointer-events-none" style={{
+            backgroundImage: `linear-gradient(rgba(249,115,22,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(249,115,22,0.06) 1px, transparent 1px)`,
+            backgroundSize: "48px 48px",
+          }} />
+
+          {/* Sweeping scanline */}
+          <div
+            className="absolute left-0 right-0 h-[2px] pointer-events-none z-10"
+            style={{
+              background: `linear-gradient(90deg, transparent, #F97316, transparent)`,
+              animation: "scanline 6s linear infinite",
+              boxShadow: "0 0 20px 4px rgba(249,115,22,0.3)",
+            }}
+          />
+
+          <div className="relative z-10 mx-auto max-w-7xl px-6">
+            {/* Section header */}
+            <div className="mb-16 text-center">
+              <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full border border-[#F97316]/30 bg-[#F97316]/10">
+                <IconScan className="size-3.5 text-[#F97316]" />
+                <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-[#F97316]">Killer Feature</span>
+              </div>
+              <h2 className="text-4xl lg:text-6xl font-bold mb-6 leading-[0.95] tracking-tight">
+                Barcode scannen.<br />
+                <span className="text-[#F97316]">Produkt erkannt.</span>
+              </h2>
+              <p className="font-mono text-sm text-white/50 max-w-xl mx-auto leading-relaxed">
+                Über 100 Millionen Produkte sofort erkannt — Lebensmittel, Baumaterial,
+                Medikamente, Chemikalien, Kosmetik und mehr. Kein manuelles Tippen.
+              </p>
+            </div>
+
+            {/* Stats row */}
+            <div className="grid grid-cols-3 gap-px bg-white/10 rounded-xl overflow-hidden mb-16 max-w-2xl mx-auto">
+              {[
+                { icon: IconDatabase, value: "8", label: "Produktdatenbanken", sub: "Parallel durchsucht" },
+                { icon: IconScan, value: "100M+", label: "Produkte", sub: "Sofort erkannt" },
+                { icon: IconCurrencyFranc, value: "0.—", label: "Zusatzkosten", sub: "Komplett gratis" },
+              ].map(({ icon: Icon, value, label, sub }) => (
+                <div key={label} className="bg-[#0c0e12] p-6 text-center">
+                  <Icon className="size-5 text-[#F97316] mx-auto mb-3" />
+                  <div className="text-3xl font-bold text-white font-mono mb-1">{value}</div>
+                  <div className="text-[11px] font-semibold text-white/80 mb-0.5">{label}</div>
+                  <div className="font-mono text-[9px] text-white/30 tracking-widest uppercase">{sub}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Database grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-16">
+              {[
+                { name: "Open Food Facts", scope: "Lebensmittel & Getränke", entries: "3M+", color: "#E8A838" },
+                { name: "Open Beauty Facts", scope: "Kosmetik & Hygiene", entries: "200K+", color: "#E85BA0" },
+                { name: "Open Pet Food Facts", scope: "Tierfutter & Zubehör", entries: "50K+", color: "#7BC86C" },
+                { name: "Open Products Facts", scope: "Allgemeine Produkte", entries: "100K+", color: "#5BA4CF" },
+                { name: "Open GTIN DB", scope: "DACH Konsumgüter", entries: "30M+", color: "#F97316" },
+                { name: "UPC ItemDB", scope: "Elektronik & Global", entries: "50M+", color: "#A78BFA" },
+                { name: "Wikidata", scope: "Medikamente & Chemikalien", entries: "15M+", color: "#3B82F6" },
+                { name: "Lokaler Cache", scope: "Eure gescannten Produkte", entries: "∞", color: "#10B981" },
+              ].map(db => (
+                <div
+                  key={db.name}
+                  className="group relative border border-white/10 rounded-lg p-4 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/20 transition-all duration-300"
+                >
+                  {/* Top accent line */}
+                  <div className="absolute top-0 left-3 right-3 h-px" style={{ backgroundColor: db.color, opacity: 0.5 }} />
+
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="size-2 rounded-full mt-1" style={{ backgroundColor: db.color }} />
+                    <span className="font-mono text-[10px] text-white/30">{db.entries}</span>
+                  </div>
+                  <div className="text-sm font-semibold text-white/90 mb-1">{db.name}</div>
+                  <div className="font-mono text-[10px] text-white/40 leading-snug">{db.scope}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* How it works mini */}
+            <div className="max-w-3xl mx-auto mb-16">
+              <div className="flex items-center gap-0 justify-center">
+                {[
+                  { step: "1", label: "Barcode scannen", desc: "Kamera auf Produkt" },
+                  { step: "2", label: "Automatisch erkannt", desc: "8 DBs in < 2 Sek." },
+                  { step: "3", label: "Material angelegt", desc: "Name, Hersteller, alles" },
+                ].map((s, i) => (
+                  <div key={s.step} className="flex items-center">
+                    <div className="text-center px-6">
+                      <div className="size-10 rounded-full border border-[#F97316]/40 bg-[#F97316]/10 flex items-center justify-center font-mono text-sm font-bold text-[#F97316] mx-auto mb-2">
+                        {s.step}
+                      </div>
+                      <div className="text-xs font-semibold text-white/80 mb-0.5">{s.label}</div>
+                      <div className="font-mono text-[9px] text-white/30">{s.desc}</div>
+                    </div>
+                    {i < 2 && (
+                      <div className="w-12 h-px bg-gradient-to-r from-[#F97316]/40 to-[#F97316]/10 shrink-0" />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div className="text-center">
+              <Link href="/signup">
+                <Button size="lg" className="font-mono text-[11px] tracking-widest uppercase gap-2 px-10 h-12 bg-[#F97316] hover:bg-[#EA580C] text-white border-0">
+                  Kostenlos testen <IconArrowUpRight className="size-4" />
+                </Button>
+              </Link>
+              <p className="font-mono text-[10px] text-white/30 mt-4 tracking-widest">
+                Alle Datenbanken kostenlos · Keine API-Keys nötig · Unbegrenzte Scans
+              </p>
+            </div>
           </div>
         </section>
 
