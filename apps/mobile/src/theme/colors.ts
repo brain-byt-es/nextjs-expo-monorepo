@@ -1,6 +1,6 @@
 export const COLORS = {
   light: {
-    primary: "rgb(0, 122, 255)",
+    primary: "rgb(249, 115, 22)",
     background: "rgb(242, 242, 247)",
     card: "rgb(255, 255, 255)",
     text: "rgb(0, 0, 0)",
@@ -16,7 +16,7 @@ export const COLORS = {
     root: "rgb(255, 255, 255)",
   },
   dark: {
-    primary: "rgb(10, 132, 255)",
+    primary: "rgb(251, 146, 60)",
     background: "rgb(0, 0, 0)",
     card: "rgb(28, 28, 30)",
     text: "rgb(255, 255, 255)",

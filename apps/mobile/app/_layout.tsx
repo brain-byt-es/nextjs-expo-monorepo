@@ -7,6 +7,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { loadSession } from "@/lib/session-store";
 import { loadOrgId } from "@/lib/org-store";
 import { initializeRevenueCat } from "@/lib/revenue-cat";
+import { ToastOverlay } from "@/components/toast-overlay";
 
 Sentry.init({
   dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
@@ -27,6 +28,7 @@ function RootLayout() {
   return (
     <KeyboardProvider>
       <Slot />
+      <ToastOverlay />
     </KeyboardProvider>
   );
 }

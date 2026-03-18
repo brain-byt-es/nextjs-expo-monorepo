@@ -14,11 +14,18 @@ import { Button } from "@/components/nativewindui/Button";
 import { Form, FormItem, FormSection } from "@/components/nativewindui/Form";
 import { Text } from "@/components/nativewindui/Text";
 import { TextField } from "@/components/nativewindui/TextField";
+import { Logo } from "@/components/Logo";
 import { signUp } from "@/lib/auth-client";
 
 export default function CredentialsScreen() {
   const { name } = useLocalSearchParams<{ name: string }>();
   const insets = useSafeAreaInsets();
+
+  // Guard: if name is missing (e.g. deep link), redirect back
+  if (!name) {
+    router.replace("/(auth)/(create-account)");
+    return null;
+  }
   const [focusedTextField, setFocusedTextField] = React.useState<
     "email" | "password" | "confirm-password" | null
   >(null);
@@ -31,22 +38,22 @@ export default function CredentialsScreen() {
   async function onSubmit() {
     if (!email) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
-      setError("Email is required");
+      setError("E-Mail ist erforderlich");
       return;
     }
     if (!password) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
-      setError("Password is required");
+      setError("Passwort ist erforderlich");
       return;
     }
     if (!confirmPassword) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
-      setError("Confirm password is required");
+      setError("Bestätigung ist erforderlich");
       return;
     }
     if (password !== confirmPassword) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
-      setError("Passwords do not match");
+      setError("Passwörter stimmen nicht überein");
       return;
     }
 
@@ -57,11 +64,14 @@ export default function CredentialsScreen() {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
       router.replace("/(app)");
     } catch (e) {
-      const message = e instanceof Error ? e.message : "Signup failed";
+      const raw = e instanceof Error ? e.message : "";
+      const message = raw.includes("already") || raw.includes("exists")
+        ? "Diese E-Mail ist bereits registriert"
+        : "Registrierung fehlgeschlagen";
       setError(message);
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
       Burnt.toast({
-        title: "Signup failed",
+        title: "Registrierung fehlgeschlagen",
         message,
         preset: "error",
         haptic: "error",
@@ -85,18 +95,19 @@ export default function CredentialsScreen() {
       >
         <View className="ios:px-12 flex-1 px-8">
           <View className="items-center pb-1">
+            <Logo size={40} showText={false} />
             <Text
               variant="title1"
               className="ios:font-bold pb-1 pt-4 text-center"
             >
               {Platform.select({
-                ios: "Set up your credentials",
-                default: "Create Account",
+                ios: "Zugangsdaten einrichten",
+                default: "Konto erstellen",
               })}
             </Text>
             {Platform.OS !== "ios" && (
               <Text className="ios:text-sm text-muted-foreground text-center">
-                Set up your credentials
+                Zugangsdaten einrichten
               </Text>
             )}
           </View>
@@ -107,12 +118,12 @@ export default function CredentialsScreen() {
                   <TextField
                     onChangeText={setEmail}
                     placeholder={Platform.select({
-                      ios: "Email",
+                      ios: "E-Mail",
                       default: "",
                     })}
                     label={Platform.select({
                       ios: undefined,
-                      default: "Email",
+                      default: "E-Mail",
                     })}
                     onSubmitEditing={() =>
                       KeyboardController.setFocusTo("next")
@@ -126,7 +137,7 @@ export default function CredentialsScreen() {
                     autoCapitalize="none"
                     returnKeyType="next"
                     errorMessage={
-                      error.includes("Email") ? error : undefined
+                      error.includes("E-Mail") ? error : undefined
                     }
                   />
                 </FormItem>
@@ -134,12 +145,12 @@ export default function CredentialsScreen() {
                   <TextField
                     onChangeText={setPassword}
                     placeholder={Platform.select({
-                      ios: "Password",
+                      ios: "Passwort",
                       default: "",
                     })}
                     label={Platform.select({
                       ios: undefined,
-                      default: "Password",
+                      default: "Passwort",
                     })}
                     onSubmitEditing={() =>
                       KeyboardController.setFocusTo("next")
@@ -151,8 +162,9 @@ export default function CredentialsScreen() {
                     returnKeyType="next"
                     textContentType="newPassword"
                     errorMessage={
-                      error.includes("Password") &&
-                      !error.includes("Confirm")
+                      error.includes("Passwort") &&
+                      !error.includes("Bestätigung") &&
+                      !error.includes("stimmen")
                         ? error
                         : undefined
                     }
@@ -162,12 +174,12 @@ export default function CredentialsScreen() {
                   <TextField
                     onChangeText={setConfirmPassword}
                     placeholder={Platform.select({
-                      ios: "Confirm password",
+                      ios: "Passwort bestätigen",
                       default: "",
                     })}
                     label={Platform.select({
                       ios: undefined,
-                      default: "Confirm password",
+                      default: "Passwort bestätigen",
                     })}
                     onFocus={() => setFocusedTextField("confirm-password")}
                     onBlur={() => setFocusedTextField(null)}
@@ -176,7 +188,7 @@ export default function CredentialsScreen() {
                     returnKeyType="done"
                     textContentType="newPassword"
                     errorMessage={
-                      error.includes("Confirm") || error.includes("match")
+                      error.includes("Bestätigung") || error.includes("stimmen")
                         ? error
                         : undefined
                     }
@@ -193,7 +205,7 @@ export default function CredentialsScreen() {
         {Platform.OS === "ios" ? (
           <View className="px-12 py-4">
             <Button size="lg" onPress={onSubmit} disabled={loading}>
-              <Text>{loading ? "Creating account..." : "Submit"}</Text>
+              <Text>{loading ? "Wird erstellt..." : "Registrieren"}</Text>
             </Button>
           </View>
         ) : (
@@ -210,7 +222,7 @@ export default function CredentialsScreen() {
               }}
             >
               <Text className="text-sm">
-                {focusedTextField !== "confirm-password" ? "Next" : "Submit"}
+                {focusedTextField !== "confirm-password" ? "Weiter" : "Registrieren"}
               </Text>
             </Button>
           </View>

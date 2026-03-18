@@ -13,6 +13,7 @@ import { Button } from "@/components/nativewindui/Button";
 import { Form, FormItem, FormSection } from "@/components/nativewindui/Form";
 import { Text } from "@/components/nativewindui/Text";
 import { TextField } from "@/components/nativewindui/TextField";
+import { Logo } from "@/components/Logo";
 
 export default function InfoScreen() {
   const [error, setError] = React.useState("");
@@ -27,12 +28,12 @@ export default function InfoScreen() {
   function onSubmit() {
     if (!firstName) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
-      setError("First Name is required");
+      setError("Vorname ist erforderlich");
       return;
     }
     if (!lastName) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
-      setError("Last Name is required");
+      setError("Nachname ist erforderlich");
       return;
     }
     setError("");
@@ -56,18 +57,19 @@ export default function InfoScreen() {
       >
         <View className="ios:px-12 flex-1 px-8">
           <View className="items-center pb-1">
+            <Logo size={40} showText={false} />
             <Text
               variant="title1"
               className="ios:font-bold pb-1 pt-4 text-center"
             >
               {Platform.select({
-                ios: "What's your name?",
-                default: "Create your account",
+                ios: "Wie heisst du?",
+                default: "Konto erstellen",
               })}
             </Text>
             {Platform.OS !== "ios" && (
               <Text className="ios:text-sm text-muted-foreground text-center">
-                What's your name?
+                Wie heisst du?
               </Text>
             )}
           </View>
@@ -78,12 +80,12 @@ export default function InfoScreen() {
                   <TextField
                     onChangeText={setFirstName}
                     placeholder={Platform.select({
-                      ios: "First Name",
+                      ios: "Vorname",
                       default: "",
                     })}
                     label={Platform.select({
                       ios: undefined,
-                      default: "First Name",
+                      default: "Vorname",
                     })}
                     onSubmitEditing={() =>
                       KeyboardController.setFocusTo("next")
@@ -95,7 +97,7 @@ export default function InfoScreen() {
                     textContentType="givenName"
                     returnKeyType="next"
                     errorMessage={
-                      error.includes("First Name") ? error : undefined
+                      error.includes("Vorname") ? error : undefined
                     }
                   />
                 </FormItem>
@@ -103,12 +105,12 @@ export default function InfoScreen() {
                   <TextField
                     onChangeText={setLastName}
                     placeholder={Platform.select({
-                      ios: "Last Name",
+                      ios: "Nachname",
                       default: "",
                     })}
                     label={Platform.select({
                       ios: undefined,
-                      default: "Last Name",
+                      default: "Nachname",
                     })}
                     onFocus={() => setFocusedTextField("last-name")}
                     onBlur={() => setFocusedTextField(null)}
@@ -117,7 +119,7 @@ export default function InfoScreen() {
                     submitBehavior="submit"
                     onSubmitEditing={onSubmit}
                     errorMessage={
-                      error.includes("Last Name") ? error : undefined
+                      error.includes("Nachname") ? error : undefined
                     }
                   />
                 </FormItem>
@@ -138,7 +140,7 @@ export default function InfoScreen() {
         {Platform.OS === "ios" ? (
           <View className="px-12 py-4">
             <Button size="lg" onPress={onSubmit}>
-              <Text>Continue</Text>
+              <Text>Weiter</Text>
             </Button>
           </View>
         ) : (
@@ -146,7 +148,7 @@ export default function InfoScreen() {
             <Link href="/(auth)/(login)" asChild replace>
               <Button variant="plain" className="px-2">
                 <Text className="text-primary text-sm">
-                  Already have an account?
+                  Bereits registriert?
                 </Text>
               </Button>
             </Link>
@@ -160,7 +162,7 @@ export default function InfoScreen() {
                 onSubmit();
               }}
             >
-              <Text className="text-sm">Next</Text>
+              <Text className="text-sm">Weiter</Text>
             </Button>
           </View>
         )}
@@ -169,7 +171,7 @@ export default function InfoScreen() {
         <Link href="/(auth)/(login)" asChild replace>
           <Button variant="plain">
             <Text className="text-primary text-sm">
-              Already have an account?
+              Bereits registriert?
             </Text>
           </Button>
         </Link>

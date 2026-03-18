@@ -15,4 +15,19 @@ config.resolver.nodeModulesPaths = [
   path.resolve(monorepoRoot, "node_modules"),
 ];
 
+// Redirect native-only modules to pure-JS shims for Expo Go compatibility
+const originalResolveRequest = config.resolver.resolveRequest;
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+  if (moduleName === "burnt") {
+    return {
+      filePath: path.resolve(__dirname, "src/lib/burnt-shim.ts"),
+      type: "sourceFile",
+    };
+  }
+  if (originalResolveRequest) {
+    return originalResolveRequest(context, moduleName, platform);
+  }
+  return context.resolveRequest(context, moduleName, platform);
+};
+
 module.exports = withNativeWind(config, { input: "./global.css" });

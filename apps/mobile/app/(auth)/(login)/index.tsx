@@ -14,6 +14,7 @@ import { Button } from "@/components/nativewindui/Button";
 import { Form, FormItem, FormSection } from "@/components/nativewindui/Form";
 import { Text } from "@/components/nativewindui/Text";
 import { TextField } from "@/components/nativewindui/TextField";
+import { Logo } from "@/components/Logo";
 import { signIn } from "@/lib/auth-client";
 
 export default function LoginScreen() {
@@ -29,12 +30,12 @@ export default function LoginScreen() {
   async function onSubmit() {
     if (!email) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
-      setError("Email is required");
+      setError("E-Mail ist erforderlich");
       return;
     }
     if (!password) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
-      setError("Password is required");
+      setError("Passwort ist erforderlich");
       return;
     }
 
@@ -45,11 +46,14 @@ export default function LoginScreen() {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
       router.replace("/(app)");
     } catch (e) {
-      const message = e instanceof Error ? e.message : "Login failed";
+      const raw = e instanceof Error ? e.message : "";
+      const message = raw.includes("Invalid") || raw.includes("invalid")
+        ? "Ungültige E-Mail oder Passwort"
+        : "Anmeldung fehlgeschlagen";
       setError(message);
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
       Burnt.toast({
-        title: "Login failed",
+        title: "Anmeldung fehlgeschlagen",
         message,
         preset: "error",
         haptic: "error",
@@ -63,7 +67,7 @@ export default function LoginScreen() {
     <View className="ios:bg-card flex-1" style={{ paddingBottom: insets.bottom }}>
       <Stack.Screen
         options={{
-          title: "Log in",
+          title: "Anmelden",
           headerShadowVisible: false,
           headerLeft() {
             return (
@@ -72,7 +76,7 @@ export default function LoginScreen() {
                 className="ios:px-0"
                 onPressOut={() => router.back()}
               >
-                <Text className="text-primary">Cancel</Text>
+                <Text className="text-primary">Abbrechen</Text>
               </Button>
             );
           },
@@ -87,18 +91,19 @@ export default function LoginScreen() {
       >
         <View className="ios:px-12 flex-1 px-8">
           <View className="items-center pb-1">
+            <Logo size={40} showText={false} />
             <Text
               variant="title1"
               className="ios:font-bold pb-1 pt-4 text-center"
             >
               {Platform.select({
-                ios: "Welcome back!",
-                default: "Log in",
+                ios: "Willkommen zurück!",
+                default: "Anmelden",
               })}
             </Text>
             {Platform.OS !== "ios" && (
               <Text className="ios:text-sm text-muted-foreground text-center">
-                Welcome back!
+                Willkommen zurück!
               </Text>
             )}
           </View>
@@ -109,12 +114,12 @@ export default function LoginScreen() {
                   <TextField
                     onChangeText={setEmail}
                     placeholder={Platform.select({
-                      ios: "Email",
+                      ios: "E-Mail",
                       default: "",
                     })}
                     label={Platform.select({
                       ios: undefined,
-                      default: "Email",
+                      default: "E-Mail",
                     })}
                     onSubmitEditing={() =>
                       KeyboardController.setFocusTo("next")
@@ -128,7 +133,7 @@ export default function LoginScreen() {
                     returnKeyType="next"
                     autoCapitalize="none"
                     errorMessage={
-                      error.includes("Email") ? error : undefined
+                      error.includes("E-Mail") ? error : undefined
                     }
                   />
                 </FormItem>
@@ -136,12 +141,12 @@ export default function LoginScreen() {
                   <TextField
                     onChangeText={setPassword}
                     placeholder={Platform.select({
-                      ios: "Password",
+                      ios: "Passwort",
                       default: "",
                     })}
                     label={Platform.select({
                       ios: undefined,
-                      default: "Password",
+                      default: "Passwort",
                     })}
                     onFocus={() => setFocusedTextField("password")}
                     onBlur={() => setFocusedTextField(null)}
@@ -150,7 +155,7 @@ export default function LoginScreen() {
                     textContentType="password"
                     onSubmitEditing={onSubmit}
                     errorMessage={
-                      error.includes("Password") || error.includes("failed")
+                      error.includes("Passwort") || error.includes("fehlgeschlagen")
                         ? error
                         : undefined
                     }
@@ -161,7 +166,7 @@ export default function LoginScreen() {
                 <Link asChild href="/(auth)/(login)/forgot-password">
                   <Button size="sm" variant="plain" className="px-0.5">
                     <Text className="text-primary text-sm">
-                      Forgot password?
+                      Passwort vergessen?
                     </Text>
                   </Button>
                 </Link>
@@ -182,7 +187,7 @@ export default function LoginScreen() {
         {Platform.OS === "ios" ? (
           <View className="px-12 py-4">
             <Button size="lg" onPress={onSubmit} disabled={loading}>
-              <Text>{loading ? "Signing in..." : "Continue"}</Text>
+              <Text>{loading ? "Anmelden..." : "Weiter"}</Text>
             </Button>
           </View>
         ) : (
@@ -193,7 +198,7 @@ export default function LoginScreen() {
               onPress={() => router.replace("/(auth)/(create-account)")}
             >
               <Text className="text-primary px-0.5 text-sm">
-                Create Account
+                Konto erstellen
               </Text>
             </Button>
             <Button
@@ -208,7 +213,7 @@ export default function LoginScreen() {
               }}
             >
               <Text className="text-sm">
-                {focusedTextField === "email" ? "Next" : "Submit"}
+                {focusedTextField === "email" ? "Weiter" : "Anmelden"}
               </Text>
             </Button>
           </View>
@@ -219,7 +224,7 @@ export default function LoginScreen() {
           variant="plain"
           onPress={() => router.replace("/(auth)/(create-account)")}
         >
-          <Text className="text-primary text-sm">Create Account</Text>
+          <Text className="text-primary text-sm">Konto erstellen</Text>
         </Button>
       )}
     </View>

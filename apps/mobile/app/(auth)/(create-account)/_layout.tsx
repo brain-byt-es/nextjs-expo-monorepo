@@ -16,7 +16,7 @@ export default function CreateAccountLayout() {
 const INDEX_SCREEN_OPTIONS = {
   headerShown: Platform.OS === "ios",
   headerShadowVisible: false,
-  title: "Create Account",
+  title: "Konto erstellen",
   headerLeft() {
     return (
       <Button
@@ -24,7 +24,7 @@ const INDEX_SCREEN_OPTIONS = {
         className="ios:px-0"
         onPressOut={() => router.back()}
       >
-        <Text className="text-primary">Cancel</Text>
+        <Text className="text-primary">Abbrechen</Text>
       </Button>
     );
   },
@@ -33,7 +33,7 @@ const INDEX_SCREEN_OPTIONS = {
 const CREDENTIALS_SCREEN_OPTIONS = {
   headerShown: Platform.OS === "ios",
   headerShadowVisible: false,
-  title: "Create Account",
+  title: "Konto erstellen",
   headerLeft() {
     return (
       <Button
@@ -41,7 +41,7 @@ const CREDENTIALS_SCREEN_OPTIONS = {
         className="ios:px-0"
         onPressOut={() => router.back()}
       >
-        <Text className="text-primary">Back</Text>
+        <Text className="text-primary">Zurück</Text>
       </Button>
     );
   },
