@@ -1,0 +1,86 @@
+---
+title: Import (CSV/Excel)
+---
+
+# Import (CSV/Excel)
+
+Der Import ermöglicht es, eine bestehende Artikelliste aus Excel oder CSV in einem Schritt nach LogistikApp zu übertragen.
+
+## Import starten
+
+1. Klicken Sie in der Materialübersicht auf **Import** (Pfeil-nach-oben-Symbol) oder drücken Sie `I`.
+2. Wählen Sie Ihre Datei aus (CSV oder XLSX, max. 10 MB).
+3. LogistikApp zeigt eine Vorschau der ersten 5 Zeilen.
+4. Ordnen Sie die Spalten den LogistikApp-Feldern zu.
+5. Wählen Sie das Verhalten bei Duplikaten.
+6. Klicken Sie auf **Import starten**.
+
+## Unterstützte Dateiformate
+
+| Format | Beschreibung |
+|--------|--------------|
+| `.csv` | Komma- oder Semikolon-getrennt, UTF-8 oder ISO-8859-1 |
+| `.xlsx` | Excel 2007 und neuer |
+| `.xls` | Excel 97–2003 (Legacy-Unterstützung) |
+
+> **Tipp:** Laden Sie die Vorlage herunter (**Import → Vorlage herunterladen**), um eine fertig strukturierte Excel-Datei zu erhalten.
+
+## Import-Vorlage
+
+Die Vorlage enthält folgende Spalten:
+
+```
+Bezeichnung | Artikelnummer | EAN | Kategorie | Einheit | Mindestbestand | Bestand | Standort | Beschreibung | Einkaufspreis
+```
+
+Pflichtfelder sind fett markiert: **Bezeichnung** und **Einheit**.
+
+## Spalten zuordnen
+
+Im Mapping-Schritt ordnen Sie Ihre Tabellenspalten den LogistikApp-Feldern zu. LogistikApp versucht die Zuordnung automatisch anhand der Spaltenbezeichnung. Beispiel:
+
+| Ihre Spalte | Zugeordnetes Feld |
+|-------------|-------------------|
+| Artikel | Bezeichnung |
+| Art.-Nr. | Artikelnummer |
+| Barcode | EAN-Code |
+| Lager | Standort |
+
+Nicht erkannte Spalten können Sie manuell zuordnen oder ignorieren.
+
+## Verhalten bei Duplikaten
+
+| Option | Beschreibung |
+|--------|--------------|
+| **Überspringen** | Bestehende Artikel werden nicht verändert |
+| **Aktualisieren** | Bestehende Artikel werden mit den neuen Daten überschrieben |
+| **Neuen Artikel anlegen** | Artikel wird mit Suffix «(2)» angelegt |
+
+Duplikate werden anhand von EAN-Code oder Artikelnummer erkannt.
+
+## Validierung und Fehlerbehandlung
+
+Vor dem Import führt LogistikApp eine Validierung durch:
+
+- Fehlende Pflichtfelder werden rot markiert
+- Ungültige EAN-Prüfsummen werden gemeldet
+- Unbekannte Standortnamen werden als «Nicht zugeordnet» markiert
+
+Sie können fehlerhafte Zeilen einzeln korrigieren oder mit dem Importieren der gültigen Zeilen fortfahren.
+
+## Import-Protokoll
+
+Nach dem Import erhalten Sie ein Protokoll:
+
+- Anzahl erfolgreich importierter Artikel
+- Anzahl aktualisierter Artikel
+- Anzahl übersprungener Artikel (Duplikate)
+- Fehlerhafte Zeilen mit Begründung
+
+Das Protokoll kann als CSV heruntergeladen werden.
+
+## Grossimport (>1000 Artikel)
+
+Bei mehr als 1000 Artikeln wird der Import im Hintergrund verarbeitet. Sie werden per E-Mail benachrichtigt, sobald der Import abgeschlossen ist. Der Status ist unter **Einstellungen → Import-Protokolle** einsehbar.
+
+> **Hinweis:** Während eines laufenden Imports können keine weiteren Importe gestartet werden.

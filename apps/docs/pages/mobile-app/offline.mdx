@@ -1,0 +1,47 @@
+---
+title: Offline-Modus
+---
+
+# Offline-Modus
+
+LogistikApp funktioniert auch ohne aktive Internetverbindung. Änderungen werden lokal gespeichert und beim nächsten Verbindungsaufbau automatisch synchronisiert.
+
+## Was funktioniert offline?
+
+| Funktion | Offline verfügbar |
+|----------|------------------|
+| Artikel anzeigen (zuletzt geladen) | Ja |
+| Barcode scannen und Artikel identifizieren | Ja (nur bekannte Codes) |
+| Lieferschein erstellen | Ja (gespeichert lokal) |
+| Bestandskorrekturen | Ja (gespeichert lokal) |
+| Werkzeug aus-/einchecken | Ja (gespeichert lokal) |
+| Inventur-Erfassung | Ja (gespeichert lokal) |
+| Artikel erstellen (neu) | Nein |
+| Fotos hochladen | Nein (wird zurückgestellt) |
+| Berichte abrufen | Nein |
+
+## Offline-Status anzeigen
+
+Wenn keine Verbindung besteht, erscheint oben in der App ein **orangefarbener Banner**: «Offline – Änderungen werden lokal gespeichert».
+
+## Synchronisation nach Wiederverbindung
+
+Sobald die Verbindung wiederhergestellt wird:
+
+1. Die App synchronisiert automatisch alle lokalen Änderungen zum Server.
+2. Ein kurzes «Synchronisiert» erscheint in der Statusleiste.
+3. Falls Konflikte aufgetreten sind (z.B. der gleiche Artikel wurde von einem anderen Benutzer geändert), werden Sie informiert und können entscheiden welche Version behalten werden soll.
+
+> **Hinweis:** Stellen Sie sicher, dass die App vor dem Einsatz in Gebieten ohne Empfang zuletzt mit dem Internet verbunden war, damit die neuesten Daten geladen sind.
+
+## Datenmenge verwalten
+
+Die App lädt standardmässig alle aktiven Artikel und Standorte für den Offline-Zugriff. Bei grossen Datenmengen (>5000 Artikel) können Sie die Offline-Daten einschränken:
+
+1. Gehen Sie zu **App-Einstellungen → Offline-Daten**.
+2. Wählen Sie, welche Standorte offline verfügbar sein sollen.
+3. Tippen Sie auf **Jetzt synchronisieren** um die Auswahl sofort zu laden.
+
+## Synchronisations-Protokoll
+
+Unter **App-Einstellungen → Synchronisation → Protokoll** sehen Sie alle synchronisierten Aktionen der letzten 7 Tage mit Zeitstempel und Status.

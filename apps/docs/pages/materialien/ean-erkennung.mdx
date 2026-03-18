@@ -1,0 +1,66 @@
+---
+title: EAN Auto-Erkennung
+---
+
+# EAN Auto-Erkennung
+
+LogistikApp erkennt EAN-Codes automatisch über die Kamera und schlägt passende Artikeldaten aus einer globalen Produktdatenbank vor.
+
+## Funktionsweise
+
+Wenn Sie beim Anlegen eines neuen Artikels auf das **Kamera-Symbol** neben dem EAN-Feld klicken, aktiviert LogistikApp den Kamera-Scanner:
+
+1. Richten Sie die Kamera auf den Barcode (EAN-8, EAN-13, Code128, QR).
+2. Der Code wird innerhalb von 1–2 Sekunden erkannt.
+3. LogistikApp sucht automatisch in der Produktdatenbank nach Treffern.
+4. Falls ein Treffer gefunden wird, erscheint ein Vorschlagsdialog mit Bezeichnung, Hersteller und weiteren bekannten Daten.
+5. Klicken Sie auf **Übernehmen** um die Felder automatisch auszufüllen, oder auf **Ignorieren** um nur den EAN-Code zu übernehmen.
+
+## Unterstützte Barcodeformate
+
+| Format | Typische Verwendung |
+|--------|-------------------|
+| EAN-13 | Konsumgüter, Handelswaren |
+| EAN-8 | Kleinverpackungen |
+| Code128 | Industrie, Logistik |
+| Code39 | Ältere Systeme, Teile-Nummerierung |
+| QR Code | LogistikApp-interne Artikel-Links |
+| Data Matrix | Elektronikbauteile, Medizinprodukte |
+
+## Produktdatenbank
+
+Die Produktdatenbank enthält über 50 Millionen internationale Produkte. Verfügbare Daten je nach Produkt:
+
+- Bezeichnung (in mehreren Sprachen)
+- Hersteller / Marke
+- Produktkategorie
+- Produktbild
+- Gewicht und Abmessungen
+- Inhaltsstoffe / Materialien (für bestimmte Kategorien)
+
+> **Hinweis:** Die Datenbank deckt hauptsächlich Konsumgüter und gängige Industrieprodukte ab. Sonderanfertigungen, Eigenprodukte oder sehr spezifische Industriekomponenten sind oft nicht enthalten. In diesem Fall kann der EAN-Code trotzdem erfasst werden — die übrigen Felder füllen Sie manuell aus.
+
+## Eigene EAN-Codes erstellen
+
+Falls Ihre Produkte keinen standardisierten EAN haben, können Sie eigene QR-Codes oder internen Barcodes erstellen:
+
+1. Legen Sie den Artikel ohne EAN an.
+2. Öffnen Sie den Artikel und klicken Sie auf **Etikette drucken**.
+3. LogistikApp generiert automatisch einen eindeutigen internen Code (z.B. `LGA-000123`).
+4. Drucken Sie die Etikette und kleben Sie sie auf den Artikel.
+
+Interne Codes werden in der gleichen Weise gescannt wie EAN-Codes.
+
+## Erkennung in der mobilen App
+
+Die mobile App unterstützt denselben EAN-Scanner mit Echtzeit-Erkennung. Da mobile Geräte direktere Kamerazugriffe haben, ist die Erkennungsgeschwindigkeit auf Smartphones in der Regel höher als im Browser. Details unter [Mobile App → Barcode-Scanner](/mobile-app/scanner).
+
+## Erkennung auf der Desktop-Seite
+
+Im Browser wird die Kamera über die WebRTC-API angesprochen. Voraussetzungen:
+
+- HTTPS-Verbindung (immer gegeben auf app.logistikapp.ch)
+- Browser-Berechtigung für Kamerazugriff (beim ersten Mal wird eine Anfrage angezeigt)
+- Aktueller Browser (Chrome, Firefox, Safari, Edge)
+
+> **Tipp:** Falls der Kamerazugriff nicht funktioniert, prüfen Sie die Browser-Einstellungen unter «Website-Einstellungen → Kamera» und stellen Sie sicher, dass app.logistikapp.ch zugelassen ist.

@@ -1,0 +1,138 @@
+---
+title: API – Materialien
+---
+
+# API – Materialien
+
+Alle Endpunkte für die Verwaltung von Materialien.
+
+## Materialien auflisten
+
+```
+GET /api/v1/materials
+```
+
+**Query-Parameter:**
+
+| Parameter | Typ | Beschreibung |
+|-----------|-----|--------------|
+| `page` | integer | Seite (Standard: 1) |
+| `per_page` | integer | Einträge pro Seite (Standard: 50, max: 200) |
+| `search` | string | Volltextsuche (Name, Artikelnummer, EAN) |
+| `category` | string | Filter nach Kategorie |
+| `location_id` | string | Filter nach Standort |
+| `low_stock` | boolean | Nur Artikel unter Mindestbestand |
+
+**Beispiel-Request:**
+
+```bash
+curl "https://app.logistikapp.ch/api/v1/materials?search=schraube&low_stock=true" \
+  -H "Authorization: Bearer TOKEN"
+```
+
+**Beispiel-Response:**
+
+```json
+{
+  "data": [
+    {
+      "id": "mat_abc123",
+      "name": "Betonschrauben 6×60mm",
+      "sku": "BS-6-60",
+      "ean": "4012345678901",
+      "category": "Befestigungsmittel",
+      "unit": "STK",
+      "stock": 38,
+      "min_stock": 50,
+      "location_id": "loc_xyz456",
+      "location_name": "Hauptlager Zürich",
+      "created_at": "2025-01-15T09:00:00Z",
+      "updated_at": "2025-03-18T10:30:00Z",
+      "custom_fields": {}
+    }
+  ],
+  "meta": {
+    "total": 1,
+    "page": 1,
+    "per_page": 50
+  }
+}
+```
+
+## Material abrufen
+
+```
+GET /api/v1/materials/:id
+```
+
+Gibt ein einzelnes Material zurück. Antwort enthält zusätzlich die vollständige Bestandshistorie der letzten 30 Tage.
+
+## Material erstellen
+
+```
+POST /api/v1/materials
+```
+
+**Request-Body:**
+
+```json
+{
+  "name": "Betonschrauben 6×60mm",
+  "sku": "BS-6-60",
+  "ean": "4012345678901",
+  "category": "Befestigungsmittel",
+  "unit": "STK",
+  "stock": 100,
+  "min_stock": 50,
+  "location_id": "loc_xyz456",
+  "description": "Für Befestigung in Beton und Mauerwerk",
+  "purchase_price": 0.12
+}
+```
+
+**Pflichtfelder:** `name`, `unit`
+
+**Response:** `201 Created` mit dem erstellten Material-Objekt.
+
+## Material aktualisieren
+
+```
+PATCH /api/v1/materials/:id
+```
+
+Nur übermittelte Felder werden aktualisiert (Partial Update). Felder die nicht im Body enthalten sind bleiben unverändert.
+
+## Bestand anpassen
+
+```
+POST /api/v1/materials/:id/stock-adjustment
+```
+
+```json
+{
+  "type": "add",
+  "quantity": 50,
+  "reason": "Nachbestellung erhalten",
+  "reference": "LNR-2025-0042"
+}
+```
+
+`type` kann sein: `set` (absolut), `add` (addieren), `subtract` (subtrahieren)
+
+## Material archivieren
+
+```
+DELETE /api/v1/materials/:id
+```
+
+Archiviert das Material (kein permanentes Löschen). Response: `204 No Content`.
+
+## Bestandshistorie abrufen
+
+```
+GET /api/v1/materials/:id/stock-history
+```
+
+**Query-Parameter:** `from` (ISO 8601), `to` (ISO 8601), `page`, `per_page`
+
+Gibt alle Bestandsänderungen des Materials zurück, mit Vorher/Nachher-Werten, Typ und Benutzer.

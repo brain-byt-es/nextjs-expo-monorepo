@@ -1,0 +1,80 @@
+---
+title: Bestandsverwaltung
+---
+
+# Bestandsverwaltung
+
+Der Bestand eines Artikels wird automatisch aktualisiert wenn Lieferscheine erstellt, Inventuren abgeschlossen oder Bestandskorrekturen durchgeführt werden.
+
+## Bestandsänderungen verstehen
+
+LogistikApp unterscheidet vier Arten von Bestandsänderungen:
+
+| Typ | Symbol | Bestandseffekt | Auslöser |
+|-----|--------|---------------|----------|
+| Zugang | ▲ Grün | Erhöht | Lieferschein Typ «Eingang», manuelle Korrektur |
+| Abgang | ▼ Rot | Reduziert | Lieferschein Typ «Ausgang», manuelle Korrektur |
+| Korrektur | ↔ Blau | Setzt exakt | Inventur, manuelle Korrektur auf Sollwert |
+| Transfer | ⇆ Orange | Neutral (Standortwechsel) | Umbuchung zwischen Standorten |
+
+## Manuelle Bestandskorrektur
+
+Für einzelne Korrekturen (z.B. Schwund, Beschädigung oder Inventurdifferenz):
+
+1. Öffnen Sie den Artikel.
+2. Klicken Sie auf **Bestand anpassen** neben dem aktuellen Bestand.
+3. Wählen Sie:
+   - **Absolut setzen**: Trägt den neuen Ist-Bestand ein (z.B. nach Zählung: 47)
+   - **Hinzufügen**: Addiert zum bestehenden Bestand
+   - **Abziehen**: Subtrahiert vom bestehenden Bestand
+4. Geben Sie Menge und Grund ein (Pflichtfeld für die Rückverfolgbarkeit).
+5. Klicken Sie auf **Speichern**.
+
+> **Tipp:** Nutzen Sie Bestandskorrekturen sparsam. Für regelmässige Zu- und Abgänge erstellen Sie besser Lieferscheine — so bleibt die Bewegungshistorie vollständig nachvollziehbar.
+
+## Bestandshistorie
+
+Jeder Artikel hat eine vollständige Bestandshistorie. So rufen Sie sie ab:
+
+1. Öffnen Sie den Artikel.
+2. Klicken Sie auf den Tab **Historie**.
+
+Die Historie zeigt:
+- Datum und Uhrzeit der Änderung
+- Vorheriger Bestand / Neuer Bestand / Differenz
+- Typ der Änderung (Lieferschein, Inventur, Korrektur)
+- Benutzer, der die Änderung vorgenommen hat
+- Verknüpfter Lieferschein (klickbar)
+
+## Mehrstandort-Bestand
+
+Falls ein Artikel an mehreren Standorten gelagert wird, zeigt die Artikeldetailseite den Bestand pro Standort:
+
+![Mehrstandort-Bestand](/screenshots/materialien-mehrstandort.png)
+
+Um den Bestand zwischen Standorten zu verschieben (Umbuchung):
+
+1. Klicken Sie auf **Umbuchung erstellen**.
+2. Wählen Sie **Quellstandort**, **Zielstandort** und **Menge**.
+3. Speichern Sie. Beide Standorte werden sofort aktualisiert.
+
+## Mindestbestand-Benachrichtigungen
+
+Wenn der Bestand unter den definierten Mindestbestand fällt:
+
+1. Der Artikel wird in der Übersicht rot markiert.
+2. Eine Benachrichtigung wird an Administratoren und Manager gesendet (falls aktiviert).
+3. In der täglichen Zusammenfassung erscheint eine Liste aller Artikel unter Mindestbestand.
+
+Konfigurieren Sie Benachrichtigungen unter [Einstellungen → Benachrichtigungen](/einstellungen/benachrichtigungen).
+
+## Bestand exportieren
+
+Den aktuellen Bestand aller Artikel exportieren:
+
+1. Gehen Sie zu **Berichte → Datenexport**.
+2. Wählen Sie **Bestandsliste**.
+3. Optional: Filtern Sie nach Standort oder Kategorie.
+4. Wählen Sie das Format (CSV oder Excel) und laden Sie die Datei herunter.
+
+Mehr dazu unter [Berichte → Datenexport](/berichte/export).

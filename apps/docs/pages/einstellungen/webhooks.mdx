@@ -1,0 +1,92 @@
+---
+title: Webhooks
+---
+
+# Webhooks
+
+Webhooks ermöglichen es, externe Systeme in Echtzeit über Ereignisse in LogistikApp zu informieren. Bei jedem auslösenden Ereignis sendet LogistikApp einen HTTP POST-Request an die von Ihnen konfigurierte URL.
+
+## Webhook erstellen
+
+1. Gehen Sie zu **Einstellungen → Webhooks**.
+2. Klicken Sie auf **+ Webhook hinzufügen**.
+3. Füllen Sie das Formular aus:
+   - **Name**: Beschreibender Name (z.B. «ERP-Synchronisation»)
+   - **URL**: Ihre Empfänger-URL (muss HTTPS sein)
+   - **Ereignisse**: Welche Ereignisse sollen gesendet werden (s. unten)
+   - **Geheimnis**: Optional. Ein Secret-Token das in der Signatur des Requests enthalten ist
+4. Klicken Sie auf **Speichern**.
+5. Klicken Sie auf **Test-Request senden** um die Verbindung zu prüfen.
+
+## Unterstützte Ereignisse
+
+| Ereignis | Auslöser |
+|----------|---------|
+| `material.created` | Neues Material angelegt |
+| `material.updated` | Material geändert |
+| `material.deleted` | Material archiviert |
+| `stock.changed` | Bestand geändert (mit Vorher/Nachher) |
+| `stock.low` | Bestand unter Mindestbestand |
+| `delivery.created` | Lieferschein erstellt |
+| `delivery.completed` | Lieferschein abgeschlossen |
+| `delivery.cancelled` | Lieferschein storniert |
+| `tool.checked_out` | Werkzeug ausgecheckt |
+| `tool.checked_in` | Werkzeug eingecheckt |
+| `tool.maintenance_due` | Wartung fällig (täglich geprüft) |
+| `inventory.completed` | Inventur abgeschlossen |
+| `user.invited` | Mitglied eingeladen |
+| `user.joined` | Einladung angenommen |
+
+## Payload-Format
+
+Alle Webhooks senden JSON im folgenden Format:
+
+```json
+{
+  "event": "stock.changed",
+  "timestamp": "2025-03-18T10:30:00Z",
+  "organization_id": "org_abc123",
+  "data": {
+    "material_id": "mat_xyz789",
+    "material_name": "Betonschrauben 6×60mm",
+    "ean": "4012345678901",
+    "previous_stock": 45,
+    "new_stock": 38,
+    "difference": -7,
+    "reason": "delivery",
+    "delivery_id": "del_456"
+  }
+}
+```
+
+## Signatur prüfen
+
+Wenn Sie ein **Geheimnis** gesetzt haben, enthält jeder Request den Header `X-LogistikApp-Signature`. Dieser ist ein HMAC-SHA256-Hash des Request-Body mit Ihrem Geheimnis:
+
+```javascript
+// Node.js Beispiel
+const crypto = require('crypto');
+const signature = req.headers['x-logistikapp-signature'];
+const expected = crypto
+  .createHmac('sha256', process.env.WEBHOOK_SECRET)
+  .update(req.rawBody)
+  .digest('hex');
+if (signature !== expected) {
+  return res.status(401).send('Invalid signature');
+}
+```
+
+## Wiederholungsversuche
+
+Bei fehlgeschlagenen Requests (HTTP 4xx/5xx oder Timeout) versucht LogistikApp es erneut:
+
+- Nach 1 Minute
+- Nach 5 Minuten
+- Nach 30 Minuten
+- Nach 2 Stunden
+
+Nach 4 erfolglosen Versuchen wird der Webhook als **Fehlerhaft** markiert und Sie werden per E-Mail benachrichtigt.
+
+## Webhook-Logs
+
+Unter **Einstellungen → Webhooks → [Webhook] → Logs** sehen Sie alle gesendeten Requests der letzten 30 Tage mit Status-Code und Response-Body.

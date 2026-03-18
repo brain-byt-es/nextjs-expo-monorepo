@@ -1,0 +1,81 @@
+---
+title: API-Authentifizierung
+---
+
+# API-Authentifizierung
+
+Die LogistikApp-API verwendet Bearer-Tokens für die Authentifizierung.
+
+## API-Token erstellen
+
+1. Melden Sie sich an und gehen Sie zu **Einstellungen → API → API-Token**.
+2. Klicken Sie auf **+ Neues Token erstellen**.
+3. Vergeben Sie einen beschreibenden Namen (z.B. «ERP-Integration», «Automatisierung Lagerverwaltung»).
+4. Wählen Sie einen **Gültigkeitszeitraum**: 30 Tage / 90 Tage / 1 Jahr / unbegrenzt.
+5. Wählen Sie den **Berechtigungsumfang** (Scopes):
+   - `materials:read` — Materialien lesen
+   - `materials:write` — Materialien erstellen/bearbeiten
+   - `deliveries:read` — Lieferscheine lesen
+   - `deliveries:write` — Lieferscheine erstellen/abschliessen
+   - `tools:read` — Werkzeuge lesen
+   - `tools:write` — Werkzeuge bearbeiten, aus-/einchecken
+   - `reports:read` — Berichte und Exporte abrufen
+   - `admin` — Vollzugriff (nur für Administratoren)
+6. Klicken Sie auf **Token erstellen**.
+7. **Kopieren Sie das Token sofort** — es wird nur einmal angezeigt.
+
+## Token verwenden
+
+Fügen Sie das Token in jeden API-Request als Bearer-Token im Authorization-Header ein:
+
+```bash
+curl https://app.logistikapp.ch/api/v1/materials \
+  -H "Authorization: Bearer IHR_TOKEN_HIER" \
+  -H "Content-Type: application/json"
+```
+
+```javascript
+// JavaScript / Node.js
+const response = await fetch('https://app.logistikapp.ch/api/v1/materials', {
+  headers: {
+    'Authorization': `Bearer ${process.env.LOGISTIKAPP_TOKEN}`,
+    'Content-Type': 'application/json',
+  }
+});
+const data = await response.json();
+```
+
+```python
+# Python
+import requests
+
+headers = {
+    'Authorization': f'Bearer {os.environ["LOGISTIKAPP_TOKEN"]}',
+    'Content-Type': 'application/json',
+}
+response = requests.get('https://app.logistikapp.ch/api/v1/materials', headers=headers)
+```
+
+## Sicherheitshinweise
+
+- Speichern Sie Token niemals im Quellcode oder in Git-Repositories.
+- Verwenden Sie Umgebungsvariablen (`LOGISTIKAPP_TOKEN`).
+- Vergeben Sie nur die Scopes die für Ihre Integration benötigt werden (Prinzip der minimalen Rechte).
+- Rotieren Sie Token regelmässig.
+
+## Token widerrufen
+
+Unter **Einstellungen → API → API-Token** können Sie einzelne Token jederzeit widerrufen. Das Token ist dann sofort ungültig.
+
+## Fehler bei ungültigem Token
+
+```json
+HTTP 401 Unauthorized
+
+{
+  "error": {
+    "code": "unauthorized",
+    "message": "Ungültiges oder abgelaufenes API-Token."
+  }
+}
+```

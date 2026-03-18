@@ -1,0 +1,87 @@
+---
+title: Häufige Fragen
+---
+
+# Häufige Fragen (FAQ)
+
+## Allgemein
+
+### Was ist LogistikApp?
+LogistikApp ist eine webbasierte Software für Inventar- und Werkzeugverwaltung, speziell für Schweizer KMU entwickelt. Sie können Materialbestände verwalten, Werkzeuge verfolgen, Lieferscheine erstellen und Inventuren durchführen — alles in einer App, verfügbar im Browser und als Mobile-App.
+
+### Muss ich etwas installieren?
+Nein. Die Web-App läuft in jedem modernen Browser, keine Installation nötig. Die Mobile-App für iOS und Android ist optional, aber empfohlen für die Scanner-Funktionen.
+
+### Funktioniert LogistikApp auch ohne Internet?
+Die Mobile-App verfügt über einen [Offline-Modus](/mobile-app/offline). Änderungen werden lokal gespeichert und synchronisiert sobald die Verbindung wiederhergestellt wird. Die Web-App benötigt eine aktive Internetverbindung.
+
+### In welchen Sprachen ist die App verfügbar?
+Aktuell: Deutsch, Französisch, Italienisch und Englisch. Die Sprache kann pro Benutzer individuell eingestellt werden.
+
+## Konto & Abo
+
+### Gibt es eine kostenlose Testphase?
+Ja. Sie können LogistikApp 14 Tage kostenlos und ohne Kreditkarte testen. Danach wählen Sie einen Plan oder Ihre Daten werden gesichert bis Sie sich entscheiden.
+
+### Wie kann ich meinen Plan upgraden?
+Gehen Sie zu **Einstellungen → Abonnement** und wählen Sie den gewünschten Plan. Das Upgrade ist sofort wirksam. Die Differenz zum neuen Plan wird anteilig für den laufenden Monat berechnet.
+
+### Kann ich mein Abo monatlich kündigen?
+Monatliche Pläne können monatlich gekündigt werden. Jahrespläne können nicht monatlich gekündigt werden; es gibt keine anteilige Rückerstattung. Nach der Kündigung haben Sie bis zum Ende der bezahlten Periode weiterhin Zugriff.
+
+### Was passiert mit meinen Daten nach der Kündigung?
+Ihre Daten werden 90 Tage nach Ablauf des Abos aufbewahrt, damit Sie Daten exportieren können. Danach werden sie dauerhaft gelöscht. Wir senden rechtzeitig eine Erinnerung.
+
+## Materialien & Bestände
+
+### Wie viele Artikel kann ich erfassen?
+- Starter: bis 500 Artikel
+- Business: bis 5 000 Artikel
+- Enterprise: unbegrenzt
+
+### Kann ich Artikel mit negativem Bestand haben?
+Standardmässig nein. LogistikApp verhindert dass der Bestand unter 0 fällt. Falls Sie über Kontingente disponieren möchten, können Administratoren den «Negativbestand erlauben»-Modus aktivieren.
+
+### Wie importiere ich meine bestehende Artikelliste?
+Über **Materialien → Import** können Sie CSV oder Excel hochladen. Laden Sie die Vorlage herunter um das korrekte Format zu sehen. Details unter [Import (CSV/Excel)](/materialien/import).
+
+### Kann ich Bestandskorrekturen rückgängig machen?
+Manuelle Korrekturen können nicht direkt rückgängig gemacht werden, aber Sie können eine Gegenbuchung vornehmen (z.B. -10 wenn irrtümlich +10 gebucht wurde). Die vollständige Historie bleibt sichtbar.
+
+## Werkzeuge
+
+### Was ist der Unterschied zwischen Materialien und Werkzeugen?
+Materialien werden verbraucht (der Bestand sinkt beim Entnehmen). Werkzeuge werden geliehen und zurückgegeben — das Gerät bleibt als Objekt in der Datenbank. Jedes Werkzeug hat eine eigene Buchungshistorie.
+
+### Kann ein Werkzeug mehreren Personen gleichzeitig zugewiesen sein?
+Nein. Ein Werkzeug ist immer genau einer Person oder einem Standort zugewiesen. Falls dasselbe Gerät von mehreren Personen genutzt wird, empfehlen wir es als geteilte Ressource am Standort zu lassen.
+
+## Mobile App
+
+### Welche Geräte werden unterstützt?
+iOS 16+ (iPhone, iPad) und Android 10+. Für das beste Scanner-Erlebnis empfehlen wir Geräte mit einer Kamera mit Autofokus.
+
+### Kann ich einen externen Barcode-Scanner verwenden?
+Ja. Bluetooth-Barcode-Scanner die sich als Tastatur emulieren (HID-Modus) funktionieren direkt mit LogistikApp. Schliessen Sie den Scanner an und scannen Sie — der Code wird automatisch in das fokussierte Eingabefeld eingegeben.
+
+## Sicherheit & Datenschutz
+
+### Wo werden meine Daten gespeichert?
+Auf Servern in deutschen Rechenzentren (Hetzner). Ein Umzug in Schweizer Rechenzentren ist für 2026 geplant. Mehr unter [Hosting & Infrastruktur](/sicherheit/hosting).
+
+### Ist LogistikApp DSGVO/nDSG-konform?
+Ja. Details unter [Datenschutz & nDSG](/sicherheit/datenschutz).
+
+### Kann ich meine Daten exportieren?
+Ja. Unter **Berichte → Datenexport** können Sie alle Daten als CSV, Excel oder PDF exportieren. Für einen vollständigen Daten-Dump (JSON) kontaktieren Sie den Support.
+
+## Technisches
+
+### Gibt es eine API?
+Ja. Vollständige REST-API-Dokumentation unter [API-Dokumentation](/api-docs/uebersicht).
+
+### Welche Browser werden unterstützt?
+Chrome 90+, Firefox 90+, Safari 15+, Edge 90+. Internet Explorer wird nicht unterstützt.
+
+### Kann ich LogistikApp in mein ERP integrieren?
+Ja, über die [REST-API](/api-docs/uebersicht) oder [Webhooks](/einstellungen/webhooks). Für Standardintegrationen (SAP, Abacus, Bexio) kontaktieren Sie den Support.

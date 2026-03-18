@@ -1,0 +1,57 @@
+---
+title: Zusatzfelder
+---
+
+# Zusatzfelder
+
+Mit Zusatzfeldern (Custom Fields) können Sie eigene Felder zu Materialien, Werkzeugen, Standorten und Lieferscheinen hinzufügen.
+
+> **Verfügbarkeit:** Zusatzfelder sind ab dem **Business-Plan** verfügbar.
+
+## Zusatzfeld erstellen
+
+1. Gehen Sie zu **Einstellungen → Zusatzfelder**.
+2. Wählen Sie das Objekt: Material, Werkzeug, Standort oder Lieferschein.
+3. Klicken Sie auf **+ Feld hinzufügen**.
+4. Konfigurieren Sie das Feld:
+   - **Bezeichnung**: Sichtbarer Name des Felds
+   - **API-Schlüssel**: Automatisch generierter technischer Name (für API/Webhooks)
+   - **Typ**: Freitext, Zahl, Datum, Ja/Nein, Auswahlliste, URL
+   - **Pflichtfeld**: Muss beim Anlegen ausgefüllt werden
+   - **In Tabelle anzeigen**: Erscheint als Spalte in der Übersicht
+5. Klicken Sie auf **Speichern**.
+
+## Feldtypen
+
+| Typ | Beispiel | Eignet sich für |
+|-----|---------|-----------------|
+| **Freitext** | «Lagerplatz B3-07» | Notizen, Beschreibungen |
+| **Zahl** | «Betriebsstunden: 247» | Messwerte, Zählerstände |
+| **Datum** | «Nächste Prüfung: 15.06.2026» | Fristen, Termine |
+| **Ja/Nein** | «Geprüft: Ja» | Status-Flags |
+| **Auswahlliste** | «Zustand: Neu / Gut / Beschädigt» | Kategorisierungen |
+| **URL** | «Datenblatt: https://...» | Links zu externen Ressourcen |
+
+## Felder in Berichten und Export
+
+Alle Zusatzfelder erscheinen im CSV/Excel-Export. In den Berichten können Sie nach Zusatzfeldern filtern und gruppieren.
+
+## Felder in der API
+
+Zusatzfelder sind über die API unter dem `custom_fields`-Objekt verfügbar:
+
+```json
+{
+  "id": "mat_123",
+  "name": "Betonschrauben",
+  "custom_fields": {
+    "lagerplatz": "B3-07",
+    "letzte_pruefung": "2025-01-15",
+    "geprueft": true
+  }
+}
+```
+
+## Felder löschen
+
+Felder können gelöscht werden — dabei gehen alle gespeicherten Werte dieses Felds verloren. Diese Aktion kann nicht rückgängig gemacht werden. Sie werden vor der Löschung gewarnt und müssen die Aktion mit der Eingabe des Feldnamens bestätigen.

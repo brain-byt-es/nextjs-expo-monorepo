@@ -1,0 +1,51 @@
+---
+title: Werkzeuge – Übersicht
+---
+
+# Werkzeuge – Übersicht
+
+Das Werkzeug-Modul verfolgt den Lebenszyklus jedes Geräts vom Kauf über den täglichen Einsatz bis zur Wartung oder Entsorgung.
+
+## Unterschied: Materialien vs. Werkzeuge
+
+| Merkmal | Materialien | Werkzeuge |
+|---------|-------------|-----------|
+| Verbrauchbar | Ja (Bestand sinkt) | Nein (Gerät bleibt erhalten) |
+| Einzel-Tracking | Optional (via EAN) | Immer (jedes Gerät einzeln) |
+| Checkout/Checkin | Nein | Ja |
+| Wartungsplanung | Nein | Ja |
+| Buchungshistorie | Bestandshistorie | Vollständige Leihehistorie |
+
+> **Empfehlung:** Erfassen Sie Verbrauchsmaterial (Schrauben, Kabel, Farbe) als **Materialien** und Geräte (Bohrmaschinen, Messgeräte, Fahrzeuge) als **Werkzeuge**.
+
+## Werkzeug-Übersicht
+
+Die Übersicht zeigt alle Werkzeuge mit:
+
+- **Name** und **Seriennummer**
+- **Hersteller / Modell**
+- **Aktueller Status** (Verfügbar, Ausgeliehen, In Wartung, Defekt)
+- **Aktuelle Person / Standort** (falls ausgeliehen)
+- **Nächste Wartung** (Datum)
+- **Kaufdatum** und **Garantie bis**
+
+## Status-Ampel
+
+| Status | Farbe | Bedeutung |
+|--------|-------|-----------|
+| Verfügbar | Grün | Am Standort, kann ausgeliehen werden |
+| Ausgeliehen | Gelb | Bei Mitarbeitenden oder auf Baustelle |
+| Überfällig | Orange | Rückgabedatum überschritten |
+| In Wartung | Blau | Aktuell beim Service |
+| Defekt | Rot | Ausser Betrieb, Reparatur ausstehend |
+| Archiviert | Grau | Entsorgt oder verkauft |
+
+## Filter und Suche
+
+- Suche nach Name, Seriennummer, Modell oder internem Code
+- Filter nach Status, Standort, Kategorie oder Mitarbeitenden
+- Tastenkürzel: `/` für Suche, `N` für neues Werkzeug
+
+## Wartungskalender
+
+Klicken Sie oben rechts auf **Kalenderansicht** um alle geplanten Wartungen in einer Monatsübersicht zu sehen. Rot hervorgehobene Einträge sind überfällig.

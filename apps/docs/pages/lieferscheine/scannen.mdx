@@ -1,0 +1,61 @@
+---
+title: Positionen scannen
+---
+
+# Positionen scannen
+
+Der eingebaute Barcode-Scanner ermöglicht das schnelle Erfassen von Lieferschein-Positionen ohne manuelle Suche.
+
+## Scanner öffnen
+
+In einem offenen Lieferschein (Entwurf-Status):
+
+1. Klicken Sie auf das **Scanner-Symbol** (Kamera) neben «Position hinzufügen».
+2. Der Scanner öffnet sich in einem Vollbild-Overlay.
+3. Erteilen Sie dem Browser bei der ersten Nutzung die Kameraberechtigung.
+
+## Scan-Workflow
+
+1. Richten Sie die Kamera auf den Barcode oder QR-Code des Artikels.
+2. LogistikApp erkennt den Code und zeigt den Artikel sofort an.
+3. Prüfen Sie Name und Menge.
+4. Tippen Sie auf **Hinzufügen** oder drücken Sie Enter — die Position wird zum Lieferschein hinzugefügt.
+5. Der Scanner bleibt aktiv für den nächsten Artikel.
+
+> **Tipp:** Auf einem Tablet oder Smartphone läuft der Scanner besonders flüssig. Legen Sie das Gerät auf einem Tisch ab und fahren Sie mit den Artikeln über die Kamera — keine Klick-Aktionen nötig bei aktiviertem **Automatik-Modus**.
+
+## Automatik-Modus
+
+Im Automatik-Modus wird nach jedem erkannten Code direkt eine Position mit der Standardmenge (1) hinzugefügt, ohne Bestätigungsschritt. Ideal für das schnelle Scannen vieler Positionen.
+
+Aktivieren Sie ihn mit dem Schalter **Auto** oben rechts im Scanner-Overlay.
+
+> **Hinweis:** Im Automatik-Modus können Positionen nachträglich in der Positionsliste korrigiert werden.
+
+## Mengeneingabe per Scanner
+
+Falls jeder Artikel mehrfach vorhanden ist, gibt es zwei Wege:
+
+1. **Artikel mehrfach scannen**: Jeder Scan erhöht die Menge um 1.
+2. **Menge direkt eingeben**: Tippen Sie die Menge ins Feld ein bevor Sie **Hinzufügen** bestätigen.
+
+## Unbekannter Barcode
+
+Falls LogistikApp einen gescannten Barcode nicht kennt:
+
+1. Es erscheint eine Meldung «Artikel nicht gefunden».
+2. Sie können direkt einen **neuen Artikel anlegen** — das Formular ist mit dem EAN-Code vorausgefüllt.
+3. Oder Sie klicken auf **Ignorieren** und scannen weiter.
+
+## Scanner in der mobilen App
+
+Der Scanner in der iOS- und Android-App nutzt die native Kamera-API und ist in der Regel schneller und genauer als der Browser-Scanner. Details unter [Mobile App → Barcode-Scanner](/mobile-app/scanner).
+
+## Scannen ohne Barcode
+
+Falls ein Artikel keinen Barcode hat:
+
+1. Schliessen Sie den Scanner.
+2. Klicken Sie auf **+ Position hinzufügen**.
+3. Suchen Sie den Artikel per Textsuche (Name oder Artikelnummer).
+4. Wählen Sie den Artikel und geben Sie die Menge ein.

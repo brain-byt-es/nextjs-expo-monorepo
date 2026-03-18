@@ -1,0 +1,125 @@
+---
+title: API – Werkzeuge
+---
+
+# API – Werkzeuge
+
+## Werkzeuge auflisten
+
+```
+GET /api/v1/tools
+```
+
+**Query-Parameter:** `page`, `per_page`, `search`, `status` (available, checked_out, maintenance, defective), `location_id`
+
+**Beispiel-Response:**
+
+```json
+{
+  "data": [
+    {
+      "id": "tool_abc123",
+      "name": "Bohrmaschine Hilti TE 6-A36",
+      "inventory_number": "WZ-0042",
+      "serial_number": "HLT-2024-001234",
+      "manufacturer": "Hilti",
+      "model": "TE 6-A36",
+      "category": "Bohren",
+      "status": "checked_out",
+      "location_id": "loc_xyz456",
+      "checked_out_to": {
+        "type": "user",
+        "id": "usr_789",
+        "name": "Max Muster"
+      },
+      "due_date": "2025-03-25",
+      "next_maintenance": "2025-06-01",
+      "purchase_date": "2024-01-10",
+      "warranty_until": "2027-01-10"
+    }
+  ]
+}
+```
+
+## Werkzeug abrufen
+
+```
+GET /api/v1/tools/:id
+```
+
+## Werkzeug erstellen
+
+```
+POST /api/v1/tools
+```
+
+```json
+{
+  "name": "Bohrmaschine Hilti TE 6-A36",
+  "inventory_number": "WZ-0042",
+  "serial_number": "HLT-2024-001234",
+  "manufacturer": "Hilti",
+  "model": "TE 6-A36",
+  "category": "Bohren",
+  "location_id": "loc_xyz456",
+  "purchase_date": "2024-01-10",
+  "purchase_price": 850.00,
+  "warranty_until": "2027-01-10",
+  "maintenance_interval_days": 180,
+  "next_maintenance": "2025-06-01"
+}
+```
+
+## Werkzeug auschecken
+
+```
+POST /api/v1/tools/:id/checkout
+```
+
+```json
+{
+  "type": "user",
+  "assignee_id": "usr_789",
+  "due_date": "2025-03-25",
+  "note": "Für Projekt Zürich HB"
+}
+```
+
+`type` kann sein: `user` oder `location`
+Bei `location`: Feld `location_id` statt `assignee_id`
+
+## Werkzeug einchecken
+
+```
+POST /api/v1/tools/:id/checkin
+```
+
+```json
+{
+  "note": "Zurückgegeben in gutem Zustand"
+}
+```
+
+## Buchungshistorie
+
+```
+GET /api/v1/tools/:id/bookings
+```
+
+Gibt alle Buchungen (Aus- und Eincheckvorgänge) des Werkzeugs zurück.
+
+## Wartung protokollieren
+
+```
+POST /api/v1/tools/:id/maintenance
+```
+
+```json
+{
+  "date": "2025-03-18",
+  "performed_by": "Externer Service AG",
+  "description": "Ölwechsel, Bürstenwechsel, Funktionstest",
+  "cost": 120.00,
+  "next_maintenance": "2025-09-18"
+}
+```

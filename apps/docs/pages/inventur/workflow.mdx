@@ -1,0 +1,57 @@
+---
+title: Inventur-Workflow
+---
+
+# Inventur-Workflow
+
+Eine Inventur ist eine systematische Bestandsaufnahme, bei der der physisch vorhandene Ist-Bestand mit dem buchhalterischen Soll-Bestand verglichen wird.
+
+## Wann ist eine Inventur nötig?
+
+- **Jahresabschluss**: Für Bilanz und Steuererklärung (nach OR Art. 958a)
+- **Verdacht auf Schwund**: Wenn Differenzen auffallen
+- **Nach Systemwechsel**: Beim ersten Einsatz von LogistikApp
+- **Periodisch**: Viele Betriebe führen quartalsweise Teil-Inventuren durch
+
+## Inventurarten
+
+| Typ | Beschreibung | Eignet sich für |
+|-----|--------------|-----------------|
+| **Vollinventur** | Alle Artikel aller Standorte | Jahresabschluss |
+| **Standortinventur** | Alle Artikel eines Standorts | Lagerübernahme |
+| **Kategorie-Inventur** | Alle Artikel einer Kategorie | Teil-Inventur |
+| **Stichprobeninventur** | Auswahl von Artikeln | Laufende Kontrolle |
+
+## Ablauf einer Inventur
+
+```
+1. Inventur erstellen (Umfang definieren)
+         ↓
+2. Zähllisten generieren (PDF oder mobile App)
+         ↓
+3. Physisch zählen (Team zählt)
+         ↓
+4. Ist-Bestände erfassen (eingeben oder per App)
+         ↓
+5. Differenzen prüfen (automatischer Abgleich)
+         ↓
+6. Inventur abschliessen (Bestand wird korrigiert)
+         ↓
+7. Protokoll exportieren (für Buchführung)
+```
+
+## Gleichzeitige Bestandsbewegungen
+
+Während einer laufenden Inventur sollten keine Lieferscheine erstellt werden die den gleichen Standort betreffen, da sonst Differenzen durch laufende Bewegungen entstehen. LogistikApp zeigt eine Warnung wenn ein Lieferschein für einen Standort in aktiver Inventur abgeschlossen werden soll.
+
+> **Empfehlung:** Führen Sie Inventuren ausserhalb der Betriebszeiten durch, oder sperren Sie den betroffenen Standort temporär (Administratoren können Standorte unter **Standort → Für Inventur sperren** schreibschützen).
+
+## Mehrpersonen-Inventur
+
+Mehrere Mitarbeitende können gleichzeitig an der gleichen Inventur arbeiten:
+
+- Jeder Artikel kann einer Person zugeteilt werden
+- Gleichzeitiges Bearbeiten des gleichen Artikels wird verhindert (Sperre)
+- Fortschritt ist in Echtzeit sichtbar
+
+Details unter [Inventur durchführen](/inventur/durchfuehren).

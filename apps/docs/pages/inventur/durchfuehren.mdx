@@ -1,0 +1,86 @@
+---
+title: Inventur durchführen
+---
+
+# Inventur durchführen
+
+## Neue Inventur erstellen
+
+1. Navigieren Sie zu **Inventur**.
+2. Klicken Sie auf **+ Neue Inventur**.
+3. Wählen Sie den **Umfang**:
+   - Alle Standorte
+   - Bestimmte Standorte (Mehrfachauswahl)
+   - Bestimmte Kategorien
+4. Vergeben Sie einen **Namen** (z.B. «Jahresinventur 2025» oder «Lagerkontrolle Q2»).
+5. Optional: Setzen Sie ein **Zieldatum**.
+6. Klicken Sie auf **Inventur erstellen**.
+
+LogistikApp erstellt automatisch eine Zählliste mit allen Artikeln des gewählten Umfangs. Der **Soll-Bestand** zum Startzeitpunkt wird eingefroren.
+
+## Zählliste herunterladen
+
+Für die Papierzählung:
+
+1. Klicken Sie auf **Zählliste drucken** (PDF).
+2. Die PDF enthält: Artikelnummer, Bezeichnung, Standort, Einheit, Spalte für Ist-Bestand (handschriftlich).
+3. Drucken Sie die Liste aus und verteilen Sie sie an das Zählteam.
+
+## Ist-Bestände erfassen
+
+**Via Web-App:**
+
+1. Öffnen Sie die Inventur.
+2. Klicken Sie auf einen Artikel um den Ist-Bestand einzugeben.
+3. Geben Sie die gezählte Menge ein.
+4. Optional: Notiz hinzufügen (z.B. «2 davon beschädigt»).
+5. Klicken Sie auf **Weiter** um zum nächsten Artikel zu springen.
+
+**Via Mobile App:**
+
+1. Öffnen Sie die App und navigieren Sie zu **Inventur**.
+2. Wählen Sie die laufende Inventur.
+3. Scannen Sie den Barcode eines Artikels.
+4. Geben Sie die Menge ein.
+5. Bestätigen Sie. Der nächste Scan ist sofort bereit.
+
+> **Tipp:** Mit der mobilen App können mehrere Mitarbeitende gleichzeitig in verschiedenen Gängen zählen und die Ergebnisse werden in Echtzeit zusammengeführt.
+
+## Fortschritt überwachen
+
+Im Inventur-Dashboard sehen Sie:
+
+- **Prozentsatz** der erfassten Artikel
+- **Offene Positionen** (noch nicht gezählt)
+- **Aktive Zähler** (Mitarbeitende die gerade erfassen)
+- **Positionen mit Differenz** (Ist ≠ Soll)
+
+## Differenzen prüfen
+
+Bevor Sie die Inventur abschliessen, zeigt LogistikApp alle Differenzen:
+
+- **Grün**: Kein Unterschied
+- **Orange**: Kleine Differenz (< 10% des Soll-Bestands)
+- **Rot**: Grosse Differenz (> 10% oder absolut > 5 Einheiten)
+
+Für jede Differenz können Sie:
+- Den **Ist-Bestand erneut prüfen** (Artikel nochmals zählen)
+- **Differenz akzeptieren** (Bestand wird korrigiert)
+- **Position überspringen** (Bestand bleibt unverändert)
+
+## Inventur abschliessen
+
+1. Klicken Sie auf **Inventur abschliessen**.
+2. Sie sehen eine Zusammenfassung aller Korrekturen.
+3. Bestätigen Sie mit **Jetzt abschliessen**.
+
+LogistikApp korrigiert sofort alle Bestände auf die gezählten Ist-Werte. Die Differenzen werden als «Inventurkorrektur» in der Bestandshistorie jedes Artikels vermerkt.
+
+## Inventurprotokoll exportieren
+
+Nach dem Abschluss:
+
+1. Klicken Sie auf **Protokoll exportieren**.
+2. Wählen Sie das Format: PDF (für Ablage) oder CSV (für Buchhaltungssoftware).
+
+Das Protokoll enthält alle Artikel mit Soll-Bestand, Ist-Bestand, Differenz und Wert (falls Einkaufspreise hinterlegt sind).

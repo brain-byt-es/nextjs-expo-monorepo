@@ -1,0 +1,80 @@
+---
+title: API – Standorte
+---
+
+# API – Standorte
+
+## Standorte auflisten
+
+```
+GET /api/v1/locations
+```
+
+**Query-Parameter:** `type` (warehouse, vehicle, construction_site, office), `include_archived` (boolean)
+
+**Beispiel-Response:**
+
+```json
+{
+  "data": [
+    {
+      "id": "loc_xyz456",
+      "name": "Hauptlager Zürich",
+      "type": "warehouse",
+      "address": {
+        "street": "Industriestrasse 12",
+        "zip": "8005",
+        "city": "Zürich",
+        "country": "CH"
+      },
+      "responsible_user_id": "usr_101",
+      "material_count": 234,
+      "tool_count": 47,
+      "archived": false,
+      "created_at": "2025-01-01T00:00:00Z"
+    }
+  ]
+}
+```
+
+## Standort abrufen
+
+```
+GET /api/v1/locations/:id
+```
+
+Response enthält zusätzlich die vollständige Bestandsliste des Standorts.
+
+## Standort erstellen
+
+```
+POST /api/v1/locations
+```
+
+```json
+{
+  "name": "Aussenlager Winterthur",
+  "type": "warehouse",
+  "address": {
+    "street": "Technikumstrasse 1",
+    "zip": "8400",
+    "city": "Winterthur",
+    "country": "CH"
+  },
+  "responsible_user_id": "usr_202"
+}
+```
+
+## Standort aktualisieren
+
+```
+PATCH /api/v1/locations/:id
+```
+
+## Bestand eines Standorts
+
+```
+GET /api/v1/locations/:id/stock
+```
+
+Gibt den aktuellen Materialbestand für diesen Standort zurück. Unterstützt `page` und `per_page`.

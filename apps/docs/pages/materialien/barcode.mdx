@@ -1,0 +1,64 @@
+---
+title: Barcode & Etiketten
+---
+
+# Barcode & Etiketten
+
+LogistikApp kann für jeden Artikel eine Barcode-Etikette generieren. Diese können auf handelsüblichen Etikettendruckern ausgedruckt und auf Artikel, Regale oder Behälter geklebt werden.
+
+## Etikette für einen Artikel drucken
+
+1. Öffnen Sie den gewünschten Artikel.
+2. Klicken Sie oben rechts auf **Etikette drucken** (Drucker-Symbol).
+3. Wählen Sie das **Etikettenformat** (Labelgrösse).
+4. Wählen Sie ob ein **EAN-Barcode**, ein **QR-Code** oder beides gedruckt werden soll.
+5. Klicken Sie auf **Als PDF herunterladen** oder **Direkt drucken**.
+
+## Etiketten für mehrere Artikel
+
+1. Aktivieren Sie in der Materialübersicht die Checkboxen der gewünschten Artikel.
+2. Klicken Sie auf **Massenaktionen → Etiketten drucken**.
+3. Wählen Sie Format und Anzahl pro Artikel.
+4. Klicken Sie auf **PDF generieren**.
+
+> **Tipp:** Sie können pro Artikel eine andere Anzahl Etiketten festlegen (z.B. 1 für Einzelteile, 10 für Verbrauchsmaterial).
+
+## Etikettenformate
+
+LogistikApp unterstützt gängige Labelgrössen:
+
+| Format | Grösse | Typischer Drucker |
+|--------|--------|-------------------|
+| Avery L7160 | 63.5 × 38.1 mm | Standard-Laserdrucker (A4) |
+| Avery L7163 | 99.1 × 38.1 mm | Standard-Laserdrucker (A4) |
+| Zebra ZPL 57×32 | 57 × 32 mm | Zebra ZD220, ZD421 |
+| Zebra ZPL 100×50 | 100 × 50 mm | Zebra GK420d |
+| Brother DK-11209 | 62 × 29 mm | Brother QL-820NWB |
+| Dymo 11352 | 54 × 25 mm | Dymo LabelWriter 450 |
+
+> **Hinweis:** Für Thermodirekt-Etikettendrucker (Zebra, Brother, Dymo) wird ZPL oder PDF ausgegeben. Achten Sie darauf, den richtigen Drucker im System einzurichten.
+
+## Etiketteninhalt anpassen
+
+Administratoren können unter **Einstellungen → Branding → Etikettenvorlage** anpassen, welche Felder auf der Etikette erscheinen:
+
+- Unternehmensname / Logo
+- Bezeichnung des Artikels
+- Artikelnummer
+- EAN-Barcode (Code128 oder EAN-13)
+- QR-Code (verlinkt auf Artikeldetailseite)
+- Bestand und Einheit
+- Lagerplatz
+- Benutzerdefinierte Zusatzfelder
+
+## QR-Code scannen
+
+Jeder gedruckte QR-Code verlinkt direkt auf die Artikeldetailseite in LogistikApp. Wenn Sie den QR-Code mit der mobilen App scannen:
+
+1. Öffnen Sie die App und tippen Sie auf das Scanner-Symbol.
+2. Richten Sie die Kamera auf den QR-Code.
+3. Die App öffnet direkt den verknüpften Artikel — ohne Suche.
+
+## Etiketten für Standorte und Regale
+
+Sie können auch für Standorte und Regalplätze QR-Code-Etiketten drucken. So lässt sich mit einem Scan sofort der gesamte Bestand eines Regalplatzes anzeigen. Gehen Sie dazu zu **Standorte → [Standort öffnen] → Etikette drucken**.

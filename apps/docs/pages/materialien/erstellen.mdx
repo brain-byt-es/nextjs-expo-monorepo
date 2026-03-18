@@ -1,0 +1,65 @@
+---
+title: Material erstellen
+---
+
+# Material erstellen
+
+Neue Materialien können manuell erfasst oder per EAN-Scan angelegt werden.
+
+## Manuell erstellen
+
+1. Klicken Sie auf **+ Material erstellen** oder drücken Sie `N`.
+2. Füllen Sie die Pflichtfelder aus (Bezeichnung, Einheit).
+3. Ergänzen Sie optionale Felder nach Bedarf.
+4. Klicken Sie auf **Speichern**.
+
+### Alle Felder im Detail
+
+**Stammdaten**
+
+- **Bezeichnung** *(Pflicht)*: Klarer, eindeutiger Name. Empfehlung: Materialnummer oder Norm in den Namen integrieren, z.B. «Schraube M8×40 DIN 933 verzinkt».
+- **Artikelnummer**: Ihre interne Nummer (aus Warenwirtschaft oder ERP).
+- **EAN-Code**: 8- oder 13-stelliger GTIN/EAN. Kann auch als QR-Code oder Data Matrix Code hinterlegt werden.
+- **Hersteller**: Lieferanten- oder Herstellerbezeichnung.
+- **Kategorie**: Frei wählbar. Neue Kategorien werden beim ersten Tippen vorgeschlagen.
+
+**Mengenangaben**
+
+- **Einheit** *(Pflicht)*: Stück (STK), Kilogramm (kg), Meter (m), Liter (L), Palette, Karton, Rolle usw. Eigene Einheiten sind möglich.
+- **Mindestbestand**: Bei Unterschreitung erscheint eine Warnung in der Übersicht und (optional) eine Push-Benachrichtigung.
+- **Maximaler Bestand**: Optionale Obergrenze für Überbestand-Warnungen.
+- **Aktueller Bestand**: Anfangsbestand. Kann später über Bestandskorrekturen angepasst werden.
+
+**Standort**
+
+- **Primärer Standort**: Dem Artikel zugeordnetes Lager oder Fahrzeug.
+- **Lagerplatz/Regalbezeichnung**: Optionaler Freitext (z.B. «Regal B3», «Schubladen-Nr. 12»).
+
+**Zusatzinformationen**
+
+- **Beschreibung**: Freitext für technische Details, Hinweise, Bestellinformationen.
+- **Foto**: Bild des Artikels. Empfohlen für schnelle visuelle Identifikation. Max. 5 MB, JPG oder PNG.
+- **Preis (Einkauf)**: Für Bewertungsberichte. Wird nicht auf Lieferscheinen angezeigt.
+
+**Zusatzfelder**: Falls Administratoren [Zusatzfelder](/einstellungen/zusatzfelder) konfiguriert haben, erscheinen diese ebenfalls im Formular.
+
+## Per EAN-Scan erstellen
+
+Falls Sie die Kamera Ihres Geräts nutzen möchten:
+
+1. Klicken Sie auf das Kamera-Symbol neben dem EAN-Feld.
+2. Richten Sie die Kamera auf den Barcode.
+3. LogistikApp erkennt den Code automatisch und trägt ihn ins EAN-Feld ein.
+4. Wenn der EAN bereits einer Produktdatenbank bekannt ist, werden Bezeichnung und weitere Felder automatisch vorausgefüllt.
+
+> **Hinweis:** Die EAN-Produktdatenbank umfasst über 50 Millionen Produkte, primär Konsumgüter und Industrieprodukte. Für Spezialteile ist eine manuelle Eingabe erforderlich.
+
+## Duplikat-Erkennung
+
+Beim Speichern prüft LogistikApp, ob bereits ein Artikel mit demselben EAN-Code oder der gleichen Artikelnummer existiert. Falls ja, werden Sie gewarnt und können zwischen Zusammenführen, Überschreiben oder dem Anlegen eines neuen Artikels wählen.
+
+## Nächste Schritte
+
+- [Bestand verwalten](/materialien/bestand)
+- [Barcode-Etiketten drucken](/materialien/barcode)
+- [Artikel importieren](/materialien/import)

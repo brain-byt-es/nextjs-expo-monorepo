@@ -1,0 +1,91 @@
+---
+title: API – Übersicht & Grundlagen
+---
+
+# API – Übersicht & Grundlagen
+
+Die LogistikApp REST-API ermöglicht die programmatische Integration in eigene Systeme, ERP-Software oder Automatisierungsplattformen.
+
+## Basis-URL
+
+```
+https://app.logistikapp.ch/api/v1
+```
+
+## Grundprinzipien
+
+- **REST**: Ressourcenorientierte Endpunkte
+- **JSON**: Alle Requests und Responses verwenden `Content-Type: application/json`
+- **HTTPS**: Alle Verbindungen müssen über HTTPS erfolgen
+- **UTF-8**: Alle Strings sind UTF-8 kodiert
+- **ISO 8601**: Datums- und Zeitangaben im Format `2025-03-18T10:30:00Z`
+
+## Rate Limiting
+
+| Plan | Requests pro Minute | Requests pro Tag |
+|------|---------------------|-----------------|
+| Starter | 30 | 5 000 |
+| Business | 120 | 50 000 |
+| Enterprise | 500 | 500 000 |
+
+Bei Überschreitung wird HTTP `429 Too Many Requests` zurückgegeben. Der Header `Retry-After` enthält die Wartezeit in Sekunden.
+
+## Pagination
+
+Listenendpunkte sind paginiert. Parameter:
+
+- `page` (Standard: 1)
+- `per_page` (Standard: 50, max: 200)
+
+Response-Header:
+```
+X-Total-Count: 1234
+X-Page: 1
+X-Per-Page: 50
+X-Total-Pages: 25
+```
+
+## Fehler-Format
+
+Alle Fehler geben folgenden JSON-Body zurück:
+
+```json
+{
+  "error": {
+    "code": "not_found",
+    "message": "Material mit ID 'mat_xyz' nicht gefunden.",
+    "details": {}
+  }
+}
+```
+
+## HTTP-Statuscodes
+
+| Code | Bedeutung |
+|------|-----------|
+| 200 | OK |
+| 201 | Erstellt |
+| 204 | Kein Inhalt (z.B. nach DELETE) |
+| 400 | Ungültige Anfrage (Validierungsfehler) |
+| 401 | Nicht authentifiziert |
+| 403 | Keine Berechtigung |
+| 404 | Ressource nicht gefunden |
+| 422 | Nicht verarbeitbar (semantischer Fehler) |
+| 429 | Rate Limit überschritten |
+| 500 | Interner Serverfehler |
+
+## Versionierung
+
+Die aktuelle API-Version ist `v1`. Breaking Changes werden als neue Version veröffentlicht (`v2`). Ältere Versionen werden mindestens 12 Monate nach Einführung einer neuen Version unterstützt.
+
+Abkündigungen werden per E-Mail an API-Nutzer und im Changelog kommuniziert.
+
+## OpenAPI / Swagger
+
+Die vollständige API-Spezifikation im OpenAPI 3.0-Format ist unter folgendem Endpunkt verfügbar:
+
+```
+GET https://app.logistikapp.ch/api/docs
+```
+
+Sie können die Spezifikation in Tools wie Postman, Insomnia oder Swagger UI importieren.

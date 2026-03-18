@@ -1,0 +1,106 @@
+---
+title: Changelog
+---
+
+# Changelog
+
+Alle Änderungen, Verbesserungen und Fehlerbehebungen werden hier dokumentiert.
+
+## v1.3.0 – 2026-03-18
+
+### Neu
+- **Lieferschein-Vorlagen**: Wiederkehrende Lieferscheine als Vorlage speichern und wiederverwenden
+- **Geplante CSV-Exporte**: Automatische Berichte per E-Mail oder FTP täglich/wöchentlich/monatlich
+- **Webhook-Logs**: Detaillierte Logs für alle gesendeten Webhook-Requests (30 Tage)
+- **Mehrfach-Scan-Modus**: Mehrere Artikel hintereinander scannen ohne Dialog zu schliessen
+- **Standort sperren für Inventur**: Schreibschutz während laufender Inventur
+
+### Verbessert
+- Scanner-Performance in der mobilen App deutlich erhöht (neue Engine)
+- Import-Vorschau zeigt jetzt bis zu 20 statt 5 Zeilen
+- PDF-Lieferscheine mit verbessertem Layout und Seitenumbruch
+
+### Behoben
+- Bestandskorrektur auf 0 hat in seltenen Fällen Fehler ausgelöst (#412)
+- Datumsformatierung bei Export in französischer Spracheinstellung (#405)
+
+---
+
+## v1.2.0 – 2026-01-15
+
+### Neu
+- **Analytik-Dashboard**: Neue Diagramme für Bestandsbewegungen, Kategorie-Verteilung und Werkzeug-Auslastung
+- **Zusatzfelder (Custom Fields)**: Eigene Felder für Materialien, Werkzeuge und Lieferscheine (Business+)
+- **SSO mit Google Workspace**: Zusätzlich zu Microsoft Entra ID nun auch Google Workspace
+- **App-Offline-Modus**: Vollständiger Offline-Betrieb der mobilen App mit Synchronisation
+
+### Verbessert
+- Einladungs-E-Mail mit neuem Design und direktem Onboarding-Link
+- Bestandshistorie zeigt jetzt den verknüpften Lieferschein direkt als Link
+- Fehlerbehandlung beim CSV-Import mit detaillierten Zeilennummern
+
+### Behoben
+- 2FA-Backup-Codes wurden nach Aktivierung nicht korrekt gespeichert (#387)
+- Standort-Umbuchung hat Bestand beim Quellstandort nicht reduziert (#391)
+
+---
+
+## v1.1.0 – 2025-11-20
+
+### Neu
+- **Werkzeug-Modul**: Vollständiges Checkout/Checkin-System mit Buchungshistorie
+- **Wartungsplanung**: Wartungsintervalle, Kalenderansicht, Erinnerungen
+- **Barcode-Etiketten**: Druck für Materialien und Werkzeuge (Avery, Zebra, Brother, Dymo)
+- **Dark Mode**: Hell/Dunkel-Umschaltung pro Benutzer
+- **Digest-E-Mail**: Tägliche Zusammenfassung mit Mindestbestand und überfälligen Werkzeugen
+
+### Verbessert
+- Tabellenansicht mit anpassbaren Spalten
+- Suchfunktion sucht gleichzeitig in Name, Artikelnummer und EAN
+- Mobile App mit verbesserter Navigation und Haptic Feedback
+
+### Behoben
+- Inventur-Abschluss bei mehr als 1000 Artikeln führte zu Timeout (#312)
+- Push-Benachrichtigungen auf Android 14 wurden nicht zugestellt (#318)
+
+---
+
+## v1.0.0 – 2025-09-01
+
+Erster offizieller Release von LogistikApp.
+
+### Features
+
+**Materialverwaltung**
+- Materialien erfassen mit EAN, Artikelnummer, Kategorie, Einheit, Bestand, Mindestbestand
+- CSV/Excel-Import mit Spalten-Mapping
+- Bestandshistorie mit Vorher/Nachher-Werten
+- EAN-Auto-Erkennung via Kamera (Browser + App)
+
+**Standorte**
+- Unbegrenzte Standorte: Lager, Fahrzeuge, Baustellen, Büros
+- Bestand pro Standort
+- Umbuchungen zwischen Standorten
+
+**Lieferscheine**
+- Typen: Eingang, Ausgang, Transfer
+- Positionen per Scanner hinzufügen
+- PDF-Export mit Unternehmenslogo
+- Digitale Unterschrift
+
+**Inventur**
+- Vollständiger Inventur-Workflow (Zählliste → Erfassung → Abgleich → Abschluss)
+- Mehrpersonen-Inventur in Echtzeit
+- Protokoll-Export (PDF und CSV)
+
+**Mobile App**
+- iOS und Android
+- Barcode-Scanner (EAN-8/13, Code128, QR)
+- Offline-Modus
+
+**Einstellungen**
+- Team-Verwaltung mit Rollen (Admin, Manager, Mitglied, Lesezugriff)
+- Unternehmens-Branding (Logo, Farbe)
+- E-Mail- und Push-Benachrichtigungen
+- REST-API mit Bearer-Token-Authentifizierung
+- Webhooks für externe Systeme

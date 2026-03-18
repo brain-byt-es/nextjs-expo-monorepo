@@ -1,0 +1,52 @@
+---
+title: Benachrichtigungen
+---
+
+# Benachrichtigungen
+
+Konfigurieren Sie, welche Ereignisse Benachrichtigungen auslösen und über welche Kanäle diese zugestellt werden.
+
+## Benachrichtigungskanäle
+
+| Kanal | Beschreibung | Konfiguration |
+|-------|--------------|---------------|
+| **E-Mail** | Direkt an die Konto-E-Mail | Immer verfügbar |
+| **Push** | Auf mobilen Geräten | App muss installiert und berechtigt sein |
+| **In-App** | Glocke-Symbol in der Web-App | Immer aktiv, nicht deaktivierbar |
+| **Webhook** | HTTP POST an externe URL | [Einstellungen → Webhooks](/einstellungen/webhooks) |
+
+## Organisationsweite Einstellungen
+
+Administratoren setzen die Standardkonfiguration unter **Einstellungen → Benachrichtigungen**:
+
+### Bestandswarnungen
+- Empfänger: Administratoren / Manager / Alle
+- Kanal: E-Mail, Push oder beides
+- Häufigkeit: Sofort / Täglich (Zusammenfassung) / Wöchentlich
+
+### Wartungserinnerungen
+- Vorlauf: 30 Tage / 14 Tage / 7 Tage / 1 Tag (Mehrfachauswahl)
+- Empfänger: Zuständige Person / Administratoren
+
+### Werkzeug-Überfälligkeiten
+- Erinnerung ab: 1 Tag / 3 Tage / 7 Tage nach Rückgabedatum
+- Empfänger: Ausleihende Person / Manager
+
+### Team-Benachrichtigungen
+- Neue Mitglieder beigetreten
+- Mitglieder entfernt
+- Rolle geändert
+
+## Persönliche Einstellungen
+
+Jedes Mitglied kann die organisationsweiten Einstellungen für sich selbst überschreiben (sofern der Administrator dies erlaubt) unter **Einstellungen → Profil → Benachrichtigungen**.
+
+## Digest-E-Mail
+
+Die tägliche Digest-E-Mail (Standard: 08:00 Uhr morgens) fasst zusammen:
+- Artikel unter Mindestbestand
+- Anstehende Wartungen (nächste 7 Tage)
+- Überfällige Werkzeuge
+- Offene Lieferscheine (Status: Entwurf > 24h)
+
+Timing und Empfänger der Digest-E-Mail sind konfigurierbar.

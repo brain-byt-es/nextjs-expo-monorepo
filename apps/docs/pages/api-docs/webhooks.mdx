@@ -1,0 +1,70 @@
+---
+title: API – Webhooks (Verwaltung)
+---
+
+# API – Webhooks (Verwaltung)
+
+Neben der Konfiguration über die UI können Webhooks auch per API verwaltet werden.
+
+## Webhooks auflisten
+
+```
+GET /api/v1/webhooks
+```
+
+## Webhook erstellen
+
+```
+POST /api/v1/webhooks
+```
+
+```json
+{
+  "name": "ERP-Bestand-Sync",
+  "url": "https://mein-erp.ch/api/logistikapp/webhook",
+  "events": ["stock.changed", "delivery.completed"],
+  "secret": "mein-geheimes-token-123"
+}
+```
+
+## Webhook löschen
+
+```
+DELETE /api/v1/webhooks/:id
+```
+
+## Webhook-Test auslösen
+
+```
+POST /api/v1/webhooks/:id/test
+```
+
+Sendet einen Test-Request mit einem simulierten Payload an die konfigurierte URL.
+
+## Webhook-Logs abrufen
+
+```
+GET /api/v1/webhooks/:id/logs
+```
+
+**Query-Parameter:** `from`, `to`, `status` (success, failed)
+
+**Beispiel-Response:**
+
+```json
+{
+  "data": [
+    {
+      "id": "wl_abc",
+      "webhook_id": "wh_xyz",
+      "event": "stock.changed",
+      "sent_at": "2025-03-18T10:30:00Z",
+      "status_code": 200,
+      "duration_ms": 145,
+      "success": true
+    }
+  ]
+}
+```
+
+Für Details zum Payload-Format und Signatur-Validierung siehe [Webhooks in den Einstellungen](/einstellungen/webhooks).

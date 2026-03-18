@@ -1,0 +1,69 @@
+---
+title: Werkzeug erfassen
+---
+
+# Werkzeug erfassen
+
+Jedes Werkzeug wird als einzelnes, eindeutiges Objekt mit eigener Seriennummer und Buchungshistorie erfasst.
+
+## Neues Werkzeug anlegen
+
+1. Navigieren Sie zu **Werkzeuge**.
+2. Klicken Sie auf **+ Werkzeug erfassen** oder drücken Sie `N`.
+3. Füllen Sie das Formular aus.
+4. Klicken Sie auf **Speichern**.
+
+## Felder
+
+**Identifikation**
+
+- **Name** *(Pflicht)*: z.B. «Bohrmaschine Hilti TE 6-A36»
+- **Interne Inventarnummer**: Ihre eigene Kennung (z.B. «WZ-0042»)
+- **Seriennummer**: Herstellerseitige Seriennummer (für Garantie und Service)
+- **Hersteller**: z.B. Hilti, Bosch, Makita
+- **Modell / Typ**: Genaue Modellbezeichnung
+- **Kategorie**: z.B. Bohren, Messen, Heben, Fahrzeug
+
+**Beschaffung**
+
+- **Kaufdatum**: Für Abschreibung und Garantieberechnung
+- **Kaufpreis (CHF)**: Für Bewertungsberichte und Abschreibung
+- **Lieferant**: Händler oder Hersteller
+- **Garantie bis**: Ablaufdatum der Herstellergarantie
+
+**Standort**
+
+- **Standort** *(Pflicht)*: Wo ist das Werkzeug normalerweise beheimatet?
+
+**Wartung**
+
+- **Wartungsintervall**: Täglich / Wöchentlich / Monatlich / Jährlich / nach X Betriebsstunden
+- **Nächste Wartung**: Datum der nächsten fälligen Wartung
+- **Wartungshinweis**: Freitext (z.B. «Ölwechsel alle 50 h», «Kalibrierung durch Hersteller»)
+
+**Sonstiges**
+
+- **Foto**: Bild des Geräts
+- **Dokumente**: Bedienungsanleitung, Prüfberichte (PDF, max. 20 MB pro Datei)
+- **Beschreibung**: Freitext
+
+## Werkzeug-ID-Etiketten
+
+Nach dem Speichern können Sie direkt eine Etikette mit internem QR-Code drucken:
+
+1. Klicken Sie auf **Etikette drucken**.
+2. Wählen Sie das Format (Zebra oder Avery).
+3. Kleben Sie die Etikette auf das Gerät.
+
+So lässt sich das Werkzeug per Scan sofort identifizieren und aus- oder einchecken.
+
+## Duplikate für gleichartige Geräte
+
+Falls Sie mehrere identische Geräte besitzen (z.B. 5 gleiche Bohrmaschinen):
+
+1. Legen Sie das erste Gerät an.
+2. Klicken Sie auf **Duplizieren (n-fach)**.
+3. Geben Sie die Anzahl ein.
+4. Passen Sie Seriennummern und Inventarnummern an.
+
+LogistikApp legt automatisch separate Datensätze für jedes Gerät an.
