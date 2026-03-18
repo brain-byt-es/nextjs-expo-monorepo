@@ -7,11 +7,14 @@ import { ActivityIndicator } from "@/components/nativewindui/ActivityIndicator";
 import { Text } from "@/components/nativewindui/Text";
 import { BarcodeCamera } from "@/components/barcode-camera";
 import { ScanResultSheet } from "@/components/scan-result-sheet";
+import { CommissionPicker, type CommissionPickerItem } from "@/components/commission-picker";
 import { scanBarcode, type ScanResult } from "@/lib/api";
 
 export default function ScannerScreen() {
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [isLooking, setIsLooking] = useState(false);
+  const [pickCommissionFor, setPickCommissionFor] =
+    useState<CommissionPickerItem | null>(null);
 
   const handleScanned = useCallback(
     async (barcode: string) => {
@@ -36,13 +39,30 @@ export default function ScannerScreen() {
     setScanResult(null);
   }
 
+  function handleAddToCommission(
+    itemType: "material" | "tool",
+    itemId: string,
+    quantity: number
+  ) {
+    // Dismiss the scan sheet first, then open the commission picker
+    setScanResult(null);
+    setPickCommissionFor({ type: itemType, id: itemId, quantity });
+  }
+
+  function handleCommissionPickerDismiss() {
+    setPickCommissionFor(null);
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <LargeTitleHeader title="Scanner" backgroundColor="transparent" />
       </View>
 
-      <BarcodeCamera onScanned={handleScanned} isActive={!isLooking && scanResult === null} />
+      <BarcodeCamera
+        onScanned={handleScanned}
+        isActive={!isLooking && scanResult === null && pickCommissionFor === null}
+      />
 
       {/* Loading indicator during lookup */}
       {isLooking && (
@@ -54,7 +74,16 @@ export default function ScannerScreen() {
         </View>
       )}
 
-      <ScanResultSheet result={scanResult} onDismiss={handleDismiss} />
+      <ScanResultSheet
+        result={scanResult}
+        onDismiss={handleDismiss}
+        onAddToCommission={handleAddToCommission}
+      />
+
+      <CommissionPicker
+        item={pickCommissionFor}
+        onDismiss={handleCommissionPickerDismiss}
+      />
     </View>
   );
 }

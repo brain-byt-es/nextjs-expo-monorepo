@@ -15,21 +15,42 @@ import { toast } from "burnt";
 import { Button } from "@/components/nativewindui/Button";
 import { Text } from "@/components/nativewindui/Text";
 import { ActivityIndicator } from "@/components/nativewindui/ActivityIndicator";
+import { Stepper } from "@/components/nativewindui/Stepper";
 import { type ScanResult } from "@/lib/api";
 import { stockIn, stockOut, toolCheckout, toolCheckin } from "@/lib/scan-actions";
 
 interface ScanResultSheetProps {
   result: ScanResult | null;
   onDismiss: () => void;
-  onAddToCommission?: (itemType: "material" | "tool" | "key", itemId: string) => void;
+  onAddToCommission?: (
+    itemType: "material" | "tool",
+    itemId: string,
+    quantity: number
+  ) => void;
 }
 
-export function ScanResultSheet({ result, onDismiss, onAddToCommission }: ScanResultSheetProps) {
+export function ScanResultSheet({
+  result,
+  onDismiss,
+  onAddToCommission,
+}: ScanResultSheetProps) {
   const [loading, setLoading] = useState(false);
+  const [quantity, setQuantity] = useState(1);
   const visible = result !== null;
 
   const item = result?.item as Record<string, unknown> | null;
   const itemType = result?.type;
+
+  // Reset quantity whenever a new scan result appears
+  // (quantity is keyed to the sheet instance; it resets on dismiss via state)
+
+  function increment() {
+    setQuantity((q) => q + 1);
+  }
+
+  function decrement() {
+    setQuantity((q) => Math.max(1, q - 1));
+  }
 
   async function runAction(action: () => Promise<unknown>, successMsg: string) {
     setLoading(true);
@@ -37,6 +58,7 @@ export function ScanResultSheet({ result, onDismiss, onAddToCommission }: ScanRe
       await action();
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       toast({ title: successMsg, preset: "done" });
+      setQuantity(1);
       onDismiss();
     } catch (err) {
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
@@ -56,8 +78,8 @@ export function ScanResultSheet({ result, onDismiss, onAddToCommission }: ScanRe
       return;
     }
     runAction(
-      () => stockIn(item.id as string, item.mainLocationId as string, 1),
-      "Eingebucht"
+      () => stockIn(item.id as string, item.mainLocationId as string, quantity),
+      `Eingebucht (+${quantity})`
     );
   }
 
@@ -67,8 +89,8 @@ export function ScanResultSheet({ result, onDismiss, onAddToCommission }: ScanRe
       return;
     }
     runAction(
-      () => stockOut(item.id as string, item.mainLocationId as string, 1),
-      "Ausgebucht"
+      () => stockOut(item.id as string, item.mainLocationId as string, quantity),
+      `Ausgebucht (-${quantity})`
     );
   }
 
@@ -85,10 +107,17 @@ export function ScanResultSheet({ result, onDismiss, onAddToCommission }: ScanRe
   function handleAddToCommission() {
     if (!item?.id || !itemType) return;
     if (itemType === "key") {
-      Alert.alert("Nicht unterstützt", "Schlüssel können nicht zu Lieferscheinen hinzugefügt werden.");
+      Alert.alert(
+        "Nicht unterstützt",
+        "Schlüssel können nicht zu Lieferscheinen hinzugefügt werden."
+      );
       return;
     }
-    onAddToCommission?.(itemType, item.id as string);
+    onAddToCommission?.(itemType, item.id as string, quantity);
+  }
+
+  function handleDismiss() {
+    setQuantity(1);
     onDismiss();
   }
 
@@ -97,9 +126,9 @@ export function ScanResultSheet({ result, onDismiss, onAddToCommission }: ScanRe
       visible={visible}
       transparent
       animationType="slide"
-      onRequestClose={onDismiss}
+      onRequestClose={handleDismiss}
     >
-      <TouchableWithoutFeedback onPress={onDismiss}>
+      <TouchableWithoutFeedback onPress={handleDismiss}>
         <View style={styles.backdrop} />
       </TouchableWithoutFeedback>
 
@@ -112,22 +141,28 @@ export function ScanResultSheet({ result, onDismiss, onAddToCommission }: ScanRe
             /* Not found */
             <View className="items-center py-8 gap-3">
               <Ionicons name="help-circle-outline" size={48} color="#6b7280" />
-              <Text variant="heading" className="text-center">Nicht gefunden</Text>
+              <Text variant="heading" className="text-center">
+                Nicht gefunden
+              </Text>
               <Text className="text-muted-foreground text-center text-sm">
                 Kein Material, Werkzeug oder Schlüssel mit diesem Barcode.
               </Text>
             </View>
           ) : (
             <View className="gap-4">
-              {/* Type badge + name */}
+              {/* Type badge + item info */}
               <View className="gap-1.5">
                 <View className="flex-row items-center gap-2">
                   <TypeBadge type={itemType!} />
                   {item.number ? (
-                    <Text className="text-xs text-muted-foreground">#{item.number as string}</Text>
+                    <Text className="text-xs text-muted-foreground">
+                      #{item.number as string}
+                    </Text>
                   ) : null}
                 </View>
-                <Text variant="title1" className="font-bold">{item.name as string}</Text>
+                <Text variant="title1" className="font-bold">
+                  {item.name as string}
+                </Text>
                 {item.mainLocationName || item.assignedLocationId ? (
                   <View className="flex-row items-center gap-1.5">
                     <Ionicons name="location-outline" size={14} color="#6b7280" />
@@ -140,7 +175,8 @@ export function ScanResultSheet({ result, onDismiss, onAddToCommission }: ScanRe
                   <View className="flex-row items-center gap-1.5">
                     <Ionicons name="cube-outline" size={14} color="#6b7280" />
                     <Text className="text-sm text-muted-foreground">
-                      Bestand: {item.totalStock as number} {(item.unit ?? "Stk") as string}
+                      Bestand: {item.totalStock as number}{" "}
+                      {(item.unit ?? "Stk") as string}
                     </Text>
                   </View>
                 ) : null}
@@ -154,6 +190,31 @@ export function ScanResultSheet({ result, onDismiss, onAddToCommission }: ScanRe
                 ) : null}
               </View>
 
+              {/* Quantity stepper — only for materials */}
+              {itemType === "material" && !loading && (
+                <View className="flex-row items-center justify-between bg-muted/40 rounded-xl px-4 py-3">
+                  <Text className="text-sm text-muted-foreground font-medium">
+                    Menge
+                  </Text>
+                  <View className="flex-row items-center gap-4">
+                    <Stepper
+                      subtractButton={{
+                        onPress: decrement,
+                        disabled: quantity <= 1,
+                        accessibilityLabel: "Menge verringern",
+                      }}
+                      addButton={{
+                        onPress: increment,
+                        accessibilityLabel: "Menge erhöhen",
+                      }}
+                    />
+                    <Text className="text-base font-bold w-8 text-center">
+                      {quantity}
+                    </Text>
+                  </View>
+                </View>
+              )}
+
               {/* Actions */}
               {loading ? (
                 <View className="items-center py-4">
@@ -164,12 +225,22 @@ export function ScanResultSheet({ result, onDismiss, onAddToCommission }: ScanRe
                   {itemType === "material" && (
                     <>
                       <Button onPress={handleStockIn}>
-                        <Ionicons name="arrow-down-circle-outline" size={16} color="white" />
-                        <Text className="text-white ml-2">Einbuchen (+1)</Text>
+                        <Ionicons
+                          name="arrow-down-circle-outline"
+                          size={16}
+                          color="white"
+                        />
+                        <Text className="text-white ml-2">
+                          Einbuchen (+{quantity})
+                        </Text>
                       </Button>
                       <Button variant="tonal" onPress={handleStockOut}>
-                        <Ionicons name="arrow-up-circle-outline" size={16} color="#f97316" />
-                        <Text className="ml-2">Ausbuchen (-1)</Text>
+                        <Ionicons
+                          name="arrow-up-circle-outline"
+                          size={16}
+                          color="#f97316"
+                        />
+                        <Text className="ml-2">Ausbuchen (-{quantity})</Text>
                       </Button>
                     </>
                   )}
@@ -187,8 +258,14 @@ export function ScanResultSheet({ result, onDismiss, onAddToCommission }: ScanRe
                   )}
                   {onAddToCommission && itemType !== "key" && (
                     <Button variant="plain" onPress={handleAddToCommission}>
-                      <Ionicons name="document-text-outline" size={16} color="#6b7280" />
-                      <Text className="text-muted-foreground ml-2">Zu Lieferschein hinzufügen</Text>
+                      <Ionicons
+                        name="document-text-outline"
+                        size={16}
+                        color="#6b7280"
+                      />
+                      <Text className="text-muted-foreground ml-2">
+                        Zu Lieferschein hinzufügen
+                      </Text>
                     </Button>
                   )}
                 </View>
@@ -197,8 +274,13 @@ export function ScanResultSheet({ result, onDismiss, onAddToCommission }: ScanRe
           )}
 
           {/* Dismiss */}
-          <TouchableOpacity onPress={onDismiss} className="mt-4 py-3 items-center">
-            <Text className="text-muted-foreground text-sm">Schliessen &amp; weiter scannen</Text>
+          <TouchableOpacity
+            onPress={handleDismiss}
+            className="mt-4 py-3 items-center"
+          >
+            <Text className="text-muted-foreground text-sm">
+              Schliessen &amp; weiter scannen
+            </Text>
           </TouchableOpacity>
         </ScrollView>
       </View>
