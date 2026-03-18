@@ -984,6 +984,11 @@ export default function MaterialDetailPage() {
         <TabsContent value="attachments" className="pt-2">
           <AttachmentsPanel entityType="material" entityId={materialId} />
         </TabsContent>
+
+        {/* ─── Insurance & Warranty Tab ─────────────────────────────── */}
+        <TabsContent value="insurance">
+          <InsuranceWarrantyPanel entityType="material" entityId={materialId} />
+        </TabsContent>
             </Tabs>
 
       {/* ─── Custom Fields ─────────────────────────────────────────── */}

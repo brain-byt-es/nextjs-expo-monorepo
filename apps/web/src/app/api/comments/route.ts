@@ -3,7 +3,6 @@ import { getSessionAndOrg } from "@/app/api/_helpers/auth";
 import { comments, users } from "@repo/db/schema";
 import { eq, and, isNull } from "drizzle-orm";
 import { sendMentionNotification } from "@/lib/email";
-import { getDb } from "@repo/db";
 
 // ---------------------------------------------------------------------------
 // GET /api/comments?entityType=material&entityId=<uuid>&orgId=<uuid>
@@ -52,12 +51,15 @@ export async function GET(request: Request) {
       .orderBy(comments.createdAt);
 
     // Build threaded structure: top-level items carry a `replies` array.
-    const byId = new Map<string, (typeof rows)[number] & { replies: typeof rows }>();
+    type RowWithReplies = (typeof rows)[number] & {
+      replies: (typeof rows)[number][];
+    };
+    const byId = new Map<string, RowWithReplies>();
     for (const row of rows) {
       byId.set(row.id, { ...row, replies: [] });
     }
 
-    const threaded: ((typeof rows)[number] & { replies: typeof rows })[] = [];
+    const threaded: RowWithReplies[] = [];
     for (const row of rows) {
       const node = byId.get(row.id)!;
       if (row.parentId && byId.has(row.parentId)) {
@@ -88,7 +90,13 @@ export async function POST(request: Request) {
     const { db, orgId, session } = result;
 
     const body = await request.json();
-    const { entityType, entityId, body: commentBody, mentions, parentId } = body as {
+    const {
+      entityType,
+      entityId,
+      body: commentBody,
+      mentions,
+      parentId,
+    } = body as {
       entityType: string;
       entityId: string;
       body: string;
@@ -103,7 +111,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // If replying, verify parent belongs to the same entity/org.
+    // If replying, verify parent belongs to the same entity/org and is top-level.
     if (parentId) {
       const [parent] = await db
         .select({ id: comments.id })
@@ -114,7 +122,7 @@ export async function POST(request: Request) {
             eq(comments.organizationId, orgId),
             eq(comments.entityType, entityType),
             eq(comments.entityId, entityId),
-            isNull(comments.parentId) // only one level of nesting
+            isNull(comments.parentId)
           )
         )
         .limit(1);
@@ -140,45 +148,35 @@ export async function POST(request: Request) {
       })
       .returning();
 
-    // Fire-and-forget mention notifications.
+    // Fire-and-forget mention notifications (non-critical path).
     if (mentions?.length) {
-      const mentionedUsers = await db
-        .select({ id: users.id, email: users.email, name: users.name })
-        .from(users)
-        .where(
-          // users whose id is in the mentions array
-          // Drizzle doesn't have inArray shorthand here — use raw SQL approach
-          // by fetching all and filtering in JS (mentions list is small).
-          eq(users.id, mentions[0]!) // placeholder; see loop below
-        )
-        .limit(0); // We'll do a proper loop instead
+      const notifyMentions = async () => {
+        for (const mentionedUserId of mentions) {
+          if (mentionedUserId === session.user.id) continue;
+          try {
+            const [mentionedUser] = await db
+              .select({ id: users.id, email: users.email })
+              .from(users)
+              .where(eq(users.id, mentionedUserId))
+              .limit(1);
 
-      // Fetch mentioned users individually (mention arrays are small).
-      for (const mentionedUserId of mentions) {
-        if (mentionedUserId === session.user.id) continue; // don't notify yourself
-
-        try {
-          const [mentionedUser] = await getDb()
-            .select({ id: users.id, email: users.email })
-            .from(users)
-            .where(eq(users.id, mentionedUserId))
-            .limit(1);
-
-          if (mentionedUser?.email) {
-            sendMentionNotification(
-              mentionedUser.email,
-              session.user.name ?? session.user.email,
-              entityType,
-              entityId,
-              commentBody.trim()
-            ).catch((err) =>
-              console.error("Failed to send mention notification:", err)
-            );
+            if (mentionedUser?.email) {
+              await sendMentionNotification(
+                mentionedUser.email,
+                session.user.name ?? session.user.email,
+                entityType,
+                entityId,
+                commentBody.trim()
+              );
+            }
+          } catch (err) {
+            console.error("Failed to send mention notification:", err);
           }
-        } catch {
-          // Non-critical — skip silently
         }
-      }
+      };
+      notifyMentions().catch((err) =>
+        console.error("Mention notification batch failed:", err)
+      );
     }
 
     // Return the created comment with user info attached.

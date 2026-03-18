@@ -77,10 +77,11 @@ export async function POST(request: Request) {
     if (result.error) return result.error;
     const { db, orgId, session } = result;
 
-    const formData = await request.formData();
-    const entityType = formData.get("entityType");
-    const entityId = formData.get("entityId");
-    const file = formData.get("file");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const formData = (await request.formData()) as any;
+    const entityType = formData.get("entityType") as string | null;
+    const entityId = formData.get("entityId") as string | null;
+    const file = formData.get("file") as File | null;
 
     if (
       typeof entityType !== "string" ||

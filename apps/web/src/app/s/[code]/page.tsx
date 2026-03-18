@@ -85,7 +85,7 @@ async function lookupItem(code: string): Promise<ItemData | null> {
       image: materials.image,
       barcode: materials.barcode,
       unit: materials.unit,
-      locationId: materials.locationId,
+      mainLocationId: materials.mainLocationId,
       isActive: materials.isActive,
     })
     .from(materials)
@@ -102,11 +102,11 @@ async function lookupItem(code: string): Promise<ItemData | null> {
     if (!m.isActive) return null
 
     let locationName: string | null = null
-    if (m.locationId) {
+    if (m.mainLocationId) {
       const locRow = await db
         .select({ name: locations.name })
         .from(locations)
-        .where(eq(locations.id, m.locationId))
+        .where(eq(locations.id, m.mainLocationId))
         .limit(1)
       locationName = locRow[0]?.name ?? null
     }

@@ -8,6 +8,8 @@ import {
   alertSettings,
   organizationMembers,
   users,
+  insuranceRecords,
+  warrantyRecords,
 } from "@repo/db/schema";
 import { eq, and, lte, isNotNull, sql } from "drizzle-orm";
 import { sendWhatsAppAlert } from "@/lib/whatsapp";
@@ -52,9 +54,17 @@ export const checkLowStockFn = inngest.createFunction(
       orgId: string;
       lowStockCount: number;
       maintenanceCount: number;
+      expiryCount: number;
       whatsappSent: boolean;
       emailSent: boolean;
     }> = [];
+
+    // Look-ahead window for expiry alerts: 30 days
+    const expiryLookaheadDays = 30;
+    const expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() + expiryLookaheadDays);
+    const expiryDateStr = expiryDate.toISOString().split("T")[0]!;
+    const todayStr = new Date().toISOString().split("T")[0]!;
 
     for (const org of orgSettings) {
       // ── Low stock materials ────────────────────────────────────────
@@ -91,11 +101,55 @@ export const checkLowStockFn = inngest.createFunction(
         )
         .limit(100);
 
+      // ── Insurance expiring / expired ──────────────────────────────
+      const expiringInsurance = await db
+        .select({
+          id: insuranceRecords.id,
+          provider: insuranceRecords.provider,
+          endDate: insuranceRecords.endDate,
+          entityType: insuranceRecords.entityType,
+        })
+        .from(insuranceRecords)
+        .where(
+          and(
+            eq(insuranceRecords.organizationId, org.orgId),
+            isNotNull(insuranceRecords.endDate),
+            lte(insuranceRecords.endDate, expiryDateStr)
+          )
+        )
+        .limit(50);
+
+      // ── Warranty expiring / expired ───────────────────────────────
+      const expiringWarranty = await db
+        .select({
+          id: warrantyRecords.id,
+          provider: warrantyRecords.provider,
+          warrantyEnd: warrantyRecords.warrantyEnd,
+          entityType: warrantyRecords.entityType,
+        })
+        .from(warrantyRecords)
+        .where(
+          and(
+            eq(warrantyRecords.organizationId, org.orgId),
+            isNotNull(warrantyRecords.warrantyEnd),
+            lte(warrantyRecords.warrantyEnd, expiryDateStr)
+          )
+        )
+        .limit(50);
+
       const lowCount = lowStockRows.length;
       const maintCount = maintenanceRows.length;
+      const expiryCount = expiringInsurance.length + expiringWarranty.length;
 
-      if (lowCount === 0 && maintCount === 0) {
-        results.push({ orgId: org.orgId, lowStockCount: 0, maintenanceCount: 0, whatsappSent: false, emailSent: false });
+      if (lowCount === 0 && maintCount === 0 && expiryCount === 0) {
+        results.push({
+          orgId: org.orgId,
+          lowStockCount: 0,
+          maintenanceCount: 0,
+          expiryCount: 0,
+          whatsappSent: false,
+          emailSent: false,
+        });
         continue;
       }
 
@@ -106,6 +160,9 @@ export const checkLowStockFn = inngest.createFunction(
       }
       if (maintCount > 0) {
         parts.push(`${maintCount} Werkzeug${maintCount !== 1 ? "e" : ""} mit fälliger Wartung`);
+      }
+      if (expiryCount > 0) {
+        parts.push(`${expiryCount} Versicherung${expiryCount !== 1 ? "en" : ""}/Garantie${expiryCount !== 1 ? "n" : ""} laufen demnächst ab`);
       }
       const summaryText = parts.join(", ");
       const whatsappMessage = `Logistik-Alarm von LogistikApp: ${summaryText}. Details: ${APP_URL}/dashboard`;
@@ -142,7 +199,8 @@ export const checkLowStockFn = inngest.createFunction(
               owner.email,
               lowCount,
               maintCount,
-              org.orgName
+              org.orgName,
+              expiryCount
             );
             emailSent = true;
           } catch (err) {
@@ -151,7 +209,14 @@ export const checkLowStockFn = inngest.createFunction(
         }
       }
 
-      results.push({ orgId: org.orgId, lowStockCount: lowCount, maintenanceCount: maintCount, whatsappSent, emailSent });
+      results.push({
+        orgId: org.orgId,
+        lowStockCount: lowCount,
+        maintenanceCount: maintCount,
+        expiryCount,
+        whatsappSent,
+        emailSent,
+      });
     }
 
     console.log(`[check-low-stock] Processed ${orgSettings.length} orgs`, results);

@@ -135,7 +135,8 @@ export async function sendAlertSummaryEmail(
   recipientEmail: string,
   lowStockCount: number,
   maintenanceCount: number,
-  orgName: string
+  orgName: string,
+  expiryCount = 0
 ) {
   if (DEMO_MODE) {
     console.log(`[DEMO] Would send alert summary to ${recipientEmail}`);
@@ -149,6 +150,9 @@ export async function sendAlertSummaryEmail(
   }
   if (maintenanceCount > 0) {
     parts.push(`<li>${maintenanceCount} Werkzeug${maintenanceCount !== 1 ? 'e' : ''} mit fälliger Wartung</li>`);
+  }
+  if (expiryCount > 0) {
+    parts.push(`<li>${expiryCount} Versicherung${expiryCount !== 1 ? 'en' : ''}/Garantie${expiryCount !== 1 ? 'n' : ''} laufen demnächst ab</li>`);
   }
 
   try {

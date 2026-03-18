@@ -51,7 +51,7 @@ async function generateInventoryReport(orgId: string) {
     })
     .from(materials)
     .leftJoin(materialStocks, eq(materialStocks.materialId, materials.id))
-    .leftJoin(locations, eq(locations.id, materials.locationId))
+    .leftJoin(locations, eq(locations.id, materials.mainLocationId))
     .where(and(eq(materials.organizationId, orgId), eq(materials.isActive, true)))
     .limit(5000)
 

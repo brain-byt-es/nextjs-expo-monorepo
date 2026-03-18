@@ -34,6 +34,7 @@ import {
 import { QrCodeDisplay } from "@/components/qr-code"
 import { ZebraLabelButton } from "@/components/zebra-label-button"
 import { BarcodeLabel } from "@/components/barcode-label"
+import { CommentsThread } from "@/components/comments-thread"
 import { CustomFieldsSection } from "@/components/custom-fields"
 import { InsuranceWarrantyPanel } from "@/components/insurance-warranty-panel"
 import { AttachmentsPanel } from "@/components/attachments-panel"
@@ -626,6 +627,7 @@ export default function ToolDetailPage() {
           <TabsTrigger value="qr">QR-Code</TabsTrigger>
           <TabsTrigger value="insurance">Versicherung & Garantie</TabsTrigger>
           <TabsTrigger value="attachments">Anhänge</TabsTrigger>
+          <TabsTrigger value="comments">Kommentare</TabsTrigger>
         </TabsList>
 
         {/* ─── General Tab ─────────────────────────────────────────── */}
@@ -977,6 +979,364 @@ export default function ToolDetailPage() {
           </Card>
         </TabsContent>
 
+        {/* ─── Finanzen Tab ─────────────────────────────────── */}
+        <TabsContent value="finanzen" className="space-y-4">
+          {deprLoading ? (
+            <div className="space-y-3">
+              <Skeleton className="h-28 w-full rounded-lg" />
+              <Skeleton className="h-64 w-full rounded-lg" />
+            </div>
+          ) : !deprData ? (
+            <Card>
+              <div className="flex flex-col items-center justify-center py-16">
+                <IconCurrencyEuro className="size-8 text-muted-foreground mb-3" />
+                <p className="text-sm text-muted-foreground">
+                  Keine Finanzdaten vorhanden. Kaufpreis und Nutzungsdauer in den allgemeinen Einstellungen erfassen.
+                </p>
+              </div>
+            </Card>
+          ) : (
+            <>
+              {/* KPI cards */}
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <Card>
+                  <CardContent className="p-4">
+                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Kaufpreis</p>
+                    <p className="mt-1 text-lg font-bold">
+                      CHF {deprData.purchasePrice.toLocaleString("de-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-4">
+                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Buchwert heute</p>
+                    <p className="mt-1 text-lg font-bold text-secondary">
+                      CHF {deprData.currentBookValue.toLocaleString("de-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-4">
+                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Restwert</p>
+                    <p className="mt-1 text-lg font-bold text-muted-foreground">
+                      CHF {deprData.salvageValue.toLocaleString("de-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-4">
+                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Gesamtkosten (TCO)</p>
+                    <p className="mt-1 text-lg font-bold">
+                      CHF {deprData.tco.total.toLocaleString("de-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* TCO Breakdown */}
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">TCO-Aufschlüsselung</CardTitle>
+                  <CardDescription>Total Cost of Ownership über {deprData.lifeYears} Jahre</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {[
+                    { label: "Anschaffungskosten", value: deprData.tco.purchase, colorClass: "bg-primary" },
+                    { label: "Wartungskosten", value: deprData.tco.maintenance, colorClass: "bg-secondary" },
+                    { label: "Versicherungskosten", value: deprData.tco.insurance, colorClass: "bg-muted-foreground" },
+                  ].map(({ label, value, colorClass }) => (
+                    <div key={label} className="flex items-center gap-3">
+                      <div className={`size-3 shrink-0 rounded-full ${colorClass}`} />
+                      <span className="flex-1 text-sm">{label}</span>
+                      <span className="text-sm font-mono font-medium">
+                        CHF {value.toLocaleString("de-CH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </span>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+
+              {/* Depreciation chart */}
+              {deprData.schedule.length > 0 && (
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">Abschreibungsverlauf</CardTitle>
+                    <CardDescription>
+                      {deprData.method === "declining" ? "Degressive" : "Lineare"} Abschreibung — {deprData.lifeYears} Jahre
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-52">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={deprData.schedule} margin={{ top: 4, right: 8, left: -8, bottom: 0 }}>
+                          <defs>
+                            <linearGradient id="gradBookValue" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.3} />
+                              <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0.02} />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid vertical={false} strokeDasharray="3 3" className="stroke-border" />
+                          <XAxis
+                            dataKey="year"
+                            tickLine={false}
+                            axisLine={false}
+                            tick={{ fontSize: 11 }}
+                            tickFormatter={(v: number) => `J${v}`}
+                          />
+                          <YAxis
+                            tickLine={false}
+                            axisLine={false}
+                            tick={{ fontSize: 11 }}
+                            tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
+                          />
+                          <Tooltip
+                            formatter={(value: number) => [
+                              `CHF ${value.toLocaleString("de-CH", { minimumFractionDigits: 2 })}`,
+                              "",
+                            ]}
+                            labelFormatter={(label: number) => `Jahr ${label}`}
+                          />
+                          <Area
+                            type="monotone"
+                            dataKey="endValue"
+                            name="Buchwert"
+                            stroke="hsl(var(--chart-1))"
+                            fill="url(#gradBookValue)"
+                            strokeWidth={2}
+                          />
+                          <Area
+                            type="monotone"
+                            dataKey="depreciation"
+                            name="Abschreibung"
+                            stroke="hsl(var(--destructive))"
+                            fill="none"
+                            strokeWidth={1.5}
+                            strokeDasharray="4 4"
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Schedule table */}
+              {deprData.schedule.length > 0 && (
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-base">Abschreibungsplan</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b">
+                            <th className="px-4 py-2.5 text-left text-xs font-medium text-muted-foreground">Jahr</th>
+                            <th className="px-4 py-2.5 text-right text-xs font-medium text-muted-foreground">Anfangswert</th>
+                            <th className="px-4 py-2.5 text-right text-xs font-medium text-muted-foreground">Abschreibung</th>
+                            <th className="px-4 py-2.5 text-right text-xs font-medium text-muted-foreground">Endwert</th>
+                            <th className="px-4 py-2.5 text-right text-xs font-medium text-muted-foreground">Kumuliert</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {deprData.schedule.map((row) => (
+                            <tr key={row.year} className="border-b last:border-0 hover:bg-muted/40">
+                              <td className="px-4 py-2">J{row.year}</td>
+                              <td className="px-4 py-2 text-right font-mono">
+                                {row.startValue.toLocaleString("de-CH", { minimumFractionDigits: 2 })}
+                              </td>
+                              <td className="px-4 py-2 text-right font-mono text-destructive">
+                                −{row.depreciation.toLocaleString("de-CH", { minimumFractionDigits: 2 })}
+                              </td>
+                              <td className="px-4 py-2 text-right font-mono font-medium">
+                                {row.endValue.toLocaleString("de-CH", { minimumFractionDigits: 2 })}
+                              </td>
+                              <td className="px-4 py-2 text-right font-mono text-muted-foreground">
+                                {row.accumulatedDepreciation.toLocaleString("de-CH", { minimumFractionDigits: 2 })}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </>
+          )}
+        </TabsContent>
+
+        {/* ─── Kalibrierung Tab ─────────────────────────────── */}
+        <TabsContent value="kalibrierung" className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-semibold">Kalibrierungshistorie</h3>
+              <p className="text-xs text-muted-foreground">Alle Kalibrierungen für dieses Werkzeug</p>
+            </div>
+            <Button size="sm" onClick={() => setShowCalibForm((v) => !v)}>
+              <IconPlus className="size-4" />
+              Kalibrierung erfassen
+            </Button>
+          </div>
+
+          {showCalibForm && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Neue Kalibrierung</CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>Kalibriert am *</Label>
+                  <Input
+                    type="datetime-local"
+                    value={calibForm.calibratedAt}
+                    onChange={(e) => setCalibForm((f) => ({ ...f, calibratedAt: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Nächste Kalibrierung</Label>
+                  <Input
+                    type="date"
+                    value={calibForm.nextCalibrationDate}
+                    onChange={(e) => setCalibForm((f) => ({ ...f, nextCalibrationDate: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Ergebnis</Label>
+                  <Select value={calibForm.result} onValueChange={(v) => setCalibForm((f) => ({ ...f, result: v }))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pass">Bestanden</SelectItem>
+                      <SelectItem value="fail">Nicht bestanden</SelectItem>
+                      <SelectItem value="conditional">Bedingt bestanden</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Zertifikat-URL</Label>
+                  <Input
+                    type="url"
+                    placeholder="https://..."
+                    value={calibForm.certificateUrl}
+                    onChange={(e) => setCalibForm((f) => ({ ...f, certificateUrl: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-2 sm:col-span-2">
+                  <Label>Notizen</Label>
+                  <textarea
+                    className="flex min-h-[70px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] focus-visible:outline-none"
+                    value={calibForm.notes}
+                    onChange={(e) => setCalibForm((f) => ({ ...f, notes: e.target.value }))}
+                    placeholder="Bemerkungen zur Kalibrierung..."
+                  />
+                </div>
+                <div className="flex gap-2 sm:col-span-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowCalibForm(false)}
+                    disabled={calibSaving}
+                  >
+                    {tc("cancel")}
+                  </Button>
+                  <Button
+                    onClick={handleCalibSave}
+                    disabled={calibSaving || !calibForm.calibratedAt}
+                  >
+                    <IconCertificate className="size-4" />
+                    {calibSaving ? tc("loading") : "Speichern"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {calibLoading ? (
+            <div className="space-y-3">
+              {[...Array(3)].map((_, i) => (
+                <Skeleton key={i} className="h-16 w-full rounded-lg" />
+              ))}
+            </div>
+          ) : calibrations.length === 0 ? (
+            <Card>
+              <div className="flex flex-col items-center justify-center py-16">
+                <IconCertificate className="size-8 text-muted-foreground mb-3" />
+                <p className="text-sm text-muted-foreground">Noch keine Kalibrierungen erfasst.</p>
+              </div>
+            </Card>
+          ) : (
+            <Card>
+              <div className="divide-y">
+                {calibrations.map((cal) => {
+                  const resultColorMap: Record<string, string> = {
+                    pass: "bg-secondary/10 text-secondary border-transparent",
+                    fail: "bg-destructive/10 text-destructive border-transparent",
+                    conditional: "bg-amber-500/10 text-amber-600 border-transparent",
+                  }
+                  const resultLabelMap: Record<string, string> = {
+                    pass: "Bestanden",
+                    fail: "Nicht bestanden",
+                    conditional: "Bedingt",
+                  }
+                  return (
+                    <div key={cal.id} className="flex items-start gap-4 px-5 py-4">
+                      <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                        <IconCertificate className="size-4 text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-sm font-medium">
+                            {new Date(cal.calibratedAt).toLocaleDateString("de-CH", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                            })}
+                          </span>
+                          {cal.result && (
+                            <Badge
+                              variant="outline"
+                              className={`text-xs ${resultColorMap[cal.result] ?? ""}`}
+                            >
+                              {resultLabelMap[cal.result] ?? cal.result}
+                            </Badge>
+                          )}
+                          {cal.calibratedByName && (
+                            <span className="text-xs text-muted-foreground">
+                              von {cal.calibratedByName}
+                            </span>
+                          )}
+                        </div>
+                        {cal.nextCalibrationDate && (
+                          <p className="mt-0.5 text-xs text-muted-foreground">
+                            Nächste Kalibrierung:{" "}
+                            {new Date(cal.nextCalibrationDate + "T00:00:00").toLocaleDateString("de-CH", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                            })}
+                          </p>
+                        )}
+                        {cal.notes && (
+                          <p className="mt-1 text-xs italic text-muted-foreground">{cal.notes}</p>
+                        )}
+                        {cal.certificateUrl && (
+                          <a
+                            href={cal.certificateUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-1 text-xs text-primary hover:underline block"
+                          >
+                            Zertifikat anzeigen
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </Card>
+          )}
+        </TabsContent>
+
         {/* ─── QR-Code / Etikett Tab ────────────────────────────── */}
         <TabsContent value="qr">
           <div className="flex flex-col gap-8 py-8">
@@ -1033,6 +1393,11 @@ export default function ToolDetailPage() {
         {/* ─── Anhänge Tab ──────────────────────────────────────────── */}
         <TabsContent value="attachments" className="pt-2">
           <AttachmentsPanel entityType="tool" entityId={toolId} />
+        </TabsContent>
+
+        {/* ─── Comments Tab ─────────────────────────────────────── */}
+        <TabsContent value="comments">
+          <CommentsThread entityType="tool" entityId={toolId} />
         </TabsContent>
       </Tabs>
 

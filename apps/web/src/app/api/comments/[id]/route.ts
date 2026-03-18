@@ -104,7 +104,7 @@ export async function DELETE(
     const isAdmin =
       membership.role === "owner" ||
       membership.role === "admin" ||
-      session.user.role === "admin";
+      (session.user as { role?: string }).role === "admin";
 
     if (!isOwner && !isAdmin) {
       return NextResponse.json(
