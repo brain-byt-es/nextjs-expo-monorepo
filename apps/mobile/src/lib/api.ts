@@ -1,5 +1,7 @@
 import { getSession } from "./session-store";
 import { getOrgId } from "./org-store";
+import { isDemoMode } from "./demo/config";
+import * as demoApi from "./demo/api";
 
 const BASE_URL = process.env.EXPO_PUBLIC_APP_URL || "http://localhost:3003";
 
@@ -71,86 +73,50 @@ export { ApiError };
 
 // ── Typed API helpers ────────────────────────────────────────────────
 
-export interface DashboardStats {
-  materials: number;
-  tools: number;
-  keys: number;
-  users: number;
-  maxUsers: number;
-  lowStockCount: number;
-  expiringCount: number;
-  overdueToolsCount: number;
-}
+// Types re-exported from api-types.ts to break circular dependency with demo/api.ts
+export type {
+  DashboardStats,
+  ScanResult,
+  Commission,
+  CommissionEntry,
+} from "./api-types";
 
-export interface ScanResult {
-  type: "material" | "tool" | "key" | null;
-  item: Record<string, unknown> | null;
-}
+import type {
+  DashboardStats,
+  ScanResult,
+  Commission,
+  CommissionEntry,
+} from "./api-types";
 
-export interface Commission {
-  id: string;
-  name: string;
-  number: number | null;
-  manualNumber: string | null;
-  status: string;
-  notes: string | null;
-  targetLocationId: string | null;
-  targetLocationName: string | null;
-  customerId: string | null;
-  customerName: string | null;
-  responsibleId: string | null;
-  responsibleName: string | null;
-  entryCount: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CommissionEntry {
-  id: string;
-  commissionId: string;
-  materialId: string | null;
-  materialName: string | null;
-  materialNumber: string | null;
-  materialUnit: string | null;
-  toolId: string | null;
-  toolName: string | null;
-  toolNumber: string | null;
-  quantity: number;
-  pickedQuantity: number;
-  status: string;
-  notes: string | null;
-  createdAt: string;
-}
-
-export const getDashboardStats = () =>
+const _getDashboardStats = () =>
   api.get<DashboardStats>("/api/dashboard/stats");
 
-export const scanBarcode = (barcode: string) =>
+const _scanBarcode = (barcode: string) =>
   api.get<ScanResult>(`/api/scan?barcode=${encodeURIComponent(barcode)}`);
 
-export const getCommissions = (statuses: string[] = ["open", "in_progress"]) => {
+const _getCommissions = (statuses: string[] = ["open", "in_progress"]) => {
   const params = new URLSearchParams(statuses.map((s) => ["status", s])).toString();
   return api.get<{ data: Commission[] }>(`/api/commissions?${params}`);
 };
 
-export const createCommission = (body: { name: string; targetLocationId?: string; customerId?: string; notes?: string }) =>
+const _createCommission = (body: { name: string; targetLocationId?: string; customerId?: string; notes?: string }) =>
   api.post<Commission>("/api/commissions", body);
 
-export const getCommission = (id: string) =>
+const _getCommission = (id: string) =>
   api.get<Commission & { entryCount: number }>(`/api/commissions/${id}`);
 
-export const updateCommission = (id: string, body: Partial<Pick<Commission, "status" | "name" | "notes">>) =>
+const _updateCommission = (id: string, body: Partial<Pick<Commission, "status" | "name" | "notes">>) =>
   api.patch<Commission>(`/api/commissions/${id}`, body);
 
-export const getCommissionEntries = (commissionId: string) =>
+const _getCommissionEntries = (commissionId: string) =>
   api.get<{ data: CommissionEntry[] }>(`/api/commissions/${commissionId}/entries`);
 
-export const addCommissionEntry = (
+const _addCommissionEntry = (
   commissionId: string,
   body: { materialId?: string; toolId?: string; quantity?: number; notes?: string }
 ) => api.post<CommissionEntry>(`/api/commissions/${commissionId}/entries`, body);
 
-export const createStockChange = (body: {
+const _createStockChange = (body: {
   materialId: string;
   locationId: string;
   changeType: "in" | "out";
@@ -158,7 +124,19 @@ export const createStockChange = (body: {
   notes?: string;
 }) => api.post("/api/stock-changes", body);
 
-export const createToolBooking = (
+const _createToolBooking = (
   toolId: string,
   body: { bookingType: "checkout" | "checkin"; toLocationId?: string; notes?: string }
 ) => api.post(`/api/tools/${toolId}/booking`, body);
+
+// ── Demo-mode conditional exports ────────────────────────────────────
+export const getDashboardStats = isDemoMode ? demoApi.getDashboardStats : _getDashboardStats;
+export const scanBarcode = isDemoMode ? demoApi.scanBarcode : _scanBarcode;
+export const getCommissions = isDemoMode ? demoApi.getCommissions : _getCommissions;
+export const createCommission = isDemoMode ? demoApi.createCommission : _createCommission;
+export const getCommission = isDemoMode ? demoApi.getCommission : _getCommission;
+export const updateCommission = isDemoMode ? demoApi.updateCommission : _updateCommission;
+export const getCommissionEntries = isDemoMode ? demoApi.getCommissionEntries : _getCommissionEntries;
+export const addCommissionEntry = isDemoMode ? demoApi.addCommissionEntry : _addCommissionEntry;
+export const createStockChange = isDemoMode ? demoApi.createStockChange : _createStockChange;
+export const createToolBooking = isDemoMode ? demoApi.createToolBooking : _createToolBooking;

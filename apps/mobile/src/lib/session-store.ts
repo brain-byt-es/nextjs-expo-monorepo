@@ -1,5 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { isDemoMode } from "./demo/config";
+import { DEMO_SESSION } from "./demo/data";
 
 const SESSION_KEY = "auth_session";
 
@@ -19,6 +21,8 @@ type SessionListener = (session: Session | null) => void;
 const listeners = new Set<SessionListener>();
 let currentSession: Session | null = null;
 let loaded = false;
+
+// Demo mode: session is set on-demand via startDemoSession(), not at module init
 
 function notify() {
   for (const listener of listeners) {
@@ -41,10 +45,12 @@ export async function loadSession(): Promise<Session | null> {
 
 export async function setSession(session: Session | null) {
   currentSession = session;
-  if (session) {
-    await AsyncStorage.setItem(SESSION_KEY, JSON.stringify(session));
-  } else {
-    await AsyncStorage.removeItem(SESSION_KEY);
+  if (!isDemoMode) {
+    if (session) {
+      await AsyncStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    } else {
+      await AsyncStorage.removeItem(SESSION_KEY);
+    }
   }
   notify();
 }

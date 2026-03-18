@@ -90,18 +90,18 @@ export default function CommissionsScreen() {
         )}
       />
 
-      <SegmentedControl
-        values={FILTER_OPTIONS}
-        selectedIndex={filterIndex}
-        onChange={(evt) => setFilterIndex(evt.nativeEvent.selectedSegmentIndex)}
-        className="mx-4 mb-3"
-      />
-
       <ScrollView
         className="flex-1 bg-background"
+        contentInsetAdjustmentBehavior="automatic"
         contentContainerClassName="px-4 pb-10 gap-3"
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
+        <SegmentedControl
+          values={FILTER_OPTIONS}
+          selectedIndex={filterIndex}
+          onChange={(evt) => setFilterIndex(evt.nativeEvent.selectedSegmentIndex)}
+          className="mb-3"
+        />
         {/* New commission form */}
         {creating && (
           <Card className="p-4 gap-3">

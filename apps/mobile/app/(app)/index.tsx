@@ -1,30 +1,15 @@
 import { router } from "expo-router";
 import { useEffect, useState, useCallback } from "react";
-import { ScrollView, View, RefreshControl, TouchableOpacity } from "react-native";
+import { ScrollView, View, RefreshControl } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 
 import { ActivityIndicator } from "@/components/nativewindui/ActivityIndicator";
 import { Button } from "@/components/nativewindui/Button";
 import { Card } from "@/components/nativewindui/Card";
-import { LargeTitleHeader } from "@/components/nativewindui/LargeTitleHeader";
 import { Text } from "@/components/nativewindui/Text";
 import { useSession } from "@/lib/session-store";
 import { getDashboardStats, type DashboardStats } from "@/lib/api";
-
-interface KpiItem {
-  label: string;
-  value: number | string;
-  icon: React.ComponentProps<typeof Ionicons>["name"];
-  color: string;
-  bg: string;
-}
-
-interface AlertItem {
-  label: string;
-  count: number;
-  icon: React.ComponentProps<typeof Ionicons>["name"];
-  color: string;
-}
 
 export default function HomeScreen() {
   const { data } = useSession();
@@ -56,47 +41,38 @@ export default function HomeScreen() {
 
   const firstName = user?.name?.split(" ")[0] ?? "";
 
-  const kpis: KpiItem[] = stats
-    ? [
-        { label: "Materialien", value: stats.materials, icon: "cube", color: "#f97316", bg: "#fff7ed" },
-        { label: "Werkzeuge", value: stats.tools, icon: "construct", color: "#0d9488", bg: "#f0fdfa" },
-        { label: "Schlüssel", value: stats.keys, icon: "key", color: "#6366f1", bg: "#eef2ff" },
-        { label: "Benutzer", value: `${stats.users}/${stats.maxUsers}`, icon: "people", color: "#64748b", bg: "#f8fafc" },
-      ]
-    : [];
-
-  const alerts: AlertItem[] = stats
-    ? [
-        { label: "Meldebestand", count: stats.lowStockCount, icon: "warning", color: "#ef4444" },
-        { label: "Läuft ab", count: stats.expiringCount, icon: "time", color: "#f97316" },
-        { label: "Überfällige Werkzeuge", count: stats.overdueToolsCount, icon: "alert-circle", color: "#8b5cf6" },
-      ]
-    : [];
-
   return (
-    <>
-      <LargeTitleHeader title="Übersicht" backgroundColor="transparent" />
+    <SafeAreaView style={{ flex: 1 }} edges={["top"]} className="bg-background">
       <ScrollView
-        className="flex-1 bg-background"
-        contentContainerClassName="px-4 pt-2 pb-10 gap-4"
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        className="flex-1"
+        contentContainerStyle={{ padding: 16, paddingBottom: 32, gap: 16 }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       >
+        {/* Title — matches iOS Large Title style */}
+        <Text variant="largeTitle" className="font-bold">
+          Übersicht
+        </Text>
+
         {/* Greeting */}
         <Card className="p-4">
           <Text variant="heading">
             {firstName ? `Hallo, ${firstName}!` : "Willkommen!"}
           </Text>
-          <Text className="text-muted-foreground text-sm mt-0.5">{user?.email}</Text>
+          <Text className="text-muted-foreground text-sm mt-0.5">
+            {user?.email}
+          </Text>
         </Card>
 
         {/* Quick Actions */}
-        <View className="flex-row gap-3">
+        <View style={{ flexDirection: "row", gap: 12 }}>
           <Button
             variant="tonal"
             className="flex-1"
             onPress={() => router.push("/(app)/scanner")}
           >
-            <Ionicons name="barcode-outline" size={18} className="mr-1" />
+            <Ionicons name="barcode-outline" size={18} />
             <Text>Scannen</Text>
           </Button>
           <Button
@@ -104,7 +80,7 @@ export default function HomeScreen() {
             className="flex-1"
             onPress={() => router.push("/(app)/commissions")}
           >
-            <Ionicons name="add-outline" size={18} className="mr-1" />
+            <Ionicons name="add-outline" size={18} />
             <Text>Lieferschein</Text>
           </Button>
         </View>
@@ -114,45 +90,77 @@ export default function HomeScreen() {
           <View className="items-center py-8">
             <ActivityIndicator />
           </View>
-        ) : (
+        ) : stats ? (
           <>
-            <View className="flex-row flex-wrap gap-3">
-              {kpis.map((kpi) => (
-                <Card key={kpi.label} className="flex-1 min-w-[45%] p-4 gap-2">
-                  <View
-                    className="w-10 h-10 rounded-full items-center justify-center"
-                    style={{ backgroundColor: kpi.bg }}
-                  >
-                    <Ionicons name={kpi.icon} size={20} color={kpi.color} />
-                  </View>
-                  <Text className="text-2xl font-bold tabular-nums">{kpi.value}</Text>
-                  <Text className="text-xs text-muted-foreground">{kpi.label}</Text>
-                </Card>
-              ))}
+            <View className="gap-3">
+              <View className="flex-row gap-3">
+                <KpiCard label="Materialien" value={stats.materials} icon="cube" color="#f97316" bg="#fff7ed" />
+                <KpiCard label="Werkzeuge" value={stats.tools} icon="construct" color="#0d9488" bg="#f0fdfa" />
+              </View>
+              <View className="flex-row gap-3">
+                <KpiCard label="Schlüssel" value={stats.keys} icon="key" color="#6366f1" bg="#eef2ff" />
+                <KpiCard label="Benutzer" value={`${stats.users}/${stats.maxUsers}`} icon="people" color="#64748b" bg="#f8fafc" />
+              </View>
             </View>
 
             {/* Alerts */}
-            {alerts.some((a) => a.count > 0) && (
+            {(stats.lowStockCount > 0 || stats.expiringCount > 0 || stats.overdueToolsCount > 0) && (
               <Card className="p-4 gap-2">
                 <Text variant="subhead" className="font-semibold mb-1">Hinweise</Text>
-                {alerts
-                  .filter((a) => a.count > 0)
-                  .map((alert) => (
-                    <View key={alert.label} className="flex-row items-center gap-3 py-1">
-                      <Ionicons name={alert.icon} size={18} color={alert.color} />
-                      <Text className="flex-1 text-sm">{alert.label}</Text>
-                      <View className="bg-destructive/10 px-2 py-0.5 rounded-full">
-                        <Text className="text-xs font-semibold text-destructive">
-                          {alert.count}
-                        </Text>
-                      </View>
-                    </View>
-                  ))}
+                {stats.lowStockCount > 0 && (
+                  <AlertRow label="Meldebestand" count={stats.lowStockCount} icon="warning" color="#ef4444" />
+                )}
+                {stats.expiringCount > 0 && (
+                  <AlertRow label="Läuft ab" count={stats.expiringCount} icon="time" color="#f97316" />
+                )}
+                {stats.overdueToolsCount > 0 && (
+                  <AlertRow label="Überfällige Werkzeuge" count={stats.overdueToolsCount} icon="alert-circle" color="#8b5cf6" />
+                )}
               </Card>
             )}
           </>
-        )}
+        ) : null}
       </ScrollView>
-    </>
+    </SafeAreaView>
+  );
+}
+
+function KpiCard({ label, value, icon, color, bg }: {
+  label: string;
+  value: number | string;
+  icon: React.ComponentProps<typeof Ionicons>["name"];
+  color: string;
+  bg: string;
+}) {
+  return (
+    <View className="flex-1">
+      <Card className="p-4 gap-1.5">
+        <View
+          className="w-10 h-10 rounded-full items-center justify-center"
+          style={{ backgroundColor: bg }}
+        >
+          <Ionicons name={icon} size={20} color={color} />
+        </View>
+        <Text className="text-2xl font-bold tabular-nums">{value}</Text>
+        <Text className="text-xs text-muted-foreground">{label}</Text>
+      </Card>
+    </View>
+  );
+}
+
+function AlertRow({ label, count, icon, color }: {
+  label: string;
+  count: number;
+  icon: React.ComponentProps<typeof Ionicons>["name"];
+  color: string;
+}) {
+  return (
+    <View className="flex-row items-center gap-3 py-1">
+      <Ionicons name={icon} size={18} color={color} />
+      <Text className="flex-1 text-sm">{label}</Text>
+      <View style={{ backgroundColor: color + "18" }} className="px-2 py-0.5 rounded-full">
+        <Text style={{ color }} className="text-xs font-semibold">{count}</Text>
+      </View>
+    </View>
   );
 }

@@ -1,5 +1,5 @@
 import * as Haptics from "expo-haptics";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import * as React from "react";
 import { Platform, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -8,6 +8,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { Button } from "@/components/nativewindui/Button";
 import { Text } from "@/components/nativewindui/Text";
 import { Logo } from "@/components/Logo";
+import { isDemoMode } from "@/lib/demo/config";
+import { startDemoSession } from "@/lib/auth-client";
 
 const FEATURES = [
   { icon: "cube-outline" as const, label: "Materialverwaltung" },
@@ -20,6 +22,15 @@ function lightHaptic() {
 }
 
 export default function AuthIndexScreen() {
+  const [demoLoading, setDemoLoading] = React.useState(false);
+
+  async function handleDemoMode() {
+    setDemoLoading(true);
+    lightHaptic();
+    await startDemoSession();
+    router.replace("/(app)");
+  }
+
   return (
     <SafeAreaView style={{ flex: 1 }} className="bg-background">
       <View className="flex-1 justify-center px-8 py-6">
@@ -94,6 +105,21 @@ export default function AuthIndexScreen() {
             Mit der Nutzung stimmst du unseren AGB und Datenschutzrichtlinien zu.
           </Text>
         </View>
+
+        {/* Demo Mode — subtle link */}
+        {isDemoMode && (
+          <View className="items-center pt-3">
+            <Button
+              variant="plain"
+              onPress={handleDemoMode}
+              disabled={demoLoading}
+            >
+              <Text className="text-xs text-muted-foreground underline">
+                {demoLoading ? "Laden..." : "Demo ausprobieren"}
+              </Text>
+            </Button>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );

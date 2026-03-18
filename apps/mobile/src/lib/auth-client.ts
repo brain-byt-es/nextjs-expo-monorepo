@@ -10,6 +10,8 @@ import {
   useSession,
   type Session,
 } from "./session-store";
+import { isDemoMode } from "./demo/config";
+import { DEMO_SESSION, DEMO_ORG_ID } from "./demo/data";
 
 export { useSession } from "./session-store";
 
@@ -39,6 +41,10 @@ async function authFetch<T = unknown>(
 }
 
 export async function signIn(email: string, password: string) {
+  if (isDemoMode) {
+    await setSession(DEMO_SESSION);
+    return { user: DEMO_SESSION.user, token: DEMO_SESSION.token };
+  }
   try {
     const res = await fetch(`${API_URL}/api/auth/sign-in/email`, {
       method: "POST",
@@ -70,6 +76,10 @@ export async function signUp(
   password: string,
   name?: string
 ) {
+  if (isDemoMode) {
+    await setSession(DEMO_SESSION);
+    return { user: DEMO_SESSION.user, token: DEMO_SESSION.token };
+  }
   try {
     const res = await fetch(`${API_URL}/api/auth/sign-up/email`, {
       method: "POST",
@@ -113,6 +123,10 @@ export async function forgotPassword(email: string) {
 }
 
 export async function signOut() {
+  if (isDemoMode) {
+    await setSession(null);
+    return;
+  }
   try {
     await authFetch("/api/auth/sign-out", { method: "POST" });
   } catch {
@@ -123,6 +137,16 @@ export async function signOut() {
 
 export function isAuthenticated(): boolean {
   return getSession() !== null;
+}
+
+/**
+ * Start a demo session — sets fake user + org, navigates to app.
+ * Called from the "Demo Modus" button on the auth landing screen.
+ */
+export async function startDemoSession() {
+  const { setOrgId } = await import("./org-store");
+  await setSession(DEMO_SESSION);
+  await setOrgId(DEMO_ORG_ID);
 }
 
 async function sendWelcomeEmail(name: string, email: string) {

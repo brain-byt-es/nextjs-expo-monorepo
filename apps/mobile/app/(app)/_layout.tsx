@@ -14,6 +14,8 @@ import { Text } from "@/components/nativewindui/Text";
 import { cn } from "@/lib/cn";
 import { useColorScheme } from "@/lib/useColorScheme";
 import { useSession } from "@/lib/session-store";
+import { isDemoMode } from "@/lib/demo/config";
+import { DemoBanner } from "@/components/demo-banner";
 
 export default function AppLayout() {
   const { data, isPending } = useSession();
@@ -23,7 +25,8 @@ export default function AppLayout() {
   if (!data) return <Redirect href="/(auth)" />;
 
   return (
-    <Tabs
+    <>
+      <Tabs
       tabBar={TAB_BAR}
       screenOptions={{
         headerShown: false,
@@ -94,6 +97,8 @@ export default function AppLayout() {
       {/* Hidden screens — accessible via navigation but not in tab bar */}
       <Tabs.Screen name="subscription" options={{ href: null }} />
     </Tabs>
+      {isDemoMode && <DemoBanner />}
+    </>
   );
 }
 

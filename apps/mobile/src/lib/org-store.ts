@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { isDemoMode } from "./demo/config";
+import { DEMO_ORG_ID } from "./demo/data";
 
 const ORG_KEY = "current_org_id";
 
@@ -9,6 +11,8 @@ const listeners = new Set<OrgListener>();
 let currentOrgId: string | null = null;
 let loaded = false;
 let loadPromise: Promise<string | null> | null = null;
+
+// Demo mode: org ID is set on-demand via startDemoSession(), not at module init
 
 function notify() {
   for (const listener of listeners) {
@@ -35,10 +39,12 @@ export async function setOrgId(orgId: string | null) {
   currentOrgId = orgId;
   loaded = true;
   loadPromise = null;
-  if (orgId) {
-    await AsyncStorage.setItem(ORG_KEY, orgId);
-  } else {
-    await AsyncStorage.removeItem(ORG_KEY);
+  if (!isDemoMode) {
+    if (orgId) {
+      await AsyncStorage.setItem(ORG_KEY, orgId);
+    } else {
+      await AsyncStorage.removeItem(ORG_KEY);
+    }
   }
   notify();
 }
