@@ -42,11 +42,14 @@ export default function AppLayout() {
     <>
       <Tabs
       tabBar={TAB_BAR}
+      sceneStyle={{ backgroundColor: colors.background }}
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.grey2,
         tabBarStyle: {
+          backgroundColor: colors.card,
+          borderTopColor: colors.border,
           borderTopWidth: 0.5,
           ...(Platform.OS === "ios" ? {} : { elevation: 8 }),
         },
