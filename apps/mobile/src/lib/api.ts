@@ -209,6 +209,28 @@ const _createToolBooking = async (
   return api.post(`/api/tools/${toolId}/booking`, body);
 };
 
+
+const _eanLookup = (barcode: string) =>
+  api.get<{
+    found: boolean;
+    barcode?: string;
+    name?: string;
+    manufacturer?: string;
+    description?: string;
+    imageUrl?: string;
+    category?: string;
+    source?: string;
+  }>(`/api/ean-lookup?code=${encodeURIComponent(barcode)}`);
+
+const _createMaterial = (body: {
+  name: string;
+  number?: string;
+  unit?: string;
+  barcode?: string;
+  manufacturer?: string;
+  notes?: string;
+}) => api.post<{ id: string; name: string }>("/api/materials", body);
+
 // ── Demo-mode conditional exports ────────────────────────────────────
 export const getDashboardStats = isDemoMode
   ? demoApi.getDashboardStats
@@ -238,3 +260,5 @@ export const createStockChange = isDemoMode
 export const createToolBooking = isDemoMode
   ? demoApi.createToolBooking
   : _createToolBooking;
+export const eanLookup = isDemoMode ? demoApi.eanLookup : _eanLookup;
+export const createMaterial = isDemoMode ? demoApi.createMaterial : _createMaterial;

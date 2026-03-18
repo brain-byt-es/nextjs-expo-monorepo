@@ -833,3 +833,21 @@ export const webhookSubscriptions = pgTable(
 
 export type WebhookSubscription = typeof webhookSubscriptions.$inferSelect;
 export type NewWebhookSubscription = typeof webhookSubscriptions.$inferInsert;
+
+// ─── EAN / GTIN Lookup Cache ─────────────────────────────────────────
+export const eanCache = pgTable("ean_cache", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  barcode: text("barcode").notNull().unique(),
+  name: text("name"),
+  manufacturer: text("manufacturer"),
+  description: text("description"),
+  imageUrl: text("image_url"),
+  category: text("category"),
+  source: text("source").notNull(), // "openfoodfacts" | "opengtindb" | "manual"
+  rawData: jsonb("raw_data"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export type EanCacheEntry = typeof eanCache.$inferSelect;
+export type NewEanCacheEntry = typeof eanCache.$inferInsert;

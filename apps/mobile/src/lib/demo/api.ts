@@ -182,6 +182,43 @@ export function createToolBooking(
   return delay(undefined);
 }
 
+
+// ── EAN Lookup ────────────────────────────────────────────────────────────────
+
+export function eanLookup(barcode: string): Promise<{
+  found: boolean;
+  barcode?: string;
+  name?: string;
+  manufacturer?: string;
+  description?: string;
+  imageUrl?: string;
+  category?: string;
+  source?: string;
+}> {
+  return delay({
+    found: true,
+    barcode,
+    name: "Demo Produkt " + barcode.slice(-4),
+    manufacturer: "Demo Hersteller AG",
+    description: "Beispielprodukt aus EAN-Datenbank",
+    category: "Baumaterial",
+    source: "demo",
+  });
+}
+
+// ── Materials ─────────────────────────────────────────────────────────────────
+
+export function createMaterial(body: {
+  name: string;
+  number?: string;
+  unit?: string;
+  barcode?: string;
+  manufacturer?: string;
+  notes?: string;
+}): Promise<{ id: string; name: string }> {
+  return delay({ id: `mat-demo-${Date.now()}`, name: body.name });
+}
+
 // ── Mock api object ───────────────────────────────────────────────────────────
 // Mirrors the shape of the real `api` object from ../api.ts so any call-site
 // that reaches through to `api.get / post / patch / delete` gets a warning

@@ -27,12 +27,16 @@ interface ScanResultSheetProps {
     itemId: string,
     quantity: number
   ) => void;
+  onCreateMaterial?: (barcode: string) => void;
+  scannedBarcode?: string;
 }
 
 export function ScanResultSheet({
   result,
   onDismiss,
   onAddToCommission,
+  onCreateMaterial,
+  scannedBarcode,
 }: ScanResultSheetProps) {
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -145,8 +149,17 @@ export function ScanResultSheet({
                 Nicht gefunden
               </Text>
               <Text className="text-muted-foreground text-center text-sm">
-                Kein Material, Werkzeug oder Schlüssel mit diesem Barcode.
+                Kein Eintrag mit diesem Barcode gefunden.
               </Text>
+              {onCreateMaterial && scannedBarcode ? (
+                <Button
+                  onPress={() => onCreateMaterial(scannedBarcode)}
+                  className="mt-2 w-full"
+                >
+                  <Ionicons name="add-circle-outline" size={16} color="white" />
+                  <Text className="text-white ml-2">Material anlegen</Text>
+                </Button>
+              ) : null}
             </View>
           ) : (
             <View className="gap-4">

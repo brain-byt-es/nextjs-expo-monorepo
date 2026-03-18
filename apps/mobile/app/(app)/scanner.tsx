@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { View, StyleSheet } from "react-native";
 import * as Haptics from "expo-haptics";
 
@@ -8,13 +8,18 @@ import { Text } from "@/components/nativewindui/Text";
 import { BarcodeCamera } from "@/components/barcode-camera";
 import { ScanResultSheet } from "@/components/scan-result-sheet";
 import { CommissionPicker, type CommissionPickerItem } from "@/components/commission-picker";
-import { scanBarcode, type ScanResult } from "@/lib/api";
+import { scanBarcode, eanLookup, type ScanResult } from "@/lib/api";
+import { CreateMaterialSheet } from "@/components/create-material-sheet";
 
 export default function ScannerScreen() {
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [isLooking, setIsLooking] = useState(false);
   const [pickCommissionFor, setPickCommissionFor] =
     useState<CommissionPickerItem | null>(null);
+  const [createBarcode, setCreateBarcode] = useState<string | null>(null);
+  const [eanData, setEanData] = useState<any>(null);
+  const [eanLoading, setEanLoading] = useState(false);
+  const lastScannedBarcode = useRef<string>("");
 
   const handleScanned = useCallback(
     async (barcode: string) => {
@@ -22,6 +27,7 @@ export default function ScannerScreen() {
 
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       setIsLooking(true);
+      lastScannedBarcode.current = barcode;
 
       try {
         const result = await scanBarcode(barcode);
@@ -53,6 +59,24 @@ export default function ScannerScreen() {
     setPickCommissionFor(null);
   }
 
+  async function handleCreateMaterial(barcode: string) {
+    setScanResult(null); // dismiss scan sheet
+    setEanLoading(true);
+    try {
+      const result = await eanLookup(barcode);
+      setEanData(result.found ? result : null);
+    } catch {
+      setEanData(null);
+    }
+    setEanLoading(false);
+    setCreateBarcode(barcode);
+  }
+
+  function handleMaterialCreated() {
+    setCreateBarcode(null);
+    setEanData(null);
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -61,7 +85,7 @@ export default function ScannerScreen() {
 
       <BarcodeCamera
         onScanned={handleScanned}
-        isActive={!isLooking && scanResult === null && pickCommissionFor === null}
+        isActive={!isLooking && scanResult === null && pickCommissionFor === null && createBarcode === null}
       />
 
       {/* Loading indicator during lookup */}
@@ -76,13 +100,37 @@ export default function ScannerScreen() {
 
       <ScanResultSheet
         result={scanResult}
+        scannedBarcode={lastScannedBarcode.current}
         onDismiss={handleDismiss}
         onAddToCommission={handleAddToCommission}
+        onCreateMaterial={handleCreateMaterial}
       />
 
       <CommissionPicker
         item={pickCommissionFor}
         onDismiss={handleCommissionPickerDismiss}
+      />
+
+      {/* EAN lookup loading overlay */}
+      {eanLoading && (
+        <View style={styles.lookingOverlay}>
+          <View className="bg-black/70 rounded-2xl px-6 py-4 items-center gap-2">
+            <ActivityIndicator color="white" />
+            <Text className="text-white text-sm">EAN wird gesucht…</Text>
+          </View>
+        </View>
+      )}
+
+      <CreateMaterialSheet
+        key={createBarcode ?? "closed"}
+        visible={createBarcode !== null}
+        barcode={createBarcode ?? ""}
+        eanData={eanData}
+        onCreated={handleMaterialCreated}
+        onDismiss={() => {
+          setCreateBarcode(null);
+          setEanData(null);
+        }}
       />
     </View>
   );
