@@ -1,55 +1,66 @@
+/**
+ * Color scheme hook with persistence.
+ *
+ * Uses the official NativeWind v4 API:
+ *   import { colorScheme } from "nativewind";
+ *   colorScheme.set("dark" | "light" | "system");
+ *
+ * See: https://www.nativewind.dev/docs/core-concepts/dark-mode
+ */
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useColorScheme as useNativewindColorScheme } from "nativewind";
+import {
+  colorScheme as nwColorScheme,
+  useColorScheme as useNativewindColorScheme,
+} from "nativewind";
 import * as React from "react";
 
 import { COLORS } from "@/theme/colors";
 
 export type ThemePreference = "light" | "dark" | "system";
 
+const STORAGE_KEY = "theme";
+
+/**
+ * Call once at app startup to apply the saved theme before first render.
+ */
+export async function loadThemePreference(): Promise<void> {
+  try {
+    const saved = await AsyncStorage.getItem(STORAGE_KEY);
+    if (saved === "light" || saved === "dark" || saved === "system") {
+      nwColorScheme.set(saved);
+    }
+  } catch {}
+}
+
 function useColorScheme() {
-  const { colorScheme, setColorScheme, toggleColorScheme } =
-    useNativewindColorScheme();
-  const [isDarkColorScheme, setIsDarkColorScheme] = React.useState(
-    colorScheme === "dark"
-  );
+  const { colorScheme } = useNativewindColorScheme();
   const [themePreference, setThemePreference] =
     React.useState<ThemePreference>("system");
 
+  // Load saved preference on mount
   React.useEffect(() => {
-    setIsDarkColorScheme(colorScheme === "dark");
-  }, [colorScheme]);
-
-  React.useEffect(() => {
-    AsyncStorage.getItem("theme").then((savedTheme) => {
-      if (savedTheme) {
-        setThemePreference(savedTheme as ThemePreference);
-        setColorScheme(savedTheme as ThemePreference);
+    AsyncStorage.getItem(STORAGE_KEY).then((saved) => {
+      if (saved === "light" || saved === "dark" || saved === "system") {
+        setThemePreference(saved);
       }
     });
   }, []);
 
   function handleSetColorScheme(scheme: ThemePreference) {
     setThemePreference(scheme);
-    setColorScheme(scheme);
-    AsyncStorage.setItem("theme", scheme);
+    nwColorScheme.set(scheme);
+    AsyncStorage.setItem(STORAGE_KEY, scheme);
   }
 
-  function handleToggleColorScheme() {
-    const newScheme = colorScheme === "light" ? "dark" : "light";
-    handleSetColorScheme(newScheme);
-  }
+  const effective = colorScheme ?? "light";
 
   return {
-    colorScheme: colorScheme ?? "light",
-    isDarkColorScheme,
+    colorScheme: effective,
+    isDarkColorScheme: effective === "dark",
     setColorScheme: handleSetColorScheme,
-    toggleColorScheme: handleToggleColorScheme,
-    colors: COLORS[colorScheme ?? "light"] ?? COLORS.light,
+    colors: COLORS[effective] ?? COLORS.light,
     themePreference,
   };
 }
-
-// loadThemePreference is a no-op now — the hook handles loading itself
-export async function loadThemePreference(): Promise<void> {}
 
 export { useColorScheme };
