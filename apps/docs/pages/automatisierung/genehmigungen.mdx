@@ -1,0 +1,80 @@
+---
+title: Genehmigungen
+---
+
+# Genehmigungen
+
+Mit Genehmigungsworkflows können Sie festlegen, dass bestimmte Aktionen erst nach Freigabe durch eine autorisierte Person ausgeführt werden. So behalten Sie die Kontrolle über kritische Bestandsbewegungen.
+
+> **Hinweis:** Genehmigungsworkflows sind ab dem **Business-Plan** verfügbar.
+
+## Wann werden Genehmigungen ausgelöst?
+
+Genehmigungen werden durch [Workflow-Regeln](/automatisierung/workflow-regeln) konfiguriert. Typische Szenarien:
+
+- Entnahme über einer bestimmten Menge (z.B. > 50 Stück)
+- Entnahme über einem bestimmten Wert (z.B. > CHF 500)
+- Lieferschein-Abschluss durch Benutzer ohne Manager-Rolle
+- Bestandskorrektur auf 0
+- Umbuchung zwischen sensiblen Standorten
+
+## Genehmigung beantragen
+
+Wenn ein Benutzer eine Aktion ausführt, die eine Genehmigung erfordert:
+
+1. Die Aktion wird **nicht sofort ausgeführt**, sondern als **Ausstehend** markiert.
+2. Der Benutzer sieht einen Hinweis: «Diese Aktion erfordert eine Genehmigung».
+3. Er kann optional einen **Kommentar** zur Begründung hinzufügen.
+4. Die Aktion verbleibt im Status **Ausstehend**, bis sie genehmigt oder abgelehnt wird.
+
+## Genehmigung erteilen oder ablehnen
+
+Autorisierte Benutzer (Administratoren und Manager) erhalten:
+
+- Eine **E-Mail-Benachrichtigung** mit direktem Genehmigungslink
+- Eine **Push-Benachrichtigung** auf der mobilen App
+- Einen Eintrag unter **Automatisierung → Ausstehende Genehmigungen**
+
+### Genehmigung in der App
+
+1. Öffnen Sie **Automatisierung → Ausstehende Genehmigungen**.
+2. Sie sehen alle offenen Anfragen mit:
+   - Antragsteller, Zeitstempel
+   - Beschreibung der beantragten Aktion
+   - Kommentar des Antragstellers (falls vorhanden)
+3. Klicken Sie auf **Genehmigen** oder **Ablehnen**.
+4. Bei Ablehnung: Geben Sie einen **Ablehnungsgrund** ein.
+5. Der Antragsteller erhält sofort eine Benachrichtigung.
+
+### Genehmigung per E-Mail
+
+Die Genehmigungsmail enthält direkte Schaltflächen:
+
+- **Genehmigen** — Ein Klick, keine Anmeldung erforderlich (tokengesicherter Link, 72h gültig)
+- **Ablehnen** — Öffnet ein kleines Webformular für die Begründung
+
+> **Warnung:** Genehmigungslinks per E-Mail sind 72 Stunden gültig. Danach muss der Antragsteller die Anfrage erneut einreichen.
+
+## Genehmigungsprotokoll
+
+Alle Genehmigungsentscheidungen werden dauerhaft protokolliert:
+
+- Wer hat was genehmigt/abgelehnt
+- Zeitstempel der Entscheidung
+- Begründung (bei Ablehnung)
+- Ursprüngliche Aktion und Antragsteller
+
+Das Protokoll finden Sie unter **Berichte → Genehmigungsprotokoll**.
+
+## Eskalation
+
+Falls eine Genehmigung nach einer konfigurierbaren Zeit noch nicht bearbeitet wurde, kann LogistikApp die Anfrage eskalieren:
+
+1. Gehen Sie zu **Einstellungen → Genehmigungen → Eskalation**.
+2. Legen Sie die **Eskalationszeit** fest (z.B. 4 Stunden).
+3. Definieren Sie den **Eskalationsempfänger** (z.B. CEO oder IT-Admin).
+
+## Verwandte Funktionen
+
+- [Workflow-Regeln](/automatisierung/workflow-regeln) — Regeln definieren, die Genehmigungen auslösen
+- [RBAC / Rollen](/einstellungen/rollen) — Berechtigungen verwalten

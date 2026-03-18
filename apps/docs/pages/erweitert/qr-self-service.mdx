@@ -1,0 +1,77 @@
+---
+title: QR Self-Service
+---
+
+# QR Self-Service
+
+Mit QR Self-Service können Mitarbeitende Entnahmen und Zugänge über einen einfachen QR-Code buchen — ganz ohne App-Download oder LogistikApp-Konto. Ideal für Mitarbeitende, die nur gelegentlich auf das Lager zugreifen.
+
+> **Hinweis:** QR Self-Service ist ab dem **Business-Plan** verfügbar.
+
+## Wie funktioniert Self-Service?
+
+1. Ein QR-Code (oder NFC-Tag) ist am Lagerort oder Artikel angebracht.
+2. Mitarbeitender scannt den Code mit der Smartphone-Kamera.
+3. Eine einfache Webseite öffnet sich — keine App, kein Login nötig.
+4. Mitarbeitender gibt seinen Namen und die gewünschte Aktion ein.
+5. Die Buchung wird direkt in LogistikApp erfasst.
+
+## Self-Service-Seite aktivieren
+
+1. Öffnen Sie einen Standort unter **Standorte** oder einen Artikel unter **Materialien**.
+2. Klicken Sie auf **Self-Service → Aktivieren**.
+3. Konfigurieren Sie:
+   - **Erlaubte Aktionen**: Entnahme, Zugang, oder beides
+   - **Identifikation**: Nur Name (freie Eingabe) oder E-Mail-Bestätigung (sicherer)
+   - **Genehmigungs-Trigger**: Ab welcher Menge ist eine Genehmigung nötig
+4. Speichern Sie.
+
+## QR-Code generieren und drucken
+
+1. Klicken Sie auf **Self-Service → QR-Code drucken**.
+2. Wählen Sie Format: A4 (mit Beschriftung), Aufkleber (5×5 cm), oder als PNG/PDF.
+3. Drucken Sie den Code und kleben Sie ihn gut sichtbar am Lagerort oder Artikel auf.
+
+Alternativ: NFC-Tags beschreiben mit der [NFC-Funktion](/mobile-app/nfc) in der Mobile App.
+
+## Die Self-Service-Webseite
+
+Die öffentliche Seite zeigt dem Benutzer:
+
+- **Artikelname und aktueller Bestand** (Leserechte)
+- **Aktions-Auswahl**: Entnehmen oder Einbuchen
+- **Menge** eingeben
+- **Name** oder E-Mail eingeben
+- **Kommentar** optional
+- **Bestätigen**-Button
+
+Nach Bestätigung:
+- Buchung wird sofort in LogistikApp erfasst
+- Bestätigung wird angezeigt: «10 Stück Schrauben entnommen — Danke!»
+- Optional: Bestätigungs-E-Mail an die eingegebene E-Mail-Adresse
+
+## Problemmelder
+
+Mitarbeitende können über die Self-Service-Seite auch Probleme melden — ohne Buchung:
+
+- «Artikel beschädigt»
+- «Etikett unleserlich»
+- «Bestand stimmt nicht»
+- Freitext
+
+Die Meldung erscheint als Aufgabe unter **Aufgaben** und löst optional eine [Workflow-Regel](/automatisierung/workflow-regeln) aus.
+
+## Sicherheitsüberlegungen
+
+> **Hinweis:** QR Self-Service-Seiten sind öffentlich erreichbar. Jeder mit dem QR-Code kann eine Buchung vornehmen. Verwenden Sie die E-Mail-Bestätigung oder Genehmigungen für sensible Bestände.
+
+Optionale Sicherheitsmassnahmen:
+- **E-Mail-Bestätigung**: Benutzer muss eine bekannte E-Mail-Adresse eingeben
+- **Genehmigung**: Buchungen über einem Schwellenwert werden zur Genehmigung weitergeleitet
+- **Deaktivieren**: QR Self-Service pro Standort/Artikel jederzeit deaktivierbar
+
+## Verwandte Funktionen
+
+- [NFC-Tags](/mobile-app/nfc) — NFC als Alternative zu QR-Codes
+- [Genehmigungen](/automatisierung/genehmigungen) — Self-Service-Buchungen genehmigungspflichtig machen
+- [Rollen & Berechtigungen](/einstellungen/rollen) — Self-Service-Rolle

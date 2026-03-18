@@ -1,0 +1,91 @@
+---
+title: Kalibrierung & Zertifikate
+---
+
+# Kalibrierung & Zertifikate
+
+Mit dem Kalibrierungsmodul verwalten Sie Kalibriernachweise, Prüfzertifikate und Wartungsintervalle für Mess- und Prüfgeräte. LogistikApp erinnert Sie rechtzeitig vor der nächsten Fälligkeit.
+
+> **Hinweis:** Kalibrierung & Zertifikate sind ab dem **Business-Plan** verfügbar.
+
+## Anwendungsfälle
+
+Typische Einsatzbereiche:
+
+- Messgeräte (Multimeter, Druckmessgeräte, Waagen)
+- Prüfwerkzeuge (Drehmomentschlüssel, Kalibriergewichte)
+- Medizinische Geräte (Blutdruckmessgeräte, Thermometer)
+- Sicherheitsausrüstung (Gasdetektoren, Atemschutzgeräte)
+- Fahrzeuge (Hauptuntersuchung, Abgasuntersuchung)
+
+## Kalibrierungsintervall konfigurieren
+
+1. Öffnen Sie ein Werkzeug oder einen Artikel unter **Werkzeuge** oder **Materialien**.
+2. Klicken Sie auf **Bearbeiten → Kalibrierung**.
+3. Aktivieren Sie **Kalibrierungspflicht**.
+4. Wählen Sie das **Intervall**: Täglich, Wöchentlich, Monatlich, Halbjährlich, Jährlich oder benutzerdefiniert (N Tage).
+5. Tragen Sie das **Datum der letzten Kalibrierung** ein.
+6. LogistikApp berechnet automatisch das **nächste Fälligkeitsdatum**.
+7. Speichern Sie.
+
+## Kalibrierungsnachweis erfassen
+
+Nach jeder Kalibrierung erfassen Sie den Nachweis:
+
+1. Öffnen Sie das Gerät und klicken Sie auf **Neue Kalibrierung erfassen**.
+2. Füllen Sie folgende Felder aus:
+   - **Kalibrierungsdatum**
+   - **Kalibriert durch** (Name oder externe Prüfstelle)
+   - **Ergebnis**: Bestanden / Nicht bestanden / Mit Einschränkungen
+   - **Messwerte** (optional, z.B. «Abweichung: +0,2 °C»)
+   - **Nächste Kalibrierung fällig am**
+   - **Kommentar**
+3. Optional: **Zertifikat hochladen** (PDF, max. 10 MB).
+4. Speichern Sie.
+
+Der neue Eintrag erscheint in der Kalibrierungshistorie.
+
+## Zertifikate hochladen und abrufen
+
+Zertifikate werden als PDF-Dateien direkt am Gerät gespeichert:
+
+- **Hochladen**: Beim Erfassen einer Kalibrierung oder nachträglich über **Zertifikate → + Hochladen**.
+- **Abrufen**: Öffnen Sie das Gerät → Registerkarte **Kalibrierung** → Klicken Sie auf das Zertifikat.
+- **Exportieren**: Alle Zertifikate eines Geräts als ZIP-Archiv unter **Kalibrierung → ZIP exportieren**.
+
+## Fälligkeits-Dashboard
+
+Unter **Rückverfolgung → Kalibrierungen** sehen Sie alle Geräte sortiert nach Fälligkeit:
+
+| Status | Bedeutung |
+|---|---|
+| Überfällig | Kalibrierung war fällig und wurde nicht erfasst |
+| Fällig diese Woche | Kalibrierung steht unmittelbar bevor |
+| Fällig diesen Monat | Kalibrierung in den nächsten 30 Tagen |
+| Aktuell | Kalibrierung nicht fällig |
+
+## Automatische Erinnerungen
+
+LogistikApp sendet Erinnerungen vor dem Fälligkeitsdatum:
+
+- **14 Tage vorher**: Erste E-Mail an den zuständigen Benutzer
+- **3 Tage vorher**: Zweite E-Mail + Push-Benachrichtigung
+- **Fälligkeitstag**: Eskalations-E-Mail an Administrator
+
+Konfigurieren Sie Empfänger unter **Einstellungen → Benachrichtigungen → Kalibrierungen**.
+
+> **Tipp:** Weisen Sie Geräte Verantwortlichen zu, damit Erinnerungen immer an die richtige Person gehen.
+
+## Gerät sperren bei überfälliger Kalibrierung
+
+Im Enterprise-Plan können Sie konfigurieren, dass Geräte mit überfälliger Kalibrierung nicht mehr ausgecheckt werden können:
+
+1. Gehen Sie zu **Einstellungen → Kalibrierung → Sperrverhalten**.
+2. Aktivieren Sie **Auschecken bei überfälliger Kalibrierung blockieren**.
+3. Wählen Sie den **Toleranzzeitraum** (z.B. 0, 3 oder 7 Tage nach Fälligkeit).
+
+## Verwandte Funktionen
+
+- [Versicherung & Garantie](/rueckverfolgung/versicherung) — Versicherungs- und Garantiedaten
+- [Chargen & Seriennummern](/rueckverfolgung/chargen-serien) — Seriennummern-basierte Rückverfolgung
+- [Workflow-Regeln](/automatisierung/workflow-regeln) — Automatische Aktionen bei Kalibrierungsfälligkeit

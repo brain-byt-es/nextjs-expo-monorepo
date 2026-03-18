@@ -4,5 +4,6 @@ export default {
   "materialien": "Materialien",
   "werkzeuge": "Werkzeuge",
   "standorte": "Standorte",
-  "webhooks": "Webhooks"
+  "webhooks": "Webhooks",
+  "v1-api": "REST API v1 (Vollreferenz)"
 }

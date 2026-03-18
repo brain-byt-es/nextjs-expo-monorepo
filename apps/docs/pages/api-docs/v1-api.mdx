@@ -1,0 +1,272 @@
+---
+title: REST API v1
+---
+
+# REST API v1
+
+LogistikApp stellt eine vollständige REST API bereit, mit der externe Systeme Daten lesen und schreiben können. Alle Endpunkte geben JSON zurück.
+
+## Basis-URL
+
+```
+https://app.logistikapp.ch/api/v1
+```
+
+## Authentifizierung
+
+Alle API-Anfragen müssen einen gültigen **API-Schlüssel** im `Authorization`-Header mitschicken:
+
+```http
+Authorization: Bearer lak_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+API-Schlüssel werden unter **Einstellungen → API-Schlüssel** erstellt. Mehr dazu unter [API-Schlüssel](/einstellungen/api-schluessel).
+
+> **Warnung:** Behandeln Sie API-Schlüssel wie Passwörter. Speichern Sie sie nie in öffentlich zugänglichem Quellcode (z.B. auf GitHub). Verwenden Sie Umgebungsvariablen oder Secret Manager.
+
+## Rate Limits
+
+| Plan | Anfragen pro Minute | HTTP-Header |
+|---|---|---|
+| Starter | 60 | `X-RateLimit-Limit: 60` |
+| Business | 300 | `X-RateLimit-Limit: 300` |
+| Enterprise | 1 000 | `X-RateLimit-Limit: 1000` |
+
+Bei Überschreitung: HTTP `429 Too Many Requests` mit `Retry-After`-Header.
+
+## Paginierung
+
+Listen-Endpunkte geben standardmässig 50 Einträge zurück (max. 200):
+
+```
+GET /api/v1/materials?limit=50&offset=0
+```
+
+Response-Headers:
+```
+X-Total-Count: 1234
+X-Page-Count: 25
+```
+
+## Fehlerformat
+
+```json
+{
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "Material with id '123' not found",
+    "status": 404
+  }
+}
+```
+
+---
+
+## Endpunkte
+
+### Materialien
+
+#### Liste aller Materialien
+
+```http
+GET /api/v1/materials
+```
+
+Query-Parameter:
+
+| Parameter | Typ | Beschreibung |
+|---|---|---|
+| `limit` | integer | Max. Ergebnisse (1–200, Standard: 50) |
+| `offset` | integer | Offset für Paginierung |
+| `category` | string | Filter nach Kategorie-Slug |
+| `location_id` | string | Filter nach Standort-ID |
+| `below_min_stock` | boolean | Nur Artikel unter Mindestbestand |
+| `search` | string | Volltextsuche (Name, Artikelnummer, EAN) |
+
+```json
+{
+  "data": [
+    {
+      "id": "mat_abc123",
+      "name": "Kabel 3×1.5mm NYM",
+      "sku": "EL-00123",
+      "ean": "4012345678901",
+      "category": "Elektromaterial",
+      "unit": "m",
+      "stock": 450,
+      "min_stock": 100,
+      "locations": [
+        { "id": "loc_xyz", "name": "Hauptlager A3", "stock": 450 }
+      ],
+      "created_at": "2025-09-01T08:00:00Z",
+      "updated_at": "2026-03-15T14:22:11Z"
+    }
+  ],
+  "total": 312,
+  "limit": 50,
+  "offset": 0
+}
+```
+
+#### Material abrufen
+
+```http
+GET /api/v1/materials/{id}
+```
+
+#### Material erstellen
+
+```http
+POST /api/v1/materials
+Content-Type: application/json
+
+{
+  "name": "Schrauben M6×40",
+  "sku": "VB-00456",
+  "category": "Verbindungsmittel",
+  "unit": "Stück",
+  "stock": 1000,
+  "min_stock": 200,
+  "location_id": "loc_xyz"
+}
+```
+
+#### Material aktualisieren
+
+```http
+PATCH /api/v1/materials/{id}
+Content-Type: application/json
+
+{
+  "min_stock": 300
+}
+```
+
+#### Bestandsbewegung buchen
+
+```http
+POST /api/v1/materials/{id}/movements
+Content-Type: application/json
+
+{
+  "type": "withdrawal",
+  "quantity": 50,
+  "location_id": "loc_xyz",
+  "note": "Baustelle Muster, KW 12"
+}
+```
+
+Typen: `withdrawal` (Entnahme), `receipt` (Zugang), `transfer` (Umbuchung), `correction` (Korrektur)
+
+---
+
+### Werkzeuge
+
+#### Liste aller Werkzeuge
+
+```http
+GET /api/v1/tools
+```
+
+Query-Parameter: `limit`, `offset`, `category`, `status` (`available`, `checked_out`, `maintenance`)
+
+#### Werkzeug auschecken
+
+```http
+POST /api/v1/tools/{id}/checkout
+Content-Type: application/json
+
+{
+  "user_id": "usr_abc",
+  "expected_return": "2026-04-01",
+  "note": "Baustelle Muster"
+}
+```
+
+#### Werkzeug zurückgeben
+
+```http
+POST /api/v1/tools/{id}/checkin
+Content-Type: application/json
+
+{
+  "condition": "good",
+  "note": "Gerät ok"
+}
+```
+
+---
+
+### Standorte
+
+#### Liste aller Standorte
+
+```http
+GET /api/v1/locations
+```
+
+---
+
+### Lieferscheine
+
+#### Liste aller Lieferscheine
+
+```http
+GET /api/v1/delivery-notes
+```
+
+Query-Parameter: `status` (`draft`, `open`, `completed`, `cancelled`), `type` (`receipt`, `withdrawal`, `transfer`), `from_date`, `to_date`
+
+#### Lieferschein erstellen
+
+```http
+POST /api/v1/delivery-notes
+Content-Type: application/json
+
+{
+  "type": "withdrawal",
+  "location_id": "loc_xyz",
+  "items": [
+    { "material_id": "mat_abc123", "quantity": 50 }
+  ],
+  "note": "Automatische Bestellung via API"
+}
+```
+
+#### Lieferschein abschliessen
+
+```http
+POST /api/v1/delivery-notes/{id}/complete
+```
+
+---
+
+### Benutzer
+
+#### Liste aller Benutzer
+
+```http
+GET /api/v1/users
+```
+
+Erfordert Scope `admin`.
+
+---
+
+## Webhooks
+
+Statt die API zu pollen, empfehlen wir die Verwendung von [Webhooks](/einstellungen/webhooks) für ereignisgesteuerte Integrationen.
+
+## Changelog der API
+
+| Version | Änderung |
+|---|---|
+| v1.3.0 | Endpunkte für Chargen, Kalibrierung, Versicherung |
+| v1.2.0 | Endpunkte für Werkzeuge, Filter-Parameter |
+| v1.1.0 | Bestandsbewegungen, Lieferscheine |
+| v1.0.0 | Erstes Release: Materialien, Standorte, Benutzer |
+
+## Verwandte Funktionen
+
+- [API-Schlüssel](/einstellungen/api-schluessel) — Schlüssel verwalten
+- [Webhooks](/einstellungen/webhooks) — Push-Benachrichtigungen für Ereignisse

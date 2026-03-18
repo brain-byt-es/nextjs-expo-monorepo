@@ -1,0 +1,80 @@
+---
+title: Auto-Nachbestellung
+---
+
+# Auto-Nachbestellung
+
+Die Auto-Nachbestellung überwacht Ihre Bestände täglich und erstellt Nachbestellvorschläge — oder löst direkt Bestellungen aus, wenn der Bestand unter den Meldebestand fällt.
+
+> **Hinweis:** Auto-Nachbestellung ist ab dem **Business-Plan** verfügbar.
+
+## Funktionsweise
+
+Jeden Tag um **2:00 Uhr UTC** prüft ein Hintergrundprozess (Inngest Cron) alle Artikel, bei denen:
+
+1. Der aktuelle Bestand ≤ dem Mindestbestand liegt, **und**
+2. Noch keine offene Bestellung für diesen Artikel existiert
+
+Für diese Artikel erstellt das System automatisch einen **Nachbestellvorschlag**.
+
+## Mindestbestand konfigurieren
+
+Voraussetzung ist ein korrekt gesetzter Mindestbestand pro Artikel:
+
+1. Öffnen Sie einen Artikel unter **Materialien**.
+2. Klicken Sie auf **Bearbeiten**.
+3. Tragen Sie im Feld **Mindestbestand** den gewünschten Wert ein.
+4. Optional: Tragen Sie die **Bestellmenge** ein (wie viele Stück sollen bestellt werden).
+5. Speichern Sie.
+
+> **Tipp:** Kombinieren Sie den Mindestbestand mit den [Nachfrageprognosen](/ai/prognose), um realistische Meldebestände basierend auf tatsächlichem Verbrauch zu ermitteln.
+
+## Nachbestellvorschläge verwalten
+
+1. Gehen Sie zu **Automatisierung → Nachbestellvorschläge**.
+2. Sie sehen eine Liste aller Vorschläge mit:
+   - Artikel und aktueller Bestand
+   - Empfohlene Bestellmenge
+   - Günstigster Lieferant (aus [Lieferanten & Preise](/finanzen/lieferantenpreise))
+   - Geschätzte Lieferzeit
+   - Gesamtkosten des Vorschlags
+3. Wählen Sie einzelne Vorschläge aus oder wählen Sie **Alle auswählen**.
+4. Klicken Sie auf:
+   - **Bestellung erstellen** — Erstellt einen Eingangs-Lieferschein
+   - **Als Entwurf speichern** — Speichert für spätere Bearbeitung
+   - **Ablehnen** — Entfernt den Vorschlag
+
+## Bester-Preis-Finder
+
+Wenn für einen Artikel mehrere Lieferanten in [Lieferanten & Preise](/finanzen/lieferantenpreise) hinterlegt sind, vergleicht LogistikApp automatisch:
+
+- **Einheitspreis** aller Lieferanten
+- **Mindestbestellmenge (MOQ)** — erfüllt die Bestellmenge das MOQ?
+- **Lieferzeit** — welcher Lieferant ist am schnellsten?
+
+Das System empfiehlt den Lieferanten mit dem **besten Gesamtpaket** (Preis + Lieferzeit). Sie können die Empfehlung manuell überschreiben.
+
+> **Tipp:** Hinterlegen Sie Lieferantenpreise unter [Lieferanten & Preise](/finanzen/lieferantenpreise) um den Bester-Preis-Finder zu aktivieren.
+
+## Automatische Bestellung (ohne Bestätigung)
+
+Im Enterprise-Plan können Sie für unkritische Verbrauchsmaterialien die vollautomatische Bestellung aktivieren:
+
+> **Warnung:** Bei vollautomatischer Bestellung wird **ohne manuellen Review** eine Bestellung erstellt. Prüfen Sie sorgfältig, für welche Artikel Sie diese Option aktivieren.
+
+1. Gehen Sie zu **Materialien → Artikel bearbeiten → Nachbestellung**.
+2. Aktivieren Sie **Vollautomatisch bestellen**.
+3. Wählen Sie den **Lieferanten** (muss eindeutig festgelegt sein).
+4. Speichern Sie.
+
+Bei aktiviertem vollautomatischem Modus wird der Eingangs-Lieferschein direkt erstellt und per [Webhook](/einstellungen/webhooks) oder E-Mail an den Lieferanten gesendet.
+
+## Benachrichtigungen
+
+Beim Erstellen von Nachbestellvorschlägen erhalten konfigurierte Empfänger eine tägliche **Zusammenfassung** per E-Mail. Konfigurieren Sie diese unter **Einstellungen → Benachrichtigungen → Nachbestellungen**.
+
+## Verwandte Funktionen
+
+- [Nachfrageprognose](/ai/prognose) — Bestellmengen vorausberechnen
+- [Lieferanten & Preise](/finanzen/lieferantenpreise) — Lieferantendaten pflegen
+- [Workflow-Regeln](/automatisierung/workflow-regeln) — Erweiterte Auslöser konfigurieren

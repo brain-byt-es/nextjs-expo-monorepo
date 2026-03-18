@@ -1,0 +1,70 @@
+---
+title: Nachfrageprognose
+---
+
+# Nachfrageprognose
+
+Die Nachfrageprognose analysiert Ihre historischen Bestandsbewegungen und berechnet, wie viel von einem Artikel Sie in den nächsten Wochen oder Monaten benötigen werden. So vermeiden Sie Engpässe und übermässige Lagermengen.
+
+> **Hinweis:** Die Nachfrageprognose ist ab dem **Business-Plan** verfügbar und erfordert mindestens 30 Tage Bestandshistorie für sinnvolle Ergebnisse.
+
+## Prognose-Algorithmen
+
+LogistikApp verwendet drei Methoden und wählt automatisch die geeignetste anhand Ihrer Datenlage:
+
+| Methode | Geeignet für | Beschreibung |
+|---|---|---|
+| **Gleitender Durchschnitt** | Stabile Nachfrage | Mittelwert der letzten N Perioden |
+| **Exponenzielle Glättung** | Trendhafte Nachfrage | Neuere Daten werden stärker gewichtet |
+| **Saisonale Erkennung** | Saisonale Schwankungen | Erkennt Muster über mehrere Jahre |
+
+## Prognose aufrufen
+
+1. Öffnen Sie einen Artikel unter **Materialien** oder **Werkzeuge**.
+2. Wechseln Sie zur Registerkarte **Prognose**.
+3. Wählen Sie den **Prognosezeitraum** (4, 8 oder 12 Wochen).
+4. LogistikApp berechnet die Prognose und zeigt:
+   - **Prognosekurve** (blau) mit Konfidenzband (grau schattiert)
+   - **Bisheriger Verbrauch** (schwarz)
+   - **Empfohlene Nachbestellmenge**
+   - **Voraussichtliches Stockout-Datum** (falls Bestand reichen wird)
+
+## Prognose-Dashboard
+
+Eine Übersicht aller Artikel mit kritischer Prognose finden Sie unter **Berichte → Nachfrageprognose**:
+
+- Filterbarer nach Kategorie, Standort, Zeitraum
+- Sortierbar nach Stockout-Risiko (hoch → niedrig)
+- **Ampelfarben**: Rot = Stockout innerhalb 2 Wochen, Gelb = innerhalb 4 Wochen, Grün = unkritisch
+
+## Nachbestellvorschläge
+
+Für Artikel mit erkanntem Nachbestellbedarf erstellt LogistikApp automatisch **Vorschläge**:
+
+1. Gehen Sie zu **Automatisierung → Auto-Nachbestellung**.
+2. Unter **Vorschläge** sehen Sie alle Artikel mit empfohlenem Nachbestelltermin und -menge.
+3. Klicken Sie auf **Bestellung erstellen** um direkt einen Lieferschein oder eine Bestellung auszulösen.
+
+> **Tipp:** Kombinieren Sie die Prognose mit den [Workflow-Regeln](/automatisierung/workflow-regeln), um bei erkanntem Nachbestellbedarf automatisch eine E-Mail an den Einkauf zu senden.
+
+## Saisonale Erkennung
+
+Wenn LogistikApp eine saisonale Schwankung erkennt (z.B. erhöhter Verbrauch jeden Sommer), wird dies im Diagramm als **«Saisonmuster erkannt»** angezeigt. Die Prognose berücksichtigt dann die Saisonalität der vergangenen Jahre.
+
+Voraussetzung: Mindestens **2 Jahre** Verbrauchshistorie.
+
+## Stockout-Vorhersage
+
+Das Stockout-Datum zeigt an, wann der aktuelle Bestand bei gleichbleibendem Verbrauch aufgebraucht sein wird:
+
+```
+Stockout-Datum = Heute + (Aktueller Bestand ÷ Durchschnittlicher Tagesverbrauch)
+```
+
+Berücksichtigt wird dabei die Lieferzeit des bevorzugten Lieferanten (konfigurierbar unter [Lieferanten & Preise](/finanzen/lieferantenpreise)).
+
+## Verwandte Funktionen
+
+- [Anomalie-Erkennung](/ai/anomalie-erkennung) — Ungewöhnliche Verbrauchsmuster erkennen
+- [Auto-Nachbestellung](/automatisierung/auto-nachbestellung) — Bestellungen automatisch auslösen
+- [Lieferanten & Preise](/finanzen/lieferantenpreise) — Lieferzeiten hinterlegen

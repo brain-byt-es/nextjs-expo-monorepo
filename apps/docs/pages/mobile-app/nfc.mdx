@@ -1,0 +1,64 @@
+---
+title: NFC-Tags
+---
+
+# NFC-Tags
+
+Mit NFC-Tags können Sie physische Objekte direkt mit LogistikApp verbinden. Kleben Sie einen NFC-Tag auf ein Werkzeug oder einen Lagerort — ein einfaches Antippen mit dem Smartphone öffnet sofort den richtigen Eintrag.
+
+> **Hinweis:** NFC ist auf iOS 14+ und Android 8+ verfügbar. Einige Android-Geräte ohne NFC-Hardware werden nicht unterstützt.
+
+## NFC-Tag schreiben
+
+1. Öffnen Sie in der Mobile App das Werkzeug oder den Artikel, den Sie mit einem Tag verknüpfen möchten.
+2. Tippen Sie oben rechts auf das **NFC-Symbol** (Wellen-Icon).
+3. Tippen Sie auf **Tag beschreiben**.
+4. Halten Sie einen leeren NFC-Tag an die Rückseite Ihres Smartphones.
+5. LogistikApp schreibt die Artikel-URL auf den Tag.
+6. Bestätigen Sie den Erfolg mit einem Vibrations-Feedback.
+
+> **Tipp:** NTAG213-Tags (günstigste und verbreitetste Variante) sind vollständig kompatibel. Für bessere Reichweite empfehlen wir NTAG215 oder NTAG216.
+
+## NFC-Tag lesen
+
+1. Öffnen Sie die Mobile App.
+2. Halten Sie Ihr Smartphone an den NFC-Tag.
+3. Die App öffnet sofort den verknüpften Artikel oder Standort.
+4. Von dort aus können Sie direkt Aktionen ausführen (Entnahme, Auschecken, Bestandskorrektur).
+
+Auf iOS wird NFC im Hintergrund automatisch erkannt (kein Scanner öffnen nötig). Auf Android muss NFC im Gerät aktiviert sein (Einstellungen → Verbindungen → NFC).
+
+## Self-Service-URL schreiben
+
+Für Standorte kann LogistikApp eine **Self-Service-URL** auf den Tag schreiben. Diese URL öffnet eine öffentliche Seite ohne App-Download:
+
+1. Öffnen Sie einen Standort unter **Standorte**.
+2. Tippen Sie auf **NFC → Self-Service-URL schreiben**.
+3. Kleben Sie den Tag an den Lagerort (z.B. Fahrzeug, Schrank, Regal).
+4. Mitarbeitende ohne Mobile App können den Tag mit jedem NFC-fähigen Smartphone antippen und direkt Entnahmen oder Zugänge buchen.
+
+Mehr zur Self-Service-Funktion unter [QR Self-Service](/erweitert/qr-self-service).
+
+## Tag-Verlauf anzeigen
+
+Jedes Antippen eines NFC-Tags wird protokolliert:
+
+- Welcher Benutzer (falls angemeldet) oder anonyme Self-Service-Nutzung
+- Zeitstempel
+- Ausgeführte Aktion
+
+Den Verlauf finden Sie in der Objektdetailansicht unter **NFC → Tag-Verlauf**.
+
+## Tag schützen (schreibgeschützt)
+
+Falls Sie verhindern möchten, dass der Tag von Dritten überschrieben wird:
+
+1. Tippen Sie auf **NFC → Tag sperren**.
+2. Halten Sie den Tag an das Gerät.
+3. LogistikApp setzt den Schreibschutz auf dem Tag. **Achtung: Dieser Vorgang ist nicht umkehrbar.**
+
+## Verwandte Funktionen
+
+- [QR Self-Service](/erweitert/qr-self-service) — Browserbasierte Self-Service-Buchungen
+- [Barcode-Scanner](/mobile-app/scanner) — Alternative Identifikationsmethode
+- [AR-Modus](/mobile-app/ar-modus) — Erweiterte Realität für Lageransicht

@@ -1,0 +1,103 @@
+---
+title: Workflow-Regeln
+---
+
+# Workflow-Regeln
+
+Mit dem Regelwerk können Sie Abläufe in LogistikApp automatisieren. Definieren Sie, was passieren soll, wenn ein bestimmtes Ereignis eintritt — ohne Programmierung.
+
+> **Hinweis:** Workflow-Regeln sind ab dem **Business-Plan** verfügbar. Im Enterprise-Plan ist die Anzahl der Regeln unbegrenzt; im Business-Plan sind es bis zu 20 aktive Regeln.
+
+## Aufbau einer Regel
+
+Jede Regel besteht aus drei Teilen:
+
+```
+WENN [Auslöser]  +  FALLS [Bedingungen]  →  DANN [Aktionen]
+```
+
+### Verfügbare Auslöser
+
+| Auslöser | Beschreibung |
+|---|---|
+| Bestand unter Mindestbestand | Sobald der Bestand eines Artikels unter den Mindestbestand fällt |
+| Bestandsbewegung | Bei jeder Entnahme, jedem Zugang oder Umbuchung |
+| Lieferschein erstellt | Wenn ein neuer Lieferschein angelegt wird |
+| Lieferschein abgeschlossen | Wenn ein Lieferschein den Status «Abgeschlossen» erhält |
+| Werkzeug ausgecheckt | Wenn ein Werkzeug einer Person zugewiesen wird |
+| Werkzeug überfällig | Wenn ein Werkzeug nach dem geplanten Rückgabedatum nicht zurückgegeben wurde |
+| Ablaufdatum in N Tagen | Wenn ein Artikel ein Ablaufdatum in N Tagen erreicht |
+| Kalibrierung fällig in N Tagen | Wenn eine Kalibrierung demnächst fällig ist |
+| Anomalie erkannt | Bei einer [Anomalie-Meldung](/ai/anomalie-erkennung) |
+| Genehmigung ausstehend | Wenn eine Aktion auf Genehmigung wartet |
+
+### Verfügbare Bedingungen (optional)
+
+Bedingungen schränken ein, wann eine Regel ausgelöst wird:
+
+- Artikel gehört zu Kategorie X
+- Standort ist / ist nicht
+- Menge grösser/kleiner als Wert
+- Benutzer hat Rolle X
+- Tageszeit zwischen A und B
+- Wochentag ist/ist nicht
+
+### Verfügbare Aktionen
+
+| Aktion | Beschreibung |
+|---|---|
+| E-Mail senden | An beliebige Empfänger oder Rollen |
+| Push-Benachrichtigung | An mobile App-Benutzer |
+| Webhook senden | HTTP POST an externe URL |
+| Bestellung vorschlagen | Erstellt einen Nachbestellvorschlag |
+| Genehmigung anfordern | Leitet die Aktion zur Genehmigung weiter |
+| Aufgabe erstellen | Erstellt eine To-do-Aufgabe für ein Teammitglied |
+| Lieferschein erstellen | Automatisch einen Lieferschein anlegen |
+
+## Regel erstellen — Schritt für Schritt
+
+1. Gehen Sie zu **Automatisierung → Workflow-Regeln**.
+2. Klicken Sie auf **+ Neue Regel**.
+3. Vergeben Sie einen **Namen** (z.B. «Mindestbestand-Alert Schrauben»).
+4. Wählen Sie den **Auslöser** aus der Dropdown-Liste.
+5. Fügen Sie optional eine oder mehrere **Bedingungen** hinzu.
+6. Klicken Sie auf **+ Aktion hinzufügen** und wählen Sie die Aktion.
+7. Konfigurieren Sie die Aktion (z.B. E-Mail-Empfänger, Betreff, Text).
+8. Klicken Sie auf **Speichern und aktivieren**.
+
+## Regel testen
+
+Bevor Sie eine Regel aktivieren, können Sie sie testen:
+
+1. Klicken Sie in der Regeldetailansicht auf **Regel testen**.
+2. Geben Sie ein Testobjekt an (z.B. einen Artikel aus Ihrem Bestand).
+3. LogistikApp simuliert die Auslösung und zeigt, welche Aktionen ausgeführt würden.
+4. Das Ergebnis wird **nicht** wirklich ausgeführt — es ist eine reine Simulation.
+
+## Vorlagen
+
+LogistikApp liefert folgende Starter-Vorlagen mit:
+
+| Vorlage | Auslöser | Aktion |
+|---|---|---|
+| Mindestbestand-E-Mail | Bestand unter Mindestbestand | E-Mail an Einkauf |
+| Werkzeug überfällig | Werkzeug überfällig | E-Mail an Ausleiher + Manager |
+| Ablaufdatum-Warnung | Ablaufdatum in 14 Tagen | Push + E-Mail |
+| Anomalie-Alert | Anomalie erkannt (Schweregrad Hoch) | E-Mail an Admin |
+| Genehmigung anfordern | Entnahme > 100 Stück | Genehmigung anfordern |
+
+Wählen Sie eine Vorlage unter **+ Neue Regel → Aus Vorlage**.
+
+## Regel-Protokoll
+
+Jede ausgelöste Regel wird unter **Automatisierung → Protokoll** aufgezeichnet mit:
+- Auslöse-Zeitstempel
+- Objekt das den Auslöser ausgelöst hat
+- Status (Ausgeführt / Fehlgeschlagen)
+- Ausgeführte Aktionen
+
+## Verwandte Funktionen
+
+- [Genehmigungen](/automatisierung/genehmigungen) — Genehmigungsworkflows konfigurieren
+- [Auto-Nachbestellung](/automatisierung/auto-nachbestellung) — Automatisch Bestellungen auslösen
+- [Webhooks](/einstellungen/webhooks) — Externe Systeme anbinden

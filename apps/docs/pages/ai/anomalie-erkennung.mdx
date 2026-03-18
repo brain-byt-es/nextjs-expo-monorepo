@@ -1,0 +1,89 @@
+---
+title: Anomalie-Erkennung
+---
+
+# Anomalie-Erkennung
+
+Die Anomalie-Erkennung überwacht Ihre Bestandsbewegungen kontinuierlich und warnt Sie bei ungewöhnlichen Mustern — bevor ein Problem entsteht.
+
+> **Hinweis:** Die Anomalie-Erkennung ist ab dem **Business-Plan** verfügbar.
+
+## Die fünf Erkennungsmodule
+
+LogistikApp verwendet fünf statistische Detektoren, die unabhängig voneinander laufen:
+
+### 1. Mengen-Z-Score
+
+Erkennt Entnahmen oder Zugänge, die statistisch signifikant von der Norm abweichen. Basis: Normalverteilung über die letzten 90 Tage.
+
+**Beispiel:** Wenn der durchschnittliche Tagesverbrauch eines Artikels 5 Stück beträgt und plötzlich 47 Stück entnommen werden, wird dies als Anomalie gemeldet.
+
+### 2. Ausserhalb der Geschäftszeiten
+
+Erkennt Buchungen, die ausserhalb der konfigurierten Arbeitszeiten vorgenommen werden.
+
+Konfigurieren Sie Ihre Geschäftszeiten unter **Einstellungen → Arbeitszeiten**.
+
+**Beispiel:** Eine Entnahme um 3:00 Uhr morgens wird gemeldet, auch wenn die Menge normal wäre.
+
+### 3. Ungewöhnliche Standorte
+
+Erkennt Buchungen an Standorten, die für den jeweiligen Artikel oder Benutzer ungewöhnlich sind.
+
+**Beispiel:** Ein Artikel, der normalerweise nur in Lager A bewegt wird, wird plötzlich in Aussenstelle Z entnommen.
+
+### 4. Verbrauchsspitzen
+
+Erkennt kurzfristige Verbrauchsspitzen, die den gleitenden Durchschnitt deutlich übersteigen.
+
+**Beispiel:** Ein Artikel wird über 5 Tage gleichmässig verbraucht, danach in einem Tag 10× die normale Menge.
+
+### 5. Massenentnahmen
+
+Erkennt ungewöhnlich grosse Einzelentnahmen, die auf Fehleingaben oder Diebstahl hindeuten können.
+
+**Beispiel:** Eine Entnahme von 9999 Stück bei einem Artikel mit normalem Bestand von 200.
+
+## Schweregrade
+
+Jede Anomalie erhält einen Schweregrad:
+
+| Schweregrad | Bedeutung | Darstellung |
+|---|---|---|
+| **Kritisch** | Sofortiger Handlungsbedarf (z.B. Massenentnahme) | Rotes Badge |
+| **Hoch** | Signifikante Abweichung, prüfen Sie zeitnah | Oranges Badge |
+| **Mittel** | Auffälligkeit, zur Kenntnis nehmen | Gelbes Badge |
+| **Info** | Geringe Abweichung, statistisch erfasst | Grauer Badge |
+
+## Anomalien anzeigen
+
+1. Gehen Sie zum **Dashboard** — das Widget **Anomalien** zeigt die letzten offenen Meldungen.
+2. Klicken Sie auf eine Anomalie um Details anzuzeigen:
+   - Welcher Artikel, welcher Standort, welcher Benutzer
+   - Erwarteter Wert vs. tatsächlicher Wert
+   - Zeitstempel und Buchungsreferenz
+3. Wählen Sie **Als geprüft markieren** (Anomalie war berechtigt) oder **Buchung stornieren** (Fehler korrigieren).
+
+Eine vollständige Liste finden Sie unter **Berichte → Anomalie-Protokoll**.
+
+## E-Mail-Benachrichtigungen
+
+Kritische und hohe Anomalien lösen automatisch eine E-Mail-Benachrichtigung an konfigurierte Empfänger aus.
+
+Konfigurieren Sie Empfänger unter **Einstellungen → Benachrichtigungen → Anomalie-Alerts**.
+
+> **Tipp:** Setzen Sie den Schwellenwert für E-Mail-Alerts auf **Hoch**, um Benachrichtigungs-Flut bei vielen Infomeldungen zu vermeiden.
+
+## Erkennungs-Schwellenwerte anpassen
+
+Unter **Einstellungen → KI → Anomalie-Erkennung** können Administratoren die Empfindlichkeit pro Modul anpassen:
+
+- **Z-Score-Schwellenwert**: Standard 2,5 (entspricht ~99 % Konfidenzintervall)
+- **Ausserhalb Geschäftszeiten**: Pufferzeit vor/nach Geschäftszeiten (Standard: 30 Min.)
+- **Verbrauchsspitzen**: Multiplikator gegenüber gleitendem Durchschnitt (Standard: 5×)
+
+## Verwandte Funktionen
+
+- [Nachfrageprognose](/ai/prognose) — Verbrauchsvorhersage für die Zukunft
+- [Workflow-Regeln](/automatisierung/workflow-regeln) — Automatisch reagieren bei Anomalien
+- [Benachrichtigungen](/einstellungen/benachrichtigungen) — E-Mail-Alerts konfigurieren

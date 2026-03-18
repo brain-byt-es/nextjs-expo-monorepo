@@ -43,7 +43,7 @@ Ihre Daten werden 90 Tage nach Ablauf des Abos aufbewahrt, damit Sie Daten expor
 Standardmässig nein. LogistikApp verhindert dass der Bestand unter 0 fällt. Falls Sie über Kontingente disponieren möchten, können Administratoren den «Negativbestand erlauben»-Modus aktivieren.
 
 ### Wie importiere ich meine bestehende Artikelliste?
-Über **Materialien → Import** können Sie CSV oder Excel hochladen. Laden Sie die Vorlage herunter um das korrekte Format zu sehen. Details unter [Import (CSV/Excel)](/materialien/import).
+Über **Materialien → Import** können Sie CSV oder Excel hochladen. Das [AI-Mapping](/ai/spalten-mapping) erkennt Ihre Spaltenbezeichnungen automatisch. Laden Sie alternativ die Vorlage herunter. Details unter [Import (CSV/Excel)](/materialien/import).
 
 ### Kann ich Bestandskorrekturen rückgängig machen?
 Manuelle Korrekturen können nicht direkt rückgängig gemacht werden, aber Sie können eine Gegenbuchung vornehmen (z.B. -10 wenn irrtümlich +10 gebucht wurde). Die vollständige Historie bleibt sichtbar.
@@ -55,6 +55,49 @@ Materialien werden verbraucht (der Bestand sinkt beim Entnehmen). Werkzeuge werd
 
 ### Kann ein Werkzeug mehreren Personen gleichzeitig zugewiesen sein?
 Nein. Ein Werkzeug ist immer genau einer Person oder einem Standort zugewiesen. Falls dasselbe Gerät von mehreren Personen genutzt wird, empfehlen wir es als geteilte Ressource am Standort zu lassen.
+
+## KI-Funktionen
+
+### Welche KI-Funktionen sind in welchem Plan verfügbar?
+Alle KI-Funktionen (Foto-Erkennung, Nachfrageprognose, Anomalie-Erkennung) sind ab dem **Business-Plan** verfügbar. Das AI-Mapping beim CSV-Import ist ab Starter verfügbar.
+
+### Werden meine Fotos bei der Foto-Erkennung gespeichert?
+Nein. Fotos werden direkt an die OpenAI Vision API gesendet und nach der Analyse sofort verworfen. LogistikApp speichert weder das Originalbild noch Rohdaten der Analyse. Details unter [Datenschutz](/sicherheit/datenschutz).
+
+### Wie genau ist die Foto-Erkennung?
+Bei guter Bildqualität (frontales Foto, gute Beleuchtung, lesbares Produktetikett) erreicht die Erkennung eine Trefferquote von über 85 % für den Produktnamen und die Kategorie. Technische Daten wie Artikelnummer müssen meist manuell ergänzt werden.
+
+### Kann die Nachfrageprognose saisonale Muster erkennen?
+Ja, mit mindestens 2 Jahren Verbrauchshistorie. Kürzere Historien nutzen den gleitenden Durchschnitt oder exponentielle Glättung. Details unter [Nachfrageprognose](/ai/prognose).
+
+### Was passiert, wenn eine Anomalie fälschlicherweise ausgelöst wird?
+Sie können die Anomalie als «Geprüft und berechtigt» markieren — die Buchung bleibt bestehen. Das System lernt nicht selbständig aus diesen Rückmeldungen, aber Sie können die Empfindlichkeitsschwellen manuell anpassen.
+
+## NFC & Mobile
+
+### Welche NFC-Tags sind kompatibel?
+NTAG213, NTAG215 und NTAG216 sind vollständig kompatibel. NTAG213 ist am günstigsten und für die meisten Einsätze ausreichend. Details unter [NFC-Tags](/mobile-app/nfc).
+
+### Funktioniert NFC auf iPhones?
+Ja, ab iPhone 7 mit iOS 14+. NFC wird im Hintergrund automatisch erkannt — kein Scanner muss geöffnet werden. Auf älteren iPhones (ohne NFC) steht die Funktion nicht zur Verfügung.
+
+### Kann ich die Sprachsteuerung auf Schweizerdeutsch verwenden?
+Ja, die Spracherkennungs-Engine unterstützt Schweizerdeutsch. Die Erkennungsgenauigkeit kann je nach Dialekt variieren. Bei Erkennnungsfehlern kann der erkannte Text vor der Ausführung manuell korrigiert werden. Details unter [Sprachsteuerung](/mobile-app/sprachsteuerung).
+
+### Was passiert wenn ich offline buche und jemand anderes die gleichen Daten ändert?
+LogistikApp erkennt solche Konflikte und zeigt sie nach der Synchronisation an. Sie können dann entscheiden, welche Version behalten werden soll oder einen neuen Wert eingeben. Details unter [Offline-Konflikte](/mobile-app/offline-konflikte).
+
+## Automatisierung
+
+### Wie viele Workflow-Regeln kann ich erstellen?
+- Business: bis zu 20 aktive Regeln
+- Enterprise: unbegrenzt
+
+### Kann ich eine Workflow-Regel testen ohne sie zu aktivieren?
+Ja. Im Regeleditor gibt es einen **Testmodus**, der die Regel simuliert ohne sie wirklich auszuführen. Details unter [Workflow-Regeln](/automatisierung/workflow-regeln).
+
+### Wer erhält Genehmigungsanfragen per E-Mail?
+Standardmässig alle Benutzer mit der Rolle **Administrator** oder **Manager**. Dies kann pro Workflow-Regel individuell konfiguriert werden.
 
 ## Mobile App
 
@@ -78,10 +121,13 @@ Ja. Unter **Berichte → Datenexport** können Sie alle Daten als CSV, Excel ode
 ## Technisches
 
 ### Gibt es eine API?
-Ja. Vollständige REST-API-Dokumentation unter [API-Dokumentation](/api-docs/uebersicht).
+Ja. Vollständige REST-API-Dokumentation unter [API v1 Vollreferenz](/api-docs/v1-api).
 
 ### Welche Browser werden unterstützt?
 Chrome 90+, Firefox 90+, Safari 15+, Edge 90+. Internet Explorer wird nicht unterstützt.
 
 ### Kann ich LogistikApp in mein ERP integrieren?
-Ja, über die [REST-API](/api-docs/uebersicht) oder [Webhooks](/einstellungen/webhooks). Für Standardintegrationen (SAP, Abacus, Bexio) kontaktieren Sie den Support.
+Ja, über die [REST-API](/api-docs/v1-api) oder [Webhooks](/einstellungen/webhooks). Für Standardintegrationen (SAP, Abacus, Bexio) kontaktieren Sie den Support.
+
+### Was ist der Unterschied zwischen API-Schlüsseln und Webhooks?
+**API-Schlüssel** ermöglichen es Ihrem System, LogistikApp aktiv abzufragen (Pull). **Webhooks** ermöglichen es LogistikApp, Ihr System bei Ereignissen aktiv zu benachrichtigen (Push). Für Echtzeit-Integrationen empfehlen wir Webhooks, für geplante Synchronisationen die API.

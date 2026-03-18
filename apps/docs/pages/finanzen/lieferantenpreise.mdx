@@ -1,0 +1,90 @@
+---
+title: Lieferanten & Preise
+---
+
+# Lieferanten & Preise
+
+Hinterlegen Sie mehrere Lieferanten und deren aktuelle Preise pro Artikel. LogistikApp vergleicht die Preise automatisch und empfiehlt den günstigsten Lieferanten beim Nachbestellen.
+
+> **Hinweis:** Lieferanten & Preise sind ab dem **Starter-Plan** verfügbar. Die automatische Preisempfehlung bei der [Auto-Nachbestellung](/automatisierung/auto-nachbestellung) ist ab **Business** verfügbar.
+
+## Lieferant anlegen
+
+1. Gehen Sie zu **Finanzen → Lieferanten**.
+2. Klicken Sie auf **+ Neuer Lieferant**.
+3. Füllen Sie aus:
+   - **Name** (z.B. «Bürgin AG»)
+   - **Lieferantennummer** (für ERP-Integration)
+   - **E-Mail** und **Telefon**
+   - **Adresse**
+   - **Standardlieferzeit** in Werktagen
+   - **Zahlungsbedingungen** (z.B. «30 Tage netto»)
+   - **Währung** (CHF, EUR, USD)
+4. Speichern Sie.
+
+## Preis pro Artikel hinterlegen
+
+Sie können Preise entweder direkt am Artikel oder unter dem Lieferanten pflegen:
+
+### Über den Artikel
+
+1. Öffnen Sie einen Artikel unter **Materialien** oder **Werkzeuge**.
+2. Klicken Sie auf **Bearbeiten → Lieferanten & Preise**.
+3. Klicken Sie auf **+ Lieferant hinzufügen**.
+4. Wählen Sie den Lieferanten aus.
+5. Tragen Sie ein:
+   - **Einheitspreis** (CHF pro Einheit des Artikels)
+   - **Mindestbestellmenge (MOQ)**
+   - **Lieferartikel-Nummer** (Artikelnummer beim Lieferanten)
+   - **Lieferzeit** (wenn abweichend vom Standard des Lieferanten)
+   - **Gültig ab** und **Gültig bis** (für befristete Konditionen)
+6. Speichern Sie.
+
+### Über den Lieferanten
+
+1. Öffnen Sie den Lieferanten unter **Finanzen → Lieferanten**.
+2. Klicken Sie auf die Registerkarte **Artikel & Preise**.
+3. Klicken Sie auf **+ Artikel hinzufügen** und wählen Sie den Artikel.
+4. Tragen Sie Preis und Konditionen ein.
+
+## Preisvergleich
+
+Sobald ein Artikel bei mehreren Lieferanten mit Preisen hinterlegt ist, sehen Sie in der Artikeldetailansicht unter **Lieferanten & Preise** eine Vergleichstabelle:
+
+| Lieferant | Preis | MOQ | Lieferzeit | Empfehlung |
+|---|---|---|---|---|
+| Bürgin AG | CHF 2.45 | 100 St. | 3 Tage | Beste Kombination |
+| Meier Handel | CHF 2.20 | 500 St. | 5 Tage | Günstigster Preis |
+| Schnell GmbH | CHF 2.80 | 50 St. | 1 Tag | Schnellste Lieferung |
+
+LogistikApp bewertet jede Option und kennzeichnet:
+- **Beste Kombination**: Gewichtete Bewertung aus Preis + Lieferzeit
+- **Günstigster Preis**: Niedrigster Einheitspreis (MOQ erfüllt)
+- **Schnellste Lieferung**: Kürzeste Lieferzeit
+
+## Preishistorie
+
+Jede Preisänderung wird protokolliert:
+
+1. Öffnen Sie die Preiszeile eines Lieferanten am Artikel.
+2. Klicken Sie auf **Preishistorie**.
+3. Sie sehen alle früheren Preise mit Datum der Änderung.
+
+Dies ermöglicht die Nachvollziehbarkeit von Preisentwicklungen für Controlling-Zwecke.
+
+## Preisimport (CSV)
+
+Für grössere Preislisten importieren Sie per CSV:
+
+1. Gehen Sie zu **Finanzen → Lieferanten → CSV-Import**.
+2. Laden Sie die Vorlage herunter.
+3. Füllen Sie die Vorlage mit Ihren Preisen aus.
+4. Laden Sie die ausgefüllte Datei hoch.
+5. Prüfen Sie die Vorschau und bestätigen Sie den Import.
+
+> **Tipp:** Fordern Sie beim Lieferanten die Preisliste als CSV an — mit dem [AI-Mapping](/ai/spalten-mapping) wird sie automatisch den richtigen Feldern zugeordnet.
+
+## Verwandte Funktionen
+
+- [Auto-Nachbestellung](/automatisierung/auto-nachbestellung) — Preisvergleich in der Bestellvorschlagslogik
+- [Abschreibungen & TCO](/finanzen/abschreibungen) — Einkaufspreise für TCO-Kalkulation

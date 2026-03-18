@@ -1,0 +1,80 @@
+---
+title: Offline-Konflikte
+---
+
+# Offline-Konflikte
+
+Wenn Sie im Offline-Modus Änderungen vorgenommen haben und anschliessend die Verbindung wiederherstellen, kann es zu Konflikten kommen — dann nämlich, wenn dieselben Daten in der Zwischenzeit auch durch einen anderen Benutzer oder auf der Web-App geändert wurden.
+
+> Allgemeine Informationen zum Offline-Modus finden Sie unter [Offline-Modus](/mobile-app/offline).
+
+## Wann entstehen Konflikte?
+
+Ein Konflikt entsteht, wenn:
+
+1. Sie offline Bestand X von 100 auf 80 Stück geändert haben
+2. In der Zwischenzeit wurde online derselbe Bestand von 100 auf 90 Stück geändert
+3. Bei der Synchronisation können beide Änderungen nicht automatisch zusammengeführt werden
+
+LogistikApp erkennt solche Situationen und zeigt sie als **Konflikt** an, statt stillschweigend eine der Änderungen zu überschreiben.
+
+## Konflikte erkennen
+
+Nach der Synchronisation erscheint oben in der App ein **oranges Banner**:
+
+«2 Konflikte nach Synchronisation erkannt — Tippen zum Anzeigen»
+
+Alternativ: **Einstellungen → Sync-Status → Konflikte**.
+
+## Konflikt lösen
+
+1. Öffnen Sie die Konflikteliste.
+2. Tippen Sie auf einen Konflikt um ihn zu öffnen.
+3. LogistikApp zeigt einen **Side-by-Side-Vergleich**:
+
+| | Ihre Änderung (Offline) | Server-Version (Online) |
+|---|---|---|
+| Bestand | 80 Stück | 90 Stück |
+| Geändert | Heute 08:42 | Heute 09:15 |
+| Geändert von | Sie | Petra Müller |
+
+4. Wählen Sie eine Auflösungsoption:
+   - **Meine Änderung verwenden** — Überschreibt die Server-Version
+   - **Server-Version behalten** — Ihre Offline-Änderung wird verworfen
+   - **Zusammenführen** — Für Textfelder: Beide Änderungen manuell kombinieren
+   - **Manuell eingeben** — Geben Sie einen neuen Wert ein (z.B. die korrekte Summe)
+
+> **Tipp:** Bei Bestandszahlen ist in der Regel die Option **Zusammenführen → Summe berechnen** am sinnvollsten: Wenn Sie +20 eingebucht haben und jemand anderes -10, entspricht das Ergebnis dem Stand vor Ihrer Offline-Session plus beide Änderungen.
+
+## Sync-Status-Bildschirm
+
+Unter **Einstellungen → Sync-Status** sehen Sie:
+
+- **Zuletzt synchronisiert**: Datum und Uhrzeit der letzten erfolgreichen Synchronisation
+- **Ausstehende Änderungen**: Anzahl der Offline-Aktionen, die noch nicht synchronisiert wurden
+- **Konflikte**: Anzahl der offenen Konflikte
+- **Synchronisation erzwingen**: Manuelle Synchronisation anstoßen
+
+## Konfliktvermeidung
+
+Best Practices um Konflikte zu minimieren:
+
+- **Standortbasierte Arbeitsteilung**: Weisen Sie Mitarbeitenden bestimmte Standorte zu — so arbeiten selten zwei Personen am selben Bestand offline.
+- **Kurze Offline-Phasen**: Synchronisieren Sie so oft wie möglich — bereits kurze WLAN-Verbindungen reichen aus.
+- **Kritische Buchungen online**: Wichtige Korrekturen und Inventuren wenn möglich bei bestehender Verbindung durchführen.
+
+## Konflikt-Protokoll
+
+Alle gelösten Konflikte werden im **Konflikt-Protokoll** gespeichert:
+
+- Datum der Auflösung
+- Gewählte Lösung
+- Betroffene Daten
+- Beteiligte Benutzer
+
+Das Protokoll ist unter **Berichte → Sync-Protokoll** abrufbar und kann für die Nachvollziehbarkeit bei Inventurdiskrepanzen verwendet werden.
+
+## Verwandte Funktionen
+
+- [Offline-Modus](/mobile-app/offline) — Offline-Betrieb und Synchronisation
+- [Inventur](/inventur/durchfuehren) — Offline-Inventur mit Konfliktauflösung

@@ -1,0 +1,83 @@
+---
+title: Multi-Unternehmen
+---
+
+# Multi-Unternehmen
+
+Der Multi-Unternehmen-Modus ermöglicht die Verwaltung mehrerer rechtlich eigenständiger Organisationen unter einem einzigen LogistikApp-Account. Ideal für Holdingstrukturen, Franchise-Netzwerke und Gruppen mit mehreren Niederlassungen.
+
+> **Hinweis:** Multi-Unternehmen ist ausschliesslich im **Enterprise-Plan** verfügbar.
+
+## Struktur
+
+```
+Hauptorganisation (z.B. Müller Gruppe AG)
+├── Gesellschaft 1 (z.B. Müller Bau AG)
+├── Gesellschaft 2 (z.B. Müller Elektro GmbH)
+└── Gesellschaft 3 (z.B. Müller Service AG)
+```
+
+Jede Gesellschaft hat:
+- Eigene Daten (Materialien, Werkzeuge, Standorte, Lieferscheine)
+- Eigene Benutzer (Mitarbeitende sehen standardmässig nur ihre Gesellschaft)
+- Eigenes Branding (Logo, Farbe)
+- Eigene Abrechnung (oder konsolidiert über Hauptorganisation)
+
+## Organisations-Switcher
+
+Benutzer mit Zugriff auf mehrere Gesellschaften können zwischen diesen wechseln:
+
+1. Klicken Sie oben links auf den **Organisationsnamen**.
+2. Ein Dropdown zeigt alle Gesellschaften, auf die Sie Zugriff haben.
+3. Klicken Sie auf eine Gesellschaft — die App lädt die Daten dieser Organisation.
+
+## Konsolidiertes Reporting
+
+Eines der Hauptvorteile des Multi-Unternehmen-Modus ist das konsolidierte Reporting über alle Gesellschaften hinweg:
+
+1. Gehen Sie zur **Hauptorganisation** (Switcher → Hauptorg.).
+2. Öffnen Sie **Berichte → Konzernübersicht**.
+3. Alle Berichte zeigen aggregierte Daten über alle Gesellschaften.
+
+Verfügbare Konzernberichte:
+
+| Bericht | Beschreibung |
+|---|---|
+| **Konzern-Bestandsübersicht** | Bestandswert aller Gesellschaften summiert |
+| **Werkzeug-Auslastung** | Werkzeugnutzung über alle Gesellschaften |
+| **Lieferschein-Volumen** | Buchungsvolumen pro Gesellschaft |
+| **Intercompany-Transfers** | Umbuchungen zwischen Gesellschaften |
+
+## Cross-Org KPIs
+
+Das Dashboard der Hauptorganisation zeigt übergreifende KPIs:
+
+- Gesamtbestandswert (alle Gesellschaften)
+- Anzahl aktiver Benutzer (alle Gesellschaften)
+- Top-5 Artikel nach Wert (konsolidiert)
+- Gesellschaft mit dem grössten Nachbestellbedarf
+
+## Intercompany-Umbuchungen
+
+Materialien können zwischen Gesellschaften umgebucht werden:
+
+1. Starten Sie eine Umbuchung bei der Quellgesellschaft.
+2. Wählen Sie als Zielstandort «Andere Gesellschaft → [Name]».
+3. Die Umbuchung wird als **Intercompany-Transfer** markiert.
+4. Die Zielgesellschaft erhält eine Benachrichtigung und kann den Eingang bestätigen.
+
+Intercompany-Transfers erscheinen in beiden Gesellschaften im Buchungsprotokoll.
+
+## Benutzerrechte über Gesellschaften
+
+| Benutzertyp | Zugriff |
+|---|---|
+| Konzern-Administrator | Alle Gesellschaften, alle Einstellungen |
+| Konzern-Viewer | Alle Gesellschaften, nur Lesen |
+| Gesellschafts-Administrator | Nur die eigene Gesellschaft, alle Einstellungen |
+| Normaler Benutzer | Nur die eigene Gesellschaft, gemäss Rolle |
+
+## Verwandte Funktionen
+
+- [Berichte & Analytik](/berichte/uebersicht) — Gesellschaftsspezifische Berichte
+- [Rollen & Berechtigungen](/einstellungen/rollen) — Berechtigungen pro Gesellschaft

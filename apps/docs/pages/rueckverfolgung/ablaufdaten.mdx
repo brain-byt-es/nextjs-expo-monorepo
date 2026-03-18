@@ -1,0 +1,86 @@
+---
+title: Ablaufdaten (FIFO/FEFO)
+---
+
+# Ablaufdaten (FIFO/FEFO)
+
+LogistikApp unterstützt die Verwaltung von Ablaufdaten und ermöglicht die automatische FEFO-Entnahme (First Expired, First Out), damit ältere Bestände zuerst verbraucht werden.
+
+> **Hinweis:** Ablaufdaten-Verwaltung ist ab dem **Business-Plan** verfügbar.
+
+## FIFO vs. FEFO
+
+| Methode | Bedeutung | Anwendung |
+|---|---|---|
+| **FIFO** | First In, First Out | Zuerst eingelagerter Bestand zuerst entnehmen |
+| **FEFO** | First Expired, First Out | Bestand mit nächstem Ablaufdatum zuerst entnehmen |
+
+LogistikApp verwendet standardmässig **FEFO**, da dies die sichere Methode für ablaufdatum-relevante Waren ist. FEFO schliesst FIFO ein, wenn alle Chargen gleich lang haltbar sind.
+
+## Ablaufdatum hinterlegen
+
+Ablaufdaten werden beim Wareneingang pro Charge eingetragen:
+
+1. Buchen Sie einen Zugang für einen Artikel mit [Chargen-Tracking](/rueckverfolgung/chargen-serien).
+2. Im Zugangsdialog erscheint das Feld **Ablaufdatum**.
+3. Wählen Sie das Datum aus dem Kalender.
+4. Bestätigen Sie den Zugang.
+
+Beim nächsten Zugang derselben Charge wird das Ablaufdatum automatisch vorgeschlagen.
+
+## Ablauf-Dashboard-Widget
+
+Das **Ablaufdaten-Widget** auf dem Dashboard zeigt alle Artikel mit bald ablaufendem Bestand:
+
+| Farbe | Bedeutung |
+|---|---|
+| Rot | Abgelaufen oder heute ablaufend |
+| Orange | Läuft in den nächsten 7 Tagen ab |
+| Gelb | Läuft in den nächsten 30 Tagen ab |
+| Grün | Kein bald ablaufender Bestand |
+
+Klicken Sie auf einen Artikel um direkt zur Chargenübersicht zu gelangen.
+
+## Ablaufbericht
+
+Unter **Berichte → Ablaufdaten** finden Sie eine vollständige Auswertung:
+
+- Alle abgelaufenen Chargen (sollten entnommen oder vernichtet werden)
+- Chargen die in den nächsten 7, 30, 90 Tagen ablaufen
+- Wert des von Ablauf bedrohten Bestands
+- Export als CSV oder PDF
+
+## FEFO-Entnahme in der Praxis
+
+Wenn ein Benutzer einen Artikel entnimmt, der in mehreren Chargen mit unterschiedlichen Ablaufdaten vorhanden ist, schlägt LogistikApp automatisch die Charge mit dem **nächstliegenden Ablaufdatum** vor:
+
+1. Benutzer wählt «Entnahme» für Artikel «Desinfektionsmittel».
+2. LogistikApp zeigt: «Empfohlene Charge: C-2025-011 (läuft ab 2026-04-15)» statt der neueren Charge C-2026-001.
+3. Benutzer bestätigt oder wählt bewusst eine andere Charge.
+
+> **Tipp:** Aktivieren Sie unter **Einstellungen → Lager → FEFO erzwingen**, damit Benutzer die Chargenauswahl nicht manuell überschreiben können.
+
+## Automatische Alerts bei Ablauf
+
+Kombinieren Sie Ablaufdaten mit [Workflow-Regeln](/automatisierung/workflow-regeln) für automatische Warnungen:
+
+- Vorlage «Ablaufdatum-Warnung» wählen
+- Konfigurieren Sie den Vorlaufzeitraum (z.B. 14 Tage vor Ablauf)
+- Empfänger festlegen
+
+## Vernichtungsprotokoll
+
+Wenn abgelaufene Ware vernichtet wird:
+
+1. Öffnen Sie die Charge unter **Rückverfolgung**.
+2. Klicken Sie auf **Charge entnehmen / Vernichten**.
+3. Wählen Sie Grund: **Ablauf**, **Qualitätsmangel** oder **Rückruf**.
+4. Bestätigen Sie die Menge.
+5. LogistikApp bucht den Bestand aus und erstellt einen Eintrag im **Vernichtungsprotokoll**.
+
+Das Vernichtungsprotokoll ist unter **Berichte → Vernichtungen** abrufbar.
+
+## Verwandte Funktionen
+
+- [Chargen & Seriennummern](/rueckverfolgung/chargen-serien) — Tracking aktivieren
+- [Anomalie-Erkennung](/ai/anomalie-erkennung) — Verdächtige Entnahmen erkennen

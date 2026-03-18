@@ -1,0 +1,62 @@
+---
+title: Karten-Ansicht
+---
+
+# Karten-Ansicht
+
+Die Karten-Ansicht zeigt alle Ihre Standorte auf einer interaktiven Karte — mit aktuellem Bestandsstatus und direktem Zugriff auf jeden Standort.
+
+> **Hinweis:** Die Karten-Ansicht ist ab dem **Business-Plan** verfügbar und erfordert GPS-Koordinaten an den Standorten.
+
+## Karte öffnen
+
+1. Klicken Sie in der Hauptnavigation auf **Karte** (Kartenpin-Symbol).
+2. Die Karte lädt alle Standorte mit hinterlegten GPS-Koordinaten.
+
+Die Karte basiert auf **OpenStreetMap** (Leaflet.js) und benötigt keine Drittanbieter-API-Schlüssel.
+
+## Standort-Marker
+
+Jeder Standort wird als **farbiger Marker** angezeigt:
+
+| Farbe | Bedeutung |
+|---|---|
+| Grün | Alle Bestände im grünen Bereich |
+| Gelb | Ein oder mehrere Artikel unter Mindestbestand |
+| Rot | Ein oder mehrere Artikel ohne Bestand (kritisch) |
+| Grau | Keine Bestandsdaten vorhanden |
+
+Klicken Sie auf einen Marker um eine Kurzübersicht des Standorts zu sehen. Klicken Sie auf **Details öffnen** um zur vollständigen Standortseite zu gelangen.
+
+## GPS-Koordinaten hinterlegen
+
+1. Öffnen Sie einen Standort unter **Standorte**.
+2. Klicken Sie auf **Bearbeiten → Standortdaten**.
+3. Klicken Sie auf **GPS-Position wählen**.
+4. Es öffnet sich die Karte:
+   - **Klicken** Sie auf den gewünschten Punkt auf der Karte, **oder**
+   - **Adresse eingeben**: Die Adresse wird automatisch in GPS-Koordinaten umgewandelt (Geocoding via OpenStreetMap Nominatim), **oder**
+   - **GPS ermitteln** (Mobile App): Der aktuelle Standort des Geräts wird verwendet.
+5. Bestätigen Sie die Position.
+
+## Karte filtern
+
+Über die Filterleiste oben können Sie die Kartenanzeige einschränken:
+
+- **Kategorie**: Nur bestimmte Standort-Typen anzeigen (Lager, Fahrzeuge, Baustellen)
+- **Status**: Nur kritische / nur grüne Standorte
+- **Suchfeld**: Standortname eingeben
+
+## Cluster-Ansicht
+
+Bei vielen nahe beieinanderliegenden Standorten (z.B. mehrere Fahrzeuge auf einem Betriebsgelände) gruppiert die Karte diese automatisch zu einem **Cluster-Marker** mit der Anzahl der enthaltenen Standorte. Zoomen Sie hinein um die Einzelmarker zu sehen.
+
+## Karte in Mobile App
+
+In der Mobile App nutzt die Karten-Ansicht den [AR-Modus](/mobile-app/ar-modus) als Ergänzung: Tippen Sie auf einen Marker und dann auf **AR-Ansicht**, um Lagerbestandsinformationen in der Kamera-Überlagerung zu sehen.
+
+## Verwandte Funktionen
+
+- [Grundriss-Ansicht](/erweitert/grundriss) — Innenraum-Darstellung mit Regalplan
+- [Standorte](/standorte) — Standorte verwalten
+- [AR-Modus](/mobile-app/ar-modus) — Kamera-Überlagerung auf Mobile

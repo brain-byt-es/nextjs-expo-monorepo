@@ -1,0 +1,106 @@
+---
+title: Abschreibungen & TCO
+---
+
+# Abschreibungen & TCO
+
+Das Abschreibungsmodul berechnet den Wertverlust Ihrer Anlagen über die Zeit und zeigt Ihnen die **Gesamtbetriebskosten (Total Cost of Ownership, TCO)** für jedes Objekt.
+
+> **Hinweis:** Abschreibungen & TCO sind ab dem **Business-Plan** verfügbar.
+
+## Abschreibungsmethoden
+
+LogistikApp unterstützt zwei Methoden:
+
+| Methode | Beschreibung | Verwendung |
+|---|---|---|
+| **Linear** | Gleichmässige Abschreibung über die Nutzungsdauer | Standardmässig, einfach und verbreitet |
+| **Degressiv** | Höhere Abschreibung in frühen Jahren | Schnell an Wert verlierende Geräte (z.B. Elektronik) |
+
+### Lineare Abschreibung
+
+```
+Jahresabschreibung = Anschaffungswert ÷ Nutzungsdauer in Jahren
+Buchwert nach N Jahren = Anschaffungswert − (N × Jahresabschreibung)
+```
+
+### Degressive Abschreibung
+
+```
+Abschreibungssatz (konfigurierbar, z.B. 25 %)
+Jahresabschreibung = Aktueller Buchwert × Abschreibungssatz
+```
+
+## Abschreibung konfigurieren
+
+1. Öffnen Sie ein Werkzeug oder einen Artikel unter **Werkzeuge** oder **Materialien**.
+2. Klicken Sie auf **Bearbeiten → Finanzdaten**.
+3. Füllen Sie aus:
+   - **Anschaffungswert** (CHF)
+   - **Anschaffungsdatum**
+   - **Nutzungsdauer** (in Jahren)
+   - **Abschreibungsmethode**: Linear oder Degressiv
+   - **Restwert** (Schrottwert am Ende der Nutzungsdauer, Standard: 0)
+4. Speichern Sie.
+
+LogistikApp berechnet sofort den aktuellen Buchwert und zeigt die Abschreibungskurve.
+
+## Buchwert-Diagramm
+
+In der Registerkarte **Finanzen** jedes Objekts finden Sie:
+
+- **Buchwert-Kurve**: Zeigt den Wertverlauf über die gesamte Nutzungsdauer
+- **Aktueller Buchwert**: Automatisch auf das heutige Datum berechnet
+- **Verbleibende Nutzungsdauer**: In Jahren und Monaten
+- **Abschreibungsplan**: Tabellarische Übersicht Jahr für Jahr
+
+## TCO-Rechner
+
+Der TCO-Rechner summiert alle Kosten über die Lebensdauer eines Objekts:
+
+| Kostenkomponente | Quelle in LogistikApp |
+|---|---|
+| Anschaffungskosten | Manuell eingetragen |
+| Abschreibung | Automatisch berechnet |
+| Wartungskosten | Aus Wartungsprotokollen |
+| Kalibrierungskosten | Aus Kalibrierungserfassungen (falls Kosten hinterlegt) |
+| Versicherungsprämien | Aus [Versicherungsdaten](/rueckverfolgung/versicherung) |
+| Reparaturkosten | Manuell eingetragen |
+
+```
+TCO = Anschaffung + Wartung + Kalibrierung + Versicherung + Reparatur
+TCO pro Jahr = TCO ÷ Nutzungsdauer
+```
+
+## Abschreibungsbericht
+
+Unter **Berichte → Abschreibungen** finden Sie:
+
+- Alle Objekte mit Abschreibungsdaten
+- Buchwert-Übersicht (aktuell, Vorjahr, nächstes Jahr)
+- Gesamtabschreibung des laufenden Jahres
+- Objekte mit vollständig abgeschriebenen Werten (Buchwert = Restwert)
+- Export als CSV (geeignet für Import in Buchhaltungssoftware)
+
+> **Tipp:** Exportieren Sie den Abschreibungsbericht am Jahresende für die Buchhaltung. Der CSV-Export enthält alle für die Bilanz relevanten Felder.
+
+## Abschreibungsbuchungen (Exportformat)
+
+Der CSV-Export enthält folgende Spalten:
+
+| Spalte | Beschreibung |
+|---|---|
+| Objekt-ID | Interne ID |
+| Bezeichnung | Name des Objekts |
+| Anlagennummer | Optional konfigurierbar |
+| Anschaffungswert | CHF |
+| Anschaffungsdatum | Datum |
+| Jahresabschreibung | CHF |
+| Kumulierte Abschreibung | CHF |
+| Buchwert 31.12. | CHF |
+| Methode | Linear / Degressiv |
+
+## Verwandte Funktionen
+
+- [Lieferanten & Preise](/finanzen/lieferantenpreise) — Einkaufspreise für TCO-Kalkulation
+- [Versicherung & Garantie](/rueckverfolgung/versicherung) — Versicherungskosten in TCO einbeziehen

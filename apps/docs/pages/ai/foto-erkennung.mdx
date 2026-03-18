@@ -1,0 +1,66 @@
+---
+title: Foto-Erkennung (AI)
+---
+
+# Foto-Erkennung
+
+Mit der KI-gestützten Foto-Erkennung können Sie ein einfaches Foto eines Produkts hochladen — LogistikApp identifiziert den Artikel automatisch und füllt die Felder für Sie aus.
+
+## Wie es funktioniert
+
+LogistikApp sendet das Bild an **OpenAI Vision** (GPT-4o) und analysiert es auf Produktmerkmale wie Beschriftungen, Form, Farbe und Kategorie. Das Ergebnis wird direkt in das Erfassungsformular übertragen.
+
+> **Hinweis:** Die Foto-Erkennung ist ab dem **Business-Plan** verfügbar. Im Demo-Modus wird ein lokales Fallback-Modell verwendet.
+
+## Foto hochladen — Schritt für Schritt
+
+1. Öffnen Sie **Materialien → + Neues Material** (oder **Werkzeuge → + Neues Werkzeug**).
+2. Klicken Sie oben rechts im Formular auf **Foto scannen** (Kamera-Symbol).
+3. Wählen Sie **Foto aufnehmen** (Kamera) oder **Aus Galerie wählen**.
+4. Halten Sie das Gerät so, dass das Produkt gut sichtbar und beleuchtet ist.
+5. Bestätigen Sie das Bild mit **Verwenden**.
+6. LogistikApp analysiert das Bild — dies dauert ca. 2–5 Sekunden.
+7. Die erkannten Felder werden automatisch befüllt:
+   - Produktname
+   - Kategorie
+   - Hersteller (falls erkennbar)
+   - Einheit (Stück, kg, Liter …)
+   - Kurzbeschreibung
+
+8. Prüfen Sie die vorgeschlagenen Werte und passen Sie diese bei Bedarf an.
+9. Speichern Sie den Artikel wie gewohnt.
+
+## Web-App vs. Mobile App
+
+| | Web-App | Mobile App |
+|---|---|---|
+| Foto hochladen | Datei-Upload oder Drag & Drop | Kamera oder Galerie |
+| Sofort-Analyse | Ja | Ja |
+| Offline-Erkennung | Nein | Nein (benötigt Verbindung) |
+
+> **Tipp:** Nehmen Sie das Foto möglichst frontal und bei guter Beleuchtung auf. Produktetiketten oder Typenschilder liefern die besten Ergebnisse.
+
+## Konfidenz-Anzeige
+
+Nach der Analyse zeigt LogistikApp für jedes befüllte Feld einen Konfidenz-Indikator:
+
+- **Grün** (>80 %): Hohe Sicherheit — Feld kann direkt übernommen werden
+- **Gelb** (50–80 %): Mittlere Sicherheit — bitte prüfen
+- **Rot** (<50 %): Geringe Sicherheit — manuell korrigieren
+
+## Demo-Modus-Fallback
+
+Falls die OpenAI-API nicht erreichbar ist oder kein API-Schlüssel konfiguriert wurde, greift LogistikApp auf ein regelbasiertes Fallback zurück:
+
+- Erkennung anhand von Farbmustern und einfachen Bildmerkmalen
+- Geringere Genauigkeit, aber immer verfügbar
+- Im Interface mit dem Hinweis **«Offline-Modus»** gekennzeichnet
+
+## Datenschutz
+
+Fotos werden **nicht dauerhaft gespeichert**. Sie werden direkt an die OpenAI API gesendet und nach der Analyse verworfen. LogistikApp speichert weder das Originalbild noch die Rohantwort der API. Mehr unter [Datenschutz & nDSG](/sicherheit/datenschutz).
+
+## Verwandte Funktionen
+
+- [Import AI-Mapping](/ai/spalten-mapping) — KI-gestütztes Spalten-Mapping beim CSV-Import
+- [Barcode-Scanner](/mobile-app/scanner) — Artikel direkt per EAN/QR erfassen

@@ -1,0 +1,94 @@
+---
+title: API-Schlüssel
+---
+
+# API-Schlüssel
+
+API-Schlüssel ermöglichen externen Systemen und Integrationen, auf die LogistikApp-API zuzugreifen — ohne Benutzeranmeldung und ohne geteilte Passwörter.
+
+> **Hinweis:** API-Schlüssel sind ab dem **Starter-Plan** verfügbar. Das Rate-Limit variiert je nach Plan.
+
+## Schlüsselformat
+
+LogistikApp-API-Schlüssel haben folgendes Format:
+
+```
+lak_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+lak_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+- **`lak_live_`**: Produktionsschlüssel — verwendet Echtdaten
+- **`lak_test_`**: Testschlüssel — verwendet Testdaten, keine Auswirkung auf Produktion
+
+## Neuen API-Schlüssel erstellen
+
+1. Gehen Sie zu **Einstellungen → API-Schlüssel**.
+2. Klicken Sie auf **+ Neuer Schlüssel**.
+3. Vergeben Sie einen **Namen** (z.B. «ERP-Integration SAP», «Zapier-Webhook»).
+4. Wählen Sie den **Schlüsseltyp**: Live oder Test.
+5. Wählen Sie die **Berechtigung (Scope)**:
+   - `read` — Nur Lesezugriff
+   - `write` — Lese- und Schreibzugriff
+   - `admin` — Vollzugriff inkl. Einstellungen (nur für Administratoren)
+6. Optional: **IP-Whitelist** — Beschränken Sie den Zugriff auf bestimmte IP-Adressen.
+7. Optional: **Ablaufdatum** — Schlüssel läuft automatisch ab.
+8. Klicken Sie auf **Erstellen**.
+
+> **Warnung:** Der vollständige Schlüssel wird **nur einmalig angezeigt**. Kopieren Sie ihn sofort und speichern Sie ihn sicher (z.B. in einem Passwort-Manager oder Secret Manager). Danach ist nur noch die letzten 4 Zeichen sichtbar.
+
+## Schlüssel verwenden
+
+Fügen Sie den Schlüssel im `Authorization`-Header Ihrer API-Anfragen ein:
+
+```http
+GET /api/v1/materials HTTP/1.1
+Host: app.logistikapp.ch
+Authorization: Bearer lak_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+Vollständige API-Dokumentation unter [API-Dokumentation v1](/api-docs/v1-api).
+
+## Scopes (Berechtigungsbereiche)
+
+| Scope | Erlaubte Aktionen |
+|---|---|
+| `read` | GET-Anfragen auf alle Ressourcen |
+| `write` | GET + POST/PUT/PATCH auf Ressourcen (kein Löschen) |
+| `admin` | Vollständiger Zugriff inkl. DELETE und Einstellungsänderungen |
+
+> **Tipp:** Verwenden Sie für Integrationen, die nur Daten lesen (z.B. BI-Tools), immer den `read`-Scope — das minimiert das Risiko bei kompromittierten Schlüsseln.
+
+## Schlüssel widerrufen
+
+1. Gehen Sie zu **Einstellungen → API-Schlüssel**.
+2. Klicken Sie neben dem Schlüssel auf **Widerrufen**.
+3. Bestätigen Sie den Dialog.
+
+Der Schlüssel ist sofort ungültig. Bestehende Anfragen, die gerade in Bearbeitung sind, werden noch abgeschlossen.
+
+## Rate Limits
+
+| Plan | Anfragen pro Minute | Anfragen pro Tag |
+|---|---|---|
+| Starter | 60 | 10 000 |
+| Business | 300 | 100 000 |
+| Enterprise | 1 000 | Unbegrenzt |
+
+Bei Überschreitung des Limits antwortet die API mit HTTP 429 (Too Many Requests) und einem `Retry-After`-Header.
+
+## Schlüssel-Audit-Log
+
+Jede API-Anfrage mit einem Schlüssel wird protokolliert:
+
+- Zeitstempel
+- Endpoint
+- HTTP-Methode
+- IP-Adresse
+- Antwort-Statuscode
+
+Das Audit-Log finden Sie unter **Einstellungen → API-Schlüssel → [Schlüsselname] → Protokoll**.
+
+## Verwandte Funktionen
+
+- [API-Dokumentation v1](/api-docs/v1-api) — Vollständige Endpoint-Referenz
+- [Webhooks](/einstellungen/webhooks) — Push-Benachrichtigungen statt Polling

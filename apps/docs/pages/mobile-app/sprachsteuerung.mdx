@@ -1,0 +1,89 @@
+---
+title: Sprachsteuerung
+---
+
+# Sprachsteuerung
+
+Mit der Sprachsteuerung können Sie Bestandsbewegungen hands-free ausführen — sprechen Sie einfach einen natürlichsprachigen Befehl auf Deutsch, und LogistikApp führt die entsprechende Aktion aus.
+
+> **Hinweis:** Sprachsteuerung ist ab dem **Business-Plan** verfügbar. Eine aktive Internetverbindung ist für die Spracherkennung erforderlich.
+
+## Sprachsteuerung aktivieren
+
+1. Öffnen Sie die Mobile App.
+2. Tippen Sie auf **Einstellungen → Sprachsteuerung**.
+3. Aktivieren Sie den Schalter **Sprachsteuerung aktiviert**.
+4. Erteilen Sie die Mikrofonberechtigung (einmalig).
+
+## Befehl eingeben
+
+1. Tippen und halten Sie den **Mikrofon-Button** (erscheint in der Navigation unten).
+2. Sprechen Sie Ihren Befehl klar und deutlich.
+3. Lassen Sie den Button los.
+4. LogistikApp zeigt den erkannten Text und die interpretierte Aktion.
+5. Bestätigen Sie mit **Ausführen** oder korrigieren Sie den Befehl.
+
+## Unterstützte Befehle
+
+### Bestandsbewegungen
+
+| Gesprochener Befehl | Aktion |
+|---|---|
+| «Buche 10 Stück Kabel ein» | Zugang: Artikel «Kabel», Menge 10 |
+| «Nimm 5 Schrauben aus Lager A» | Entnahme: Artikel «Schrauben», Standort «Lager A», Menge 5 |
+| «Buche 3 Liter Farbe aus» | Entnahme: Artikel «Farbe», Menge 3 Liter |
+| «Übertrage 20 Meter Kabel von Lager B nach Fahrzeug 3» | Umbuchung zwischen Standorten |
+
+### Werkzeuge
+
+| Gesprochener Befehl | Aktion |
+|---|---|
+| «Checke Bohrmaschine aus» | Werkzeug-Checkout für aktuellen Benutzer |
+| «Gib Bohrmaschine zurück» | Werkzeug-Checkin |
+| «Wer hat die Säge?» | Zeigt aktuellen Ausleiher der Säge |
+
+### Informationsabfragen
+
+| Gesprochener Befehl | Aktion |
+|---|---|
+| «Wie viel Kabel haben wir noch?» | Bestandsanzeige für Artikel «Kabel» |
+| «Zeige Mindestbestand-Artikel» | Öffnet Mindestbestand-Liste |
+
+## Sprachparsing-Engine
+
+LogistikApp verwendet eine **deutsche NLP-Pipeline** für die Befehlsanalyse:
+
+1. **Spracherkennung**: Geräteeigene ASR (Apple Speech / Google Speech)
+2. **Intent-Erkennung**: Klassifiziert den Befehlstyp (Zugang, Entnahme, Umbuchung, Abfrage)
+3. **Entitätsextraktion**: Erkennt Artikelname, Menge, Einheit, Standorte
+4. **Fuzzy-Matching**: Findet den besten passenden Artikel auch bei Aussprachevarianten
+
+### Mengen und Einheiten
+
+Die Spracherkennung versteht alle gebräuchlichen deutschen Masseinheiten:
+- Stück, Stk., Einheit, Exemplar
+- Kilogramm, kg, Kilo
+- Liter, l, Ltr
+- Meter, m, Meter
+- Karton, Palette, Packung
+
+## Text-to-Speech-Feedback (TTS)
+
+Nach jeder ausgeführten Aktion gibt LogistikApp eine **Sprachbestätigung** aus:
+
+- «10 Stück Kabel wurden eingebucht.»
+- «Bohrmaschine ausgecheckt auf Max Muster.»
+- «Artikel nicht gefunden. Bitte wiederholen.»
+
+TTS kann unter **Einstellungen → Sprachsteuerung → Sprachausgabe** ein- oder ausgeschaltet werden.
+
+> **Tipp:** Verwenden Sie kabellose Kopfhörer für ein echtes Hands-free-Erlebnis — besonders nützlich beim Kommissionieren oder bei Rüstarbeiten.
+
+## Sprache
+
+Die Sprachsteuerung ist für **Schweizerdeutsch** und **Standarddeutsch** optimiert. Gröbere Dialekte werden erkannt, können aber zu einer höheren Fehlerrate führen. Bei Erkennnungsfehlern kann der Text manuell korrigiert werden.
+
+## Verwandte Funktionen
+
+- [Offline-Konflikte](/mobile-app/offline-konflikte) — Was passiert bei schlechter Verbindung
+- [Barcode-Scanner](/mobile-app/scanner) — Alternative für visuelles Erfassen

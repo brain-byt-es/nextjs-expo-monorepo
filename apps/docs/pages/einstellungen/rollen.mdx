@@ -1,0 +1,76 @@
+---
+title: Rollen & Berechtigungen (RBAC)
+---
+
+# Rollen & Berechtigungen (RBAC)
+
+LogistikApp verwendet ein rollenbasiertes Berechtigungskonzept (Role-Based Access Control). Jeder Benutzer erhält eine Rolle, die genau festlegt, welche Aktionen er ausführen darf.
+
+## Die fünf Standard-Rollen
+
+| Rolle | Beschreibung | Typische Verwendung |
+|---|---|---|
+| **Administrator** | Vollständiger Zugriff auf alle Funktionen und Einstellungen | IT-Administrator, Geschäftsführer |
+| **Manager** | Zugriff auf alle Daten, keine Systemkonfiguration | Lagerleiter, Betriebsleiter |
+| **Mitglied** | Tägliche Lagerarbeit: Entnahmen, Zugänge, Scanner | Lagermitarbeiter, Monteur |
+| **Lesezugriff** | Nur Anzeigen, keine Buchungen | Buchhalter, externe Prüfer |
+| **Self-Service** | Nur Self-Service-Buchungen über QR/NFC | Externe Mitarbeitende |
+
+## Berechtigungsmatrix
+
+| Aktion | Admin | Manager | Mitglied | Lesezugriff | Self-Service |
+|---|:---:|:---:|:---:|:---:|:---:|
+| Materialien anzeigen | ✓ | ✓ | ✓ | ✓ | — |
+| Bestandsbewegung | ✓ | ✓ | ✓ | — | ✓ (eigene) |
+| Artikel erstellen/bearbeiten | ✓ | ✓ | — | — | — |
+| Artikel löschen | ✓ | — | — | — | — |
+| Werkzeug auschecken | ✓ | ✓ | ✓ | — | — |
+| Werkzeug für andere auschecken | ✓ | ✓ | — | — | — |
+| Lieferschein erstellen | ✓ | ✓ | ✓ | — | — |
+| Lieferschein abschliessen | ✓ | ✓ | — | — | — |
+| Inventur durchführen | ✓ | ✓ | ✓ | — | — |
+| Inventur abschliessen | ✓ | ✓ | — | — | — |
+| Berichte anzeigen | ✓ | ✓ | — | ✓ | — |
+| Berichte exportieren | ✓ | ✓ | — | — | — |
+| Team verwalten | ✓ | — | — | — | — |
+| Einstellungen ändern | ✓ | — | — | — | — |
+| Rollen verwalten | ✓ | — | — | — | — |
+
+## Rolle zuweisen
+
+1. Gehen Sie zu **Einstellungen → Team & Rollen**.
+2. Klicken Sie neben dem Teammitglied auf **Optionen (⋯) → Rolle ändern**.
+3. Wählen Sie die neue Rolle.
+4. Die Änderung ist sofort wirksam.
+
+## Benutzerdefinierte Rollen (Enterprise)
+
+Im Enterprise-Plan können Administratoren eigene Rollen mit granularen Berechtigungen erstellen:
+
+1. Gehen Sie zu **Einstellungen → Team & Rollen → Rollen verwalten**.
+2. Klicken Sie auf **+ Neue Rolle**.
+3. Vergeben Sie einen **Namen** (z.B. «Aussenlager Mitarbeiter»).
+4. Konfigurieren Sie die Berechtigungen pro Modul:
+   - Für jedes Modul (Materialien, Werkzeuge, Lieferscheine, Inventur, Berichte, Einstellungen):
+     - **Kein Zugriff**
+     - **Anzeigen**
+     - **Bearbeiten** (inkl. Anzeigen)
+     - **Voll** (inkl. Erstellen, Bearbeiten, Löschen)
+5. Optional: **Standortbeschränkung** — Benutzer mit dieser Rolle sieht nur bestimmte Standorte.
+6. Speichern Sie.
+
+> **Tipp:** Für spezifische Teams mit eingeschränktem Standortzugriff (z.B. nur «Fahrzeug 7» sehen) ist die Standortbeschränkung besonders nützlich.
+
+## Rolle duplizieren
+
+Wenn Sie eine bestehende Rolle als Basis für eine neue verwenden möchten:
+
+1. Öffnen Sie die Rolle unter **Rollen verwalten**.
+2. Klicken Sie auf **Duplizieren**.
+3. Passen Sie die Berechtigungen der Kopie an.
+
+## Verwandte Funktionen
+
+- [Team & Rollen](/einstellungen/team) — Mitglieder einladen und verwalten
+- [Genehmigungen](/automatisierung/genehmigungen) — Aktionen genehmigungspflichtig machen
+- [API-Schlüssel](/einstellungen/api-schluessel) — API-Zugriffsberechtigungen

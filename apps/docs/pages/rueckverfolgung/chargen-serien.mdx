@@ -1,0 +1,85 @@
+---
+title: Chargen & Seriennummern
+---
+
+# Chargen & Seriennummern
+
+LogistikApp unterstützt die lückenlose Rückverfolgbarkeit von Materialien über Chargen- und Seriennummern. So können Sie jederzeit nachvollziehen, woher ein Artikel stammt und wohin er geliefert wurde.
+
+> **Hinweis:** Chargen- und Seriennummernverfolgung ist ab dem **Business-Plan** verfügbar.
+
+## Unterschied Charge vs. Seriennummer
+
+| | Charge (Batch) | Seriennummer |
+|---|---|---|
+| Einheit | Gruppe von Artikeln | Einzelnes Exemplar |
+| Beispiel | Produktionscharge C-2026-042 | Seriennummer SN-00891 |
+| Typische Verwendung | Lebensmittel, Chemikalien, Medikamente | Elektrogeräte, Werkzeuge, Maschinen |
+| Bestand | Mehrere Stück pro Charge | Genau 1 Stück |
+
+## Tracking aktivieren
+
+1. Öffnen Sie einen Artikel unter **Materialien**.
+2. Klicken Sie auf **Bearbeiten → Erweiterte Einstellungen**.
+3. Wählen Sie unter **Tracking**:
+   - **Kein Tracking** (Standard)
+   - **Chargen-Tracking**
+   - **Serien-Tracking**
+4. Speichern Sie.
+
+> **Warnung:** Sobald Tracking aktiviert ist, müssen bei allen Bestandsbewegungen Chargen- oder Seriennummern angegeben werden. Das Tracking lässt sich nicht deaktivieren, solange noch Bestände mit Tracking-Daten vorhanden sind.
+
+## Zugang buchen mit Charge
+
+Beim Buchen eines Zugangs für einen Charge-tracking-Artikel:
+
+1. Geben Sie im Zugangsdialog die **Chargennummer** ein (z.B. «C-2026-042»).
+2. Optional: **Herstellungs-** und **Ablaufdatum** eintragen.
+3. Geben Sie die **Menge** für diese Charge ein.
+4. Bestätigen Sie.
+
+Verschiedene Chargen desselben Artikels werden separat geführt und verwaltet.
+
+## Zugang buchen mit Seriennummer
+
+Beim Buchen eines Zugangs für einen Serien-tracking-Artikel:
+
+1. Geben Sie die **Seriennummer(n)** ein — eine pro Zeile, oder per CSV-Upload.
+2. Optional: Zusätzliche Attribute wie **Garantiedatum**, **Herstellungsdatum**.
+3. Bestätigen Sie.
+
+## Rückverfolgungsseite
+
+Jede Charge und jede Seriennummer hat eine eigene Rückverfolgungsseite:
+
+1. Suchen Sie unter **Rückverfolgung → Chargen/Serien suchen** nach der Nummer.
+2. Die Seite zeigt:
+   - **Woher**: Lieferschein / Lieferant / Datum des Zugangs
+   - **Bestandsverlauf**: Alle Bewegungen (Zugänge, Entnahmen, Umbuchungen)
+   - **Wohin**: An welche Standorte und Kunden ausgeliefert
+   - **Status**: Noch vorhanden, vollständig entnommen, gesperrt
+
+## Timeline-Ansicht
+
+Die Timeline zeigt den kompletten Lebenszyklus einer Charge oder Seriennummer als Zeitstrahl:
+
+```
+[Wareneingang 2026-01-15]  →  [Umbuchung Lager A→B 2026-02-03]  →  [Entnahme 2026-03-10]
+```
+
+Klicken Sie auf jeden Schritt um den zugehörigen Lieferschein oder die Buchung zu öffnen.
+
+## Sperren einer Charge
+
+Falls eine Charge zurückgerufen werden muss:
+
+1. Öffnen Sie die Charge unter **Rückverfolgung → Chargen/Serien suchen**.
+2. Klicken Sie auf **Charge sperren**.
+3. Geben Sie einen **Sperrgrund** ein (z.B. «Rückruf Hersteller»).
+4. Die Charge wird gesperrt — alle Entnahmen aus dieser Charge werden blockiert.
+5. LogistikApp erstellt automatisch eine **Sperr-Meldung** an alle betroffenen Standorte.
+
+## Verwandte Funktionen
+
+- [Ablaufdaten (FEFO)](/rueckverfolgung/ablaufdaten) — Ablaufdaten verwalten und FEFO-Entnahme
+- [Kalibrierung & Zertifikate](/rueckverfolgung/kalibrierung) — Zertifikate für Seriennummern

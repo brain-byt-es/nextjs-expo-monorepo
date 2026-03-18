@@ -6,6 +6,63 @@ title: Changelog
 
 Alle Änderungen, Verbesserungen und Fehlerbehebungen werden hier dokumentiert.
 
+## v2.0.0 – Ultimate Edition – 2026-03-18
+
+Das grösste Update in der Geschichte von LogistikApp. Die Ultimate Edition bringt 29 neue Funktionen in vier Themenbereichen: KI-Automatisierung, lückenlose Rückverfolgbarkeit, Finanzmanagement und erweiterte Plattformfunktionen.
+
+### KI-Funktionen
+
+- **[Foto-Erkennung](/ai/foto-erkennung)**: Artikel per Kamerafoto erfassen — OpenAI Vision füllt alle Felder automatisch aus. Demo-Modus-Fallback ohne API-Schlüssel.
+- **[Import AI-Mapping](/ai/spalten-mapping)**: CSV- und Excel-Dateien werden beim Import automatisch den richtigen Feldern zugeordnet. Konfidenz-Badges und lernende Mapping-Regeln.
+- **[Nachfrageprognose](/ai/prognose)**: Gleitender Durchschnitt, exponentielle Glättung und saisonale Erkennung. Stockout-Vorhersage. Direkter Nachbestellvorschlag.
+- **[Anomalie-Erkennung](/ai/anomalie-erkennung)**: Fünf statistische Detektoren (Mengen-Z-Score, Ausserhalb-Geschäftszeiten, ungewöhnliche Standorte, Verbrauchsspitzen, Massenentnahmen). Schweregrade, Dashboard-Widget und E-Mail-Alerts.
+
+### Automatisierung
+
+- **[Workflow-Regeln](/automatisierung/workflow-regeln)**: Visueller Wenn-Dann-Regeleditor mit 10 Auslösern, bedingten Filtern und 8 Aktionstypen. Vorlagen und Testmodus.
+- **[Genehmigungen](/automatisierung/genehmigungen)**: Genehmigungspflichtige Aktionen konfigurieren. Approve/Reject per App oder per E-Mail-Link. Protokoll und Eskalation.
+- **[Auto-Nachbestellung](/automatisierung/auto-nachbestellung)**: Täglicher Cron-Lauf prüft Mindestbestände. Bester-Preis-Finder aus Lieferantendaten. Entwürfe oder vollautomatische Bestellung.
+- **[Geplante Berichte](/automatisierung/geplante-berichte)**: Täglich/wöchentlich/monatlich automatisch per E-Mail zugestellt. 9 Berichttypen, CSV-Anhang, Inngest-basierte Zustellung.
+
+### Rückverfolgung
+
+- **[Chargen & Seriennummern](/rueckverfolgung/chargen-serien)**: Lückenlose Rückverfolgbarkeit per Chargennummer oder Seriennummer. Timeline-View, Chargensperre, Rückruf-Unterstützung.
+- **[Ablaufdaten FEFO](/rueckverfolgung/ablaufdaten)**: FEFO-Picking, Ablauf-Dashboard, farbkodierte Dringlichkeit, Vernichtungsprotokoll.
+- **[Kalibrierung & Zertifikate](/rueckverfolgung/kalibrierung)**: Kalibrierungsintervalle, Zertifikat-Upload, Next-Cal-Alerts, Gerätesperre bei Überfälligkeit.
+- **[Versicherung & Garantie](/rueckverfolgung/versicherung)**: Versicherungspolicen und Garantien pro Objekt, Ablaufalerts, Schadenfall-Dokumentation.
+
+### Finanzen
+
+- **[Abschreibungen & TCO](/finanzen/abschreibungen)**: Lineare und degressive Abschreibung. Buchwert-Kurve. TCO-Rechner inkl. Wartungs-, Versicherungs- und Reparaturkosten.
+- **[Lieferanten & Preise](/finanzen/lieferantenpreise)**: Mehrere Lieferanten pro Artikel, Preisvergleich, MOQ, Lieferzeiten, Preishistorie, CSV-Import.
+
+### Mobile App
+
+- **[NFC-Tags](/mobile-app/nfc)**: NFC-Tags beschreiben und lesen. Self-Service-URL auf Tags schreiben. Schreibschutz. iOS Hintergrunderkennung.
+- **[AR-Modus](/mobile-app/ar-modus)**: Augmented-Reality-Overlay für Lagerbestand. Floating Item Cards. Kontinuierliches Scannen. GPS-Integration.
+- **[Sprachsteuerung](/mobile-app/sprachsteuerung)**: Natürlichsprachige Buchungsbefehle auf Deutsch («Buche 10 Stück Kabel ein»). NLP-Parser. Text-to-Speech-Bestätigung.
+- **[Offline-Konflikte](/mobile-app/offline-konflikte)**: Konflikt-Erkennung bei parallelen Offline-Änderungen. Side-by-Side-Diff. Auflösungsoptionen. Sync-Protokoll.
+
+### Einstellungen
+
+- **[Rollen & Berechtigungen](/einstellungen/rollen)**: Vollständige Berechtigungsmatrix. 5 Standardrollen inkl. Self-Service-Rolle. Benutzerdefinierte Rollen mit Standortbeschränkung (Enterprise).
+- **[API-Schlüssel](/einstellungen/api-schluessel)**: Öffentliche API-Schlüssel-Verwaltung. Live/Test-Schlüssel. Scopes (read/write/admin). IP-Whitelist. Audit-Log.
+
+### Erweiterte Funktionen
+
+- **[Karten-Ansicht](/erweitert/karte)**: GPS-Karte aller Standorte. Leaflet/OSM. Farbkodierter Bestandsstatus. GPS-Picker mit Geocoding.
+- **[Grundriss-Ansicht](/erweitert/grundriss)**: Lagerplan hochladen. Marker platzieren. Bestandsstatus-Overlay. Mehrere Etagen. Teilen-Funktion.
+- **[Dashboard anpassen](/erweitert/dashboard-widgets)**: 14 Widget-Typen. Drag-and-Drop. Responsives 12-Spalten-Grid. Pro-Benutzer-Layout.
+- **[QR Self-Service](/erweitert/qr-self-service)**: Öffentliche QR-Buchungsseiten ohne Login. Problemmelder. E-Mail-Bestätigung. Genehmigungsintegration.
+- **[Multi-Unternehmen](/erweitert/multi-unternehmen)**: Mehrere Gesellschaften unter einem Account. Org-Switcher. Konsolidiertes Reporting. Intercompany-Transfers (Enterprise).
+- **[Branchen-Vorlagen](/erweitert/branchen-vorlagen)**: 6 vorkonfigurierte Branchenvorlagen (Handwerk, Rettung, Arztpraxis, Spital, Gastro, Facility). Onboarding-Wizard-Integration.
+
+### API
+
+- **[REST API v1 (Vollreferenz)](/api-docs/v1-api)**: Vollständige Endpunkt-Dokumentation. Materialien, Werkzeuge, Standorte, Lieferscheine, Benutzer. Bestandsbewegungen via API. Checkout/Checkin via API.
+
+---
+
 ## v1.3.0 – 2026-03-18
 
 ### Neu

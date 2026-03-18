@@ -1,0 +1,86 @@
+---
+title: Versicherung & Garantie
+---
+
+# Versicherung & Garantie
+
+Verwalten Sie Versicherungspolicen und Garantieinformationen direkt am Objekt — für Werkzeuge, Fahrzeuge und hochwertige Materialien.
+
+> **Hinweis:** Versicherung & Garantie sind ab dem **Business-Plan** verfügbar.
+
+## Versicherungsdaten hinterlegen
+
+1. Öffnen Sie ein Werkzeug oder einen Artikel.
+2. Klicken Sie auf **Bearbeiten → Versicherung / Garantie**.
+3. Füllen Sie die Felder aus:
+
+### Versicherung
+
+| Feld | Beschreibung |
+|---|---|
+| Versicherungsgesellschaft | Name der Versicherung (z.B. Zürich Versicherung) |
+| Policennummer | Eindeutige Policennummer |
+| Versicherungstyp | Inventarversicherung, Haftpflicht, Kasko, Elektronik |
+| Versicherungswert | Versicherter Zeitwert in CHF |
+| Versicherungsbeginn | Startdatum der Police |
+| Versicherungsende | Ablaufdatum der Police |
+| Jahresprämie | Jährliche Prämie in CHF |
+| Dokument | Policendokument (PDF) hochladen |
+
+### Garantie
+
+| Feld | Beschreibung |
+|---|---|
+| Garantiegeber | Hersteller oder Händler |
+| Kaufdatum | Datum des Kaufs |
+| Garantieende | Ablaufdatum der Garantie |
+| Garantietyp | Herstellergarantie, Händlergarantie, erweiterte Garantie |
+| Kaufbeleg | Quittung oder Rechnung (PDF) hochladen |
+| Seriennummer | Seriennummer für Garantieansprüche |
+
+4. Speichern Sie.
+
+## Dashboard-Widget: Ablaufende Versicherungen & Garantien
+
+Das Widget **Versicherungen & Garantien** auf dem Dashboard zeigt:
+
+- Alle Policen und Garantien die in den nächsten 60 Tagen ablaufen
+- Farbkodierung: Rot (< 7 Tage), Orange (< 30 Tage), Gelb (< 60 Tage)
+
+## Automatische Alerts
+
+LogistikApp erinnert Sie vor Ablauf von Versicherungen und Garantien:
+
+- **60 Tage vorher**: Erste Erinnerung an Administrator
+- **30 Tage vorher**: Zweite Erinnerung
+- **7 Tage vorher**: Dringende Erinnerung
+
+Konfigurieren Sie Empfänger unter **Einstellungen → Benachrichtigungen → Versicherungen**.
+
+Alternativ erstellen Sie eine [Workflow-Regel](/automatisierung/workflow-regeln) mit dem Auslöser **Kalibrierung fällig in N Tagen** und der Aktion **E-Mail senden**.
+
+## Versicherungsbericht
+
+Unter **Berichte → Versicherungen & Garantien** finden Sie:
+
+- Alle aktiven Policen und Garantien
+- Ablaufende innerhalb der nächsten 90 Tage
+- Gesamtversicherungswert des Inventars
+- Jahresprämien-Übersicht (TCO-relevant, verknüpft mit [Abschreibungen](/finanzen/abschreibungen))
+
+## Schadenfall dokumentieren
+
+Falls ein Schaden eintritt:
+
+1. Öffnen Sie das betreffende Objekt.
+2. Klicken Sie unter **Versicherung** auf **Schaden melden**.
+3. Füllen Sie aus: Schadendatum, Schadenbeschreibung, Schadenhöhe.
+4. Laden Sie Fotos oder Schadenberichte hoch.
+5. LogistikApp erstellt einen **Schadensfall-Eintrag** und hängt ihn an die Police.
+
+Schadensfälle sind unter **Rückverfolgung → Schadensfälle** abrufbar.
+
+## Verwandte Funktionen
+
+- [Kalibrierung & Zertifikate](/rueckverfolgung/kalibrierung) — Prüfzertifikate verwalten
+- [Abschreibungen & TCO](/finanzen/abschreibungen) — Gesamtbetriebskosten berechnen
