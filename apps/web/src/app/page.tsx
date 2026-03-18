@@ -18,7 +18,7 @@ import {
   IconPlugConnected,
   IconScan,
   IconDatabase,
-  IconCurrencyFranc,
+  IconCurrencyFrank,
 } from "@tabler/icons-react"
 import { BrandLogo } from "@/components/integrations/brand-logo"
 
@@ -728,7 +728,7 @@ export default function LandingPage() {
               {[
                 { icon: IconDatabase, value: "8", label: "Produktdatenbanken", sub: "Parallel durchsucht" },
                 { icon: IconScan, value: "100M+", label: "Produkte", sub: "Sofort erkannt" },
-                { icon: IconCurrencyFranc, value: "0.—", label: "Zusatzkosten", sub: "Komplett gratis" },
+                { icon: IconCurrencyFrank, value: "0.—", label: "Zusatzkosten", sub: "Komplett gratis" },
               ].map(({ icon: Icon, value, label, sub }) => (
                 <div key={label} className="bg-[#0c0e12] p-6 text-center">
                   <Icon className="size-5 text-[#F97316] mx-auto mb-3" />

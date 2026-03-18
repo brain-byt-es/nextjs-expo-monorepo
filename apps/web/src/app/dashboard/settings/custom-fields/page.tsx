@@ -99,17 +99,6 @@ function FieldDialog({ open, onClose, onSave, initial, saving }: FieldDialogProp
   )
   const [error, setError] = useState<string | null>(null)
 
-  // Reset when dialog opens with new initial
-  useEffect(() => {
-    if (open) {
-      setEntityType(initial?.entityType ?? "material")
-      setName(initial?.name ?? "")
-      setFieldType(initial?.fieldType ?? "text")
-      setOptionsRaw(initial?.options?.join("\n") ?? "")
-      setError(null)
-    }
-  }, [open, initial])
-
   const handleSave = async () => {
     setError(null)
     if (!name.trim()) {
