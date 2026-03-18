@@ -1,5 +1,6 @@
 import "../global.css";
 import { useEffect } from "react";
+import { View } from "react-native";
 import { Slot } from "expo-router";
 import { router } from "expo-router";
 import * as Sentry from "@sentry/react-native";
@@ -10,7 +11,8 @@ import { loadSession } from "@/lib/session-store";
 import { loadOrgId } from "@/lib/org-store";
 import { loadQueue } from "@/lib/offline-queue";
 import { initializeRevenueCat } from "@/lib/revenue-cat";
-import { loadThemePreference } from "@/lib/useColorScheme";
+import { loadThemePreference, useColorScheme } from "@/lib/useColorScheme";
+import { lightVars, darkVars } from "@/lib/theme-vars";
 import { ToastOverlay } from "@/components/toast-overlay";
 
 Sentry.init({
@@ -23,6 +25,8 @@ const POSTHOG_HOST =
   process.env.EXPO_PUBLIC_POSTHOG_HOST || "https://app.posthog.com";
 
 function RootLayout() {
+  const { colorScheme } = useColorScheme();
+
   useEffect(() => {
     loadSession();
     loadQueue();
@@ -49,11 +53,17 @@ function RootLayout() {
     return () => sub.remove();
   }, []);
 
+  // Switch CSS variables based on color scheme — NativeWind's vars() API
+  // is the only way to make :root/.dark CSS variables work on React Native.
+  const themeStyle = colorScheme === "dark" ? darkVars : lightVars;
+
   return (
-    <KeyboardProvider>
-      <Slot />
-      <ToastOverlay />
-    </KeyboardProvider>
+    <View style={[{ flex: 1 }, themeStyle]}>
+      <KeyboardProvider>
+        <Slot />
+        <ToastOverlay />
+      </KeyboardProvider>
+    </View>
   );
 }
 
