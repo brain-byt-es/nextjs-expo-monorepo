@@ -16,10 +16,24 @@ import { useColorScheme } from "@/lib/useColorScheme";
 import { useSession } from "@/lib/session-store";
 import { isDemoMode } from "@/lib/demo/config";
 import { DemoBanner } from "@/components/demo-banner";
+import { OfflineBanner } from "@/components/offline-banner";
+import {
+  registerForPushNotifications,
+  isNotificationsEnabled,
+} from "@/lib/notifications";
 
 export default function AppLayout() {
   const { data, isPending } = useSession();
   const { colors } = useColorScheme();
+
+  // Re-register the push token on every launch when the user has previously
+  // opted in (covers token rotation and server-side deactivation recovery).
+  React.useEffect(() => {
+    if (!data) return;
+    isNotificationsEnabled().then((enabled) => {
+      if (enabled) registerForPushNotifications();
+    });
+  }, [data]);
 
   if (isPending) return null;
   if (!data) return <Redirect href="/(auth)" />;
@@ -96,6 +110,7 @@ export default function AppLayout() {
       />
     </Tabs>
       {isDemoMode && <DemoBanner />}
+      <OfflineBanner />
     </>
   );
 }

@@ -784,3 +784,26 @@ export type CustomFieldDefinition = typeof customFieldDefinitions.$inferSelect;
 export type NewCustomFieldDefinition = typeof customFieldDefinitions.$inferInsert;
 export type CustomFieldValue = typeof customFieldValues.$inferSelect;
 export type NewCustomFieldValue = typeof customFieldValues.$inferInsert;
+
+// ─── Push Tokens (Mobile Notifications) ─────────────────────────────
+export const pushTokens = pgTable(
+  "push_tokens",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    token: text("token").notNull().unique(),
+    platform: text("platform").notNull(), // "ios" | "android"
+    isActive: boolean("is_active").default(true).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("idx_push_tokens_user_id").on(table.userId),
+    index("idx_push_tokens_is_active").on(table.isActive),
+  ]
+);
+
+export type PushToken = typeof pushTokens.$inferSelect;
+export type NewPushToken = typeof pushTokens.$inferInsert;

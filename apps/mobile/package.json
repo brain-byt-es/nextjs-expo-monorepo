@@ -14,6 +14,7 @@
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@react-native-async-storage/async-storage": "^2.1.0",
+    "@react-native-community/netinfo": "11.5.2",
     "@react-native-segmented-control/segmented-control": "^2.5.7",
     "@repo/nativewindui": "workspace:*",
     "@sentry/react-native": "^8.4.0",
@@ -22,7 +23,9 @@
     "clsx": "^2.1.0",
     "expo": "latest",
     "expo-camera": "~55.0.10",
+    "expo-device": "~55.0.10",
     "expo-haptics": "~14.1.0",
+    "expo-notifications": "~55.0.13",
     "expo-router": "latest",
     "expo-status-bar": "latest",
     "posthog-react-native": "^4.37.3",

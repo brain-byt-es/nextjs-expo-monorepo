@@ -1,12 +1,16 @@
 import "../global.css";
 import { useEffect } from "react";
 import { Slot } from "expo-router";
+import { router } from "expo-router";
 import * as Sentry from "@sentry/react-native";
+import * as Notifications from "expo-notifications";
 import { PostHogProvider } from "posthog-react-native";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { loadSession } from "@/lib/session-store";
 import { loadOrgId } from "@/lib/org-store";
+import { loadQueue } from "@/lib/offline-queue";
 import { initializeRevenueCat } from "@/lib/revenue-cat";
+import { loadThemePreference } from "@/lib/useColorScheme";
 import { ToastOverlay } from "@/components/toast-overlay";
 
 Sentry.init({
@@ -21,8 +25,28 @@ const POSTHOG_HOST =
 function RootLayout() {
   useEffect(() => {
     loadSession();
+    loadQueue();
     loadOrgId();
+    loadThemePreference();
     initializeRevenueCat();
+  }, []);
+
+  // Handle deep-link navigation triggered by a tapped notification.
+  useEffect(() => {
+    const sub = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        const data = response.notification.request.content.data as Record<
+          string,
+          unknown
+        >;
+        if (data?.screen === "commission" && typeof data.id === "string") {
+          router.push(`/(app)/commissions/${data.id}`);
+        } else if (data?.screen === "dashboard") {
+          router.push("/(app)");
+        }
+      }
+    );
+    return () => sub.remove();
   }, []);
 
   return (

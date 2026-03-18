@@ -5,6 +5,7 @@ export default function SettingsLayout() {
     <Stack screenOptions={{ headerBackTitle: "Zurück" }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="profile" options={{ title: "Profil" }} />
+      <Stack.Screen name="appearance" options={{ title: "Darstellung" }} />
       <Stack.Screen name="about" options={{ title: "Über LogistikApp" }} />
       <Stack.Screen name="subscription" options={{ title: "Abo" }} />
     </Stack>

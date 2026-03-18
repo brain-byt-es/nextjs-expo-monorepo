@@ -12,6 +12,8 @@ import {
 } from "./session-store";
 import { isDemoMode } from "./demo/config";
 import { DEMO_SESSION, DEMO_ORG_ID } from "./demo/data";
+import { unregisterPushNotifications } from "./notifications";
+import { clearQueue } from "./offline-queue";
 
 export { useSession } from "./session-store";
 
@@ -123,10 +125,16 @@ export async function forgotPassword(email: string) {
 }
 
 export async function signOut() {
+  await clearQueue();
   if (isDemoMode) {
     await setSession(null);
     return;
   }
+
+  // Deactivate the push token on the server before clearing the session so
+  // we still have the auth token available for the API call.
+  await unregisterPushNotifications();
+
   try {
     await authFetch("/api/auth/sign-out", { method: "POST" });
   } catch {

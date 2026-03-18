@@ -2,6 +2,9 @@ import { getSession } from "./session-store";
 import { getOrgId } from "./org-store";
 import { isDemoMode } from "./demo/config";
 import * as demoApi from "./demo/api";
+import { isOnline } from "./connectivity";
+import { enqueue } from "./offline-queue";
+import { withCache } from "./offline-cache";
 
 const BASE_URL = process.env.EXPO_PUBLIC_APP_URL || "http://localhost:3003";
 
@@ -15,7 +18,7 @@ class ApiError extends Error {
   }
 }
 
-async function apiFetch<T = unknown>(
+export async function apiFetch<T = unknown>(
   path: string,
   options?: RequestInit
 ): Promise<T> {
@@ -88,55 +91,150 @@ import type {
   CommissionEntry,
 } from "./api-types";
 
+const ONE_HOUR_MS = 60 * 60 * 1000;
+const THIRTY_MIN_MS = 30 * 60 * 1000;
+
 const _getDashboardStats = () =>
-  api.get<DashboardStats>("/api/dashboard/stats");
+  withCache<DashboardStats>(
+    "dashboard_stats",
+    () => api.get<DashboardStats>("/api/dashboard/stats"),
+    ONE_HOUR_MS
+  );
 
 const _scanBarcode = (barcode: string) =>
   api.get<ScanResult>(`/api/scan?barcode=${encodeURIComponent(barcode)}`);
 
 const _getCommissions = (statuses: string[] = ["open", "in_progress"]) => {
   const params = new URLSearchParams(statuses.map((s) => ["status", s])).toString();
-  return api.get<{ data: Commission[] }>(`/api/commissions?${params}`);
+  const cacheKey = `commissions_${statuses.sort().join("_")}`;
+  return withCache<{ data: Commission[] }>(
+    cacheKey,
+    () => api.get<{ data: Commission[] }>(`/api/commissions?${params}`),
+    THIRTY_MIN_MS
+  );
 };
 
-const _createCommission = (body: { name: string; targetLocationId?: string; customerId?: string; notes?: string }) =>
-  api.post<Commission>("/api/commissions", body);
+const _createCommission = (body: {
+  name: string;
+  targetLocationId?: string;
+  customerId?: string;
+  notes?: string;
+}) => api.post<Commission>("/api/commissions", body);
 
 const _getCommission = (id: string) =>
   api.get<Commission & { entryCount: number }>(`/api/commissions/${id}`);
 
-const _updateCommission = (id: string, body: Partial<Pick<Commission, "status" | "name" | "notes">>) =>
-  api.patch<Commission>(`/api/commissions/${id}`, body);
+const _updateCommission = async (
+  id: string,
+  body: Partial<Pick<Commission, "status" | "name" | "notes">>
+): Promise<Commission> => {
+  if (!isOnline()) {
+    await enqueue({
+      type: "commission-update",
+      method: "PATCH",
+      path: `/api/commissions/${id}`,
+      body: body as Record<string, unknown>,
+    });
+    // Return an optimistic stub so callers don't have to handle undefined
+    return { id, ...body } as Commission;
+  }
+  return api.patch<Commission>(`/api/commissions/${id}`, body);
+};
 
 const _getCommissionEntries = (commissionId: string) =>
-  api.get<{ data: CommissionEntry[] }>(`/api/commissions/${commissionId}/entries`);
+  api.get<{ data: CommissionEntry[] }>(
+    `/api/commissions/${commissionId}/entries`
+  );
 
-const _addCommissionEntry = (
+const _addCommissionEntry = async (
   commissionId: string,
-  body: { materialId?: string; toolId?: string; quantity?: number; notes?: string }
-) => api.post<CommissionEntry>(`/api/commissions/${commissionId}/entries`, body);
+  body: {
+    materialId?: string;
+    toolId?: string;
+    quantity?: number;
+    notes?: string;
+  }
+): Promise<CommissionEntry> => {
+  if (!isOnline()) {
+    await enqueue({
+      type: "commission-entry",
+      method: "POST",
+      path: `/api/commissions/${commissionId}/entries`,
+      body: body as Record<string, unknown>,
+    });
+    return { commissionId, ...body } as unknown as CommissionEntry;
+  }
+  return api.post<CommissionEntry>(
+    `/api/commissions/${commissionId}/entries`,
+    body
+  );
+};
 
-const _createStockChange = (body: {
+const _createStockChange = async (body: {
   materialId: string;
   locationId: string;
   changeType: "in" | "out";
   quantity: number;
   notes?: string;
-}) => api.post("/api/stock-changes", body);
+}): Promise<void> => {
+  if (!isOnline()) {
+    await enqueue({
+      type: "stock-change",
+      method: "POST",
+      path: "/api/stock-changes",
+      body: body as Record<string, unknown>,
+    });
+    return;
+  }
+  return api.post("/api/stock-changes", body);
+};
 
-const _createToolBooking = (
+const _createToolBooking = async (
   toolId: string,
-  body: { bookingType: "checkout" | "checkin"; toLocationId?: string; notes?: string }
-) => api.post(`/api/tools/${toolId}/booking`, body);
+  body: {
+    bookingType: "checkout" | "checkin";
+    toLocationId?: string;
+    notes?: string;
+  }
+): Promise<void> => {
+  if (!isOnline()) {
+    await enqueue({
+      type: "tool-booking",
+      method: "POST",
+      path: `/api/tools/${toolId}/booking`,
+      body: body as Record<string, unknown>,
+    });
+    return;
+  }
+  return api.post(`/api/tools/${toolId}/booking`, body);
+};
 
 // ── Demo-mode conditional exports ────────────────────────────────────
-export const getDashboardStats = isDemoMode ? demoApi.getDashboardStats : _getDashboardStats;
+export const getDashboardStats = isDemoMode
+  ? demoApi.getDashboardStats
+  : _getDashboardStats;
 export const scanBarcode = isDemoMode ? demoApi.scanBarcode : _scanBarcode;
-export const getCommissions = isDemoMode ? demoApi.getCommissions : _getCommissions;
-export const createCommission = isDemoMode ? demoApi.createCommission : _createCommission;
-export const getCommission = isDemoMode ? demoApi.getCommission : _getCommission;
-export const updateCommission = isDemoMode ? demoApi.updateCommission : _updateCommission;
-export const getCommissionEntries = isDemoMode ? demoApi.getCommissionEntries : _getCommissionEntries;
-export const addCommissionEntry = isDemoMode ? demoApi.addCommissionEntry : _addCommissionEntry;
-export const createStockChange = isDemoMode ? demoApi.createStockChange : _createStockChange;
-export const createToolBooking = isDemoMode ? demoApi.createToolBooking : _createToolBooking;
+export const getCommissions = isDemoMode
+  ? demoApi.getCommissions
+  : _getCommissions;
+export const createCommission = isDemoMode
+  ? demoApi.createCommission
+  : _createCommission;
+export const getCommission = isDemoMode
+  ? demoApi.getCommission
+  : _getCommission;
+export const updateCommission = isDemoMode
+  ? demoApi.updateCommission
+  : _updateCommission;
+export const getCommissionEntries = isDemoMode
+  ? demoApi.getCommissionEntries
+  : _getCommissionEntries;
+export const addCommissionEntry = isDemoMode
+  ? demoApi.addCommissionEntry
+  : _addCommissionEntry;
+export const createStockChange = isDemoMode
+  ? demoApi.createStockChange
+  : _createStockChange;
+export const createToolBooking = isDemoMode
+  ? demoApi.createToolBooking
+  : _createToolBooking;

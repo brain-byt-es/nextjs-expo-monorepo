@@ -12,7 +12,10 @@
       "bundleIdentifier": "com.repo.mobile"
     },
     "android": {
-      "package": "com.repo.mobile"
+      "package": "com.repo.mobile",
+      "adaptiveIcon": {
+        "backgroundColor": "#ffffff"
+      }
     },
     "plugins": [
       "expo-router",
@@ -22,6 +25,15 @@
         {
           "cameraPermission": "LogistikApp benötigt Kamerazugriff zum Scannen von Barcodes.",
           "microphonePermission": false
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#2563eb",
+          "defaultChannel": "default",
+          "androidMode": "default",
+          "androidCollapsedTitle": "#{unread_notifications} neue Mitteilungen"
         }
       ]
     ],

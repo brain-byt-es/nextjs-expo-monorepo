@@ -1,5 +1,6 @@
 import { router } from "expo-router";
-import { Alert as RNAlert, Linking, Platform, View } from "react-native";
+import { Alert as RNAlert, Linking, Platform, Switch, View } from "react-native";
+import React, { useState, useEffect } from "react";
 
 import { Button } from "@/components/nativewindui/Button";
 import { Icon } from "@/components/nativewindui/Icon";
@@ -15,12 +16,19 @@ import { Text } from "@/components/nativewindui/Text";
 import { cn } from "@/lib/cn";
 import { signOut } from "@/lib/auth-client";
 import { useSession } from "@/lib/session-store";
+import { useColorScheme } from "@/lib/useColorScheme";
+import {
+  isNotificationsEnabled,
+  registerForPushNotifications,
+  unregisterPushNotifications,
+} from "@/lib/notifications";
 
 type SettingsItem = {
   id: string;
   title: string;
   leftView?: React.ReactNode;
   rightText?: string;
+  rightView?: React.ReactNode;
   hideChevron?: boolean;
   onPress?: () => void;
 };
@@ -48,7 +56,25 @@ function keyExtractor(item: (SettingsItem | string)) {
 
 export default function SettingsScreen() {
   const { data } = useSession();
+  const { colors, themePreference } = useColorScheme();
   const user = data?.user;
+
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+
+  useEffect(() => {
+    isNotificationsEnabled().then(setNotificationsEnabled);
+  }, []);
+
+  async function handleNotificationsToggle(value: boolean) {
+    setNotificationsEnabled(value);
+    if (value) {
+      const token = await registerForPushNotifications();
+      // If permission was denied, the function returns null and resets storage
+      if (!token) setNotificationsEnabled(false);
+    } else {
+      await unregisterPushNotifications();
+    }
+  }
 
   function handleSignOut() {
     RNAlert.alert("Abmelden", "Möchtest du dich wirklich abmelden?", [
@@ -85,6 +111,28 @@ export default function SettingsScreen() {
       onPress: () => router.push("/(app)/settings/subscription"),
     },
     "Allgemein",
+    {
+      id: "notifications",
+      title: "Mitteilungen",
+      leftView: <IconView name="bell.fill" className="bg-red-500" />,
+      hideChevron: true,
+      rightView: (
+        <View className="px-4">
+          <Switch
+            value={notificationsEnabled}
+            onValueChange={handleNotificationsToggle}
+            trackColor={{ true: colors.primary }}
+          />
+        </View>
+      ),
+    },
+    {
+      id: "appearance",
+      title: "Darstellung",
+      leftView: <IconView name="moon.fill" className="bg-indigo-500" />,
+      rightText: themePreference === "system" ? "System" : themePreference === "light" ? "Hell" : "Dunkel",
+      onPress: () => router.push("/(app)/settings/appearance"),
+    },
     {
       id: "terms",
       title: "AGB",
@@ -124,25 +172,32 @@ export default function SettingsScreen() {
     if (typeof info.item === "string") {
       return <ListSectionHeader {...info} />;
     }
+
+    const item = info.item as SettingsItem;
+
     return (
       <ListItem
         className={cn(
           "ios:pl-0 pl-2",
           info.index === 0 && "ios:border-t-0 border-border/25 dark:border-border/80 border-t"
         )}
-        titleClassName={cn("text-lg", info.item.id === "signout" && "text-destructive")}
-        leftView={info.item.leftView}
+        titleClassName={cn("text-lg", item.id === "signout" && "text-destructive")}
+        leftView={item.leftView}
         rightView={
-          <View className="flex-1 flex-row items-center justify-center gap-2 px-4">
-            {info.item.rightText && (
-              <Text variant="callout" className="ios:px-0 text-muted-foreground px-2">
-                {info.item.rightText}
-              </Text>
-            )}
-            {!info.item.hideChevron && <ChevronRight />}
-          </View>
+          item.rightView ? (
+            item.rightView
+          ) : (
+            <View className="flex-1 flex-row items-center justify-center gap-2 px-4">
+              {item.rightText && (
+                <Text variant="callout" className="ios:px-0 text-muted-foreground px-2">
+                  {item.rightText}
+                </Text>
+              )}
+              {!item.hideChevron && <ChevronRight />}
+            </View>
+          )
         }
-        onPress={info.item.onPress}
+        onPress={item.onPress}
         {...info}
       />
     );
