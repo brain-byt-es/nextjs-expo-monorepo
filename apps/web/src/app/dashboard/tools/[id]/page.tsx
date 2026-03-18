@@ -16,9 +16,11 @@ import {
   IconMapPin,
   IconAlertTriangle,
   IconDeviceFloppy,
+  IconTag,
 } from "@tabler/icons-react"
 import { QrCodeDisplay } from "@/components/qr-code"
 import { ZebraLabelButton } from "@/components/zebra-label-button"
+import { BarcodeLabel } from "@/components/barcode-label"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -360,6 +362,14 @@ export default function ToolDetailPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push("/dashboard/tools/labels")}
+          >
+            <IconTag className="size-4" />
+            Etiketten
+          </Button>
           <Separator orientation="vertical" className="mx-1 h-6" />
           {isEditing ? (
             <>
@@ -871,32 +881,52 @@ export default function ToolDetailPage() {
           </Card>
         </TabsContent>
 
-        {/* ─── QR-Code Tab ─────────────────────────────────────────── */}
+        {/* ─── QR-Code / Etikett Tab ────────────────────────────── */}
         <TabsContent value="qr">
-          <div className="flex flex-col items-center gap-6 py-8">
-            <p className="max-w-sm text-center font-mono text-sm text-muted-foreground">
-              QR-Code f&uuml;r schnelles Ein-/Auschecken. Am Werkzeug anbringen oder im Werkzeugkasten befestigen.
-            </p>
-            <QrCodeDisplay
-              value={
-                typeof window !== "undefined"
-                  ? `${window.location.origin}/dashboard/tools/${tool.id}`
-                  : `/dashboard/tools/${tool.id}`
-              }
-              label={`${tool.number ?? ""} · ${tool.name}`}
-              size={200}
-            />
-            <ZebraLabelButton
-              data={{
-                name: tool.name,
-                number: tool.number,
-                qrValue:
-                  typeof window !== "undefined"
-                    ? `${window.location.origin}/dashboard/tools/${tool.id}`
-                    : `/dashboard/tools/${tool.id}`,
-                extra: tool.condition ?? undefined,
-              }}
-            />
+          <div className="flex flex-col gap-8 py-8">
+            <div className="flex flex-col items-center gap-4">
+              <p className="text-sm text-muted-foreground text-center max-w-md">
+                Browser-Etikett mit QR-Code und Barcode — direkt aus dem Browser drucken.
+                Für Zebra-Netzwerkdrucker den ZPL-Druck verwenden.
+              </p>
+              <BarcodeLabel
+                data={{
+                  name: tool.name,
+                  number: tool.number,
+                  barcode: tool.barcode,
+                  location: tool.homeLocationName,
+                  itemId: tool.id,
+                  itemType: "tool",
+                }}
+              />
+            </div>
+            <div className="border-t pt-6 flex flex-col items-center gap-3">
+              <p className="text-xs text-muted-foreground font-mono text-center">
+                Zebra-Netzwerkdrucker (ZPL)
+              </p>
+              <div className="flex flex-col items-center gap-3">
+                <QrCodeDisplay
+                  value={
+                    typeof window !== "undefined"
+                      ? `${window.location.origin}/dashboard/tools/${tool.id}`
+                      : `/dashboard/tools/${tool.id}`
+                  }
+                  label={`${tool.number ?? ""} · ${tool.name}`}
+                  size={160}
+                />
+                <ZebraLabelButton
+                  data={{
+                    name: tool.name,
+                    number: tool.number,
+                    qrValue:
+                      typeof window !== "undefined"
+                        ? `${window.location.origin}/dashboard/tools/${tool.id}`
+                        : `/dashboard/tools/${tool.id}`,
+                    extra: tool.condition ?? undefined,
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </TabsContent>
       </Tabs>

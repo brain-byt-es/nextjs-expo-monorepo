@@ -17,6 +17,8 @@ import {
   IconMapPin,
   IconPackage,
   IconPlugConnected,
+  IconReportAnalytics,
+  IconUsers,
   IconSettings,
   IconShoppingCart,
   IconTool,
@@ -83,6 +85,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: t("calendar"),
         url: "/dashboard/calendar",
         icon: IconCalendar,
+      },
+      {
+        title: t("reports"),
+        url: "/dashboard/reports",
+        icon: IconReportAnalytics,
       },
     ],
     documents: [
@@ -164,6 +171,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: t("settings"),
         url: "/dashboard/settings",
         icon: IconSettings,
+      },
+      {
+        title: t("team"),
+        url: "/dashboard/settings/team",
+        icon: IconUsers,
       },
       {
         title: t("integrations"),

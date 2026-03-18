@@ -28,6 +28,7 @@ import {
   IconSelector,
   IconDownload,
   IconUpload,
+  IconTag,
 } from "@tabler/icons-react"
 
 import { Button } from "@/components/ui/button"
@@ -631,6 +632,15 @@ export default function MaterialsPage() {
           >
             <IconUpload className="size-4" />
             Import
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5"
+            onClick={() => router.push("/dashboard/materials/labels")}
+          >
+            <IconTag className="size-4" />
+            Etiketten
           </Button>
           <Button onClick={() => router.push("/dashboard/materials/new")}>
             <IconPlus className="size-4" />

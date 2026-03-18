@@ -72,7 +72,9 @@
     "settings": "Einstellungen",
     "integrations": "Integrationen",
     "company": "Unternehmen",
-    "help": "Hilfe"
+    "help": "Hilfe",
+    "reports": "Berichte",
+    "team": "Team"
   },
   "dashboard": {
     "title": "Übersicht",
@@ -362,5 +364,13 @@
     "sites": "Standorte",
     "integrations": "Schnittstellen",
     "administration": "Administration"
+  },
+  "reports": {
+    "title": "Berichte",
+    "description": "Exportieren Sie Ihre Daten als CSV oder drucken Sie sie als PDF aus.",
+    "inventory": "Inventarbericht",
+    "tools": "Werkzeugbericht",
+    "movements": "Bewegungsbericht",
+    "commissions": "Lieferschein-Bericht"
   }
 }

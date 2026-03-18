@@ -90,3 +90,42 @@ export async function sendSubscriptionCanceledEmail(email: string) {
     throw error;
   }
 }
+
+export async function sendTeamInviteEmail(
+  inviterName: string,
+  orgName: string,
+  recipientEmail: string,
+  signupUrl: string,
+) {
+  if (DEMO_MODE) {
+    console.log(`[DEMO] Would send team invite email to ${recipientEmail}`);
+    return { data: { id: 'demo-email-id' }, error: null };
+  }
+  try {
+    const escapedInviter = escapeHtml(inviterName);
+    const escapedOrg = escapeHtml(orgName);
+    const result = await getResend().emails.send({
+      from: process.env.RESEND_FROM_EMAIL || 'noreply@example.com',
+      to: recipientEmail,
+      subject: `${escapedInviter} lädt dich zu ${escapedOrg} ein`,
+      html: `
+        <h1>Du wurdest eingeladen!</h1>
+        <p>Hallo,</p>
+        <p><strong>${escapedInviter}</strong> hat dich eingeladen, dem Team <strong>${escapedOrg}</strong> auf LogistikApp beizutreten.</p>
+        <p>
+          <a
+            href="${signupUrl}"
+            style="display:inline-block;background:#000;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;"
+          >
+            Jetzt beitreten
+          </a>
+        </p>
+        <p style="color:#999;font-size:12px;">Falls du diese Einladung nicht erwartet hast, kannst du diese E-Mail ignorieren.</p>
+      `,
+    });
+    return result;
+  } catch (error) {
+    console.error('Failed to send team invite email:', error);
+    throw error;
+  }
+}

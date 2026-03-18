@@ -14,9 +14,11 @@ import {
   IconAlertTriangle,
   IconDeviceFloppy,
   IconExternalLink,
+  IconTag,
 } from "@tabler/icons-react"
 import { QrCodeDisplay } from "@/components/qr-code"
 import { ZebraLabelButton } from "@/components/zebra-label-button"
+import { BarcodeLabel } from "@/components/barcode-label"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -423,6 +425,14 @@ export default function MaterialDetailPage() {
           >
             <IconMinus className="size-4" />
             Ausbuchen
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push("/dashboard/materials/labels")}
+          >
+            <IconTag className="size-4" />
+            Etiketten
           </Button>
           <Separator orientation="vertical" className="mx-1 h-6" />
           {isEditing ? (
@@ -913,29 +923,49 @@ export default function MaterialDetailPage() {
           </Card>
         </TabsContent>
 
-        {/* ─── QR-Code Tab ─────────────────────────────────────────── */}
+        {/* ─── QR-Code / Etikett Tab ────────────────────────────── */}
         <TabsContent value="qr">
-          <div className="flex flex-col items-center gap-6 py-8">
-            <p className="text-sm text-muted-foreground font-mono text-center max-w-sm">
-              Dieser QR-Code verlinkt direkt auf die Materialseite. Ausdrucken und am Lagerort anbringen.
-            </p>
-            <QrCodeDisplay
-              value={
-                typeof window !== "undefined"
-                  ? `${window.location.origin}/dashboard/materials/${material.id}`
-                  : `/dashboard/materials/${material.id}`
-              }
-              label={`${material.number ?? ""} · ${material.name}`}
-              size={200}
-            />
-            <ZebraLabelButton
-              data={{
-                name: material.name,
-                number: material.number,
-                qrValue: typeof window !== "undefined" ? `${window.location.origin}/dashboard/materials/${material.id}` : `/dashboard/materials/${material.id}`,
-                location: material.mainLocation?.name,
-              }}
-            />
+          <div className="flex flex-col gap-8 py-8">
+            <div className="flex flex-col items-center gap-4">
+              <p className="text-sm text-muted-foreground text-center max-w-md">
+                Browser-Etikett mit QR-Code und Barcode — direkt aus dem Browser drucken.
+                Für Zebra-Netzwerkdrucker den ZPL-Druck verwenden.
+              </p>
+              <BarcodeLabel
+                data={{
+                  name: material.name,
+                  number: material.number,
+                  barcode: material.barcode,
+                  location: material.mainLocation?.name,
+                  itemId: material.id,
+                  itemType: "material",
+                }}
+              />
+            </div>
+            <div className="border-t pt-6 flex flex-col items-center gap-3">
+              <p className="text-xs text-muted-foreground font-mono text-center">
+                Zebra-Netzwerkdrucker (ZPL)
+              </p>
+              <div className="flex flex-col items-center gap-3">
+                <QrCodeDisplay
+                  value={
+                    typeof window !== "undefined"
+                      ? `${window.location.origin}/dashboard/materials/${material.id}`
+                      : `/dashboard/materials/${material.id}`
+                  }
+                  label={`${material.number ?? ""} · ${material.name}`}
+                  size={160}
+                />
+                <ZebraLabelButton
+                  data={{
+                    name: material.name,
+                    number: material.number,
+                    qrValue: typeof window !== "undefined" ? `${window.location.origin}/dashboard/materials/${material.id}` : `/dashboard/materials/${material.id}`,
+                    location: material.mainLocation?.name,
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </TabsContent>
       </Tabs>
