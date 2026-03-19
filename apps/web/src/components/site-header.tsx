@@ -12,7 +12,7 @@ export function SiteHeader() {
   const router = useRouter()
 
   const handleUpgrade = () => {
-    router.push("/pricing")
+    router.push("/dashboard/billing")
   }
 
   return (
