@@ -6,7 +6,6 @@ import {
 } from "@repo/db/schema";
 import { eq, and, inArray } from "drizzle-orm";
 import { sendApprovalRequestEmail, sendApprovalDecisionEmail } from "@/lib/email";
-import { DEMO_MODE } from "@/lib/demo-mode";
 
 // ─── Request types ────────────────────────────────────────────────────────────
 
@@ -158,11 +157,6 @@ async function notifyAdmins(
   entityType: string,
   entityId: string
 ) {
-  if (DEMO_MODE) {
-    console.log(`[DEMO] Would email admins for approval ${approvalId}`);
-    return;
-  }
-
   const db = getDb();
 
   // Load requester name
@@ -214,11 +208,6 @@ async function notifyRequester(
   status: "approved" | "rejected",
   requestType: string
 ) {
-  if (DEMO_MODE) {
-    console.log(`[DEMO] Would email requester ${requesterId} about ${status}`);
-    return;
-  }
-
   const db = getDb();
 
   const [[requester], [approver]] = await Promise.all([

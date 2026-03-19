@@ -6,11 +6,6 @@ const adminRoutes = ['/admin']
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
-  // In demo mode, all routes are publicly accessible
-  if (process.env.NEXT_PUBLIC_DEMO_MODE === 'true') {
-    return NextResponse.next()
-  }
-
   const isProtected = protectedRoutes.some(route => pathname.startsWith(route))
 
   if (!isProtected) {

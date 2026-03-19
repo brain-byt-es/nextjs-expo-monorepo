@@ -32,7 +32,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { suggestMappings, type ColumnMapping } from "@/lib/ai-column-mapper"
-import { DEMO_MODE } from "@/lib/demo-mode"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -77,37 +76,6 @@ const CONDITION_MAP: Record<string, string> = {
 // ---------------------------------------------------------------------------
 // Demo-mode: realistic AI suggestions without API call
 // ---------------------------------------------------------------------------
-function getDemoMappings(headers: string[]): ColumnMapping[] {
-  const DEMO_MAP: Record<string, { target: string; confidence: number }> = {
-    name:           { target: "name",         confidence: 0.98 },
-    bezeichnung:    { target: "name",         confidence: 0.95 },
-    werkzeug:       { target: "name",         confidence: 0.90 },
-    nummer:         { target: "number",       confidence: 0.95 },
-    nr:             { target: "number",       confidence: 0.92 },
-    hersteller:     { target: "manufacturer", confidence: 0.97 },
-    manufacturer:   { target: "manufacturer", confidence: 0.97 },
-    brand:          { target: "manufacturer", confidence: 0.88 },
-    seriennummer:   { target: "serialNumber", confidence: 0.97 },
-    serialnumber:   { target: "serialNumber", confidence: 0.97 },
-    serial:         { target: "serialNumber", confidence: 0.93 },
-    sn:             { target: "serialNumber", confidence: 0.85 },
-    zustand:        { target: "condition",    confidence: 0.96 },
-    condition:      { target: "condition",    confidence: 0.96 },
-    status:         { target: "condition",    confidence: 0.80 },
-    notizen:        { target: "notes",        confidence: 0.95 },
-    notiz:          { target: "notes",        confidence: 0.94 },
-    bemerkung:      { target: "notes",        confidence: 0.90 },
-  }
-
-  return headers.map((h) => {
-    const key = h.toLowerCase().replace(/[\s_\-]/g, "")
-    const match = DEMO_MAP[key]
-    if (match) {
-      return { source: h, target: match.target, confidence: match.confidence, aiSuggested: true }
-    }
-    return { source: h, target: null, confidence: 0.1, aiSuggested: true }
-  })
-}
 
 // ---------------------------------------------------------------------------
 // Rule-based auto-detect (initial mapping before AI)
@@ -308,9 +276,7 @@ export default function ToolImportPage() {
         headers.map((h) => row[h] ?? "")
       )
 
-      const suggestions: ColumnMapping[] = DEMO_MODE
-        ? getDemoMappings(headers)
-        : await suggestMappings(headers, sampleRows, [...TOOL_FIELDS])
+      const suggestions: ColumnMapping[] = await suggestMappings(headers, sampleRows, [...TOOL_FIELDS])
 
       const newMapping: Record<string, string>             = { ...mapping }
       const newConf: Record<string, MappingConfidence>     = { ...confidence }

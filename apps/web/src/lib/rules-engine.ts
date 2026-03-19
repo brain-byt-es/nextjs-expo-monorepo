@@ -1,8 +1,6 @@
 // All server-side imports are dynamic to prevent client-bundle contamination.
 // Constants and types in this file are safe for client import.
 
-const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
-
 async function getDbAndSchema() {
   const { getDb } = await import("@repo/db");
   const { workflowRules } = await import("@repo/db/schema");
@@ -198,11 +196,6 @@ async function executeAction(
         return;
       }
 
-      if (DEMO_MODE) {
-        console.log(`[rules-engine][DEMO] Would send email to ${to}: ${subject}`);
-        return;
-      }
-
       try {
         const { Resend } = await import("resend");
         const resend = new Resend(process.env.RESEND_API_KEY);
@@ -249,11 +242,6 @@ async function executeAction(
 
       if (!title) {
         console.warn("[rules-engine] create_task action missing 'title'");
-        return;
-      }
-
-      if (DEMO_MODE) {
-        console.log(`[rules-engine][DEMO] Would create task: "${title}"`);
         return;
       }
 

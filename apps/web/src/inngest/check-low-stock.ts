@@ -13,7 +13,6 @@ import {
 } from "@repo/db/schema";
 import { eq, and, lte, isNotNull, sql } from "drizzle-orm";
 import { sendWhatsAppAlert } from "@/lib/whatsapp";
-import { DEMO_MODE } from "@/lib/demo-mode";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.logistikapp.ch";
 
@@ -22,11 +21,6 @@ export const checkLowStockFn = inngest.createFunction(
   { id: "check-low-stock", retries: 2 },
   { cron: "0 6 * * *" },
   async () => {
-    if (DEMO_MODE) {
-      console.log("[DEMO] Skipping low-stock check");
-      return { skipped: true };
-    }
-
     const db = getDb();
 
     // Fetch all orgs that have alert settings configured

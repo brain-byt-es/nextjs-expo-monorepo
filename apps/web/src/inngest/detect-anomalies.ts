@@ -8,7 +8,6 @@ import {
 } from "@repo/db/schema";
 import { eq, and } from "drizzle-orm";
 import { runAnomalyDetection } from "@/lib/anomaly-detection";
-import { DEMO_MODE } from "@/lib/demo-mode";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.logistikapp.ch";
 
@@ -26,11 +25,6 @@ export const detectAnomaliesFn = inngest.createFunction(
   { id: "detect-anomalies", retries: 2 },
   { cron: "0 */4 * * *" },
   async () => {
-    if (DEMO_MODE) {
-      console.log("[DEMO] Skipping anomaly detection");
-      return { skipped: true };
-    }
-
     const db = getDb();
 
     // Fetch all orgs that have email alerts enabled

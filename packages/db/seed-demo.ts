@@ -142,8 +142,8 @@ if (existingUser.length > 0) {
 
 section("2 · Demo User");
 
-// bcrypt hash of "demo1234" with 10 rounds (pre-computed, Better-Auth compatible)
-const passwordHash = "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
+// Better-Auth scrypt hash of "demo1234" (pre-computed, Better-Auth compatible)
+const passwordHash = "7a9192e95bf94350da4b782bb2fc2f07:5a32cc2ef22ece6e7d3237f51cb0879293aa92afa0c67284468ef6c3bf5adf9e7c0871283ddc4b2b9e19e64aaed1ccdd3e207667c00895da95d4ec111319ed1a";
 
 const userId = randomUUID();
 await sql`

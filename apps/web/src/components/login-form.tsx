@@ -14,7 +14,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { signIn } from "@/lib/auth-client"
 import { toast } from "sonner"
-import { DEMO_MODE } from "@/lib/demo-mode"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -76,13 +75,6 @@ export function LoginForm({
   }
 
   const handleOAuthSignIn = (provider: "google" | "microsoft" | "apple") => {
-    if (DEMO_MODE) {
-      toast.info("Im Demo-Modus nicht verfügbar", {
-        description: "Social Login ist in der Demo deaktiviert. Nutze E-Mail + Passwort oder starte eine eigene Instanz.",
-        duration: 5000,
-      })
-      return
-    }
     signIn.social({ provider, callbackURL: "/dashboard" })
   }
 
@@ -111,13 +103,6 @@ export function LoginForm({
   }, [])
 
   const handleSsoSignIn = () => {
-    if (DEMO_MODE) {
-      toast.info("Im Demo-Modus nicht verfügbar", {
-        description: "SSO ist in der Demo deaktiviert.",
-        duration: 5000,
-      })
-      return
-    }
     // Redirect to the OIDC provider via Better-Auth's generic OIDC flow
     // The orgId is passed so the server can look up the correct SSO config
     if (ssoInfo) {

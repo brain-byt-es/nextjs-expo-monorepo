@@ -3,7 +3,6 @@ import { getDb } from "@repo/db";
 import { alertSettings, organizations, organizationMembers, users } from "@repo/db/schema";
 import { eq, and } from "drizzle-orm";
 import { checkAndCreateReorders } from "@/lib/auto-reorder";
-import { DEMO_MODE } from "@/lib/demo-mode";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.logistikapp.ch";
 
@@ -12,11 +11,6 @@ export const checkReorderFn = inngest.createFunction(
   { id: "check-reorder", retries: 2 },
   { cron: "0 6 * * *" },
   async () => {
-    if (DEMO_MODE) {
-      console.log("[DEMO] Skipping auto-reorder check");
-      return { skipped: true };
-    }
-
     const db = getDb();
 
     // Fetch orgs that have auto-reorder enabled

@@ -1,5 +1,3 @@
-import { DEMO_MODE } from "@/lib/demo-mode";
-
 /**
  * Send a WhatsApp message via the Twilio WhatsApp API.
  *
@@ -8,17 +6,12 @@ import { DEMO_MODE } from "@/lib/demo-mode";
  *   TWILIO_AUTH_TOKEN
  *   TWILIO_WHATSAPP_FROM  (e.g. "whatsapp:+14155238886")
  *
- * Gracefully skips (logs warning) when env vars are missing or in DEMO_MODE.
+ * Gracefully skips (logs warning) when env vars are missing.
  */
 export async function sendWhatsAppAlert(
   toPhone: string,
   message: string
 ): Promise<{ success: boolean; sid?: string; error?: string }> {
-  if (DEMO_MODE) {
-    console.log(`[DEMO] Would send WhatsApp to ${toPhone}: ${message}`);
-    return { success: true, sid: "demo-sid" };
-  }
-
   const accountSid = process.env.TWILIO_ACCOUNT_SID;
   const authToken = process.env.TWILIO_AUTH_TOKEN;
   const fromNumber = process.env.TWILIO_WHATSAPP_FROM;

@@ -1,5 +1,4 @@
 import { Resend } from 'resend';
-import { DEMO_MODE } from '@/lib/demo-mode';
 
 let resend: Resend | null = null;
 
@@ -19,10 +18,6 @@ function escapeHtml(str: string): string {
 }
 
 export async function sendWelcomeEmail(name: string, email: string) {
-  if (DEMO_MODE) {
-    console.log(`[DEMO] Would send welcome email to ${email}`);
-    return { data: { id: 'demo-email-id' }, error: null };
-  }
   try {
     const result = await getResend().emails.send({
       from: process.env.RESEND_FROM_EMAIL || 'noreply@example.com',
@@ -43,10 +38,6 @@ export async function sendWelcomeEmail(name: string, email: string) {
 }
 
 export async function sendPaymentFailedEmail(email: string) {
-  if (DEMO_MODE) {
-    console.log(`[DEMO] Would send payment failed email to ${email}`);
-    return { data: { id: 'demo-email-id' }, error: null };
-  }
   try {
     const result = await getResend().emails.send({
       from: process.env.RESEND_FROM_EMAIL || 'noreply@example.com',
@@ -68,10 +59,6 @@ export async function sendPaymentFailedEmail(email: string) {
 }
 
 export async function sendSubscriptionCanceledEmail(email: string) {
-  if (DEMO_MODE) {
-    console.log(`[DEMO] Would send subscription canceled email to ${email}`);
-    return { data: { id: 'demo-email-id' }, error: null };
-  }
   try {
     const result = await getResend().emails.send({
       from: process.env.RESEND_FROM_EMAIL || 'noreply@example.com',
@@ -97,10 +84,6 @@ export async function sendTeamInviteEmail(
   recipientEmail: string,
   signupUrl: string,
 ) {
-  if (DEMO_MODE) {
-    console.log(`[DEMO] Would send team invite email to ${recipientEmail}`);
-    return { data: { id: 'demo-email-id' }, error: null };
-  }
   try {
     const escapedInviter = escapeHtml(inviterName);
     const escapedOrg = escapeHtml(orgName);
@@ -138,11 +121,6 @@ export async function sendAlertSummaryEmail(
   orgName: string,
   expiryCount = 0
 ) {
-  if (DEMO_MODE) {
-    console.log(`[DEMO] Would send alert summary to ${recipientEmail}`);
-    return { data: { id: 'demo-email-id' }, error: null };
-  }
-
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.logistikapp.ch';
   const parts: string[] = [];
   if (lowStockCount > 0) {
@@ -192,11 +170,6 @@ export async function sendMentionNotification(
   entityId: string,
   commentBody: string
 ) {
-  if (DEMO_MODE) {
-    console.log(`[DEMO] Would send mention notification to ${mentionedUserEmail}`);
-    return { data: { id: 'demo-email-id' }, error: null };
-  }
-
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.logistikapp.ch';
   const entityPath = entityType === 'material'
     ? `materials/${entityId}`
@@ -250,11 +223,6 @@ export async function sendApprovalRequestEmail(
   entityId: string,
   approvalId: string // eslint-disable-line @typescript-eslint/no-unused-vars
 ) {
-  if (DEMO_MODE) {
-    console.log(`[DEMO] Would send approval request email to ${adminEmail}`);
-    return { data: { id: 'demo-email-id' }, error: null };
-  }
-
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.logistikapp.ch';
   const approvalsUrl = `${appUrl}/dashboard/approvals`;
   const requestTypeLabel = requestType === 'tool_checkout'
@@ -301,11 +269,6 @@ export async function sendApprovalDecisionEmail(
   requestType: string,
   status: 'approved' | 'rejected'
 ) {
-  if (DEMO_MODE) {
-    console.log(`[DEMO] Would send approval decision email to ${requesterEmail}`);
-    return { data: { id: 'demo-email-id' }, error: null };
-  }
-
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.logistikapp.ch';
   const requestTypeLabel = requestType === 'tool_checkout'
     ? 'Werkzeug-Ausleihe'

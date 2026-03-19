@@ -4,7 +4,6 @@ import { organizationMembers, users, organizations } from "@repo/db/schema";
 import { eq, and } from "drizzle-orm";
 import { sendTeamInviteEmail } from "@/lib/email";
 import * as Sentry from "@sentry/nextjs";
-import { DEMO_MODE } from "@/lib/demo-mode";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -99,19 +98,17 @@ export async function POST(
         .returning();
 
       // Send a notification email
-      if (!DEMO_MODE) {
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://app.logistikapp.ch";
-        await sendTeamInviteEmail(
-          inviter?.name ?? session.user.email ?? "Jemand",
-          org?.name ?? "LogistikApp",
-          email,
-          `${appUrl}/dashboard`,
-        ).catch((err) => {
-          // Non-fatal: log but don't fail the request
-          console.error("Failed to send invite email:", err);
-          Sentry.captureException(err, { tags: { route: "/api/organizations/[id]/invite" } });
-        });
-      }
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://app.logistikapp.ch";
+      await sendTeamInviteEmail(
+        inviter?.name ?? session.user.email ?? "Jemand",
+        org?.name ?? "LogistikApp",
+        email,
+        `${appUrl}/dashboard`,
+      ).catch((err) => {
+        // Non-fatal: log but don't fail the request
+        console.error("Failed to send invite email:", err);
+        Sentry.captureException(err, { tags: { route: "/api/organizations/[id]/invite" } });
+      });
 
       return NextResponse.json(
         { member, invited: false },
@@ -120,19 +117,17 @@ export async function POST(
     }
 
     // User does not exist — send a signup invite email
-    if (!DEMO_MODE) {
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://app.logistikapp.ch";
-      const signupUrl = `${appUrl}/signup?email=${encodeURIComponent(email)}`;
-      await sendTeamInviteEmail(
-        inviter?.name ?? session.user.email ?? "Jemand",
-        org?.name ?? "LogistikApp",
-        email,
-        signupUrl,
-      ).catch((err) => {
-        console.error("Failed to send invite email:", err);
-        Sentry.captureException(err, { tags: { route: "/api/organizations/[id]/invite" } });
-      });
-    }
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://app.logistikapp.ch";
+    const signupUrl = `${appUrl}/signup?email=${encodeURIComponent(email)}`;
+    await sendTeamInviteEmail(
+      inviter?.name ?? session.user.email ?? "Jemand",
+      org?.name ?? "LogistikApp",
+      email,
+      signupUrl,
+    ).catch((err) => {
+      console.error("Failed to send invite email:", err);
+      Sentry.captureException(err, { tags: { route: "/api/organizations/[id]/invite" } });
+    });
 
     return NextResponse.json(
       { invited: true, email },
