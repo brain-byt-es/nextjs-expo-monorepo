@@ -315,11 +315,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   // ── Nav item definitions ─────────────────────────────────────────────────
   const data = {
-    user: {
-      name: "shadcn",
-      email: "m@example.com",
-      avatar: "/avatars/shadcn.jpg",
-    },
     // Items that can be hidden. Key matches what is stored in localStorage.
     navMain: [
       {
@@ -703,7 +698,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
 
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
 
         {/* ── Footer utility row — only shown when NOT in edit mode ── */}
         {!editMode && (

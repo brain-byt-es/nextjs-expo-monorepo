@@ -26,6 +26,13 @@ export const metadata: Metadata = {
     template: "%s | LogistikApp",
   },
   description: "Inventar- und Werkzeugverwaltung für Schweizer KMU.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon.png", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default async function RootLayout({

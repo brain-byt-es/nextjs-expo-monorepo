@@ -8,7 +8,7 @@ import {
 } from "@tabler/icons-react"
 import { useRouter } from "next/navigation"
 
-import { signOut } from "@/lib/auth-client"
+import { signOut, useSession } from "@/lib/auth-client"
 import {
   Avatar,
   AvatarFallback,
@@ -30,17 +30,30 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
+function getInitials(name?: string | null, email?: string | null): string {
+  if (name) {
+    const parts = name.trim().split(/\s+/)
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+    }
+    return name.slice(0, 2).toUpperCase()
   }
-}) {
+  if (email) {
+    return email.slice(0, 2).toUpperCase()
+  }
+  return "??"
+}
+
+export function NavUser() {
   const { isMobile } = useSidebar()
   const router = useRouter()
+  const { data: session } = useSession()
+
+  const name = session?.user?.name ?? "Nicht angemeldet"
+  const email = session?.user?.email ?? ""
+  // Better-Auth stores the avatar URL in session.user.image
+  const avatar = (session?.user as { image?: string | null } | undefined)?.image ?? ""
+  const initials = getInitials(session?.user?.name, session?.user?.email)
 
   return (
     <SidebarMenu>
@@ -52,13 +65,13 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarImage src={avatar} alt={name} />
+                <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate font-medium">{name}</span>
                 <span className="truncate text-xs text-muted-foreground">
-                  {user.email}
+                  {email}
                 </span>
               </div>
               <IconDotsVertical className="ml-auto size-4" />
@@ -73,13 +86,13 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarImage src={avatar} alt={name} />
+                  <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
+                  <span className="truncate font-medium">{name}</span>
                   <span className="truncate text-xs text-muted-foreground">
-                    {user.email}
+                    {email}
                   </span>
                 </div>
               </div>
@@ -88,11 +101,11 @@ export function NavUser({
             <DropdownMenuGroup>
               <DropdownMenuItem onClick={() => router.push("/dashboard/settings")}>
                 <IconUserCircle />
-                Settings
+                Einstellungen
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => router.push("/dashboard/billing")}>
                 <IconCreditCard />
-                Billing
+                Abrechnung
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
@@ -104,7 +117,7 @@ export function NavUser({
               }
             >
               <IconLogout />
-              Log out
+              Abmelden
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

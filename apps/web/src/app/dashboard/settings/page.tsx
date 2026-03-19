@@ -37,7 +37,7 @@ export default function SettingsPage() {
     setIsLoading(true)
     try {
       if (!formData.name.trim()) {
-        setError("Name cannot be empty")
+        setError("Name darf nicht leer sein.")
         return
       }
 
@@ -49,7 +49,7 @@ export default function SettingsPage() {
         setTimeout(() => setIsSaved(false), 2000)
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update profile")
+      setError(err instanceof Error ? err.message : "Profil konnte nicht aktualisiert werden.")
     } finally {
       setIsLoading(false)
     }
@@ -61,17 +61,17 @@ export default function SettingsPage() {
     setIsLoading(true)
     try {
       if (!formData.currentPassword || !formData.newPassword) {
-        setError("All password fields are required")
+        setError("Alle Passwortfelder sind erforderlich.")
         return
       }
 
       if (formData.newPassword !== formData.confirmPassword) {
-        setError("New passwords do not match")
+        setError("Die neuen Passwörter stimmen nicht überein.")
         return
       }
 
       if (formData.newPassword.length < 8) {
-        setError("New password must be at least 8 characters")
+        setError("Das neue Passwort muss mindestens 8 Zeichen lang sein.")
         return
       }
 
@@ -93,7 +93,7 @@ export default function SettingsPage() {
         setTimeout(() => setIsSaved(false), 2000)
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to change password")
+      setError(err instanceof Error ? err.message : "Passwort konnte nicht geändert werden.")
     } finally {
       setIsLoading(false)
     }
@@ -103,7 +103,9 @@ export default function SettingsPage() {
     <div className="space-y-8 px-4 py-4 md:px-6 md:py-6 lg:px-8 lg:py-8">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
-        <p className="text-muted-foreground mt-2">Manage your account settings and preferences</p>
+        <p className="text-muted-foreground mt-2">
+          Kontoeinstellungen und Präferenzen verwalten.
+        </p>
       </div>
 
       {error && (
@@ -112,20 +114,20 @@ export default function SettingsPage() {
         </div>
       )}
 
-      {/* Profile Section */}
+      {/* ── Profil ── */}
       <Card>
         <CardHeader>
-          <CardTitle>Profile</CardTitle>
-          <CardDescription>Update your profile information</CardDescription>
+          <CardTitle>Profil</CardTitle>
+          <CardDescription>Profilinformationen aktualisieren.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSaveProfile} className="space-y-6">
             <div className="grid gap-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
+                <Label htmlFor="name">Name</Label>
                 <Input
                   id="name"
-                  placeholder="John Doe"
+                  placeholder="Max Muster"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   disabled={isLoading}
@@ -133,39 +135,41 @@ export default function SettingsPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">E-Mail</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="john@example.com"
+                  placeholder="max@beispiel.ch"
                   value={session?.user?.email || ""}
                   disabled
                 />
-                <p className="text-xs text-muted-foreground">Email cannot be changed</p>
+                <p className="text-xs text-muted-foreground">
+                  E-Mail-Adresse kann nicht geändert werden.
+                </p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="timezone">Timezone</Label>
-                <Select defaultValue="utc">
+                <Label htmlFor="timezone">Zeitzone</Label>
+                <Select defaultValue="europe_zurich">
                   <SelectTrigger id="timezone" disabled={isLoading}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="europe_zurich">Europa/Zürich</SelectItem>
+                    <SelectItem value="europe_berlin">Europa/Berlin</SelectItem>
+                    <SelectItem value="europe_london">Europa/London</SelectItem>
                     <SelectItem value="utc">UTC</SelectItem>
-                    <SelectItem value="est">Eastern Time</SelectItem>
-                    <SelectItem value="cst">Central Time</SelectItem>
-                    <SelectItem value="mst">Mountain Time</SelectItem>
-                    <SelectItem value="pst">Pacific Time</SelectItem>
+                    <SelectItem value="america_new_york">Amerika/New York</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Saving..." : "Save Changes"}
+              {isLoading ? "Speichert…" : "Änderungen speichern"}
             </Button>
             {isSaved && (
-              <p className="text-sm text-secondary">Profile updated successfully</p>
+              <p className="text-sm text-secondary">Profil erfolgreich aktualisiert.</p>
             )}
           </form>
         </CardContent>
@@ -173,7 +177,7 @@ export default function SettingsPage() {
 
       <Separator />
 
-      {/* Language Section */}
+      {/* ── Sprache ── */}
       <Card>
         <CardHeader>
           <CardTitle>{t("language")}</CardTitle>
@@ -188,57 +192,65 @@ export default function SettingsPage() {
 
       <Separator />
 
-      {/* Password Section */}
+      {/* ── Passwort ändern ── */}
       <Card>
         <CardHeader>
-          <CardTitle>Password</CardTitle>
-          <CardDescription>Change your password to keep your account secure</CardDescription>
+          <CardTitle>Passwort ändern</CardTitle>
+          <CardDescription>
+            Passwort ändern, um das Konto zu schützen.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleChangePassword} className="space-y-6">
             <div className="grid gap-4">
               <div className="space-y-2">
-                <Label htmlFor="current-password">Current Password</Label>
+                <Label htmlFor="current-password">Aktuelles Passwort</Label>
                 <Input
                   id="current-password"
                   type="password"
-                  placeholder="Enter your current password"
+                  placeholder="Aktuelles Passwort eingeben"
                   value={formData.currentPassword}
-                  onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, currentPassword: e.target.value })
+                  }
                   disabled={isLoading}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="new-password">New Password</Label>
+                <Label htmlFor="new-password">Neues Passwort</Label>
                 <Input
                   id="new-password"
                   type="password"
-                  placeholder="Enter your new password"
+                  placeholder="Neues Passwort eingeben"
                   value={formData.newPassword}
-                  onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, newPassword: e.target.value })
+                  }
                   disabled={isLoading}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirm-password">Confirm Password</Label>
+                <Label htmlFor="confirm-password">Neues Passwort bestätigen</Label>
                 <Input
                   id="confirm-password"
                   type="password"
-                  placeholder="Confirm your new password"
+                  placeholder="Neues Passwort wiederholen"
                   value={formData.confirmPassword}
-                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, confirmPassword: e.target.value })
+                  }
                   disabled={isLoading}
                 />
               </div>
             </div>
 
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Updating..." : "Update Password"}
+              {isLoading ? "Aktualisiert…" : "Passwort aktualisieren"}
             </Button>
             {isSaved && (
-              <p className="text-sm text-secondary">Password updated successfully</p>
+              <p className="text-sm text-secondary">Passwort erfolgreich geändert.</p>
             )}
           </form>
         </CardContent>
@@ -246,20 +258,22 @@ export default function SettingsPage() {
 
       <Separator />
 
-      {/* Preferences Section */}
+      {/* ── Benachrichtigungen & Datenschutz ── */}
       <Card>
         <CardHeader>
-          <CardTitle>Preferences</CardTitle>
-          <CardDescription>Manage your notification and privacy preferences</CardDescription>
+          <CardTitle>Präferenzen</CardTitle>
+          <CardDescription>
+            Benachrichtigungs- und Datenschutzeinstellungen verwalten.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form className="space-y-6">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">Email Notifications</p>
+                  <p className="font-medium">E-Mail-Benachrichtigungen</p>
                   <p className="text-sm text-muted-foreground">
-                    Receive email updates about your account
+                    E-Mail-Updates zum Konto erhalten.
                   </p>
                 </div>
                 <input type="checkbox" defaultChecked className="h-4 w-4" />
@@ -269,9 +283,9 @@ export default function SettingsPage() {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">Marketing Emails</p>
+                  <p className="font-medium">Marketing-E-Mails</p>
                   <p className="text-sm text-muted-foreground">
-                    Receive emails about new features and updates
+                    E-Mails über neue Funktionen und Updates erhalten.
                   </p>
                 </div>
                 <input type="checkbox" className="h-4 w-4" />
@@ -281,13 +295,13 @@ export default function SettingsPage() {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">Two-Factor Authentication</p>
+                  <p className="font-medium">Zwei-Faktor-Authentifizierung</p>
                   <p className="text-sm text-muted-foreground">
-                    Add an extra layer of security to your account
+                    Zusätzliche Sicherheitsebene für das Konto hinzufügen.
                   </p>
                 </div>
                 <Button variant="outline" size="sm" disabled>
-                  Configure
+                  Konfigurieren
                 </Button>
               </div>
             </div>
@@ -297,18 +311,19 @@ export default function SettingsPage() {
 
       <Separator />
 
-      {/* Danger Zone */}
+      {/* ── Gefahrenzone ── */}
       <Card className="border-destructive/30 bg-destructive/10">
         <CardHeader>
-          <CardTitle className="text-destructive">Danger Zone</CardTitle>
-          <CardDescription>Actions that cannot be undone</CardDescription>
+          <CardTitle className="text-destructive">Gefahrenzone</CardTitle>
+          <CardDescription>Aktionen, die nicht rückgängig gemacht werden können.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-destructive">
-            Deleting your account will permanently remove all your data. This action cannot be undone.
+            Das Löschen des Kontos entfernt alle Daten dauerhaft. Diese Aktion kann nicht
+            rückgängig gemacht werden.
           </p>
           <Button variant="destructive" disabled>
-            Delete Account
+            Konto löschen
           </Button>
         </CardContent>
       </Card>

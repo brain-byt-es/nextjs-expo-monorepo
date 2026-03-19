@@ -2,92 +2,112 @@
 
 import { useState, useEffect } from "react"
 import { useSession } from "@/lib/auth-client"
-import { createPortalSession } from "@/lib/stripe"
+import { createPortalSession, createCheckoutSession } from "@/lib/stripe"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 
+// ---------------------------------------------------------------------------
+// Plan definitions
+// ---------------------------------------------------------------------------
 interface Plan {
   id: string
   name: string
   description: string
-  price: number
-  interval: "month" | "year"
+  priceMonthly: number
+  priceYearly: number
   features: string[]
+  priceIdMonthly?: string
+  priceIdYearly?: string
+  isEnterprise?: boolean
 }
 
 const plans: Plan[] = [
   {
-    id: "free",
-    name: "Free",
-    description: "Get started with basic features",
-    price: 0,
-    interval: "month",
+    id: "starter",
+    name: "Starter",
+    description: "Ideal für kleine Teams und den Einstieg.",
+    priceMonthly: 29,
+    priceYearly: 25,
     features: [
-      "Up to 3 projects",
-      "Basic analytics",
-      "Community support",
-      "1 GB storage",
+      "Bis zu 3 Standorte",
+      "Unbegrenzte Artikel",
+      "Werkzeug-Tracking",
+      "E-Mail-Support",
+      "1 GB Speicher",
     ],
+    priceIdMonthly: process.env.NEXT_PUBLIC_STRIPE_STARTER_MONTHLY ?? "",
+    priceIdYearly: process.env.NEXT_PUBLIC_STRIPE_STARTER_YEARLY ?? "",
   },
   {
-    id: "pro",
-    name: "Pro",
-    description: "Perfect for growing teams",
-    price: 29,
-    interval: "month",
+    id: "professional",
+    name: "Professional",
+    description: "Für wachsende KMU mit mehr Anforderungen.",
+    priceMonthly: 89,
+    priceYearly: 75,
     features: [
-      "Unlimited projects",
-      "Advanced analytics",
-      "Priority support",
-      "100 GB storage",
-      "Team collaboration",
+      "Unbegrenzte Standorte",
+      "Erweiterte Analysen",
+      "Prioritätssupport",
+      "100 GB Speicher",
+      "Team-Zusammenarbeit",
+      "API-Zugang",
     ],
+    priceIdMonthly: process.env.NEXT_PUBLIC_STRIPE_PRO_MONTHLY ?? "",
+    priceIdYearly: process.env.NEXT_PUBLIC_STRIPE_PRO_YEARLY ?? "",
   },
   {
     id: "enterprise",
     name: "Enterprise",
-    description: "For large organizations",
-    price: 99,
-    interval: "month",
+    description: "Massgeschneiderte Lösungen für grosse Organisationen.",
+    priceMonthly: 0,
+    priceYearly: 0,
+    isEnterprise: true,
     features: [
-      "Everything in Pro",
-      "Custom integrations",
-      "Dedicated support",
-      "Unlimited storage",
-      "SSO & advanced security",
-      "SLA guarantee",
+      "Alles aus Professional",
+      "Individuelle Integrationen",
+      "Dedizierter Support",
+      "Unbegrenzter Speicher",
+      "SSO & erweiterte Sicherheit",
+      "SLA-Garantie",
+      "Onboarding-Service",
     ],
   },
 ]
 
+// ---------------------------------------------------------------------------
+// Stripe configured check
+// ---------------------------------------------------------------------------
+const stripeConfigured = Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
 export default function BillingPage() {
   const { data: session } = useSession()
   const [isLoading, setIsLoading] = useState(false)
+  const [actionPlanId, setActionPlanId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [currentPlan, setCurrentPlan] = useState<string>("free")
+  const [currentPlan, setCurrentPlan] = useState<string>("starter")
+  const [billingInterval, setBillingInterval] = useState<"monthly" | "yearly">("monthly")
 
   useEffect(() => {
     const fetchCurrentPlan = async () => {
       if (!session?.user?.email) return
-
       try {
         const res = await fetch("/api/user/subscription")
         if (!res.ok) return
-        const { status } = await res.json()
-
+        const { status, plan } = await res.json()
         if (status === "active" || status === "trialing") {
-          setCurrentPlan("pro")
+          setCurrentPlan(plan ?? "professional")
         } else {
-          setCurrentPlan("free")
+          setCurrentPlan("starter")
         }
-      } catch (err) {
-        console.error("Error fetching subscription:", err)
-        setCurrentPlan("free")
+      } catch {
+        setCurrentPlan("starter")
       }
     }
-
     fetchCurrentPlan()
   }, [session?.user?.email])
 
@@ -96,37 +116,73 @@ export default function BillingPage() {
     setError(null)
     try {
       const { url } = await createPortalSession()
-      if (url) {
-        window.location.href = url
-      }
+      if (url) window.location.href = url
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to open customer portal")
+      setError(err instanceof Error ? err.message : "Fehler beim Öffnen des Kundenportals.")
     } finally {
       setIsLoading(false)
     }
   }
 
+  const handleUpgrade = async (plan: Plan) => {
+    if (!stripeConfigured) return
+    const priceId =
+      billingInterval === "yearly" ? plan.priceIdYearly : plan.priceIdMonthly
+    if (!priceId) {
+      setError("Stripe ist nicht konfiguriert.")
+      return
+    }
+    setActionPlanId(plan.id)
+    setError(null)
+    try {
+      const { url } = await createCheckoutSession(priceId)
+      if (url) window.location.href = url
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Fehler beim Erstellen der Checkout-Sitzung.")
+    } finally {
+      setActionPlanId(null)
+    }
+  }
+
+  const planRank: Record<string, number> = { starter: 1, professional: 2, enterprise: 3 }
+  const currentRank = planRank[currentPlan] ?? 1
+
   return (
     <div className="space-y-8 px-4 py-4 md:px-6 md:py-6 lg:px-8 lg:py-8">
+      {/* ── Header ── */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Billing & Plans</h1>
-        <p className="text-muted-foreground mt-2">Manage your subscription and billing information</p>
+        <h1 className="text-3xl font-bold tracking-tight">Abrechnung &amp; Pläne</h1>
+        <p className="text-muted-foreground mt-2">
+          Verwalte dein Abonnement und deine Rechnungsinformationen.
+        </p>
       </div>
 
-      {/* Current Plan */}
+      {/* ── Stripe not configured banner ── */}
+      {!stripeConfigured && (
+        <div className="rounded-md border border-amber-400/40 bg-amber-50 dark:bg-amber-950/30 p-4 text-sm text-amber-800 dark:text-amber-300">
+          <strong>Stripe nicht konfiguriert.</strong> Die Pläne werden zur Vorschau angezeigt.
+          Füge <code className="font-mono text-xs">NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY</code> zu deiner{" "}
+          <code className="font-mono text-xs">.env</code> hinzu, um Zahlungen zu aktivieren.
+        </div>
+      )}
+
+      {/* ── Current Plan Summary ── */}
       <Card>
         <CardHeader>
-          <CardTitle>Current Plan</CardTitle>
-          <CardDescription>You are currently on the {currentPlan} plan</CardDescription>
+          <CardTitle>Aktueller Plan</CardTitle>
+          <CardDescription>
+            Du nutzt derzeit den{" "}
+            <span className="capitalize font-medium">{currentPlan}</span>-Plan.
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-semibold text-lg capitalize">{currentPlan} Plan</p>
+              <p className="font-semibold text-lg capitalize">{currentPlan}</p>
               <p className="text-sm text-muted-foreground">
-                {currentPlan === "free"
-                  ? "Upgrade to unlock more features"
-                  : "Your subscription is active and renews monthly"}
+                {currentPlan === "starter"
+                  ? "Upgrade für mehr Funktionen verfügbar."
+                  : "Dein Abonnement ist aktiv."}
               </p>
             </div>
             <Badge variant="secondary" className="capitalize">
@@ -136,9 +192,9 @@ export default function BillingPage() {
 
           <Separator />
 
-          {currentPlan !== "free" && (
+          {currentPlan !== "starter" && (
             <Button onClick={handleManageSubscription} disabled={isLoading}>
-              {isLoading ? "Loading..." : "Manage Subscription"}
+              {isLoading ? "Lade…" : "Abonnement verwalten"}
             </Button>
           )}
 
@@ -152,16 +208,52 @@ export default function BillingPage() {
 
       <Separator />
 
-      {/* Plans Comparison */}
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight mb-6">Compare Plans</h2>
-        <div className="grid gap-6 md:grid-cols-3">
-          {plans.map((plan) => (
+      {/* ── Billing Interval Toggle ── */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold tracking-tight">Pläne vergleichen</h2>
+        <div className="flex items-center gap-1 rounded-lg border p-1 text-sm">
+          <button
+            type="button"
+            onClick={() => setBillingInterval("monthly")}
+            className={`rounded-md px-3 py-1.5 transition-colors ${
+              billingInterval === "monthly"
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Monatlich
+          </button>
+          <button
+            type="button"
+            onClick={() => setBillingInterval("yearly")}
+            className={`rounded-md px-3 py-1.5 transition-colors ${
+              billingInterval === "yearly"
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Jährlich
+            <span className="ml-1.5 rounded-full bg-green-100 px-1.5 py-0.5 text-[10px] font-semibold text-green-700 dark:bg-green-900 dark:text-green-300">
+              –15%
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {/* ── Plan Cards ── */}
+      <div className="grid gap-6 md:grid-cols-3">
+        {plans.map((plan) => {
+          const isCurrentPlan = plan.id === currentPlan
+          const planRankVal = planRank[plan.id] ?? 0
+          const isUpgrade = planRankVal > currentRank
+          const isDowngrade = planRankVal < currentRank
+          const price =
+            billingInterval === "yearly" ? plan.priceYearly : plan.priceMonthly
+
+          return (
             <Card
               key={plan.id}
-              className={`flex flex-col ${
-                plan.id === currentPlan ? "border-primary border-2" : ""
-              }`}
+              className={`flex flex-col ${isCurrentPlan ? "border-primary border-2" : ""}`}
             >
               <CardHeader>
                 <div className="flex items-start justify-between">
@@ -169,28 +261,38 @@ export default function BillingPage() {
                     <CardTitle>{plan.name}</CardTitle>
                     <CardDescription>{plan.description}</CardDescription>
                   </div>
-                  {plan.id === currentPlan && (
-                    <Badge variant="default">Current</Badge>
+                  {isCurrentPlan && (
+                    <Badge variant="default">Aktueller Plan</Badge>
                   )}
                 </div>
               </CardHeader>
-              <CardContent className="flex-1 space-y-6">
+
+              <CardContent className="flex flex-1 flex-col space-y-6">
+                {/* Price */}
                 <div>
-                  <p className="text-3xl font-bold">
-                    {plan.price === 0 ? "Free" : `$${plan.price}`}
-                  </p>
-                  {plan.price > 0 && (
-                    <p className="text-sm text-muted-foreground">
-                      per {plan.interval}
-                    </p>
+                  {plan.isEnterprise ? (
+                    <p className="text-3xl font-bold">Auf Anfrage</p>
+                  ) : (
+                    <>
+                      <p className="text-3xl font-bold">
+                        CHF {price}
+                        <span className="text-base font-normal text-muted-foreground">/Mo</span>
+                      </p>
+                      {billingInterval === "yearly" && (
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          Jährlich abgerechnet (CHF {price * 12}/Jahr)
+                        </p>
+                      )}
+                    </>
                   )}
                 </div>
 
-                <ul className="space-y-3">
+                {/* Features */}
+                <ul className="flex-1 space-y-3">
                   {plan.features.map((feature, idx) => (
                     <li key={idx} className="flex items-center gap-2 text-sm">
                       <svg
-                        className="h-4 w-4 text-secondary"
+                        className="h-4 w-4 shrink-0 text-secondary"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -207,63 +309,97 @@ export default function BillingPage() {
                   ))}
                 </ul>
 
-                {plan.id !== currentPlan && plan.id !== "free" && (
-                  <Button className="w-full" disabled>
-                    Coming Soon
-                  </Button>
-                )}
-
-                {plan.id === currentPlan && plan.id !== "free" && (
+                {/* CTA button */}
+                {isCurrentPlan ? (
+                  currentPlan !== "starter" ? (
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={handleManageSubscription}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? "Lade…" : "Verwalten"}
+                    </Button>
+                  ) : (
+                    <Button disabled className="w-full">
+                      Aktueller Plan
+                    </Button>
+                  )
+                ) : plan.isEnterprise ? (
                   <Button
-                    variant="outline"
                     className="w-full"
-                    onClick={handleManageSubscription}
-                    disabled={isLoading}
+                    variant="outline"
+                    asChild
                   >
-                    {isLoading ? "Loading..." : "Manage"}
+                    <a href="mailto:sales@logistikapp.ch">Kontakt aufnehmen</a>
                   </Button>
-                )}
-
-                {plan.id === "free" && currentPlan === "free" && (
-                  <Button disabled className="w-full">
-                    Current Plan
+                ) : (
+                  <Button
+                    className="w-full"
+                    variant={isUpgrade ? "default" : "outline"}
+                    disabled={!stripeConfigured || actionPlanId === plan.id}
+                    onClick={() => handleUpgrade(plan)}
+                  >
+                    {actionPlanId === plan.id
+                      ? "Lade…"
+                      : isUpgrade
+                        ? "Upgrade"
+                        : isDowngrade
+                          ? "Downgrade"
+                          : "Wechseln"}
                   </Button>
                 )}
               </CardContent>
             </Card>
-          ))}
-        </div>
+          )
+        })}
       </div>
 
       <Separator />
 
-      {/* Billing History */}
+      {/* ── Rechnungen ── */}
       <Card>
         <CardHeader>
-          <CardTitle>Billing History</CardTitle>
-          <CardDescription>View your past invoices and payments</CardDescription>
+          <CardTitle>Rechnungen</CardTitle>
+          <CardDescription>Vergangene Rechnungen und Zahlungen einsehen.</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">
-              No invoices yet. Upgrade to see your billing history.
-            </p>
-          </div>
+          {currentPlan === "starter" ? (
+            <div className="py-8 text-center">
+              <p className="text-muted-foreground">
+                Noch keine Rechnungen vorhanden. Upgrade für Rechnungshistorie.
+              </p>
+            </div>
+          ) : (
+            <div className="py-6 text-center">
+              <Button onClick={handleManageSubscription} variant="outline" disabled={isLoading}>
+                {isLoading ? "Lade…" : "Rechnungen im Kundenportal anzeigen"}
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* Payment Methods */}
+      {/* ── Zahlungsmethoden ── */}
       <Card>
         <CardHeader>
-          <CardTitle>Payment Methods</CardTitle>
-          <CardDescription>Manage your payment information</CardDescription>
+          <CardTitle>Zahlungsmethoden</CardTitle>
+          <CardDescription>Zahlungsinformationen verwalten.</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8">
+          <div className="py-8 text-center">
             <p className="text-muted-foreground mb-4">
-              No payment methods added yet
+              Noch keine Zahlungsmethode hinterlegt.
             </p>
-            <Button disabled>Add Payment Method</Button>
+            {stripeConfigured ? (
+              <Button onClick={handleManageSubscription} variant="outline" disabled={isLoading}>
+                {isLoading ? "Lade…" : "Im Kundenportal verwalten"}
+              </Button>
+            ) : (
+              <Button disabled variant="outline">
+                Stripe nicht konfiguriert
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
