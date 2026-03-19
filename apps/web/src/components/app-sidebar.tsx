@@ -44,6 +44,9 @@ import {
   IconBrain,
   IconDeviceTv,
   IconBarcode,
+  IconLayoutKanban,
+  IconArrowsTransferDown,
+  IconWallet,
 } from "@tabler/icons-react"
 import { useTranslations } from "next-intl"
 import { useShortcutsDialog } from "@/components/shortcuts-dialog"
@@ -350,6 +353,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         hideable: true,
       },
       {
+        title: "Kanban",
+        url: "/dashboard/kanban",
+        icon: IconLayoutKanban,
+        hideable: true,
+      },
+      {
         title: "Inventur",
         url: "/dashboard/inventory",
         icon: IconClipboardCheck,
@@ -414,6 +423,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         hideable: true,
       },
       {
+        name: "Umbuchungen",
+        url: "/dashboard/transfers",
+        icon: IconArrowsTransferDown,
+        hideable: true,
+      },
+      {
         name: t("cart"),
         url: "/dashboard/cart",
         icon: IconShoppingCart,
@@ -429,6 +444,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         name: t("openOrders"),
         url: "/dashboard/orders",
         icon: IconFileInvoice,
+        hideable: true,
+      },
+      {
+        name: "Budgets",
+        url: "/dashboard/budgets",
+        icon: IconWallet,
         hideable: true,
       },
     ],

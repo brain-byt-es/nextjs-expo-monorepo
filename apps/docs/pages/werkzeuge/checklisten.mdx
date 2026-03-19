@@ -1,0 +1,68 @@
+---
+title: Wartungs- & Übergabe-Checklisten
+---
+
+# Wartungs- & Übergabe-Checklisten
+
+Mit Checklisten stellen Sie sicher, dass Werkzeuge nur in geprüftem Zustand ausgegeben oder zurückgenommen werden. Pflichtfelder in der Checkliste blockieren die Buchung bis alle Punkte abgehakt sind.
+
+## Wozu Checklisten?
+
+- **Pickup-Checkliste**: Muss vor dem Auschecken eines Werkzeugs ausgefüllt werden (z.B. Sichtprüfung, Vollständigkeit, Batteriezustand).
+- **Return-Checkliste**: Muss beim Einchecken ausgefüllt werden (z.B. Beschädigungen prüfen, Reinigung bestätigen).
+- **Wartungs-Checkliste**: Wird beim Abschliessen eines Wartungsauftrags durchgeführt.
+
+## Checkliste erstellen
+
+1. Gehen Sie zu **Einstellungen → Checklisten**.
+2. Klicken Sie auf **Neue Checkliste**.
+3. Wählen Sie den Typ:
+   - **Pickup** (Auschecken)
+   - **Return** (Einchecken)
+   - **Wartung**
+4. Geben Sie einen Namen ein, z.B. «Elektrowerkzeug Pickup».
+5. Fügen Sie Punkte hinzu:
+   - **Text**: Freitext-Antwort des Benutzers
+   - **Checkbox**: Ja/Nein-Haken
+   - **Bewertung**: 1–5 Sterne
+   - **Foto**: Pflichtfoto als Zustandsnachweis
+6. Markieren Sie einzelne Punkte als **Pflichtfeld** (roter Stern).
+7. Speichern Sie die Checkliste.
+
+## Checkliste einer Werkzeuggruppe zuweisen
+
+1. Gehen Sie zu **Werkzeuge → Gruppen** (oder beim Bearbeiten einer Gruppe).
+2. Wählen Sie im Abschnitt **Checklisten** die passende Pickup- und/oder Return-Checkliste.
+3. Speichern Sie.
+
+Alle Werkzeuge dieser Gruppe erben die Checkliste automatisch. Auf Einzelwerkzeug-Ebene kann die Checkliste überschrieben werden.
+
+## Checkliste beim Buchungsvorgang
+
+Wenn einem Werkzeug eine Checkliste zugewiesen ist, öffnet sich beim Aus- oder Einchecken automatisch der Checklisten-Dialog:
+
+- Alle Punkte werden der Reihe nach angezeigt.
+- Pflichtfelder sind mit einem roten Stern markiert.
+- Die **Bestätigen**-Schaltfläche ist deaktiviert, solange Pflichtfelder fehlen.
+- Nach dem Abschliessen der Checkliste wird die Buchung durchgeführt.
+
+> **Achtung:** Pflichtfelder blockieren die Ausbuchung vollständig. Schulen Sie Ihr Team entsprechend.
+
+## Checklisten-Ergebnisse einsehen
+
+Die ausgefüllten Checklisten sind Teil der Buchungshistorie. Öffnen Sie eine Buchung und klicken Sie auf **Checkliste anzeigen**, um alle Antworten und Fotos einzusehen.
+
+## Berechtigungen
+
+| Aktion | Mindestrolle |
+|--------|-------------|
+| Checkliste ausfüllen | Mitarbeiter |
+| Checkliste erstellen / bearbeiten | Manager |
+| Checkliste einer Gruppe zuweisen | Manager |
+| Checkliste löschen | Administrator |
+
+## Verwandte Funktionen
+
+- [Aus- & Einchecken](/werkzeuge/aus-einchecken) — Buchungsworkflow für Werkzeuge
+- [Wartung & Service](/werkzeuge/wartung) — Wartungsintervalle und -protokolle
+- [Foto-Dokumentation](/erweitert/foto-dokumentation) — Fotos bei Buchungen aufnehmen

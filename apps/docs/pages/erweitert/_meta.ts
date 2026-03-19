@@ -12,5 +12,9 @@ export default {
   "reservierungen": "Reservierungen",
   "materialanfragen": "Materialanfragen",
   "benachrichtigungen": "Benachrichtigungszentrale",
-  "aktivitaetsprotokoll": "Aktivitätsprotokoll"
+  "aktivitaetsprotokoll": "Aktivitätsprotokoll",
+  "lieferschein-pdf": "Lieferschein PDF & Unterschrift",
+  "tv-modus": "TV-Modus (Lager-Dashboard)",
+  "barcode-generator": "Barcode-Generator",
+  "foto-dokumentation": "Foto-Dokumentation"
 }

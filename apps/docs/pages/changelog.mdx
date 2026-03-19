@@ -6,6 +6,52 @@ title: Changelog
 
 Alle Änderungen, Verbesserungen und Fehlerbehebungen werden hier dokumentiert.
 
+## v2.2.0 – Batch 6 – 2026-03-19
+
+Diese Version bringt zehn neue Funktionen rund um Dokumentation, Lager-Transparenz und mobile Produktivität.
+
+### Lieferscheine
+
+- **[Lieferschein PDF & Unterschrift](/erweitert/lieferschein-pdf)**: PDF-Druck in A4 mit Logo, Positionstabelle und Unterschriftsfeld. Digitale Unterschrift per Touch oder Maus. Batch-Druck bis zu 50 Lieferscheine auf einmal. Unterschrift unveränderlich eingebettet.
+
+### Erweiterte Funktionen
+
+- **[TV-Modus](/erweitert/tv-modus)**: Lager-Dashboard für Wandbildschirme via `/tv`-URL. Fünf auto-rotierende Ansichten (KPIs, kritischer Bestand, überfällige Werkzeuge, Aktivitäten, Wartung). Auto-Refresh alle 60 Sekunden, Tastatursteuerung, dunkles Theme.
+- **[Barcode-Generator](/erweitert/barcode-generator)**: Eigene Code-128-Barcodes im Format `LA-{ORG}-{000001}` generieren. Einzel- und Batch-Modus für bis zu 200 Artikel. Vorschau und Etikettenausdruck.
+- **[Foto-Dokumentation](/erweitert/foto-dokumentation)**: Foto bei jeder Buchung aufnehmen (Zustandsnachweis). Browser-Upload oder Kamera-Aufnahme in der App. Thumbnails in der Buchungshistorie, Vollbild-Vorschau. Pflichtfotos in Checklisten integrierbar.
+
+### Werkzeuge
+
+- **[Wartungs- & Übergabe-Checklisten](/werkzeuge/checklisten)**: Pickup-, Return- und Wartungs-Checklisten pro Werkzeuggruppe. Vier Feldtypen (Text, Checkbox, Bewertung, Foto). Pflichtfelder blockieren Ausbuchung. Checklisten-Editor in den Einstellungen.
+
+### Finanzen
+
+- **[Kostenstellen & Projekte](/finanzen/kostenstellen)**: Kostenstellen auf Buchungen zuweisen. Kostenstellenbericht mit Balkendiagramm (Top 10), Budget vs. Istwert, Projektaufschlüsselung. CSV- und PDF-Export.
+
+### Berichte
+
+- **[Schicht-Übergabe-Report](/berichte/schicht-uebergabe)**: Täglich automatisch um 17:00 per Inngest-Cron generiert. Vier KPI-Karten, Aktivitäten gruppiert nach Benutzer, offene Positionen. PDF-Druck und E-Mail-Versand. 90-Tage-Archiv.
+
+### Mobile App
+
+- **[Batch-Scan-Modus](/mobile-app/batch-scan)**: Kontinuierliches Scannen ohne Unterbrechung. Laufende Liste mit Mengeneditierung. Aktion am Ende für alle Positionen: einbuchen, ausbuchen, zu Lieferschein oder Inventur. Duplikat-Erkennung erhöht Menge automatisch.
+- **[Schnellzugriff-Karten](/mobile-app/schnellzugriff)**: Quick Action Dashboard mit fünf Kacheln: Wareneingang, Warenausgang, Werkzeug, Lieferschein, Inventur. Ein-Tap-Workflow in unter 10 Sekunden. Reihenfolge anpassbar, letzter Standort gespeichert.
+
+### Verbessert
+
+- PDF-Ausgabe bei grossen Lieferscheinen (mehr als 50 Positionen) seitenweise umbrechen
+- Batch-Scan-Performance bei schlechter WLAN-Verbindung optimiert
+- Kostenstellen-Feld in alle Buchungsformulare integriert
+
+### Behoben
+
+- TV-Modus verlor PIN nach Browser-Update (#467)
+- Barcode-Generator erzeugte Duplikate bei parallelen Requests (#471)
+- Foto-Upload in der Mobile App auf Android 15 schlug fehl (#468)
+
+---
+
+
 ## v2.1.0 – Batch 5 – 2026-03-19
 
 Diese Version erweitert LogistikApp um neun neue Funktionen rund um Produktivität, Teamarbeit und Transparenz.

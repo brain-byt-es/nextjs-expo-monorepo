@@ -1,0 +1,72 @@
+---
+title: TV-Modus (Lager-Dashboard)
+---
+
+# TV-Modus (Lager-Dashboard)
+
+Der TV-Modus zeigt ein kompaktes Dashboard auf einem Wandbildschirm oder Fernseher im Lager — ohne Login-Prompt, gross lesbar und immer aktuell.
+
+## TV-Dashboard aufrufen
+
+Navigieren Sie in Ihrem Browser zu:
+
+```
+https://app.logistikapp.ch/tv
+```
+
+Die URL ist öffentlich zugänglich, aber durch einen **TV-PIN** geschützt, den Sie unter **Einstellungen → Darstellung → TV-Modus** festlegen. Geben Sie den PIN einmalig ein — er wird im Browser gespeichert.
+
+> **Tipp:** Richten Sie den Browser im **Kiosk-Modus** ein (z.B. `--kiosk` in Chrome), damit das Betriebssystem versteckt bleibt.
+
+## Die fünf Ansichten
+
+Das Dashboard rotiert automatisch zwischen fünf Ansichten:
+
+| Nr. | Ansicht | Inhalt |
+|-----|---------|--------|
+| 1 | **KPI-Übersicht** | Gesamtbestand, Artikel gesamt, offene Lieferscheine, Werkzeuge ausgebucht |
+| 2 | **Kritischer Bestand** | Artikel unter Mindestbestand, sortiert nach Dringlichkeit |
+| 3 | **Überfällige Werkzeuge** | Werkzeuge, deren Rückgabedatum überschritten ist |
+| 4 | **Letzte Aktivitäten** | Buchungen und Lieferscheine der letzten 2 Stunden |
+| 5 | **Wartung & Service** | Werkzeuge mit fälliger oder überfälliger Wartung |
+
+## Auto-Refresh
+
+Das TV-Dashboard aktualisiert sich automatisch alle **60 Sekunden**. Ein dezenter Fortschrittsbalken am unteren Bildrand zeigt die verbleibende Zeit bis zur nächsten Aktualisierung.
+
+Die Rotation zwischen den Ansichten erfolgt alle **20 Sekunden**.
+
+## Tastatursteuerung
+
+Wenn eine Tastatur oder Fernbedienung mit dem Computer verbunden ist:
+
+| Taste | Aktion |
+|-------|--------|
+| `→` Pfeil rechts | Nächste Ansicht |
+| `←` Pfeil links | Vorherige Ansicht |
+| `Leertaste` | Auto-Rotation pausieren / fortsetzen |
+| `R` | Sofortige Datenaktualisierung |
+| `F` | Vollbild umschalten |
+
+## Darstellung
+
+Der TV-Modus verwendet ein **dunkles Theme** mit grossen, gut lesbaren Schriften:
+
+- Schriftgrösse ca. 1,5× grösser als in der normalen App
+- Hoher Kontrast (helles Text auf dunklem Hintergrund)
+- Farbkodierung: Rot = kritisch, Orange = Warnung, Grün = in Ordnung
+- Kein Navigationsmenü, keine ablenkenden Elemente
+
+## Einstellungen
+
+Unter **Einstellungen → Darstellung → TV-Modus** konfigurieren Sie:
+
+- **TV-PIN**: 4–8-stelliger Zahlencode
+- **Anzeigedauer pro Ansicht**: 10 / 20 / 30 / 60 Sekunden
+- **Aktive Ansichten**: Einzelne Ansichten ein- oder ausblenden
+- **Standort-Filter**: Nur Daten eines bestimmten Standorts anzeigen
+
+## Verwandte Funktionen
+
+- [Dashboard anpassen](/erweitert/dashboard-widgets) — Personalisiertes Dashboard für die normale Ansicht
+- [Benachrichtigungszentrale](/erweitert/benachrichtigungen) — Alerts bei kritischen Ereignissen

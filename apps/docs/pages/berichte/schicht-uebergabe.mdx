@@ -1,0 +1,74 @@
+---
+title: Schicht-Übergabe-Report
+---
+
+# Schicht-Übergabe-Report
+
+Der Schicht-Übergabe-Report fasst alle relevanten Ereignisse des Arbeitstages zusammen und bereitet die Übergabe an die nächste Schicht vor. Er wird täglich automatisch generiert und kann als PDF gedruckt oder per E-Mail versandt werden.
+
+## Inhalt des Reports
+
+### KPI-Karten
+
+Der Report beginnt mit vier KPI-Karten:
+
+| KPI | Beschreibung |
+|-----|-------------|
+| **Buchungen heute** | Gesamtzahl aller Ein- und Ausbuchungen des Tages |
+| **Ausgebuchte Werkzeuge** | Anzahl Werkzeuge, die aktuell nicht im Lager sind |
+| **Offene Lieferscheine** | Lieferscheine mit Status «Offen» oder «In Bearbeitung» |
+| **Kritischer Bestand** | Artikel, die unter dem Mindestbestand liegen |
+
+### Aktivitäten nach Benutzer
+
+Die Haupttabelle gruppiert alle Buchungen nach Mitarbeiter:
+
+- Name des Mitarbeiters
+- Anzahl Buchungen (Eingang / Ausgang / Transfer)
+- Checkout- und Checkin-Vorgänge für Werkzeuge
+- Erstellte Lieferscheine
+
+### Offene Positionen
+
+Separate Abschnitte listen auf:
+- **Werkzeuge ausgebucht**: Wer hat was, seit wann, geplante Rückgabe
+- **Offene Lieferscheine**: Nummer, Typ, Ersteller, Erstellzeit
+- **Neu unterschrittene Mindestbestände**: Artikel mit kritischem Bestand, die heute erstmals unterschritten wurden
+
+## Automatische Generierung (Inngest Cron)
+
+Der Report wird täglich um **17:00 Uhr** durch einen Inngest-Cron-Job generiert. Er berücksichtigt alle Buchungen von **06:00 bis 17:00 Uhr** des aktuellen Tages.
+
+Die Empfänger werden unter **Einstellungen → Benachrichtigungen → Schicht-Übergabe** konfiguriert. Standardmässig erhalten alle Benutzer mit der Rolle **Manager** und **Administrator** den Report per E-Mail.
+
+## Report manuell generieren
+
+Sie können den Report auch ausserhalb des Cron-Zeitplans erstellen:
+
+1. Gehen Sie zu **Berichte → Schicht-Übergabe**.
+2. Wählen Sie das **Datum** (Standard: heute).
+3. Wählen Sie den **Zeitraum** (z.B. 06:00–14:00 für die Frühschicht).
+4. Wählen Sie den **Standort** (optional: alle oder ein bestimmter).
+5. Klicken Sie auf **Report generieren**.
+
+## PDF drucken
+
+Klicken Sie im generierten Report auf **PDF drucken**. Das PDF enthält:
+- Unternehmenslogo und Berichtsdatum
+- Alle vier KPI-Karten
+- Die gruppierten Tabellen
+- Signaturfelder für abgebende und übernehmende Schichtführung
+
+## Per E-Mail senden
+
+Klicken Sie auf **Per E-Mail senden** und wählen Sie die Empfänger aus der Benutzerliste. Der Report wird als PDF-Anhang versandt.
+
+## Archiv
+
+Automatisch generierte Reports werden 90 Tage archiviert (Business: 1 Jahr, Enterprise: unbegrenzt). Sie finden das Archiv unter **Berichte → Schicht-Übergabe → Archiv**.
+
+## Verwandte Funktionen
+
+- [Aktivitätsprotokoll](/erweitert/aktivitaetsprotokoll) — Detailliertes Audit-Trail aller Buchungen
+- [Geplante Berichte](/automatisierung/geplante-berichte) — Weitere automatische Berichte konfigurieren
+- [Benachrichtigungen](/einstellungen/benachrichtigungen) — Empfänger für automatische Reports

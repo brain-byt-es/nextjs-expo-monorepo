@@ -1511,3 +1511,116 @@ export const materialRequests = pgTable(
 
 export type MaterialRequest = typeof materialRequests.$inferSelect;
 export type NewMaterialRequest = typeof materialRequests.$inferInsert;
+
+// ─── Transfer Orders (Umbuchungsaufträge) ────────────────────────────
+export const transferOrders = pgTable(
+  "transfer_orders",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    fromLocationId: uuid("from_location_id")
+      .notNull()
+      .references(() => locations.id),
+    toLocationId: uuid("to_location_id")
+      .notNull()
+      .references(() => locations.id),
+    requestedById: uuid("requested_by_id")
+      .notNull()
+      .references(() => users.id),
+    approvedById: uuid("approved_by_id").references(() => users.id),
+    status: text("status").default("pending").notNull(), // pending, approved, in_transit, completed, cancelled
+    notes: text("notes"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("idx_transfer_orders_org_id").on(table.organizationId),
+    index("idx_transfer_orders_status").on(table.status),
+    index("idx_transfer_orders_from_location").on(table.fromLocationId),
+    index("idx_transfer_orders_to_location").on(table.toLocationId),
+  ]
+);
+
+// ─── Transfer Order Items ────────────────────────────────────────────
+export const transferOrderItems = pgTable(
+  "transfer_order_items",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    transferOrderId: uuid("transfer_order_id")
+      .notNull()
+      .references(() => transferOrders.id, { onDelete: "cascade" }),
+    materialId: uuid("material_id")
+      .notNull()
+      .references(() => materials.id),
+    quantity: integer("quantity").notNull(),
+    pickedQuantity: integer("picked_quantity").default(0),
+  },
+  (table) => [
+    index("idx_transfer_order_items_transfer_id").on(table.transferOrderId),
+    index("idx_transfer_order_items_material_id").on(table.materialId),
+  ]
+);
+
+export type TransferOrder = typeof transferOrders.$inferSelect;
+export type NewTransferOrder = typeof transferOrders.$inferInsert;
+export type TransferOrderItem = typeof transferOrderItems.$inferSelect;
+export type NewTransferOrderItem = typeof transferOrderItems.$inferInsert;
+
+// ─── Budgets ──────────────────────────────────────────────────────────
+export const budgets = pgTable(
+  "budgets",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    name: text("name").notNull(), // e.g. "Q1 2026 Elektro" or "Projekt Oerlikon"
+    projectId: uuid("project_id").references(() => projects.id),
+    amount: integer("amount").notNull(), // in cents (CHF)
+    spent: integer("spent").default(0).notNull(), // calculated from stock_changes
+    period: text("period"), // "monthly" | "quarterly" | "yearly" | "project"
+    startDate: date("start_date"),
+    endDate: date("end_date"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("idx_budgets_org_id").on(table.organizationId),
+    index("idx_budgets_project_id").on(table.projectId),
+  ]
+);
+
+export type Budget = typeof budgets.$inferSelect;
+export type NewBudget = typeof budgets.$inferInsert;
+
+// ─── Supplier Ratings (Lieferantenbewertungen) ───────────────────────
+export const supplierRatings = pgTable(
+  "supplier_ratings",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    supplierId: uuid("supplier_id")
+      .notNull()
+      .references(() => suppliers.id, { onDelete: "cascade" }),
+    orderId: uuid("order_id").references(() => orders.id),
+    deliveryTime: integer("delivery_time"), // actual days
+    quality: integer("quality"), // 1-5 stars
+    priceAccuracy: integer("price_accuracy"), // 1-5
+    communication: integer("communication"), // 1-5
+    notes: text("notes"),
+    ratedById: uuid("rated_by_id").references(() => users.id),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("idx_supplier_ratings_org_id").on(table.organizationId),
+    index("idx_supplier_ratings_supplier_id").on(table.supplierId),
+    index("idx_supplier_ratings_rated_by_id").on(table.ratedById),
+  ]
+);
+
+export type SupplierRating = typeof supplierRatings.$inferSelect;
+export type NewSupplierRating = typeof supplierRatings.$inferInsert;

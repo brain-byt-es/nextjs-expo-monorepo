@@ -1,0 +1,70 @@
+---
+title: Lieferschein PDF & Unterschrift
+---
+
+# Lieferschein PDF & Unterschrift
+
+LogistikApp erstellt vollständige A4-PDFs für alle Lieferscheintypen — mit Unternehmenslogo, Positionstabelle und optionaler digitaler Unterschrift.
+
+## Einzelnen Lieferschein drucken
+
+1. Öffnen Sie einen Lieferschein unter **Lieferscheine**.
+2. Klicken Sie oben rechts auf **Drucken / PDF**.
+3. Das PDF wird im Browser geöffnet. Sie können es direkt drucken oder als Datei speichern.
+
+Das PDF enthält:
+- Unternehmenslogo und Adresse (aus **Einstellungen → Branding**)
+- Lieferscheinnummer, Datum, Typ (Eingang / Ausgang / Transfer)
+- Lieferant / Empfänger und Lieferadresse
+- Positionstabelle mit Artikel, Menge, Einheit und optionaler Artikelnummer
+- Summen-Zeile und Bemerkungsfeld
+- Unterschriftsfeld (leer oder mit erfasster Unterschrift)
+
+## Batch-Druck mehrerer Lieferscheine
+
+Um mehrere Lieferscheine auf einmal zu drucken:
+
+1. Aktivieren Sie in der Lieferscheinliste die **Checkboxen** links neben den Einträgen.
+2. Wählen Sie die gewünschten Lieferscheine aus.
+3. Klicken Sie in der schwebenden Aktionsleiste auf **PDF drucken**.
+4. LogistikApp bündelt alle PDFs in eine einzige Datei — ein Lieferschein pro Seite.
+
+> **Hinweis:** Batch-Druck ist auf maximal **50 Lieferscheine** pro Vorgang begrenzt.
+
+## Digitale Unterschrift erfassen
+
+Auf dem Lieferschein-Detailbild erscheint unter den Positionen das **Unterschriftsfeld**:
+
+1. Klicken Sie auf **Unterschrift hinzufügen**.
+2. Ein Canvas-Dialog öffnet sich. Zeichnen Sie die Unterschrift mit:
+   - **Maus** (Desktop)
+   - **Finger oder Stift** (Touch-Gerät / Tablet / Mobile App)
+3. Klicken Sie auf **Bestätigen**, um die Unterschrift zu speichern.
+4. Mit **Löschen** können Sie die Zeichnung verwerfen und neu beginnen.
+
+Die Unterschrift wird als Bild gespeichert und ist unveränderlich mit dem Lieferschein verknüpft.
+
+## Unterschrift auf dem PDF einbetten
+
+Sobald eine Unterschrift erfasst ist, wird sie beim nächsten PDF-Export automatisch in das Unterschriftsfeld eingebettet. Das PDF zeigt:
+
+- Name und Rolle der unterzeichnenden Person
+- Datum und Uhrzeit der Unterschrift
+- Das Unterschriftsbild im vorgesehenen Feld
+
+## Unterschrift nachträglich hinzufügen
+
+Auch bereits abgeschlossene Lieferscheine können noch unterzeichnet werden, sofern Sie die Berechtigung **Manager** oder **Administrator** besitzen. Öffnen Sie den Lieferschein und klicken Sie auf **Unterschrift hinzufügen**.
+
+## Layout anpassen
+
+Das PDF-Layout folgt den Einstellungen unter **Einstellungen → Branding**:
+- **Logo**: Wird oben links platziert (empfohlen: PNG, min. 200 × 80 px)
+- **Primärfarbe**: Wird für Überschriften und Tabellenköpfe verwendet
+- **Fusszeile**: Optionaler Text (z.B. Bankverbindung, Rechtliches)
+
+## Verwandte Funktionen
+
+- [Lieferschein erstellen](/lieferscheine/erstellen)
+- [Bulk-Operationen](/erweitert/bulk-operationen) — Mehrfachauswahl für Batch-Druck
+- [Branding-Einstellungen](/einstellungen/branding)

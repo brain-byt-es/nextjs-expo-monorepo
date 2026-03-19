@@ -174,3 +174,53 @@ Ja. Das [Aktivitätsprotokoll](/erweitert/aktivitaetsprotokoll) protokolliert l�
 
 ### Wie lange wird das Aktivitätsprotokoll aufbewahrt?
 Das ist planabhängig: Starter 90 Tage, Business 1 Jahr, Enterprise unbegrenzt. Das Protokoll kann jederzeit als CSV exportiert werden. Einträge können nicht nachträglich verändert werden.
+
+## TV-Modus
+
+### Wie richte ich den TV-Modus auf einem Lagerfernseher ein?
+
+Navigieren Sie auf dem TV-Rechner (z.B. einem angeschlossenen Mini-PC oder Smart-TV-Browser) zu `https://app.logistikapp.ch/tv`. Geben Sie einmalig den TV-PIN ein, den Sie unter **Einstellungen → Darstellung → TV-Modus** festgelegt haben. Aktivieren Sie anschliessend den Kiosk-Modus Ihres Browsers, damit das Betriebssystem ausgeblendet bleibt. Details unter [TV-Modus](/erweitert/tv-modus).
+
+### Kann ich den TV-Modus auf einen bestimmten Standort beschränken?
+
+Ja. Unter **Einstellungen → Darstellung → TV-Modus** können Sie einen **Standort-Filter** setzen. Das Dashboard zeigt dann ausschliesslich Daten des gewählten Standorts — hilfreich wenn Sie mehrere Lagerhallen mit je eigenem Bildschirm betreiben.
+
+## Checklisten
+
+### Kann ich eine Ausbuchung ohne ausgefüllte Checkliste trotzdem erzwingen?
+
+Nein. Pflichtfelder in einer Pickup-Checkliste blockieren die Ausbuchung vollständig. Falls in einem Notfall eine schnelle Ausbuchung nötig ist, kann ein Administrator die Checklisten-Pflicht für eine Werkzeuggruppe vorübergehend deaktivieren. Wir empfehlen dies nur in Ausnahmefällen. Details unter [Checklisten](/werkzeuge/checklisten).
+
+### Werden ausgefüllte Checklisten archiviert?
+
+Ja. Jede ausgefüllte Checkliste ist dauerhaft mit der zugehörigen Buchung verknüpft und bleibt in der Buchungshistorie gespeichert. Sie können sie über den Tab **Verlauf** eines Werkzeugs oder über das [Aktivitätsprotokoll](/erweitert/aktivitaetsprotokoll) einsehen.
+
+## PDF-Lieferschein
+
+### Kann ich das Layout des PDF-Lieferscheins anpassen?
+
+Das Layout basiert auf Ihren **Branding-Einstellungen** (Logo, Primärfarbe, Fusszeile). Eine freie Layoutgestaltung (z.B. eigene Vorlagen im Word-Stil) ist aktuell nicht möglich. Zusätzliche Felder können über [Zusatzfelder](/einstellungen/zusatzfelder) im Lieferschein hinterlegt und im PDF ausgegeben werden. Details unter [Lieferschein PDF & Unterschrift](/erweitert/lieferschein-pdf).
+
+### Ist die digitale Unterschrift rechtlich bindend?
+
+Die in LogistikApp erfasste Unterschrift ist eine einfache elektronische Unterschrift (einfache EU) und eignet sich für interne Bestätigungen und Lieferquittierungen. Für rechtlich verbindliche Verträge im Sinne des Schweizer OR empfehlen wir eine qualifizierte elektronische Signatur (QES) via einem dafür zugelassenen Anbieter.
+
+## Batch-Scan
+
+### Was passiert wenn ein gescannter Artikel im System nicht gefunden wird?
+
+Der Artikel wird in der Batch-Liste mit einem **roten Warnsymbol** markiert. Sie können ihn aus der Liste entfernen oder die Buchung trotzdem abschliessen — nicht gefundene Artikel werden dabei übersprungen und in einer Fehlerliste aufgeführt. Details unter [Batch-Scan-Modus](/mobile-app/batch-scan).
+
+### Kann ich im Batch-Scan verschiedene Aktionen (einbuchen und ausbuchen) mischen?
+
+Nein. Beim Batch-Scan wählen Sie am Ende eine einzige Aktion für alle Positionen. Wenn Sie in einem Durchgang einbuchen und ausbuchen möchten, führen Sie zwei separate Batch-Scans durch.
+
+## Kostenstellen
+
+### Muss ich bei jeder Buchung eine Kostenstelle angeben?
+
+Nein. Das Kostenstellen-Feld ist optional, ausser Sie aktivieren **Kostenstelle als Pflichtfeld** unter **Einstellungen → Kostenstellen**. In diesem Fall wird das Feld bei Buchungen mit Warnhinweis hervorgehoben, die Buchung kann aber trotzdem ohne Kostenstelle abgeschlossen werden. Details unter [Kostenstellen & Projekte](/finanzen/kostenstellen).
+
+### Kann ich Kostenstellen nachträglich zu alten Buchungen hinzufügen?
+
+Ja. Benutzer mit der Rolle **Manager** oder **Administrator** können eine Kostenstelle auch zu bereits erfassten Buchungen zuweisen. Öffnen Sie die Buchung im Aktivitätsprotokoll und klicken Sie auf **Bearbeiten**.

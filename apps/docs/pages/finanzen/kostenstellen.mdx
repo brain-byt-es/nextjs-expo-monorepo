@@ -1,0 +1,88 @@
+---
+title: Kostenstellen & Projekte
+---
+
+# Kostenstellen & Projekte
+
+Mit Kostenstellen weisen Sie Buchungen einem Projekt oder einer Abteilung zu. So wissen Sie jederzeit, welche Einheit welche Ressourcen verbraucht hat.
+
+> **Hinweis:** Kostenstellen sind ab dem **Business-Plan** verfügbar.
+
+## Kostenstellen verwalten
+
+### Kostenstelle erstellen
+
+1. Gehen Sie zu **Einstellungen → Kostenstellen**.
+2. Klicken Sie auf **Neue Kostenstelle**.
+3. Geben Sie ein:
+   - **Name**: z.B. «Projekt Neubau Zürich» oder «Abteilung Montage»
+   - **Kürzel**: 2–6 Zeichen, z.B. «PNZ» oder «MONT»
+   - **Beschreibung** (optional)
+   - **Budgetlimit** (optional, in CHF)
+4. Speichern Sie.
+
+### Kostenstellen bearbeiten und deaktivieren
+
+Unter **Einstellungen → Kostenstellen** können Sie bestehende Kostenstellen umbenennen oder **deaktivieren**. Deaktivierte Kostenstellen sind bei neuen Buchungen nicht mehr auswählbar, bestehende Buchungen bleiben erhalten.
+
+## Kostenstelle bei einer Buchung zuweisen
+
+Bei jeder Buchung (Einbuchen, Ausbuchen, Lieferschein, Werkzeug-Checkout) erscheint ein optionales Feld **Kostenstelle**:
+
+1. Klicken Sie auf das Feld und tippen Sie den Namen oder das Kürzel der Kostenstelle.
+2. Wählen Sie die passende Kostenstelle aus der Dropdown-Liste.
+3. Schliessen Sie die Buchung ab.
+
+Kostenstellen können auch **nachträglich** zu einer Buchung hinzugefügt werden (Berechtigung: Manager).
+
+## Kostenstellenbericht
+
+Den Bericht finden Sie unter **Berichte → Kostenstellen**:
+
+### KPI-Übersicht
+
+- Gesamtverbrauch (CHF) nach Kostenstelle im gewählten Zeitraum
+- Vergleich Budget vs. Istwert (falls Budget hinterlegt)
+- Anzahl Buchungen pro Kostenstelle
+
+### Balkendiagramm: Top 10 Kostenstellen
+
+Das Diagramm zeigt die 10 grössten Kostenstellen nach Verbrauchswert. Die Balken sind farbkodiert:
+- **Grün**: Unter 80 % des Budgets
+- **Orange**: 80–100 % des Budgets
+- **Rot**: Budget überschritten
+
+### Detailtabelle
+
+Die Tabelle schlüsselt jede Kostenstelle nach Artikel und Buchungstyp auf:
+
+| Spalte | Beschreibung |
+|--------|-------------|
+| Kostenstelle | Name und Kürzel |
+| Artikel | Material oder Werkzeug |
+| Menge | Verbrauchte / gebuchte Menge |
+| Einheit | Stück, kg, m usw. |
+| Wert CHF | Menge × Einstandspreis |
+| Buchungen | Anzahl Buchungsvorgänge |
+
+## Export
+
+- **CSV-Export**: Alle Zeilen der Detailtabelle im Komma-getrennten Format für Excel oder die Buchhaltung.
+- **PDF-Export**: Formatierter Bericht mit Diagramm und Tabelle, druckfertig auf A4.
+
+Wählen Sie vor dem Export den gewünschten **Zeitraum** (Monat, Quartal, Geschäftsjahr oder benutzerdefiniert).
+
+## Berechtigungen
+
+| Aktion | Mindestrolle |
+|--------|-------------|
+| Kostenstelle bei Buchung zuweisen | Mitarbeiter |
+| Kostenstellenbericht einsehen | Manager |
+| Kostenstellen erstellen / bearbeiten | Administrator |
+| Budgets verwalten | Administrator |
+
+## Verwandte Funktionen
+
+- [Abschreibungen & TCO](/finanzen/abschreibungen) — Gesamtkosten pro Objekt
+- [Geplante Berichte](/automatisierung/geplante-berichte) — Kostenstellenbericht automatisch per E-Mail
+- [Datenexport](/berichte/export) — Genereller Export aller Buchungsdaten

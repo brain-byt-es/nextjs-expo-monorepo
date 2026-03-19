@@ -1,4 +1,5 @@
 export default {
   "abschreibungen": "Abschreibungen & TCO",
-  "lieferantenpreise": "Lieferanten & Preise"
+  "lieferantenpreise": "Lieferanten & Preise",
+  "kostenstellen": "Kostenstellen & Projekte"
 }
