@@ -231,19 +231,22 @@ const FEATURES = [
 
 const PLANS = [
   {
-    name: "Starter", price: "CHF 29", per: "/Mo",
+    name: "Starter",
+    monthly: 29, yearly: 25, // ~14% discount
     desc: "Für kleine Teams und Einsteiger.",
     features: ["Bis 3 Benutzer", "500 Artikel", "2 Standorte", "Barcode-Scanner", "E-Mail Support"],
     cta: "Kostenlos starten", href: "/signup", highlight: false,
   },
   {
-    name: "Professional", price: "CHF 89", per: "/Mo",
+    name: "Professional",
+    monthly: 89, yearly: 75, // ~16% discount
     desc: "Für wachsende Betriebe mit Vollausstattung.",
     features: ["Bis 15 Benutzer", "Unbegrenzte Artikel", "Unbegrenzte Standorte", "KI-Erkennung & Prognose", "Mobile App + Offline", "Automatisierungen", "Prioritäts-Support"],
     cta: "14 Tage testen", href: "/signup", highlight: true,
   },
   {
-    name: "Enterprise", price: "Auf Anfrage", per: "",
+    name: "Enterprise",
+    monthly: 0, yearly: 0,
     desc: "Für Unternehmen mit individuellen Anforderungen.",
     features: ["Unbegrenzte Benutzer", "SSO / SAML", "SLA-Garantie", "Public API & Webhooks", "Branchen-Templates", "Dedizierter Ansprechpartner"],
     cta: "Kontakt aufnehmen", href: "mailto:sales@logistikapp.ch", highlight: false,
@@ -350,6 +353,88 @@ function CostCalculator() {
         <p className="font-mono text-[10px] text-muted-foreground mt-2">14 Tage kostenlos · Keine Kreditkarte</p>
       </div>
     </div>
+  )
+}
+
+/* ─── Pricing Section with yearly toggle ─────────────────────── */
+function PricingSection() {
+  const [yearly, setYearly] = useState(false)
+
+  return (
+    <section id="pricing" className="mx-auto w-full max-w-7xl px-6 py-24">
+      <div className="mb-14 border-b border-border pb-6 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-2">{`// 04 — Preise`}</div>
+          <h2 className="text-3xl lg:text-4xl font-bold">Einfach. Transparent.</h2>
+        </div>
+        {/* Toggle */}
+        <div className="flex items-center gap-3 font-mono text-[11px] tracking-widest uppercase">
+          <button
+            onClick={() => setYearly(false)}
+            className={`px-3 py-1.5 rounded-full border transition-all ${!yearly ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground"}`}
+          >
+            Monatlich
+          </button>
+          <button
+            onClick={() => setYearly(true)}
+            className={`px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${yearly ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground"}`}
+          >
+            Jährlich
+            <span className="text-[9px] font-bold bg-primary text-white rounded px-1.5 py-0.5">−15%</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-px bg-border">
+        {PLANS.map(plan => {
+          const isEnterprise = plan.monthly === 0
+          const price = isEnterprise ? "Auf Anfrage" : `CHF ${yearly ? plan.yearly : plan.monthly}`
+          const per = isEnterprise ? "" : yearly ? "/Mo (jährl.)" : "/Mo"
+          const yearlyTotal = isEnterprise ? null : plan.yearly * 12
+          const monthlyTotal = isEnterprise ? null : plan.monthly * 12
+          const savings = monthlyTotal && yearlyTotal ? monthlyTotal - yearlyTotal : 0
+
+          return (
+            <div
+              key={plan.name}
+              className={`bg-background p-8 flex flex-col relative ${plan.highlight ? "outline outline-1 outline-primary z-10" : ""}`}
+            >
+              {plan.highlight && <div className="absolute top-0 left-0 right-0 h-[2px] bg-primary" />}
+              <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-4">{plan.name}</div>
+              <div className="mb-1 font-mono">
+                <span className="text-4xl font-bold">{price}</span>
+                {per && <span className="text-sm text-muted-foreground ml-1">{per}</span>}
+              </div>
+              {yearly && savings > 0 && (
+                <p className="text-xs text-primary font-mono font-semibold mb-2">
+                  CHF {savings} pro Jahr gespart
+                </p>
+              )}
+              {yearly && yearlyTotal && (
+                <p className="text-[10px] text-muted-foreground font-mono mb-6">
+                  CHF {yearlyTotal}/Jahr · statt CHF {monthlyTotal}
+                </p>
+              )}
+              {!yearly && <div className="mb-8" />}
+              <p className="text-xs text-muted-foreground mb-8">{plan.desc}</p>
+              <ul className="space-y-3 mb-8 flex-1">
+                {plan.features.map(f => (
+                  <li key={f} className="flex items-center gap-3 text-sm">
+                    <IconCheck className="size-3.5 text-primary shrink-0" />
+                    <span className="text-muted-foreground">{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link href={plan.href}>
+                <Button className="w-full font-mono text-[11px] tracking-widest uppercase" variant={plan.highlight ? "default" : "outline"}>
+                  {plan.cta}
+                </Button>
+              </Link>
+            </div>
+          )
+        })}
+      </div>
+    </section>
   )
 }
 
@@ -905,42 +990,7 @@ export default function LandingPage() {
         </section>
 
         {/* ══ PRICING ══════════════════════════════════════ */}
-        <section id="pricing" className="mx-auto w-full max-w-7xl px-6 py-24">
-          <div className="mb-14 border-b border-border pb-6">
-            <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-2">{`// 04 — Preise`}</div>
-            <h2 className="text-3xl lg:text-4xl font-bold">Einfach. Transparent.</h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-px bg-border">
-            {PLANS.map(plan => (
-              <div
-                key={plan.name}
-                className={`bg-background p-8 flex flex-col relative ${plan.highlight ? "outline outline-1 outline-primary z-10" : ""}`}
-              >
-                {plan.highlight && <div className="absolute top-0 left-0 right-0 h-[2px] bg-primary" />}
-                <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-4">{plan.name}</div>
-                <div className="mb-1 font-mono">
-                  <span className="text-4xl font-bold">{plan.price}</span>
-                  {plan.per && <span className="text-sm text-muted-foreground ml-1">{plan.per}</span>}
-                </div>
-                <p className="text-xs text-muted-foreground mb-8">{plan.desc}</p>
-                <ul className="space-y-3 mb-8 flex-1">
-                  {plan.features.map(f => (
-                    <li key={f} className="flex items-center gap-3 text-sm">
-                      <IconCheck className="size-3.5 text-primary shrink-0" />
-                      <span className="text-muted-foreground">{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link href={plan.href}>
-                  <Button className="w-full font-mono text-[11px] tracking-widest uppercase" variant={plan.highlight ? "default" : "outline"}>
-                    {plan.cta}
-                  </Button>
-                </Link>
-              </div>
-            ))}
-          </div>
-        </section>
+        <PricingSection />
 
         {/* ══ CTA ══════════════════════════════════════════ */}
         <section className="mx-auto w-full max-w-7xl px-6 pb-24">
