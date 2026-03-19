@@ -1112,6 +1112,7 @@ export default function ToolDetailPage() {
                               `CHF ${Number(value).toLocaleString("de-CH", { minimumFractionDigits: 2 })}`,
                               "",
                             ]}
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             labelFormatter={(label: any) => `Jahr ${label}`}
                           />
                           <Area
