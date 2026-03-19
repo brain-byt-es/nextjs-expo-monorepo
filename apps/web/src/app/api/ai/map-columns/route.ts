@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
-import { getSession } from "@/app/api/_helpers/auth"
+import { getSessionAndOrg } from "@/app/api/_helpers/auth"
+import { getOrgOpenAiKey } from "@/lib/get-org-openai-key"
 import {
   ruleBasedMapping,
   type AiMappingSuggestion,
@@ -19,9 +20,9 @@ interface MapColumnsRequest {
 // ---------------------------------------------------------------------------
 export async function POST(request: Request) {
   try {
-    // Auth guard (skipped only in demo mode — handled by middleware)
-    const sessionResult = await getSession()
+    const sessionResult = await getSessionAndOrg(request)
     if (sessionResult.error) return sessionResult.error
+    const { orgId } = sessionResult
 
     const body: MapColumnsRequest = await request.json()
     const { headers, sampleRows, targetFields } = body
@@ -39,9 +40,9 @@ export async function POST(request: Request) {
       )
     }
 
-    const apiKey = process.env.OPENAI_API_KEY
+    // Resolve API key: org key → server env → rule-based fallback
+    const apiKey = await getOrgOpenAiKey(orgId)
     if (!apiKey) {
-      // Graceful fallback: return rule-based mappings as if they came from AI
       const fallback = ruleBasedMapping(headers, targetFields)
       return NextResponse.json({ mappings: fallback, source: "rule-based" })
     }
@@ -76,7 +77,6 @@ export async function POST(request: Request) {
     try {
       parsed = JSON.parse(raw)
     } catch {
-      // Unexpected non-JSON from model — fall back
       const fallback = ruleBasedMapping(headers, targetFields)
       return NextResponse.json({ mappings: fallback, source: "rule-based" })
     }
@@ -134,7 +134,6 @@ function extractMappings(
 ): AiMappingSuggestion[] {
   const validKeys = new Set(targetFields.map((f) => f.key))
 
-  // Accept both { mappings: [...] } and a direct array
   const raw =
     Array.isArray(parsed)
       ? parsed
@@ -164,7 +163,6 @@ function extractMappings(
     result.push({ source, target: safeTarget, confidence: safeConfidence })
   }
 
-  // Ensure every header has an entry (fill gaps with rule-based)
   const ruleFallbacks = ruleBasedMapping(headers, targetFields)
   for (const fb of ruleFallbacks) {
     if (!seen.has(fb.source)) result.push(fb)

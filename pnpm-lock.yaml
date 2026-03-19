@@ -148,6 +148,9 @@ importers:
       expo-router:
         specifier: latest
         version: 55.0.5(469d2d087bddd7ca3ad67d85eae95e2f)
+      expo-speech:
+        specifier: ~55.0.8
+        version: 55.0.9(expo@55.0.6)
       expo-status-bar:
         specifier: latest
         version: 55.0.4(react-native@0.83.2(@babel/core@7.29.0)(@react-native/metro-config@0.84.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)
@@ -317,6 +320,9 @@ importers:
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
+      cmdk:
+        specifier: ^1.1.1
+        version: 1.1.1(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       happy-dom:
         specifier: ^20.8.4
         version: 20.8.4
@@ -8184,6 +8190,11 @@ packages:
   expo-server@55.0.6:
     resolution: {integrity: sha512-xI72FTm469FfuuBL2R5aNtthgH+GR7ygOpsx/KcPS0K8AZaZd7VjtEExbzn9/qyyYkWW3T+3dAmCDKOMX8gdmQ==}
     engines: {node: '>=20.16.0'}
+
+  expo-speech@55.0.9:
+    resolution: {integrity: sha512-xDUHeMb3Zp9ICHscSzwCtmeRMCYD/zSPoQn75yjEjgQUzyIwfthUpEiUGwIo1DUC728PdRSvBegnYqv+3MQJPA==}
+    peerDependencies:
+      expo: '*'
 
   expo-splash-screen@55.0.10:
     resolution: {integrity: sha512-RN5qqrxudxFlRIjLFr/Ifmt+mUCLRc0gs66PekP6flzNS/JYEuoCbwJ+NmUwwJtPA+vyy60DYiky0QmS98ydmQ==}
@@ -21897,6 +21908,10 @@ snapshots:
     optional: true
 
   expo-server@55.0.6: {}
+
+  expo-speech@55.0.9(expo@55.0.6):
+    dependencies:
+      expo: 55.0.6(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.6)(expo-router@55.0.5)(react-dom@19.2.4(react@19.2.4))(react-native@0.83.2(@babel/core@7.29.0)(@react-native/metro-config@0.84.1(@babel/core@7.29.0))(@types/react@19.2.14)(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
 
   expo-splash-screen@55.0.10(expo@55.0.6):
     dependencies:

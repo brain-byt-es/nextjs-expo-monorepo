@@ -16,6 +16,7 @@ import {
   IconExternalLink,
   IconTag,
   IconRoute2,
+  IconCalendar,
 } from "@tabler/icons-react"
 import { QrCodeDisplay } from "@/components/qr-code"
 import { ZebraLabelButton } from "@/components/zebra-label-button"
@@ -27,6 +28,9 @@ import { SupplierPricesTab } from "./supplier-prices-tab"
 import { BatchesTab } from "./batches-tab"
 import { ForecastTab } from "./forecast-tab"
 import { AttachmentsPanel } from "@/components/attachments-panel"
+import { ReservationPanel } from "@/components/reservation-panel"
+import { MaterialRequestButton } from "@/components/material-request-button"
+import { ActivityTimeline } from "@/components/activity-timeline"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -201,6 +205,7 @@ export default function MaterialDetailPage() {
 
   // Delete dialog
   const [showDelete, setShowDelete] = useState(false)
+  const [showRequestDialog, setShowRequestDialog] = useState(false)
   const [deleting, setDeleting] = useState(false)
 
   // Fetch everything
@@ -451,6 +456,25 @@ export default function MaterialDetailPage() {
             <IconTag className="size-4" />
             Etiketten
           </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              const el = document.getElementById("reservation-panel-anchor")
+              el?.scrollIntoView({ behavior: "smooth", block: "start" })
+            }}
+          >
+            <IconCalendar className="size-4" />
+            Reservieren
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowRequestDialog(true)}
+          >
+            <IconPlus className="size-4" />
+            Material anfragen
+          </Button>
           <Separator orientation="vertical" className="mx-1 h-6" />
           {isEditing ? (
             <>
@@ -555,6 +579,7 @@ export default function MaterialDetailPage() {
           </TabsTrigger>
           <TabsTrigger value="prognose">Prognose</TabsTrigger>
           <TabsTrigger value="comments">Kommentare</TabsTrigger>
+          <TabsTrigger value="activity">Aktivitäten</TabsTrigger>
         </TabsList>
 
         {/* ─── General Tab ─────────────────────────────────────────── */}
@@ -1025,10 +1050,20 @@ export default function MaterialDetailPage() {
         <TabsContent value="batches">
           <BatchesTab materialId={materialId} unit={material.unit} />
         </TabsContent>
+
+        {/* ─── Aktivitäten Tab ──────────────────────────────────────── */}
+        <TabsContent value="activity" className="pt-4">
+          <ActivityTimeline entityType="material" entityId={materialId} />
+        </TabsContent>
             </Tabs>
 
       {/* ─── Custom Fields ─────────────────────────────────────────── */}
       <CustomFieldsSection entityType="material" entityId={materialId} />
+
+      {/* ─── Reservierungen ──────────────────────────────────────────── */}
+      <div id="reservation-panel-anchor">
+        <ReservationPanel entityType="material" entityId={materialId} showQuantity />
+      </div>
 
       {/* ─── Stock Booking Dialog ──────────────────────────────────── */}
       <Dialog
@@ -1148,6 +1183,14 @@ export default function MaterialDetailPage() {
         </DialogContent>
       </Dialog>
 
+      {/* ─── Material Anfrage Dialog ──────────────────────────────────── */}
+      <MaterialRequestButton
+        open={showRequestDialog}
+        onOpenChange={setShowRequestDialog}
+        materialId={material?.id}
+        materialName={material?.name}
+        materialUnit={material?.unit}
+      />
       {/* ─── Delete Dialog ─────────────────────────────────────────── */}
       <Dialog open={showDelete} onOpenChange={setShowDelete}>
         <DialogContent>

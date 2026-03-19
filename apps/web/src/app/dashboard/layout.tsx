@@ -7,6 +7,7 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { CommandPalette } from "@/components/command-palette"
 import { SiteHeader } from "@/components/site-header"
 import { BrandProvider } from "@/components/brand-provider"
+import { ShortcutsDialogProvider } from "@/components/shortcuts-dialog"
 import {
   SidebarInset,
   SidebarProvider,
@@ -70,23 +71,25 @@ export default function DashboardLayout({
 
   return (
     <BrandProvider>
-      <SidebarProvider
-        style={{
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties}
-      >
-        <AppSidebar variant="inset" />
-        <SidebarInset>
-          <SiteHeader />
-          <div className="flex flex-1 flex-col">
-            <div className="@container/main flex flex-1 flex-col gap-2">
-              {children}
+      <ShortcutsDialogProvider>
+        <SidebarProvider
+          style={{
+            "--sidebar-width": "calc(var(--spacing) * 72)",
+            "--header-height": "calc(var(--spacing) * 12)",
+          } as React.CSSProperties}
+        >
+          <AppSidebar variant="inset" />
+          <SidebarInset>
+            <SiteHeader />
+            <div className="flex flex-1 flex-col">
+              <div className="@container/main flex flex-1 flex-col gap-2">
+                {children}
+              </div>
             </div>
-          </div>
-        </SidebarInset>
-        <CommandPalette />
-      </SidebarProvider>
+          </SidebarInset>
+          <CommandPalette />
+        </SidebarProvider>
+      </ShortcutsDialogProvider>
     </BrandProvider>
   )
 }

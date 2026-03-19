@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { ModeToggle } from "@/components/theme/theme-toggle"
+import { NotificationBell } from "@/components/notification-bell"
 
 export function SiteHeader() {
   const router = useRouter()
@@ -23,6 +24,7 @@ export function SiteHeader() {
         />
         <h1 className="text-base font-medium">Dashboard</h1>
         <div className="ml-auto flex items-center gap-2">
+          <NotificationBell />
           <ModeToggle />
           <Button variant="default" size="sm" onClick={handleUpgrade}>
             Upgrade

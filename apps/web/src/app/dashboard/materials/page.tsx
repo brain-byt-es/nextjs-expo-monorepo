@@ -30,6 +30,7 @@ import {
   IconUpload,
   IconTag,
   IconClock,
+  IconCopy,
 } from "@tabler/icons-react"
 
 import { Button } from "@/components/ui/button"
@@ -38,6 +39,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Toggle } from "@/components/ui/toggle"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Table,
   TableBody,
@@ -68,6 +70,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { BulkActionBar } from "@/components/bulk-action-bar"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -171,12 +174,7 @@ function downloadCsv(rows: MaterialRow[], filename: string) {
   URL.revokeObjectURL(url)
 }
 
-// Sort indicator component
-function SortIcon({
-  sorted,
-}: {
-  sorted: false | "asc" | "desc"
-}) {
+function SortIcon({ sorted }: { sorted: false | "asc" | "desc" }) {
   if (sorted === "asc")
     return <IconChevronUp className="ml-1 inline size-3.5 text-foreground" />
   if (sorted === "desc")
@@ -217,6 +215,10 @@ export default function MaterialsPage() {
   const [deleteTarget, setDeleteTarget] = useState<MaterialRow | null>(null)
   const [deleting, setDeleting] = useState(false)
 
+  // Bulk selection
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [bulkLoading, setBulkLoading] = useState(false)
+
   // Debounce search input
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -225,6 +227,11 @@ export default function MaterialsPage() {
     }, 300)
     return () => clearTimeout(timer)
   }, [search])
+
+  // Clear selection when page / filter changes
+  useEffect(() => {
+    setSelectedIds(new Set())
+  }, [page, debouncedSearch, groupFilter, locationFilter, expiringOnly, lowStockOnly])
 
   // Fetch reference data once
   useEffect(() => {
@@ -279,7 +286,7 @@ export default function MaterialsPage() {
     fetchMaterials()
   }, [page, debouncedSearch, groupFilter, locationFilter, expiringOnly])
 
-  // Delete handler
+  // Delete handler (single)
   const handleDelete = useCallback(async () => {
     if (!deleteTarget) return
     setDeleting(true)
@@ -308,12 +315,118 @@ export default function MaterialsPage() {
       )
     }
     if (expiringOnly) {
-      result = result.filter(
-        (m) => m.nearestExpiry !== null
-      )
+      result = result.filter((m) => m.nearestExpiry !== null)
     }
     return result
   }, [materials, lowStockOnly, expiringOnly])
+
+  // ── Selection helpers ──────────────────────────────────────────────────────
+  const visibleIds = filteredMaterials.map((m) => m.id)
+  const allVisibleSelected =
+    visibleIds.length > 0 && visibleIds.every((id) => selectedIds.has(id))
+  const someVisibleSelected = visibleIds.some((id) => selectedIds.has(id))
+
+  function toggleSelectAll() {
+    if (allVisibleSelected) {
+      setSelectedIds((prev) => {
+        const next = new Set(prev)
+        visibleIds.forEach((id) => next.delete(id))
+        return next
+      })
+    } else {
+      setSelectedIds((prev) => new Set([...prev, ...visibleIds]))
+    }
+  }
+
+  function toggleRow(id: string) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
+  }
+
+  // ── Bulk actions ───────────────────────────────────────────────────────────
+  const handleBulkDelete = useCallback(async () => {
+    setBulkLoading(true)
+    try {
+      const res = await fetch("/api/materials/bulk-delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: [...selectedIds] }),
+      })
+      if (res.ok) {
+        const { ids: deletedIds } = await res.json() as { ids: string[] }
+        const deletedSet = new Set(deletedIds)
+        setMaterials((prev) => prev.filter((m) => !deletedSet.has(m.id)))
+        setTotal((prev) => prev - deletedIds.length)
+        setSelectedIds(new Set())
+      }
+    } catch {
+      // TODO: toast error
+    } finally {
+      setBulkLoading(false)
+    }
+  }, [selectedIds])
+
+  const handleBulkChangeGroup = useCallback(async (groupId: string) => {
+    setBulkLoading(true)
+    try {
+      const res = await fetch("/api/materials/bulk-update", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: [...selectedIds], update: { groupId } }),
+      })
+      if (res.ok) {
+        const group = groups.find((g) => g.id === groupId) ?? null
+        setMaterials((prev) =>
+          prev.map((m) =>
+            selectedIds.has(m.id) ? { ...m, groupId, group } : m
+          )
+        )
+        setSelectedIds(new Set())
+      }
+    } catch {
+      // TODO: toast error
+    } finally {
+      setBulkLoading(false)
+    }
+  }, [selectedIds, groups])
+
+  const handleBulkChangeLocation = useCallback(async (locationId: string) => {
+    setBulkLoading(true)
+    try {
+      const res = await fetch("/api/materials/bulk-update", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: [...selectedIds], update: { mainLocationId: locationId } }),
+      })
+      if (res.ok) {
+        const loc = locations.find((l) => l.id === locationId) ?? null
+        setMaterials((prev) =>
+          prev.map((m) =>
+            selectedIds.has(m.id)
+              ? { ...m, mainLocationId: locationId, mainLocation: loc }
+              : m
+          )
+        )
+        setSelectedIds(new Set())
+      }
+    } catch {
+      // TODO: toast error
+    } finally {
+      setBulkLoading(false)
+    }
+  }, [selectedIds, locations])
+
+  const handleBulkExport = useCallback(() => {
+    const selectedRows = filteredMaterials.filter((m) => selectedIds.has(m.id))
+    downloadCsv(selectedRows, "materialien-auswahl.csv")
+  }, [filteredMaterials, selectedIds])
 
   // CSV export: fetch all pages then download
   const handleExport = useCallback(async () => {
@@ -349,6 +462,27 @@ export default function MaterialsPage() {
   // ---------------------------------------------------------------------------
   const columns = useMemo<ColumnDef<MaterialRow>[]>(
     () => [
+      // ── Checkbox column ──────────────────────────────────────────────────
+      {
+        id: "select",
+        size: 44,
+        enableSorting: false,
+        header: () => (
+          <Checkbox
+            checked={allVisibleSelected ? true : someVisibleSelected ? "indeterminate" : false}
+            onCheckedChange={toggleSelectAll}
+            aria-label="Alle auswählen"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={selectedIds.has(row.original.id)}
+            onCheckedChange={() => toggleRow(row.original.id)}
+            aria-label={`${row.original.name} auswählen`}
+            onClick={(e) => e.stopPropagation()}
+          />
+        ),
+      },
       {
         accessorKey: "image",
         header: () => t("image"),
@@ -602,7 +736,8 @@ export default function MaterialsPage() {
         ),
       },
     ],
-    [t, tc, router]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [t, tc, router, selectedIds, allVisibleSelected, someVisibleSelected]
   )
 
   const table = useReactTable({
@@ -634,6 +769,15 @@ export default function MaterialsPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5"
+            onClick={() => router.push("/dashboard/materials/duplicates")}
+          >
+            <IconCopy className="size-4" />
+            Duplikate prüfen
+          </Button>
           <Button variant="outline" size="sm" onClick={handleExport}>
             <IconDownload className="size-4" />
             CSV
@@ -756,6 +900,7 @@ export default function MaterialsPage() {
           <div className="space-y-4 p-6">
             {Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className="flex items-center gap-4">
+                <Skeleton className="h-4 w-4 rounded" />
                 <Skeleton className="h-10 w-10 rounded-md" />
                 <Skeleton className="h-4 w-16" />
                 <Skeleton className="h-4 w-40 flex-1" />
@@ -819,15 +964,24 @@ export default function MaterialsPage() {
                 <TableRow
                   key={row.id}
                   className={`cursor-pointer ${
-                    row.original.nearestExpiry && isExpired(row.original.nearestExpiry)
-                      ? "bg-destructive/5 hover:bg-destructive/10"
-                      : row.original.nearestExpiry && isExpiringSoon(row.original.nearestExpiry)
-                        ? "bg-amber-500/5 hover:bg-amber-500/10"
-                        : ""
+                    selectedIds.has(row.original.id)
+                      ? "bg-primary/5"
+                      : row.original.nearestExpiry && isExpired(row.original.nearestExpiry)
+                        ? "bg-destructive/5 hover:bg-destructive/10"
+                        : row.original.nearestExpiry && isExpiringSoon(row.original.nearestExpiry)
+                          ? "bg-amber-500/5 hover:bg-amber-500/10"
+                          : ""
                   }`}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      onClick={
+                        cell.column.id === "select" || cell.column.id === "actions"
+                          ? (e) => e.stopPropagation()
+                          : undefined
+                      }
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -874,7 +1028,7 @@ export default function MaterialsPage() {
         </div>
       )}
 
-      {/* Delete confirmation dialog */}
+      {/* Single delete confirmation dialog */}
       <Dialog
         open={!!deleteTarget}
         onOpenChange={(open: boolean) => {
@@ -908,6 +1062,20 @@ export default function MaterialsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Bulk action bar */}
+      <BulkActionBar
+        selectedCount={selectedIds.size}
+        entityLabel="Materialien"
+        groups={groups}
+        locations={locations}
+        onDelete={handleBulkDelete}
+        onChangeGroup={handleBulkChangeGroup}
+        onChangeLocation={handleBulkChangeLocation}
+        onExport={handleBulkExport}
+        onCancel={() => setSelectedIds(new Set())}
+        loading={bulkLoading}
+      />
     </div>
   )
 }

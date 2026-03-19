@@ -6,8 +6,9 @@ import { Dialog, DialogContent } from "@/components/ui/dialog"
 import {
   IconSearch, IconPackage, IconTool, IconMapPin,
   IconPlus, IconHistory, IconSettings, IconLayoutDashboard,
-  IconChevronRight,
+  IconChevronRight, IconClock, IconStar,
 } from "@tabler/icons-react"
+import { getRecentItems, getFavorites, type RecentItem, type FavoriteItem } from "@/lib/favorites"
 
 // Static navigation items
 const NAV_ITEMS = [
@@ -22,13 +23,24 @@ const NAV_ITEMS = [
   { id: "new-location", label: "Neuer Standort",    href: "/dashboard/locations/new",         icon: IconPlus,            group: "Aktionen" },
 ]
 
-// Group order
-const GROUP_ORDER = ["Navigation", "Materialien", "Werkzeuge", "Standorte", "Aktionen"]
+// Group order — static groups first, dynamic groups appended at runtime
+const STATIC_GROUP_ORDER = ["Navigation", "Materialien", "Werkzeuge", "Standorte", "Aktionen"]
+const DYNAMIC_GROUPS = ["Zuletzt besucht", "Favoriten"]
+
+interface PaletteItem {
+  id: string
+  label: string
+  href: string
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>
+  group: string
+}
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [selectedIdx, setSelectedIdx] = useState(0)
+  const [recentItems, setRecentItems] = useState<RecentItem[]>([])
+  const [favorites, setFavorites] = useState<FavoriteItem[]>([])
   const router = useRouter()
 
   // Open on Cmd+K / Ctrl+K
@@ -43,6 +55,14 @@ export function CommandPalette() {
     return () => window.removeEventListener("keydown", handler)
   }, [])
 
+  // Load dynamic items from localStorage when opening
+  useEffect(() => {
+    if (open) {
+      setRecentItems(getRecentItems())
+      setFavorites(getFavorites())
+    }
+  }, [open])
+
   // Reset query when closing
   function handleOpenChange(val: boolean) {
     if (!val) {
@@ -52,10 +72,29 @@ export function CommandPalette() {
     setOpen(val)
   }
 
+  // Build full item list including dynamic groups
+  const allItems: PaletteItem[] = [
+    ...NAV_ITEMS,
+    ...recentItems.map((r) => ({
+      id: `recent-${r.id}`,
+      label: r.name,
+      href: r.url,
+      icon: IconClock,
+      group: "Zuletzt besucht",
+    })),
+    ...favorites.map((f) => ({
+      id: `fav-${f.id}`,
+      label: f.name,
+      href: f.url,
+      icon: IconStar,
+      group: "Favoriten",
+    })),
+  ]
+
   // Filter items
   const filtered = query.trim() === ""
-    ? NAV_ITEMS
-    : NAV_ITEMS.filter(item =>
+    ? allItems
+    : allItems.filter(item =>
         item.label.toLowerCase().includes(query.toLowerCase()) ||
         item.group.toLowerCase().includes(query.toLowerCase())
       )
@@ -85,22 +124,25 @@ export function CommandPalette() {
     return () => window.removeEventListener("keydown", handler)
   }, [open, filtered, selectedIdx, router])
 
+  // Reset selectedIdx on query change
+  useEffect(() => { setSelectedIdx(0) }, [query])
 
   // Group items preserving order
-  const groups = filtered.reduce<Record<string, typeof NAV_ITEMS>>((acc, item) => {
+  const groups = filtered.reduce<Record<string, PaletteItem[]>>((acc, item) => {
     if (!acc[item.group]) acc[item.group] = []
     acc[item.group].push(item)
     return acc
   }, {})
 
-  const orderedGroups = GROUP_ORDER
+  const groupOrder = [...STATIC_GROUP_ORDER, ...DYNAMIC_GROUPS]
+  const orderedGroups = groupOrder
     .filter(g => groups[g]?.length)
-    .map(g => ({ name: g, items: groups[g] }))
+    .map(g => ({ name: g, items: groups[g]! }))
 
-  // Also include any groups not in GROUP_ORDER
+  // Also include any groups not in either order list
   Object.keys(groups).forEach(g => {
-    if (!GROUP_ORDER.includes(g)) {
-      orderedGroups.push({ name: g, items: groups[g] })
+    if (!groupOrder.includes(g)) {
+      orderedGroups.push({ name: g, items: groups[g]! })
     }
   })
 
@@ -138,7 +180,7 @@ export function CommandPalette() {
           ) : (
             <div className="py-1.5">
               {orderedGroups.map(({ name, items }) => {
-                const groupOffset = filtered.indexOf(items[0])
+                const groupOffset = filtered.indexOf(items[0]!)
                 return (
                   <div key={name}>
                     {/* Group header */}

@@ -43,6 +43,7 @@
     "@vitejs/plugin-react": "^6.0.1",
     "better-auth": "^1.0.0",
     "class-variance-authority": "^0.7.1",
+    "cmdk": "^1.1.1",
     "happy-dom": "^20.8.4",
     "html5-qrcode": "^2.3.8",
     "inngest": "^3.52.6",

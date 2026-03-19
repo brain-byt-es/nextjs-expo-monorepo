@@ -13,6 +13,7 @@ import {
 } from "@repo/db/schema";
 import { eq, and, lte, isNotNull, sql } from "drizzle-orm";
 import { sendWhatsAppAlert } from "@/lib/whatsapp";
+import { createNotificationForAllMembers } from "@/lib/notifications-server";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.logistikapp.ch";
 
@@ -200,6 +201,34 @@ export const checkLowStockFn = inngest.createFunction(
             console.error(`[check-low-stock] Email failed for org ${org.orgId}:`, err);
           }
         }
+      }
+
+      // ── In-app notifications ──────────────────────────────────────
+      if (lowCount > 0) {
+        void createNotificationForAllMembers({
+          organizationId: org.orgId,
+          type: "low_stock",
+          title: `${lowCount} Material${lowCount !== 1 ? "ien" : ""} unter Meldebestand`,
+          body: `${lowCount} Artikel ${lowCount !== 1 ? "haben" : "hat"} den Mindestbestand unterschritten.`,
+          entityType: "material",
+        }).catch((err) => console.error("[check-low-stock] notification failed:", err));
+      }
+      if (maintCount > 0) {
+        void createNotificationForAllMembers({
+          organizationId: org.orgId,
+          type: "maintenance_due",
+          title: `${maintCount} Werkzeug${maintCount !== 1 ? "e" : ""} mit fälliger Wartung`,
+          body: `Bitte prüfen Sie die Wartungspläne im Dashboard.`,
+          entityType: "tool",
+        }).catch((err) => console.error("[check-low-stock] notification failed:", err));
+      }
+      if (expiryCount > 0) {
+        void createNotificationForAllMembers({
+          organizationId: org.orgId,
+          type: "expiry_warning",
+          title: `${expiryCount} Versicherung${expiryCount !== 1 ? "en" : ""}/Garantie${expiryCount !== 1 ? "n" : ""} laufen demnächst ab`,
+          body: "Bitte erneuern Sie die Dokumente rechtzeitig.",
+        }).catch((err) => console.error("[check-low-stock] notification failed:", err));
       }
 
       results.push({

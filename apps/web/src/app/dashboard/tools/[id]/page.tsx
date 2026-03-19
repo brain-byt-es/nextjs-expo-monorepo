@@ -38,6 +38,7 @@ import { CommentsThread } from "@/components/comments-thread"
 import { CustomFieldsSection } from "@/components/custom-fields"
 import { InsuranceWarrantyPanel } from "@/components/insurance-warranty-panel"
 import { AttachmentsPanel } from "@/components/attachments-panel"
+import { ReservationPanel } from "@/components/reservation-panel"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -465,6 +466,17 @@ export default function ToolDetailPage() {
           >
             <IconTag className="size-4" />
             Etiketten
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              const el = document.getElementById("reservation-panel-anchor")
+              el?.scrollIntoView({ behavior: "smooth", block: "start" })
+            }}
+          >
+            <IconCalendar className="size-4" />
+            Reservieren
           </Button>
           <Separator orientation="vertical" className="mx-1 h-6" />
           {isEditing ? (
@@ -1420,6 +1432,10 @@ export default function ToolDetailPage() {
 
       {/* ─── Custom Fields ─────────────────────────────────────────────── */}
       <CustomFieldsSection entityType="tool" entityId={toolId} />
+
+      <div id="reservation-panel-anchor">{/* ─── Reservierungen ──────────────────────────────────────────── */}
+      <ReservationPanel entityType="tool" entityId={toolId} />
+      </div>
 
       {/* ─── Checkout Dialog ─────────────────────────────────────────── */}
       <Dialog open={checkoutOpen} onOpenChange={setCheckoutOpen}>

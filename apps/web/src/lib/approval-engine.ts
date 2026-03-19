@@ -6,6 +6,10 @@ import {
 } from "@repo/db/schema";
 import { eq, and, inArray } from "drizzle-orm";
 import { sendApprovalRequestEmail, sendApprovalDecisionEmail } from "@/lib/email";
+import {
+  createNotificationForAdmins,
+  createNotification,
+} from "@/lib/notifications-server";
 
 // ─── Request types ────────────────────────────────────────────────────────────
 
@@ -102,6 +106,16 @@ export async function createApprovalAndNotify(
     (err) => console.error("[approval-engine] notifyAdmins failed:", err)
   );
 
+  // In-app notification for all org admins/owners
+  void createNotificationForAdmins({
+    organizationId: orgId,
+    type: "approval_request",
+    title: "Neue Genehmigung angefordert",
+    body: `Typ: ${requestType} — ${entityType}`,
+    entityType: "approval",
+    entityId: approval.id,
+  }).catch((err) => console.error("[approval-engine] in-app notification failed:", err));
+
   return approval;
 }
 
@@ -139,10 +153,24 @@ export async function resolveApproval(
 
   if (!updated) return null;
 
-  // Notify requester — fire-and-forget
+  // Email: notify requester — fire-and-forget
   void notifyRequester(updated.requesterId, approverId, status, updated.requestType).catch(
     (err) => console.error("[approval-engine] notifyRequester failed:", err)
   );
+
+  // In-app notification for the requester
+  const resolvedTitle = status === "approved"
+    ? "Ihre Anfrage wurde genehmigt"
+    : "Ihre Anfrage wurde abgelehnt";
+  void createNotification({
+    organizationId: orgId,
+    userId: updated.requesterId,
+    type: "approval_resolved",
+    title: resolvedTitle,
+    body: notes ?? undefined,
+    entityType: "approval",
+    entityId: approvalId,
+  }).catch((err) => console.error("[approval-engine] in-app notification failed:", err));
 
   return updated;
 }

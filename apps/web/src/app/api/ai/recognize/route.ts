@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { getSession } from "@/app/api/_helpers/auth";
+import { getSessionAndOrg } from "@/app/api/_helpers/auth";
+import { getOrgOpenAiKey } from "@/lib/get-org-openai-key";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -48,11 +49,9 @@ If the image is unclear or not a product, still return the JSON with your best g
 
 async function callOpenAiVision(
   base64Image: string,
-  mimeType: string
+  mimeType: string,
+  apiKey: string
 ): Promise<RecognizeResult> {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) throw new Error("OPENAI_API_KEY not configured");
-
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -113,9 +112,10 @@ async function callOpenAiVision(
 
 export async function POST(request: Request) {
   try {
-    // Auth guard
-    const result = await getSession();
+    // Auth guard (also resolves orgId)
+    const result = await getSessionAndOrg(request);
     if (result.error) return result.error;
+    const { orgId } = result;
 
     // Check content type
     const contentType = request.headers.get("content-type") ?? "";
@@ -160,8 +160,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // Demo / no-key fallback
-    if (!process.env.OPENAI_API_KEY) {
+    // Resolve API key: org key → server env → 503
+    const apiKey = await getOrgOpenAiKey(orgId);
+    if (!apiKey) {
       // Simulate slight latency so UI feels realistic in demo
       await new Promise((r) => setTimeout(r, 800));
       return NextResponse.json({ result: DEMO_RESULT, demo: true });
@@ -171,7 +172,7 @@ export async function POST(request: Request) {
     const arrayBuffer = await file.arrayBuffer();
     const base64 = Buffer.from(arrayBuffer).toString("base64");
 
-    const recognizeResult = await callOpenAiVision(base64, file.type);
+    const recognizeResult = await callOpenAiVision(base64, file.type, apiKey);
 
     return NextResponse.json({ result: recognizeResult, demo: false });
   } catch (error) {

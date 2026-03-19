@@ -183,6 +183,7 @@ export const organizations = pgTable("organizations", {
   logo: text("logo"),
   primaryColor: text("primary_color"),
   accentColor: text("accent_color"),
+  aiSettings: jsonb("ai_settings"), // { openaiApiKey?: string }
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -1405,3 +1406,102 @@ export type ApiKey = typeof apiKeys.$inferSelect;
 export type NewApiKey = typeof apiKeys.$inferInsert;
 export type FloorPlan = typeof floorPlans.$inferSelect;
 export type NewFloorPlan = typeof floorPlans.$inferInsert;
+
+// ─── Notifications ───────────────────────────────────────────────────
+export const notifications = pgTable(
+  "notifications",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: text("type").notNull(), // "low_stock" | "maintenance_due" | "approval_request" | "approval_resolved" | "comment_mention" | "tool_overdue" | "expiry_warning"
+    title: text("title").notNull(),
+    body: text("body"),
+    entityType: text("entity_type"), // "material" | "tool" | "commission" | "approval"
+    entityId: uuid("entity_id"),
+    isRead: boolean("is_read").default(false).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("idx_notifications_user_id").on(table.userId),
+    index("idx_notifications_org_id").on(table.organizationId),
+    index("idx_notifications_is_read").on(table.isRead),
+    index("idx_notifications_created_at").on(table.createdAt),
+  ]
+);
+
+export type Notification = typeof notifications.$inferSelect;
+export type NewNotification = typeof notifications.$inferInsert;
+
+// ─── Reservations (Reservierungen) ──────────────────────────────────
+export const reservations = pgTable(
+  "reservations",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    entityType: text("entity_type").notNull(), // "tool" | "material"
+    entityId: uuid("entity_id").notNull(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id),
+    quantity: integer("quantity").default(1),
+    startDate: date("start_date").notNull(),
+    endDate: date("end_date").notNull(),
+    purpose: text("purpose"),
+    status: text("status").default("pending").notNull(), // "pending" | "confirmed" | "active" | "completed" | "cancelled"
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("idx_reservations_org_id").on(table.organizationId),
+    index("idx_reservations_entity").on(table.entityType, table.entityId),
+    index("idx_reservations_user_id").on(table.userId),
+    index("idx_reservations_status").on(table.status),
+    index("idx_reservations_dates").on(table.startDate, table.endDate),
+  ]
+);
+
+export type Reservation = typeof reservations.$inferSelect;
+export type NewReservation = typeof reservations.$inferInsert;
+
+// ─── Material Requests (Materialanfragen) ────────────────────────────
+export const materialRequests = pgTable(
+  "material_requests",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    requesterId: uuid("requester_id")
+      .notNull()
+      .references(() => users.id),
+    materialId: uuid("material_id").references(() => materials.id),
+    materialName: text("material_name").notNull(), // for new items not yet in system
+    quantity: integer("quantity").notNull(),
+    unit: text("unit").default("Stk"),
+    reason: text("reason"),
+    priority: text("priority").default("normal"), // "low" | "normal" | "high" | "urgent"
+    status: text("status").default("pending").notNull(), // "pending" | "approved" | "rejected" | "ordered" | "delivered"
+    approvedById: uuid("approved_by_id").references(() => users.id),
+    approvedAt: timestamp("approved_at"),
+    notes: text("notes"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("idx_material_requests_org_id").on(table.organizationId),
+    index("idx_material_requests_requester_id").on(table.requesterId),
+    index("idx_material_requests_material_id").on(table.materialId),
+    index("idx_material_requests_status").on(table.status),
+    index("idx_material_requests_priority").on(table.priority),
+  ]
+);
+
+export type MaterialRequest = typeof materialRequests.$inferSelect;
+export type NewMaterialRequest = typeof materialRequests.$inferInsert;

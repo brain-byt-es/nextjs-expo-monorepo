@@ -6,6 +6,8 @@ import { LogoMark } from "@/components/logo"
 import { useBrand } from "@/components/brand-provider"
 import {
   IconCalendar,
+  IconCalendarEvent,
+  IconInbox,
   IconChecklist,
   IconChevronRight,
   IconClipboardCheck,
@@ -38,13 +40,17 @@ import {
   IconChevronDown,
   IconChartBar,
   IconCheck,
+  IconKeyboard,
+  IconBrain,
 } from "@tabler/icons-react"
 import { useTranslations } from "next-intl"
+import { useShortcutsDialog } from "@/components/shortcuts-dialog"
 
 import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
+import { SidebarFavorites } from "@/components/sidebar-favorites"
 import {
   Sidebar,
   SidebarContent,
@@ -270,6 +276,7 @@ function EditModeRow({
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const t = useTranslations("nav")
   const { logo, orgName } = useBrand()
+  const { setOpen: openShortcuts } = useShortcutsDialog()
 
   // ── Sidebar customisation state ─────────────────────────────────────────
   const [editMode, setEditMode] = React.useState(false)
@@ -294,6 +301,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   }, [])
 
   const exitEditMode = () => setEditMode(false)
+
+  // ── Pending requests badge ───────────────────────────────────────────────
+  const [pendingRequestCount, setPendingRequestCount] = React.useState(0)
+  React.useEffect(() => {
+    fetch("/api/material-requests?status=pending")
+      .then((r) => r.ok ? r.json() : [])
+      .then((data) => {
+        if (Array.isArray(data)) setPendingRequestCount(data.length)
+      })
+      .catch(() => {})
+  }, [])
 
   // ── Nav item definitions ─────────────────────────────────────────────────
   const data = {
@@ -345,6 +363,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         url: "/dashboard/calendar",
         icon: IconCalendar,
         hideable: true,
+      },
+      {
+        title: "Reservierungen",
+        url: "/dashboard/reservations",
+        icon: IconCalendarEvent,
+        hideable: true,
+      },
+      {
+        title: "Anfragen",
+        url: "/dashboard/requests",
+        icon: IconInbox,
+        hideable: true,
+        badge: pendingRequestCount,
       },
       {
         title: t("reports"),
@@ -435,6 +466,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             title: t("historyChangelog"),
             url: "/dashboard/history/changelog",
           },
+          {
+            title: "Aktivitätsprotokoll",
+            url: "/dashboard/history/activity",
+          },
         ],
       },
     ],
@@ -482,6 +517,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         hideable: true,
       },
       {
+        title: "KI-Funktionen",
+        url: "/dashboard/settings/ai",
+        icon: IconBrain,
+        hideable: true,
+      },
+      {
         title: t("integrations"),
         url: "/dashboard/settings/integrations",
         icon: IconPlugConnected,
@@ -510,6 +551,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
 
       <SidebarContent>
+        {/* ── Favorites & Recent ──────────────────────────────── */}
+        {!editMode && <SidebarFavorites />}
+
         {/* ── Main nav ──────────────────────────────────────────── */}
         {editMode ? (
           <SidebarGroup>
@@ -661,18 +705,33 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter>
         <NavUser user={data.user} />
 
-        {/* ── Bearbeiten button — only shown when NOT in edit mode ── */}
+        {/* ── Footer utility row — only shown when NOT in edit mode ── */}
         {!editMode && (
-          <div className="px-2 pb-1">
+          <div className="flex items-center gap-1 px-2 pb-1">
+            {/* Bearbeiten */}
             <button
               type="button"
               onClick={() => setEditMode(true)}
               title="Sidebar anpassen"
               aria-label="Sidebar anpassen"
-              className="flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
+              className="flex flex-1 items-center gap-1.5 rounded-md px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
             >
               <IconPencil className="size-3.5 shrink-0" aria-hidden />
               <span>Bearbeiten</span>
+            </button>
+
+            {/* ⌘K hint + Shortcuts dialog trigger */}
+            <button
+              type="button"
+              onClick={() => openShortcuts(true)}
+              title="Tastaturkürzel anzeigen (?)"
+              aria-label="Tastaturkürzel anzeigen"
+              className="flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
+            >
+              <IconKeyboard className="size-3.5 shrink-0" aria-hidden />
+              <kbd className="inline-flex h-4 items-center rounded border border-border/60 bg-background/80 px-1 font-mono text-[9px] leading-none text-muted-foreground/70 shadow-[inset_0_-1px_0_0_rgba(0,0,0,0.06)]">
+                ⌘K
+              </kbd>
             </button>
           </div>
         )}

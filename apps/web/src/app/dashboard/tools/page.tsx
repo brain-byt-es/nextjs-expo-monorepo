@@ -35,6 +35,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Table,
   TableBody,
@@ -65,6 +66,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { BulkActionBar } from "@/components/bulk-action-bar"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -209,6 +211,10 @@ export default function ToolsPage() {
   const [deleteTarget, setDeleteTarget] = useState<ToolRow | null>(null)
   const [deleting, setDeleting] = useState(false)
 
+  // Bulk selection
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [bulkLoading, setBulkLoading] = useState(false)
+
   // Debounce search input
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -217,6 +223,11 @@ export default function ToolsPage() {
     }, 300)
     return () => clearTimeout(timer)
   }, [search])
+
+  // Clear selection on filter / page changes
+  useEffect(() => {
+    setSelectedIds(new Set())
+  }, [page, debouncedSearch, groupFilter, conditionFilter])
 
   // Fetch reference data once
   useEffect(() => {
@@ -263,7 +274,7 @@ export default function ToolsPage() {
     fetchTools()
   }, [page, debouncedSearch, groupFilter, conditionFilter])
 
-  // Delete handler
+  // Delete handler (single)
   const handleDelete = useCallback(async () => {
     if (!deleteTarget) return
     setDeleting(true)
@@ -303,11 +314,116 @@ export default function ToolsPage() {
 
   const totalPages = Math.max(1, Math.ceil(total / ITEMS_PER_PAGE))
 
+  // ── Selection helpers ──────────────────────────────────────────────────────
+  const visibleIds = tools.map((t) => t.id)
+  const allVisibleSelected =
+    visibleIds.length > 0 && visibleIds.every((id) => selectedIds.has(id))
+  const someVisibleSelected = visibleIds.some((id) => selectedIds.has(id))
+
+  function toggleSelectAll() {
+    if (allVisibleSelected) {
+      setSelectedIds((prev) => {
+        const next = new Set(prev)
+        visibleIds.forEach((id) => next.delete(id))
+        return next
+      })
+    } else {
+      setSelectedIds((prev) => new Set([...prev, ...visibleIds]))
+    }
+  }
+
+  function toggleRow(id: string) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
+  }
+
+  // ── Bulk actions ───────────────────────────────────────────────────────────
+  const handleBulkDelete = useCallback(async () => {
+    setBulkLoading(true)
+    try {
+      const res = await fetch("/api/tools/bulk-delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: [...selectedIds] }),
+      })
+      if (res.ok) {
+        const { ids: deletedIds } = await res.json() as { ids: string[] }
+        const deletedSet = new Set(deletedIds)
+        setTools((prev) => prev.filter((t) => !deletedSet.has(t.id)))
+        setTotal((prev) => prev - deletedIds.length)
+        setSelectedIds(new Set())
+      }
+    } catch {
+      // TODO: toast error
+    } finally {
+      setBulkLoading(false)
+    }
+  }, [selectedIds])
+
+  const handleBulkChangeGroup = useCallback(async (groupId: string) => {
+    setBulkLoading(true)
+    try {
+      const res = await fetch("/api/tools/bulk-update", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: [...selectedIds], update: { groupId } }),
+      })
+      if (res.ok) {
+        const group = groups.find((g) => g.id === groupId)
+        setTools((prev) =>
+          prev.map((t) =>
+            selectedIds.has(t.id)
+              ? { ...t, groupId, groupName: group?.name ?? null }
+              : t
+          )
+        )
+        setSelectedIds(new Set())
+      }
+    } catch {
+      // TODO: toast error
+    } finally {
+      setBulkLoading(false)
+    }
+  }, [selectedIds, groups])
+
+  const handleBulkExport = useCallback(() => {
+    const selectedRows = tools.filter((t) => selectedIds.has(t.id))
+    downloadCsv(selectedRows, "werkzeuge-auswahl.csv")
+  }, [tools, selectedIds])
+
   // ---------------------------------------------------------------------------
   // Table columns
   // ---------------------------------------------------------------------------
   const columns = useMemo<ColumnDef<ToolRow>[]>(
     () => [
+      // ── Checkbox column ──────────────────────────────────────────────────
+      {
+        id: "select",
+        size: 44,
+        enableSorting: false,
+        header: () => (
+          <Checkbox
+            checked={allVisibleSelected ? true : someVisibleSelected ? "indeterminate" : false}
+            onCheckedChange={toggleSelectAll}
+            aria-label="Alle auswählen"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={selectedIds.has(row.original.id)}
+            onCheckedChange={() => toggleRow(row.original.id)}
+            aria-label={`${row.original.name} auswählen`}
+            onClick={(e) => e.stopPropagation()}
+          />
+        ),
+      },
       {
         accessorKey: "image",
         header: () => "Bild",
@@ -527,7 +643,8 @@ export default function ToolsPage() {
         ),
       },
     ],
-    [t, tc, router, groups]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [t, tc, router, groups, selectedIds, allVisibleSelected, someVisibleSelected]
   )
 
   const table = useReactTable({
@@ -642,6 +759,7 @@ export default function ToolsPage() {
           <div className="space-y-4 p-6">
             {Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className="flex items-center gap-4">
+                <Skeleton className="h-4 w-4 rounded" />
                 <Skeleton className="h-10 w-10 rounded-md" />
                 <Skeleton className="h-4 w-16" />
                 <Skeleton className="h-4 w-40 flex-1" />
@@ -703,14 +821,14 @@ export default function ToolsPage() {
               {table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className="cursor-pointer"
+                  className={`cursor-pointer ${selectedIds.has(row.original.id) ? "bg-primary/5" : ""}`}
                   onClick={() => router.push(`/dashboard/tools/${row.original.id}`)}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
                       onClick={
-                        cell.column.id === "actions"
+                        cell.column.id === "select" || cell.column.id === "actions"
                           ? (e) => e.stopPropagation()
                           : undefined
                       }
@@ -792,6 +910,20 @@ export default function ToolsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Bulk action bar — "Standort ändern" not shown for tools (home location
+          is per-tool, not a bulk-updatable field in the current tools API) */}
+      <BulkActionBar
+        selectedCount={selectedIds.size}
+        entityLabel="Werkzeuge"
+        groups={groups}
+        onDelete={handleBulkDelete}
+        onChangeGroup={handleBulkChangeGroup}
+        onChangeLocation={async () => {}}
+        onExport={handleBulkExport}
+        onCancel={() => setSelectedIds(new Set())}
+        loading={bulkLoading}
+      />
     </div>
   )
 }
