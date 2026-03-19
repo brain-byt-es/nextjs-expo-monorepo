@@ -362,25 +362,26 @@ function PricingSection() {
 
   return (
     <section id="pricing" className="mx-auto w-full max-w-7xl px-6 py-24">
-      <div className="mb-14 border-b border-border pb-6 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-        <div>
-          <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-2">{`// 04 — Preise`}</div>
-          <h2 className="text-3xl lg:text-4xl font-bold">Einfach. Transparent.</h2>
-        </div>
-        {/* Toggle */}
-        <div className="flex items-center gap-3 font-mono text-[11px] tracking-widest uppercase">
+      <div className="mb-10 border-b border-border pb-6">
+        <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-2">{`// 04 — Preise`}</div>
+        <h2 className="text-3xl lg:text-4xl font-bold">Einfach. Transparent.</h2>
+      </div>
+
+      {/* Toggle — centered above cards */}
+      <div className="flex justify-center mb-8">
+        <div className="flex items-center gap-1 p-1 rounded-full border border-border bg-muted/30">
           <button
             onClick={() => setYearly(false)}
-            className={`px-3 py-1.5 rounded-full border transition-all ${!yearly ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground"}`}
+            className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${!yearly ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
           >
             Monatlich
           </button>
           <button
             onClick={() => setYearly(true)}
-            className={`px-3 py-1.5 rounded-full border transition-all flex items-center gap-2 ${yearly ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground"}`}
+            className={`px-5 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${yearly ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
           >
             Jährlich
-            <span className="text-[9px] font-bold bg-primary text-white rounded px-1.5 py-0.5">−15%</span>
+            <span className="text-[9px] font-bold bg-primary text-white rounded-full px-2 py-0.5">−15%</span>
           </button>
         </div>
       </div>
