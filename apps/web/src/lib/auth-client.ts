@@ -11,9 +11,9 @@ export const signOut = realAuthClient.signOut;
 export const useSession = () => realAuthClient.useSession();
 
 /**
- * Update user profile
+ * Update user profile (name and/or avatar image as base64 data URL)
  */
-export async function updateProfile(data: { name?: string }) {
+export async function updateProfile(data: { name?: string; image?: string | null }) {
   return await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/update-profile`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

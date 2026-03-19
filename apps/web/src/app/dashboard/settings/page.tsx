@@ -1,13 +1,35 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState, useCallback } from "react"
 import { useSession } from "@/lib/auth-client"
 import { updateProfile, changePassword } from "@/lib/auth-client"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
+import { PasswordInput } from "@/components/ui/password-input"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog"
 import {
   Select,
   SelectContent,
@@ -17,160 +39,378 @@ import {
 } from "@/components/ui/select"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { useTranslations } from "next-intl"
+import { IconCamera, IconAlertTriangle, IconCheck } from "@tabler/icons-react"
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+function getInitials(name?: string | null, email?: string | null): string {
+  if (name) {
+    const parts = name.trim().split(/\s+/)
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+    }
+    return name.slice(0, 2).toUpperCase()
+  }
+  if (email) return email.slice(0, 2).toUpperCase()
+  return "??"
+}
+
+function formatMemberSince(date?: string | Date | null): string {
+  if (!date) return "—"
+  try {
+    return new Intl.DateTimeFormat("de-CH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(new Date(date))
+  } catch {
+    return "—"
+  }
+}
+
+// ── Sub-components ────────────────────────────────────────────────────────────
+
+function StatusMessage({
+  error,
+  success,
+}: {
+  error: string | null
+  success: string | null
+}) {
+  if (error) {
+    return (
+      <p className="flex items-center gap-1.5 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+        <IconAlertTriangle className="size-4 shrink-0" aria-hidden />
+        {error}
+      </p>
+    )
+  }
+  if (success) {
+    return (
+      <p className="flex items-center gap-1.5 rounded-md bg-green-500/10 px-3 py-2 text-sm text-green-700 dark:text-green-400">
+        <IconCheck className="size-4 shrink-0" aria-hidden />
+        {success}
+      </p>
+    )
+  }
+  return null
+}
+
+// ── Main Page ─────────────────────────────────────────────────────────────────
 
 export default function SettingsPage() {
   const { data: session } = useSession()
   const t = useTranslations("settings")
-  const [isLoading, setIsLoading] = useState(false)
-  const [isSaved, setIsSaved] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [formData, setFormData] = useState({
-    name: session?.user?.name || "",
+
+  // ── Avatar state ──
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
+  const [avatarError, setAvatarError] = useState<string | null>(null)
+
+  // ── Profile form state ──
+  const [profileName, setProfileName] = useState(session?.user?.name ?? "")
+  const [isProfileLoading, setIsProfileLoading] = useState(false)
+  const [profileError, setProfileError] = useState<string | null>(null)
+  const [profileSuccess, setProfileSuccess] = useState<string | null>(null)
+
+  // ── Password form state ──
+  const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   })
+  const [isPasswordLoading, setIsPasswordLoading] = useState(false)
+  const [passwordError, setPasswordError] = useState<string | null>(null)
+  const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null)
 
+  // ── Derived values ──
+  const user = session?.user as
+    | { name?: string | null; email?: string | null; image?: string | null; createdAt?: string | null }
+    | undefined
+
+  const currentAvatar = avatarPreview ?? user?.image ?? ""
+  const initials = getInitials(user?.name, user?.email)
+  const memberSince = formatMemberSince(user?.createdAt)
+
+  // ── Avatar upload handler ──
+  const handleAvatarChange = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (!file) return
+
+      setAvatarError(null)
+
+      const allowed = ["image/jpeg", "image/png", "image/webp"]
+      if (!allowed.includes(file.type)) {
+        setAvatarError("Nur JPEG, PNG und WebP sind erlaubt.")
+        return
+      }
+
+      if (file.size > 2 * 1024 * 1024) {
+        setAvatarError("Das Bild darf maximal 2 MB gross sein.")
+        return
+      }
+
+      const reader = new FileReader()
+      reader.onload = async (ev) => {
+        const dataUrl = ev.target?.result as string
+        setAvatarPreview(dataUrl)
+        setIsUploadingAvatar(true)
+        try {
+          const result = await updateProfile({ image: dataUrl })
+          if (result?.error) {
+            setAvatarError(result.error)
+            setAvatarPreview(null)
+          }
+        } catch {
+          setAvatarError("Foto konnte nicht gespeichert werden.")
+          setAvatarPreview(null)
+        } finally {
+          setIsUploadingAvatar(false)
+          // Reset so re-selecting the same file triggers onChange again
+          if (fileInputRef.current) fileInputRef.current.value = ""
+        }
+      }
+      reader.readAsDataURL(file)
+    },
+    []
+  )
+
+  const handleRemoveAvatar = useCallback(async () => {
+    setAvatarError(null)
+    setIsUploadingAvatar(true)
+    try {
+      const result = await updateProfile({ image: null })
+      if (result?.error) {
+        setAvatarError(result.error)
+      } else {
+        setAvatarPreview(null)
+      }
+    } catch {
+      setAvatarError("Foto konnte nicht entfernt werden.")
+    } finally {
+      setIsUploadingAvatar(false)
+    }
+  }, [])
+
+  // ── Profile save ──
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError(null)
-    setIsLoading(true)
-    try {
-      if (!formData.name.trim()) {
-        setError("Name darf nicht leer sein.")
-        return
-      }
+    setProfileError(null)
+    setProfileSuccess(null)
 
-      const result = await updateProfile({ name: formData.name })
-      if (result.error) {
-        setError(result.error)
+    if (!profileName.trim()) {
+      setProfileError("Der Name darf nicht leer sein.")
+      return
+    }
+
+    setIsProfileLoading(true)
+    try {
+      const result = await updateProfile({ name: profileName.trim() })
+      if (result?.error) {
+        setProfileError(result.error)
       } else {
-        setIsSaved(true)
-        setTimeout(() => setIsSaved(false), 2000)
+        setProfileSuccess("Profil erfolgreich aktualisiert.")
+        setTimeout(() => setProfileSuccess(null), 3000)
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Profil konnte nicht aktualisiert werden.")
+      setProfileError(
+        err instanceof Error ? err.message : "Profil konnte nicht aktualisiert werden."
+      )
     } finally {
-      setIsLoading(false)
+      setIsProfileLoading(false)
     }
   }
 
+  // ── Password change ──
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError(null)
-    setIsLoading(true)
+    setPasswordError(null)
+    setPasswordSuccess(null)
+
+    const { currentPassword, newPassword, confirmPassword } = passwordForm
+
+    if (!currentPassword) {
+      setPasswordError("Bitte aktuelles Passwort eingeben.")
+      return
+    }
+    if (!newPassword) {
+      setPasswordError("Bitte neues Passwort eingeben.")
+      return
+    }
+    if (newPassword.length < 8) {
+      setPasswordError("Das neue Passwort muss mindestens 8 Zeichen lang sein.")
+      return
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError("Die neuen Passwörter stimmen nicht überein.")
+      return
+    }
+
+    setIsPasswordLoading(true)
     try {
-      if (!formData.currentPassword || !formData.newPassword) {
-        setError("Alle Passwortfelder sind erforderlich.")
-        return
-      }
-
-      if (formData.newPassword !== formData.confirmPassword) {
-        setError("Die neuen Passwörter stimmen nicht überein.")
-        return
-      }
-
-      if (formData.newPassword.length < 8) {
-        setError("Das neue Passwort muss mindestens 8 Zeichen lang sein.")
-        return
-      }
-
-      const result = await changePassword({
-        currentPassword: formData.currentPassword,
-        newPassword: formData.newPassword,
-      })
-
-      if (result.error) {
-        setError(result.error)
+      const result = await changePassword({ currentPassword, newPassword })
+      if (result?.error) {
+        setPasswordError(
+          result.error === "Invalid password"
+            ? "Das aktuelle Passwort ist falsch."
+            : result.error
+        )
       } else {
-        setFormData({
-          ...formData,
-          currentPassword: "",
-          newPassword: "",
-          confirmPassword: "",
-        })
-        setIsSaved(true)
-        setTimeout(() => setIsSaved(false), 2000)
+        setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" })
+        setPasswordSuccess("Passwort erfolgreich geändert.")
+        setTimeout(() => setPasswordSuccess(null), 3000)
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Passwort konnte nicht geändert werden.")
+      setPasswordError(
+        err instanceof Error ? err.message : "Passwort konnte nicht geändert werden."
+      )
     } finally {
-      setIsLoading(false)
+      setIsPasswordLoading(false)
     }
   }
 
+  // ── Render ──────────────────────────────────────────────────────────────────
   return (
     <div className="space-y-8 px-4 py-4 md:px-6 md:py-6 lg:px-8 lg:py-8">
+      {/* Page header */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
-        <p className="text-muted-foreground mt-2">
+        <p className="mt-2 text-muted-foreground">
           Kontoeinstellungen und Präferenzen verwalten.
         </p>
       </div>
-
-      {error && (
-        <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-          {error}
-        </div>
-      )}
 
       {/* ── Profil ── */}
       <Card>
         <CardHeader>
           <CardTitle>Profil</CardTitle>
-          <CardDescription>Profilinformationen aktualisieren.</CardDescription>
+          <CardDescription>
+            Profilinformationen und Profilfoto aktualisieren.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSaveProfile} className="space-y-6">
-            <div className="grid gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  placeholder="Max Muster"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  disabled={isLoading}
+            {/* Avatar + fields row */}
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
+              {/* Avatar upload */}
+              <div className="flex flex-col items-center gap-2">
+                <div className="relative">
+                  <Avatar className="size-20 rounded-full text-xl">
+                    <AvatarImage src={currentAvatar} alt={user?.name ?? "Avatar"} />
+                    <AvatarFallback className="rounded-full text-xl">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  {/* Camera overlay button */}
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploadingAvatar}
+                    aria-label="Profilfoto ändern"
+                    className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none disabled:cursor-not-allowed"
+                  >
+                    <IconCamera className="size-6 text-white" aria-hidden />
+                  </button>
+                </div>
+
+                {/* Hidden file input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="sr-only"
+                  onChange={handleAvatarChange}
+                  aria-hidden
                 />
+
+                <div className="flex flex-col items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploadingAvatar}
+                    className="text-xs text-primary hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {isUploadingAvatar ? "Wird gespeichert…" : "Foto ändern"}
+                  </button>
+                  {(currentAvatar) && (
+                    <button
+                      type="button"
+                      onClick={handleRemoveAvatar}
+                      disabled={isUploadingAvatar}
+                      className="text-xs text-muted-foreground hover:text-destructive hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      Foto entfernen
+                    </button>
+                  )}
+                </div>
+
+                {avatarError && (
+                  <p className="max-w-[140px] text-center text-xs text-destructive">
+                    {avatarError}
+                  </p>
+                )}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="email">E-Mail</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="max@beispiel.ch"
-                  value={session?.user?.email || ""}
-                  disabled
-                />
-                <p className="text-xs text-muted-foreground">
-                  E-Mail-Adresse kann nicht geändert werden.
-                </p>
-              </div>
+              {/* Name + Email + Member since */}
+              <div className="flex-1 space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Name</Label>
+                  <Input
+                    id="name"
+                    placeholder="Max Muster"
+                    value={profileName}
+                    onChange={(e) => setProfileName(e.target.value)}
+                    disabled={isProfileLoading}
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="timezone">Zeitzone</Label>
-                <Select defaultValue="europe_zurich">
-                  <SelectTrigger id="timezone" disabled={isLoading}>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="europe_zurich">Europa/Zürich</SelectItem>
-                    <SelectItem value="europe_berlin">Europa/Berlin</SelectItem>
-                    <SelectItem value="europe_london">Europa/London</SelectItem>
-                    <SelectItem value="utc">UTC</SelectItem>
-                    <SelectItem value="america_new_york">Amerika/New York</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="space-y-2">
+                  <Label htmlFor="email">E-Mail</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={user?.email ?? ""}
+                    disabled
+                    className="cursor-not-allowed opacity-60"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Die E-Mail-Adresse kann nicht geändert werden.
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Mitglied seit
+                  </p>
+                  <p className="text-sm">{memberSince}</p>
+                </div>
               </div>
             </div>
 
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Speichert…" : "Änderungen speichern"}
+            {/* Timezone */}
+            <div className="space-y-2">
+              <Label htmlFor="timezone">Zeitzone</Label>
+              <Select defaultValue="europe_zurich">
+                <SelectTrigger id="timezone" disabled={isProfileLoading}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="europe_zurich">Europa/Zürich</SelectItem>
+                  <SelectItem value="europe_berlin">Europa/Berlin</SelectItem>
+                  <SelectItem value="europe_london">Europa/London</SelectItem>
+                  <SelectItem value="utc">UTC</SelectItem>
+                  <SelectItem value="america_new_york">Amerika/New York</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <StatusMessage error={profileError} success={profileSuccess} />
+
+            <Button type="submit" disabled={isProfileLoading}>
+              {isProfileLoading ? "Speichert…" : "Änderungen speichern"}
             </Button>
-            {isSaved && (
-              <p className="text-sm text-secondary">Profil erfolgreich aktualisiert.</p>
-            )}
           </form>
         </CardContent>
       </Card>
@@ -197,7 +437,7 @@ export default function SettingsPage() {
         <CardHeader>
           <CardTitle>Passwort ändern</CardTitle>
           <CardDescription>
-            Passwort ändern, um das Konto zu schützen.
+            Passwort regelmässig ändern, um das Konto zu schützen.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -205,53 +445,64 @@ export default function SettingsPage() {
             <div className="grid gap-4">
               <div className="space-y-2">
                 <Label htmlFor="current-password">Aktuelles Passwort</Label>
-                <Input
+                <PasswordInput
                   id="current-password"
-                  type="password"
                   placeholder="Aktuelles Passwort eingeben"
-                  value={formData.currentPassword}
+                  value={passwordForm.currentPassword}
                   onChange={(e) =>
-                    setFormData({ ...formData, currentPassword: e.target.value })
+                    setPasswordForm({ ...passwordForm, currentPassword: e.target.value })
                   }
-                  disabled={isLoading}
+                  disabled={isPasswordLoading}
+                  autoComplete="current-password"
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="new-password">Neues Passwort</Label>
-                <Input
+                <PasswordInput
                   id="new-password"
-                  type="password"
-                  placeholder="Neues Passwort eingeben"
-                  value={formData.newPassword}
+                  placeholder="Mindestens 8 Zeichen"
+                  value={passwordForm.newPassword}
                   onChange={(e) =>
-                    setFormData({ ...formData, newPassword: e.target.value })
+                    setPasswordForm({ ...passwordForm, newPassword: e.target.value })
                   }
-                  disabled={isLoading}
+                  disabled={isPasswordLoading}
+                  autoComplete="new-password"
                 />
+                {passwordForm.newPassword.length > 0 &&
+                  passwordForm.newPassword.length < 8 && (
+                    <p className="text-xs text-destructive">
+                      Mindestens 8 Zeichen erforderlich.
+                    </p>
+                  )}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="confirm-password">Neues Passwort bestätigen</Label>
-                <Input
+                <PasswordInput
                   id="confirm-password"
-                  type="password"
                   placeholder="Neues Passwort wiederholen"
-                  value={formData.confirmPassword}
+                  value={passwordForm.confirmPassword}
                   onChange={(e) =>
-                    setFormData({ ...formData, confirmPassword: e.target.value })
+                    setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })
                   }
-                  disabled={isLoading}
+                  disabled={isPasswordLoading}
+                  autoComplete="new-password"
                 />
+                {passwordForm.confirmPassword.length > 0 &&
+                  passwordForm.newPassword !== passwordForm.confirmPassword && (
+                    <p className="text-xs text-destructive">
+                      Die Passwörter stimmen nicht überein.
+                    </p>
+                  )}
               </div>
             </div>
 
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Aktualisiert…" : "Passwort aktualisieren"}
+            <StatusMessage error={passwordError} success={passwordSuccess} />
+
+            <Button type="submit" disabled={isPasswordLoading}>
+              {isPasswordLoading ? "Aktualisiert…" : "Passwort aktualisieren"}
             </Button>
-            {isSaved && (
-              <p className="text-sm text-secondary">Passwort erfolgreich geändert.</p>
-            )}
           </form>
         </CardContent>
       </Card>
@@ -267,64 +518,101 @@ export default function SettingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="space-y-6">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">E-Mail-Benachrichtigungen</p>
-                  <p className="text-sm text-muted-foreground">
-                    E-Mail-Updates zum Konto erhalten.
-                  </p>
-                </div>
-                <input type="checkbox" defaultChecked className="h-4 w-4" />
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium">E-Mail-Benachrichtigungen</p>
+                <p className="text-sm text-muted-foreground">
+                  E-Mail-Updates zum Konto erhalten.
+                </p>
               </div>
-
-              <Separator />
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Marketing-E-Mails</p>
-                  <p className="text-sm text-muted-foreground">
-                    E-Mails über neue Funktionen und Updates erhalten.
-                  </p>
-                </div>
-                <input type="checkbox" className="h-4 w-4" />
-              </div>
-
-              <Separator />
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Zwei-Faktor-Authentifizierung</p>
-                  <p className="text-sm text-muted-foreground">
-                    Zusätzliche Sicherheitsebene für das Konto hinzufügen.
-                  </p>
-                </div>
-                <Button variant="outline" size="sm" disabled>
-                  Konfigurieren
-                </Button>
-              </div>
+              <input type="checkbox" defaultChecked className="h-4 w-4" />
             </div>
-          </form>
+
+            <Separator />
+
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium">Marketing-E-Mails</p>
+                <p className="text-sm text-muted-foreground">
+                  E-Mails über neue Funktionen und Updates erhalten.
+                </p>
+              </div>
+              <input type="checkbox" className="h-4 w-4" />
+            </div>
+
+            <Separator />
+
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium">Zwei-Faktor-Authentifizierung</p>
+                <p className="text-sm text-muted-foreground">
+                  Zusätzliche Sicherheitsebene für das Konto hinzufügen.
+                </p>
+              </div>
+              <Button variant="outline" size="sm" disabled>
+                Konfigurieren
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
       <Separator />
 
       {/* ── Gefahrenzone ── */}
-      <Card className="border-destructive/30 bg-destructive/10">
+      <Card className="border-destructive/30 bg-destructive/5">
         <CardHeader>
           <CardTitle className="text-destructive">Gefahrenzone</CardTitle>
-          <CardDescription>Aktionen, die nicht rückgängig gemacht werden können.</CardDescription>
+          <CardDescription>
+            Aktionen, die nicht rückgängig gemacht werden können.
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-destructive">
-            Das Löschen des Kontos entfernt alle Daten dauerhaft. Diese Aktion kann nicht
-            rückgängig gemacht werden.
-          </p>
-          <Button variant="destructive" disabled>
-            Konto löschen
-          </Button>
+          <div className="rounded-md border border-destructive/20 bg-destructive/5 p-4">
+            <p className="mb-1 text-sm font-medium">Konto löschen</p>
+            <p className="mb-4 text-sm text-muted-foreground">
+              Das Löschen des Kontos entfernt alle Daten dauerhaft, einschliesslich
+              Inventar, Werkzeuge und Fahrzeugbestände. Diese Aktion kann{" "}
+              <strong>nicht</strong> rückgängig gemacht werden.
+            </p>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="destructive" size="sm">
+                  Konto löschen
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2 text-destructive">
+                    <IconAlertTriangle className="size-5 shrink-0" aria-hidden />
+                    Konto wirklich löschen?
+                  </DialogTitle>
+                  <DialogDescription>
+                    Diese Aktion ist <strong>unwiderruflich</strong>. Alle Daten
+                    werden dauerhaft gelöscht — Inventar, Werkzeuge,
+                    Fahrzeugbestände, Lieferscheine und Ihr Abonnement.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                  Wenden Sie sich an den Support, um Ihr Konto zu löschen:
+                  <br />
+                  <a
+                    href="mailto:support@logistikapp.ch"
+                    className="font-medium underline underline-offset-2"
+                  >
+                    support@logistikapp.ch
+                  </a>
+                </div>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="outline">Abbrechen</Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
         </CardContent>
       </Card>
     </div>
