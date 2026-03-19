@@ -1,0 +1,53 @@
+---
+title: Bulk-Operationen
+---
+
+# Bulk-Operationen
+
+Mit Bulk-Operationen können Sie mehrere Einträge gleichzeitig bearbeiten, verschieben, exportieren oder löschen — ohne jeden Artikel einzeln anfassen zu müssen.
+
+## Auswahl aktivieren
+
+In jeder Listenansicht (Materialien, Werkzeuge, Standorte, Lieferscheine) befindet sich links neben jedem Eintrag ein **Auswahlkästchen** (Checkbox). Klicken Sie auf eine Checkbox, um den Auswahlmodus zu aktivieren.
+
+- **Einzelne Auswahl**: Checkbox neben dem Eintrag anklicken.
+- **Alle auf der Seite**: Checkbox in der Spaltenüberschrift anklicken.
+- **Bereich auswählen**: Erstes Element anklicken, dann `Shift+Klick` auf das letzte.
+- **Alle abwählen**: Erneut auf die Überschriften-Checkbox klicken oder `Esc` drücken.
+
+## Aktionsleiste
+
+Sobald mindestens ein Element ausgewählt ist, erscheint am unteren Bildschirmrand eine **schwebende Aktionsleiste** mit folgenden Optionen:
+
+| Aktion | Beschreibung |
+|--------|--------------|
+| **Gruppe ändern** | Alle gewählten Einträge einer anderen Gruppe/Kategorie zuweisen |
+| **Standort ändern** | Bestand aller gewählten Materialien zu einem anderen Standort umbuchen |
+| **Exportieren** | Ausgewählte Einträge als CSV oder Excel exportieren |
+| **Löschen** | Alle gewählten Einträge endgültig löschen (mit Bestätigungsdialog) |
+
+Die verfügbaren Aktionen variieren je nach Listentyp.
+
+## Bulk-Löschen
+
+Beim Löschen erscheint ein Bestätigungsdialog mit der Anzahl der betroffenen Einträge. Einträge mit laufenden Buchungen oder aktiven Lieferschein-Positionen können nicht gelöscht werden — diese werden im Dialog einzeln aufgeführt.
+
+> **Achtung:** Das Löschen ist endgültig. Stellen Sie sicher, dass alle Daten gesichert oder exportiert wurden, bevor Sie fortfahren.
+
+## Bulk-Standortänderung
+
+Bei der Standortänderung für Materialien wird für jeden Artikel eine **Umbuchung** (Bestandsbewegung) erstellt. Sie wählen den Zielstandort und die zu umbuchende Menge (Standard: gesamter Bestand am aktuellen Standort).
+
+## Export der Auswahl
+
+Der Export erstellt eine Datei nur mit den gewählten Einträgen — inklusive aller Felder und Zusatzfelder. Wählen Sie das Format (CSV oder XLSX) und ob Bestandsdaten pro Standort enthalten sein sollen.
+
+## Limits
+
+- Maximal **500 Einträge** pro Bulk-Operation.
+- Bei mehr als 500 Einträgen: Filtern Sie die Liste und führen Sie die Operation in mehreren Schritten durch.
+- Hintergrundverarbeitung: Operationen mit mehr als 100 Einträgen werden asynchron verarbeitet. Sie erhalten eine Benachrichtigung, sobald die Operation abgeschlossen ist.
+
+## Berechtigungen
+
+Bulk-Operationen erfordern dieselben Berechtigungen wie einzelne Operationen. Löschen erfordert die Rolle **Manager** oder **Administrator**. Standort- und Gruppenänderungen sind auch für **Mitarbeiter** verfügbar.

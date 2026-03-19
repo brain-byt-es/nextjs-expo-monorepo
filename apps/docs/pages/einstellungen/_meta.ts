@@ -10,5 +10,6 @@ export default {
   "sso": "Single Sign-On (SSO)",
   "zusatzfelder": "Zusatzfelder",
   "api-schluessel": "API-Schlüssel",
-  "automatisierungen": "Automatisierungen"
+  "automatisierungen": "Automatisierungen",
+  "ki-funktionen": "KI-Funktionen"
 }

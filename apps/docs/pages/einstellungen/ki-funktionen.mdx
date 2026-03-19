@@ -1,0 +1,71 @@
+---
+title: KI-Funktionen konfigurieren
+---
+
+# KI-Funktionen konfigurieren
+
+Unter **Einstellungen → KI-Funktionen** legen Sie fest, welcher OpenAI API-Schlüssel für die KI-gestützten Funktionen von LogistikApp verwendet wird. Dazu gehören die [Foto-Erkennung](/ai/foto-erkennung), die [Nachfrageprognose](/ai/prognose) und die [Anomalie-Erkennung](/ai/anomalie-erkennung).
+
+## API-Schlüssel eintragen
+
+1. Öffnen Sie **Einstellungen → KI-Funktionen**.
+2. Klicken Sie auf **«API-Schlüssel bearbeiten»**.
+3. Fügen Sie Ihren OpenAI API-Schlüssel ein (beginnt mit `sk-`).
+4. Klicken Sie auf **«Speichern»**.
+
+Der Schlüssel wird verschlüsselt gespeichert und ist nach dem Speichern nicht mehr im Klartext sichtbar.
+
+## Verbindung testen
+
+Nach dem Speichern können Sie die Verbindung sofort prüfen:
+
+1. Klicken Sie auf **«Verbindung testen»**.
+2. LogistikApp sendet eine Test-Anfrage an die OpenAI API.
+3. Das Ergebnis erscheint als Status-Indikator:
+   - **Grün – Verbunden**: API-Schlüssel ist gültig und die Verbindung funktioniert.
+   - **Gelb – Quota-Warnung**: Schlüssel ist gültig, aber das verfügbare Guthaben ist niedrig.
+   - **Rot – Fehler**: Schlüssel ungültig, gesperrt oder keine Verbindung möglich.
+
+## Status-Indikator
+
+Auf der KI-Funktionen-Übersichtsseite zeigt ein dauerhafter Status-Indikator den aktuellen Verbindungszustand. Dieser wird stündlich automatisch aktualisiert.
+
+| Status | Bedeutung |
+|--------|-----------|
+| **Aktiv** | Eigener API-Schlüssel der Organisation aktiv |
+| **Demo** | Kein eigener Schlüssel — Demo-Modus aktiv |
+| **Umgebungsvariable** | Schlüssel via Serverumgebung gesetzt |
+| **Fehler** | Schlüssel ungültig oder API nicht erreichbar |
+
+## Schlüssel-Auflösungsreihenfolge
+
+LogistikApp verwendet den API-Schlüssel nach folgender Priorität:
+
+1. **Organisations-Schlüssel** (in Einstellungen eingetragen) — hat höchste Priorität
+2. **Umgebungsvariable** (`OPENAI_API_KEY` auf dem Server) — für Self-Hosted-Installationen
+3. **Demo-Modus** — regelbasiertes Fallback ohne echte KI, gekennzeichnet mit «Demo»
+
+## Demo-Modus
+
+Wenn kein gültiger API-Schlüssel konfiguriert ist, verwenden alle KI-Funktionen automatisch einen **Demo-Modus**:
+
+- Foto-Erkennung liefert Beispiel-Ergebnisse basierend auf Farbmustern
+- Prognose verwendet einfache Durchschnittswerte
+- Anomalie-Erkennung ist eingeschränkt verfügbar
+
+Im Demo-Modus wird in der Benutzeroberfläche ein **orangefarbenes «Demo»-Badge** angezeigt, damit klar ersichtlich ist, dass keine echte KI-Analyse stattfindet.
+
+## Sicherheit
+
+- Der API-Schlüssel wird **AES-256-verschlüsselt** in der Datenbank gespeichert.
+- Er wird ausschliesslich serverseitig verwendet — der Schlüssel verlässt nie den Server.
+- Nur Administratoren können den Schlüssel einsehen oder ändern.
+- Beim Löschen eines Organisationskontos wird der Schlüssel sofort und unwiderruflich gelöscht.
+
+> **Empfehlung:** Erstellen Sie in Ihrem OpenAI-Konto einen **separaten API-Schlüssel** nur für LogistikApp. So können Sie im Bedarfsfall den Schlüssel für LogistikApp widerrufen, ohne andere Anwendungen zu beeinträchtigen.
+
+## Verwandte Seiten
+
+- [Foto-Erkennung (AI)](/ai/foto-erkennung)
+- [Nachfrageprognose](/ai/prognose)
+- [Anomalie-Erkennung](/ai/anomalie-erkennung)

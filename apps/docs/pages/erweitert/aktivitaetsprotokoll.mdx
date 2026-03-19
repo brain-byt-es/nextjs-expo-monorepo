@@ -1,0 +1,79 @@
+---
+title: Aktivitätsprotokoll
+---
+
+# Aktivitätsprotokoll
+
+Das Aktivitätsprotokoll ist ein vollständiges Audit-Trail aller Änderungen in Ihrer LogistikApp-Organisation. Jede Buchung, jede Änderung und jede Systemaktion wird mit Zeitstempel, Benutzer und Vorher/Nachher-Werten protokolliert.
+
+## Zugriff
+
+Klicken Sie in der Navigation auf **«Aktivitätsprotokoll»** (oder über **Berichte → Aktivitätsprotokoll**). Das Protokoll steht Benutzern mit der Rolle **Manager** oder **Administrator** zur Verfügung.
+
+## Protokollierte Ereignisse
+
+| Kategorie | Beispiele |
+|-----------|-----------|
+| **Materialien** | Erstellt, bearbeitet, gelöscht, Bestand geändert, Standort umgebucht |
+| **Werkzeuge** | Erstellt, ausgecheckt, eingecheckt, Wartung erfasst, gelöscht |
+| **Lieferscheine** | Erstellt, Position hinzugefügt, abgeschlossen, storniert |
+| **Benutzer** | Eingeladen, Rolle geändert, deaktiviert |
+| **Einstellungen** | Konfiguration geändert, API-Schlüssel erstellt |
+| **Automatisierung** | Workflow-Regel ausgelöst, Genehmigung erteilt/abgelehnt |
+
+Jeder Eintrag enthält:
+- **Zeitstempel** (Datum, Uhrzeit, Zeitzone)
+- **Benutzer** (Name, E-Mail-Adresse)
+- **Aktion** (Art der Änderung)
+- **Objekt** (betroffener Artikel mit Direktlink)
+- **Änderungsdetails** (Vorher/Nachher bei Feldänderungen)
+- **IP-Adresse** (nur für Sicherheitsprüfungen sichtbar, für Administratoren)
+
+## Filtern
+
+Das Aktivitätsprotokoll kann nach mehreren Kriterien gefiltert werden:
+
+- **Zeitraum**: Von/Bis-Datum
+- **Benutzer**: Einzelner Benutzer oder alle
+- **Ereignistyp**: Kategorie oder spezifische Aktion
+- **Objekt-Typ**: Nur Materialien, nur Werkzeuge usw.
+- **Freitextsuche**: Suche im Objekt-Namen oder den Änderungsdetails
+
+Filter können als **gespeicherte Ansicht** abgelegt werden, um sie wiederzuverwenden.
+
+## Exportieren
+
+Das gefilterte Protokoll kann als **CSV** exportiert werden:
+
+1. Stellen Sie die gewünschten Filter ein.
+2. Klicken Sie auf **«Exportieren»**.
+3. Wählen Sie den Datumsbereich (max. 12 Monate pro Export).
+4. Klicken Sie auf **«CSV herunterladen»**.
+
+Der Export enthält alle sichtbaren Felder in tabellarischer Form, geeignet für Revisionen und Compliance-Prüfungen.
+
+## Aktivitäts-Timeline auf Detailseiten
+
+Auf jeder Detailseite (Material, Werkzeug, Lieferschein, Standort) gibt es einen **«Verlauf»**-Tab, der alle Einträge aus dem Aktivitätsprotokoll für dieses spezifische Objekt in einer Timeline-Ansicht zeigt.
+
+Die Timeline zeigt:
+- Wer wann was geändert hat
+- Bestandsveränderungen mit Vorher/Nachher-Wert
+- Verknüpfte Lieferscheine als anklickbare Links
+- Kommentare von Benutzern
+
+## Aufbewahrungsfristen
+
+| Plan | Aufbewahrungsdauer |
+|------|-------------------|
+| Starter | 90 Tage |
+| Business | 1 Jahr |
+| Enterprise | Unbegrenzt (konfigurierbar) |
+
+Nach Ablauf der Frist werden ältere Einträge automatisch gelöscht. Exportieren Sie das Protokoll regelmässig, wenn Sie eine längere Aufbewahrung benötigen.
+
+## Compliance-Hinweis
+
+Das Aktivitätsprotokoll ist revisionssicher — Einträge können nicht nachträglich geändert oder gelöscht werden (auch nicht durch Administratoren). Es eignet sich als Nachweis für interne Audits sowie für Anforderungen nach ISO 9001, nDSG/DSGVO und branchenspezifischen Normen.
+
+> **Tipp:** Exportieren Sie das Aktivitätsprotokoll am Ende jedes Quartals als Archiv-CSV. Dies erleichtert spätere Audits erheblich.

@@ -131,3 +131,46 @@ Ja, über die [REST-API](/api-docs/v1-api) oder [Webhooks](/einstellungen/webhoo
 
 ### Was ist der Unterschied zwischen API-Schlüsseln und Webhooks?
 **API-Schlüssel** ermöglichen es Ihrem System, LogistikApp aktiv abzufragen (Pull). **Webhooks** ermöglichen es LogistikApp, Ihr System bei Ereignissen aktiv zu benachrichtigen (Push). Für Echtzeit-Integrationen empfehlen wir Webhooks, für geplante Synchronisationen die API.
+
+## Command Palette & Tastaturkürzel
+
+### Wie öffne ich die Command Palette?
+Drücken Sie `Cmd+K` auf dem Mac oder `Ctrl+K` auf Windows und Linux. Die Command Palette öffnet sich sofort und Sie können direkt zu tippen beginnen. Mit `Esc` schliessen Sie sie wieder. Details unter [Command Palette](/erweitert/command-palette).
+
+### Welche Shortcuts gibt es in LogistikApp?
+Die wichtigsten Navigations-Shortcuts: `g h` für Dashboard, `g m` für Materialien, `g w` für Werkzeuge, `g s` für Standorte. Erstell-Shortcuts: `c m` für neues Material, `c t` für neues Werkzeug. Drücken Sie `?` auf einer beliebigen Seite für die vollständige Übersicht.
+
+## Benachrichtigungen
+
+### Woher weiss ich, wenn der Mindestbestand unterschritten wird?
+LogistikApp sendet automatisch eine In-App-Benachrichtigung, sobald der Bestand eines Artikels unter den konfigurierten Mindestbestand fällt. Zusätzlich können Sie E-Mail-Benachrichtigungen und Push-Benachrichtigungen auf dem Mobilgerät aktivieren. Einstellbar unter **Einstellungen → Benachrichtigungen**.
+
+### Wie oft werden Benachrichtigungen aktualisiert?
+In der Web-App prüft LogistikApp alle 30 Sekunden auf neue Benachrichtigungen — ohne Seitenaktualisierung. Auf der Mobile App werden zusätzlich Push-Benachrichtigungen in Echtzeit zugestellt. Details unter [Benachrichtigungszentrale](/erweitert/benachrichtigungen).
+
+### Kann ich bestimmte Benachrichtigungstypen deaktivieren?
+Ja. Unter **Einstellungen → Benachrichtigungen** können Sie pro Typ (Mindestbestand, Wartung, Genehmigungen usw.) individuell festlegen, ob Sie In-App-, E-Mail- oder Push-Benachrichtigungen erhalten möchten.
+
+## Bulk-Operationen
+
+### Kann ich mehrere Artikel gleichzeitig löschen?
+Ja. Aktivieren Sie in der Listenansicht die Checkboxen links neben den Einträgen, markieren Sie die gewünschten Artikel und wählen Sie in der schwebenden Aktionsleiste **«Löschen»**. Es erscheint ein Bestätigungsdialog. Achtung: Artikel mit laufenden Buchungen können nicht gelöscht werden. Details unter [Bulk-Operationen](/erweitert/bulk-operationen).
+
+### Wie viele Artikel kann ich gleichzeitig bearbeiten?
+Pro Bulk-Operation können maximal 500 Einträge verarbeitet werden. Bei grösseren Mengen führen Sie die Operation in mehreren Schritten durch oder verwenden Sie die API.
+
+## Reservierungen
+
+### Kann ich ein Werkzeug für ein zukünftiges Projekt reservieren?
+Ja. Öffnen Sie die Detailseite des Werkzeugs und klicken Sie auf **«Reservieren»**. Wählen Sie Zeitraum, Person und Verwendungszweck. LogistikApp prüft automatisch Konflikte mit bestehenden Reservierungen. Die Reservierungsfunktion ist ab dem **Business-Plan** verfügbar. Details unter [Reservierungen](/erweitert/reservierungen).
+
+### Was passiert wenn zwei Personen dasselbe Werkzeug reservieren wollen?
+LogistikApp zeigt beim zweiten Reservierungsversuch eine Konfliktwarnung mit den Details der bestehenden Reservierung. Sie können trotzdem eine Anfrage stellen — der Manager entscheidet, welche Reservierung genehmigt wird.
+
+## Aktivitätsprotokoll & Transparenz
+
+### Kann ich nachvollziehen, wer einen Artikel verändert hat?
+Ja. Das [Aktivitätsprotokoll](/erweitert/aktivitaetsprotokoll) protokolliert lückenlos alle Änderungen mit Benutzer, Zeitstempel und Vorher/Nachher-Werten. Auf jeder Detailseite finden Sie zudem den «Verlauf»-Tab mit einer Timeline aller Ereignisse für dieses Objekt.
+
+### Wie lange wird das Aktivitätsprotokoll aufbewahrt?
+Das ist planabhängig: Starter 90 Tage, Business 1 Jahr, Enterprise unbegrenzt. Das Protokoll kann jederzeit als CSV exportiert werden. Einträge können nicht nachträglich verändert werden.

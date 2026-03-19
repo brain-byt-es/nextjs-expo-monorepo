@@ -1,0 +1,68 @@
+---
+title: Reservierungen
+---
+
+# Reservierungen
+
+Mit Reservierungen können Sie Werkzeuge und Materialien für einen bestimmten Zeitraum im Voraus reservieren. LogistikApp prüft automatisch, ob das gewünschte Objekt im gewählten Zeitfenster verfügbar ist.
+
+## Wozu Reservierungen?
+
+Reservierungen sind sinnvoll wenn:
+- Werkzeuge für eine bevorstehende Baustelle gebucht werden sollen
+- Materialien für einen Auftrag zurückgelegt werden müssen
+- Mehrere Teams dieselben Ressourcen nutzen und Konflikte vermieden werden sollen
+
+## Reservierung erstellen
+
+1. Öffnen Sie die Detailseite eines Werkzeugs oder Materials.
+2. Klicken Sie auf **«Reservieren»** (Kalender-Symbol).
+3. Wählen Sie den **Zeitraum** (Von/Bis mit Datum und Uhrzeit).
+4. Wählen Sie optional den **Benutzer** oder das **Team**, für das reserviert wird.
+5. Geben Sie optional einen **Verwendungszweck** (z.B. Projektname) ein.
+6. Klicken Sie auf **«Reservierung erstellen»**.
+
+Falls das Objekt im gewählten Zeitraum bereits reserviert ist, zeigt LogistikApp eine Konfliktwarnung mit den bestehenden Reservierungen.
+
+## Status-Workflow
+
+Reservierungen durchlaufen folgende Phasen:
+
+| Status | Beschreibung |
+|--------|--------------|
+| **Ausstehend** | Anfrage erstellt, noch nicht bestätigt |
+| **Bestätigt** | Von einem Manager genehmigt |
+| **Aktiv** | Reservierungszeitraum hat begonnen |
+| **Abgeschlossen** | Zeitraum beendet, Objekt zurückgegeben |
+| **Abgebrochen** | Manuell storniert |
+
+Administratoren und Manager können Reservierungen direkt bestätigen. Mitarbeiter erstellen Reservierungsanfragen, die dann genehmigt werden müssen.
+
+## Kalenderansicht
+
+Unter **Werkzeuge → Kalender** (oder **Materialien → Kalender**) sehen Sie alle Reservierungen in einer Monats- oder Wochenansicht. Konflikte werden farblich hervorgehoben:
+
+- **Blau**: Bestätigte Reservierungen
+- **Gelb**: Ausstehende Anfragen
+- **Rot**: Konflikte (mehrere Anfragen im selben Zeitraum)
+- **Grau**: Vergangene / abgeschlossene Reservierungen
+
+## Reservierungen auf der Detailseite
+
+Auf jeder Werkzeug- und Material-Detailseite gibt es einen **Reservierungs-Panel** mit:
+
+- Aktuelle und kommende Reservierungen (nächste 30 Tage)
+- Schaltfläche «Reservieren» für den nächsten freien Zeitraum
+- Verfügbarkeitskalender (kompakte Ansicht)
+
+## Benachrichtigungen
+
+- **Ersteller**: Erhält eine Bestätigung oder Ablehnung per App-Benachrichtigung und E-Mail.
+- **Ressourcen-Verantwortlicher**: Wird bei neuen Anfragen benachrichtigt.
+- **Erinnerung**: 24 Stunden vor Beginn der Reservierung erhalten alle Beteiligten eine Erinnerung.
+
+## Automatischer Checkout
+
+Wenn ein Werkzeug zum Beginn einer Reservierung noch eingecheckt ist, kann LogistikApp optional einen **automatischen Checkout** auf die reservierende Person durchführen. Diese Option kann pro Reservierung aktiviert werden.
+
+> **Hinweis:** Reservierungen sind ab dem **Business-Plan** verfügbar.

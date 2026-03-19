@@ -1,0 +1,84 @@
+---
+title: Materialanfragen
+---
+
+# Materialanfragen
+
+Materialanfragen ermöglichen es Mitarbeitern, benötigte Materialien oder Werkzeuge anzufordern, ohne selbst direkt auf den Bestand zugreifen zu können. Manager prüfen und genehmigen die Anfragen, bevor Material entnommen oder bestellt wird.
+
+## Anfrage erstellen (Mitarbeiter)
+
+1. Navigieren Sie zu **Materialien** oder **Werkzeuge**.
+2. Klicken Sie auf **«Anfragen»** in der oberen Navigation.
+3. Klicken Sie auf **«+ Neue Anfrage»**.
+4. Füllen Sie das Formular aus:
+   - **Artikel**: Suche nach Materialien oder Werkzeugen
+   - **Menge**: Benötigte Anzahl
+   - **Benötigt bis**: Datum, bis wann der Artikel gebraucht wird
+   - **Priorität**: Dringend / Hoch / Normal / Niedrig
+   - **Begründung**: Freitextfeld (optional, aber empfohlen)
+5. Klicken Sie auf **«Anfrage einreichen»**.
+
+## Prioritätsstufen
+
+| Priorität | Beschreibung | SLA (Bearbeitungszeit) |
+|-----------|--------------|------------------------|
+| **Dringend** | Produktionsstopp oder Notfall | 2 Stunden |
+| **Hoch** | Auftrag gefährdet | 8 Stunden |
+| **Normal** | Regulärer Bedarf | 2 Werktage |
+| **Niedrig** | Vorratshaltung | 1 Woche |
+
+Die SLA-Zeiten sind Richtwerte und nicht technisch erzwungen. Manager sehen die verbleibende Zeit farbkodiert in der Anfrageliste.
+
+## Anfragen verwalten (Manager)
+
+Unter **Anfragen → Eingehend** sehen Manager alle offenen Anfragen. Der Badge-Counter auf dem Menüpunkt zeigt die Anzahl ungeprüfter Anfragen an.
+
+### Genehmigen
+
+1. Klicken Sie auf eine Anfrage.
+2. Prüfen Sie den aktuellen Bestand (wird direkt neben der Anfrage angezeigt).
+3. Klicken Sie auf **«Genehmigen»**.
+4. Optional: Menge anpassen, Kommentar hinzufügen.
+5. Bestätigen.
+
+Nach der Genehmigung wird der Bestand reserviert (sofern vorhanden) und der Mitarbeiter benachrichtigt.
+
+### Ablehnen
+
+1. Klicken Sie auf eine Anfrage.
+2. Klicken Sie auf **«Ablehnen»**.
+3. Geben Sie eine Begründung ein (Pflichtfeld bei Ablehnung).
+4. Bestätigen.
+
+Der Mitarbeiter erhält eine Benachrichtigung mit der Begründung.
+
+## Bestellung aus Anfrage erstellen
+
+Wenn der angeforderte Artikel nicht auf Lager ist, kann direkt aus der Anfrage eine Bestellung erstellt werden:
+
+1. Öffnen Sie die Anfrage.
+2. Klicken Sie auf **«Bestellen»**.
+3. LogistikApp schlägt Lieferanten aus der Lieferantendatenbank vor.
+4. Wählen Sie einen Lieferanten und bestätigen Sie die Bestellmenge.
+5. Die Bestellung wird als Entwurf erstellt und dem Manager zugewiesen.
+
+## Anfrage-Status verfolgen
+
+Mitarbeiter sehen unter **Anfragen → Meine Anfragen** den Status ihrer eigenen Anfragen:
+
+- **Offen**: Noch nicht bearbeitet
+- **Genehmigt**: Freigegeben, Artikel kann abgeholt werden
+- **Abgelehnt**: Mit Begründung des Managers
+- **Erledigt**: Ware wurde entnommen oder Bestellung aufgegeben
+
+## Benachrichtigungen
+
+| Ereignis | Empfänger |
+|----------|-----------|
+| Neue Anfrage eingereicht | Alle Manager |
+| Anfrage genehmigt | Antragsteller |
+| Anfrage abgelehnt | Antragsteller |
+| Anfrage überfällig | Manager + Antragsteller |
+
+> **Tipp:** Kombinieren Sie Materialanfragen mit [Workflow-Regeln](/automatisierung/workflow-regeln), um bei dringenden Anfragen automatisch eine SMS oder einen Slack-Kanal zu benachrichtigen.

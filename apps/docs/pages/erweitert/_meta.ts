@@ -4,5 +4,13 @@ export default {
   "dashboard-widgets": "Dashboard anpassen",
   "qr-self-service": "QR Self-Service",
   "multi-unternehmen": "Multi-Unternehmen",
-  "branchen-vorlagen": "Branchen-Vorlagen"
+  "branchen-vorlagen": "Branchen-Vorlagen",
+  "command-palette": "Command Palette (Cmd+K)",
+  "favoriten": "Favoriten & Zuletzt verwendet",
+  "bulk-operationen": "Bulk-Operationen",
+  "duplikat-erkennung": "Duplikat-Erkennung",
+  "reservierungen": "Reservierungen",
+  "materialanfragen": "Materialanfragen",
+  "benachrichtigungen": "Benachrichtigungszentrale",
+  "aktivitaetsprotokoll": "Aktivitätsprotokoll"
 }

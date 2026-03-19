@@ -1,0 +1,58 @@
+---
+title: Duplikat-Erkennung
+---
+
+# Duplikat-Erkennung
+
+LogistikApp erkennt automatisch, wenn ein Artikel, der gerade erfasst wird, möglicherweise bereits in der Datenbank existiert. Das verhindert doppelte Einträge und hält Ihren Artikelstamm sauber.
+
+## Wie die Erkennung funktioniert
+
+Bei jeder Neuanlage (Material oder Werkzeug) prüft LogistikApp im Hintergrund auf zwei Arten:
+
+1. **Barcode-Kollision**: Wenn die eingegebene EAN oder Artikelnummer exakt mit einem bestehenden Eintrag übereinstimmt, erscheint sofort eine Warnung.
+
+2. **Namensähnlichkeit (Levenshtein-Distanz)**: Der Algorithmus berechnet die Zeichenähnlichkeit zwischen dem neuen Namen und allen bestehenden Artikelnamen. Bei einer Ähnlichkeit von mehr als 85 % wird ein Hinweis angezeigt.
+
+## Duplikat-Warnung beim Erstellen
+
+Wenn beim Ausfüllen des Erstellungsformulars ein potenzielles Duplikat erkannt wird, erscheint ein **gelbes Hinweisfeld** unter dem Namensfeld:
+
+> «Mögliches Duplikat gefunden: *Bohrmaschine Makita 18V* (ähnlich 91 %). Möchten Sie den bestehenden Eintrag prüfen?»
+
+Sie haben drei Optionen:
+
+- **Bestehenden Eintrag öffnen** — springt zur Detailseite des gefundenen Artikels
+- **Trotzdem neu anlegen** — legt den Artikel wie eingegeben an (Warnung bleibt sichtbar)
+- **Ignorieren** — blendet den Hinweis für diese Sitzung aus
+
+## Duplikate zusammenführen (Merge)
+
+Wenn zwei Einträge als Duplikat erkannt wurden, können diese zusammengeführt werden:
+
+### Schritt für Schritt
+
+1. Öffnen Sie einen der beiden Einträge.
+2. Klicken Sie auf **«...» → Als Duplikat markieren / Zusammenführen»**.
+3. Suchen Sie nach dem zweiten Eintrag oder wählen Sie ihn aus der Duplikat-Vorschlagsliste.
+4. LogistikApp zeigt einen **Side-by-Side-Vergleich** beider Einträge.
+5. Wählen Sie für jedes Feld, welcher Wert übernommen werden soll.
+6. Wählen Sie, welcher Eintrag als **Primäreintrag** erhalten bleibt.
+7. Bestätigen Sie die Zusammenführung.
+
+### Was beim Merge passiert
+
+- Der Primäreintrag behält seine ID und URL.
+- Alle Bestandsbewegungen, Buchungen und Lieferschein-Positionen des Sekundäreintrags werden auf den Primäreintrag übertragen.
+- Der Sekundäreintrag wird archiviert (nicht gelöscht, aber nicht mehr sichtbar).
+- Alle Standortbestände werden addiert.
+
+> **Hinweis:** Ein Merge kann nicht rückgängig gemacht werden. Exportieren Sie beide Einträge vor dem Zusammenführen als Sicherungskopie.
+
+## Duplikat-Bericht
+
+Unter **Berichte → Duplikat-Analyse** können Administratoren eine vollständige Liste potenzieller Duplikate im gesamten Artikelstamm abrufen. Der Bericht listet Paare nach Ähnlichkeitsgrad sortiert auf und ermöglicht die Batch-Bereinigung.
+
+## Empfindlichkeit anpassen
+
+Unter **Einstellungen → Erweitert → Duplikat-Erkennung** können Administratoren den Schwellwert für die Namensähnlichkeit anpassen (Standard: 85 %). Ein höherer Wert (z.B. 95 %) meldet weniger Treffer; ein niedrigerer Wert (z.B. 75 %) meldet mehr, aber auch mehr falsch-positive Ergebnisse.

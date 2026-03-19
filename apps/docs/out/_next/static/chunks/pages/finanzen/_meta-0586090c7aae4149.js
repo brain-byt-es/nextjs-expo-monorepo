@@ -1,0 +1,1 @@
+(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[5856],{706:(_,n,e)=>{(window.__NEXT_P=window.__NEXT_P||[]).push(["/finanzen/_meta",function(){return e(2211)}])},2211:(_,n,e)=>{"use strict";e.r(n),e.d(n,{__N_SSG:()=>u,default:()=>s});var u=!0;let s=()=>null}},_=>{_.O(0,[636,6593,8792],()=>_(_.s=706)),_N_E=_.O()}]);
