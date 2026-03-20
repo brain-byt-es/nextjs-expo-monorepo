@@ -133,15 +133,15 @@ function KpiCard({
   return (
     <div
       className={[
-        "flex flex-col gap-3 rounded-2xl p-8 border",
+        "flex flex-col gap-2 lg:gap-3 rounded-2xl p-4 lg:p-8 border",
         alert
           ? "bg-red-950/60 border-red-700/50 text-red-100"
           : "bg-white/5 border-white/10 text-white",
       ].join(" ")}
     >
-      <Icon className={`size-10 ${alert ? "text-red-400" : "text-primary"}`} />
-      <span className="text-6xl font-black tabular-nums tracking-tight">{value}</span>
-      <span className="text-2xl font-semibold text-white/70">{label}</span>
+      <Icon className={`size-6 lg:size-10 ${alert ? "text-red-400" : "text-primary"}`} />
+      <span className="text-3xl lg:text-6xl font-black tabular-nums tracking-tight">{value}</span>
+      <span className="text-base lg:text-2xl font-semibold text-white/70">{label}</span>
       {sub && <span className="text-lg text-white/50">{sub}</span>}
     </div>
   )
@@ -153,8 +153,8 @@ function KpiCard({
 function KpiView({ stats }: { stats: DashboardStats | null }) {
   if (!stats) return <LoadingView label="KPI wird geladen..." />
   return (
-    <section className="flex-1 flex flex-col gap-6 p-10">
-      <h2 className="text-3xl font-bold text-white/60 uppercase tracking-widest">Übersicht</h2>
+    <section className="flex-1 flex flex-col gap-3 lg:gap-6 p-4 lg:p-10">
+      <h2 className="text-xl lg:text-3xl font-bold text-white/60 uppercase tracking-widest">Übersicht</h2>
       <div className="flex-1 grid grid-cols-2 gap-6">
         <KpiCard icon={IconPackage} label="Materialien" value={stats.materials} />
         <KpiCard icon={IconTool} label="Werkzeuge" value={stats.tools} />
@@ -196,16 +196,16 @@ function LowStockView({ items }: { items: LowStockItem[] | null }) {
     )
   }
   return (
-    <section className="flex-1 flex flex-col gap-6 p-10 overflow-hidden">
-      <h2 className="text-3xl font-bold text-red-400 uppercase tracking-widest flex items-center gap-3">
+    <section className="flex-1 flex flex-col gap-3 lg:gap-6 p-4 lg:p-10 overflow-y-auto">
+      <h2 className="text-xl lg:text-3xl font-bold text-red-400 uppercase tracking-widest flex items-center gap-2 lg:gap-3">
         <IconAlertTriangle className="size-8" />
         Niedriger Bestand ({items.length})
       </h2>
-      <div className="flex-1 flex flex-col gap-3 overflow-hidden">
+      <div className="flex-1 flex flex-col gap-2 lg:gap-3 overflow-y-auto">
         {items.slice(0, 10).map((item) => (
           <div
             key={item.id}
-            className="flex items-center gap-6 rounded-xl px-6 py-4 bg-red-950/40 border border-red-800/40"
+            className="flex items-center gap-3 lg:gap-6 rounded-xl px-3 lg:px-6 py-2 lg:py-4 bg-red-950/40 border border-red-800/40"
           >
             <span className="font-mono text-red-400/70 text-xl w-28 shrink-0">
               {item.number ?? "—"}
@@ -242,16 +242,16 @@ function OverdueToolsView({ items }: { items: OverdueTool[] | null }) {
     )
   }
   return (
-    <section className="flex-1 flex flex-col gap-6 p-10 overflow-hidden">
-      <h2 className="text-3xl font-bold text-primary uppercase tracking-widest flex items-center gap-3">
+    <section className="flex-1 flex flex-col gap-3 lg:gap-6 p-4 lg:p-10 overflow-y-auto">
+      <h2 className="text-xl lg:text-3xl font-bold text-primary uppercase tracking-widest flex items-center gap-2 lg:gap-3">
         <IconClock className="size-8" />
         Überfällige Werkzeuge ({items.length})
       </h2>
-      <div className="flex-1 flex flex-col gap-3 overflow-hidden">
+      <div className="flex-1 flex flex-col gap-2 lg:gap-3 overflow-y-auto">
         {items.slice(0, 10).map((item) => (
           <div
             key={item.id}
-            className="flex items-center gap-6 rounded-xl px-6 py-4 bg-primary/10 border border-primary/30"
+            className="flex items-center gap-3 lg:gap-6 rounded-xl px-3 lg:px-6 py-2 lg:py-4 bg-primary/10 border border-primary/30"
           >
             <span className="font-mono text-primary/70 text-xl w-28 shrink-0">
               {item.number ?? "—"}
@@ -286,16 +286,16 @@ function ActivityView({ items }: { items: ActivityItem[] | null }) {
     )
   }
   return (
-    <section className="flex-1 flex flex-col gap-6 p-10 overflow-hidden">
-      <h2 className="text-3xl font-bold text-primary uppercase tracking-widest flex items-center gap-3">
+    <section className="flex-1 flex flex-col gap-3 lg:gap-6 p-4 lg:p-10 overflow-y-auto">
+      <h2 className="text-xl lg:text-3xl font-bold text-primary uppercase tracking-widest flex items-center gap-2 lg:gap-3">
         <IconActivity className="size-8" />
         Letzte Aktivitäten
       </h2>
-      <div className="flex-1 flex flex-col gap-3 overflow-hidden">
+      <div className="flex-1 flex flex-col gap-2 lg:gap-3 overflow-y-auto">
         {items.slice(0, 10).map((item) => (
           <div
             key={item.id}
-            className="flex items-center gap-6 rounded-xl px-6 py-4 bg-white/5 border border-white/10"
+            className="flex items-center gap-3 lg:gap-6 rounded-xl px-3 lg:px-6 py-2 lg:py-4 bg-white/5 border border-white/10"
           >
             <span
               className={[
@@ -348,12 +348,12 @@ function MaintenanceView({ items }: { items: MaintenanceItem[] | null }) {
     )
   }
   return (
-    <section className="flex-1 flex flex-col gap-6 p-10 overflow-hidden">
+    <section className="flex-1 flex flex-col gap-3 lg:gap-6 p-4 lg:p-10 overflow-y-auto">
       <h2 className="text-3xl font-bold text-yellow-400 uppercase tracking-widest flex items-center gap-3">
         <IconTools className="size-8" />
         Wartungen ({items.length})
       </h2>
-      <div className="flex-1 flex flex-col gap-3 overflow-hidden">
+      <div className="flex-1 flex flex-col gap-2 lg:gap-3 overflow-y-auto">
         {items.slice(0, 10).map((item) => {
           const isOverdue = item.status === "overdue"
           const isThisWeek = item.status === "this-week"
@@ -361,7 +361,7 @@ function MaintenanceView({ items }: { items: MaintenanceItem[] | null }) {
             <div
               key={item.id}
               className={[
-                "flex items-center gap-6 rounded-xl px-6 py-4 border",
+                "flex items-center gap-3 lg:gap-6 rounded-xl px-3 lg:px-6 py-2 lg:py-4 border",
                 isOverdue
                   ? "bg-red-950/40 border-red-800/40"
                   : isThisWeek
@@ -580,7 +580,7 @@ export default function TvPage() {
   return (
     <div className="min-h-screen bg-gray-950 text-white flex flex-col select-none font-sans">
       {/* ── Header bar ──────────────────────────────────────────────────────── */}
-      <header className="flex items-center justify-between px-10 py-5 bg-black/40 border-b border-white/10 shrink-0">
+      <header className="flex items-center justify-between px-4 lg:px-10 py-3 lg:py-5 bg-black/40 border-b border-white/10 shrink-0">
         {/* Logo / org name */}
         <div className="flex items-center gap-3">
           <div className="text-2xl font-black tracking-tight">
@@ -589,7 +589,7 @@ export default function TvPage() {
           {orgName && (
             <>
               <span className="text-white/30 text-2xl">/</span>
-              <span className="text-2xl font-semibold text-white/70">{orgName}</span>
+              <span className="text-base lg:text-2xl font-semibold text-white/70">{orgName}</span>
             </>
           )}
         </div>
@@ -615,7 +615,7 @@ export default function TvPage() {
 
         {/* Clock */}
         <div className="text-right">
-          <p className="text-4xl font-mono font-bold tabular-nums">{clock}</p>
+          <p className="text-2xl lg:text-4xl font-mono font-bold tabular-nums">{clock}</p>
           <p className="text-base text-white/40 capitalize">{dateLabel}</p>
         </div>
       </header>
@@ -633,7 +633,7 @@ export default function TvPage() {
       </main>
 
       {/* ── Footer hint ─────────────────────────────────────────────────────── */}
-      <footer className="shrink-0 px-10 py-3 bg-black/30 border-t border-white/5 flex items-center justify-between text-xs text-white/20">
+      <footer className="shrink-0 px-4 lg:px-10 py-2 lg:py-3 bg-black/30 border-t border-white/5 flex items-center justify-between text-xs text-white/20">
         <span>Pfeiltasten: Ansicht wechseln &nbsp;·&nbsp; F11: Vollbild</span>
         <span>
           Automatische Aktualisierung alle {REFRESH_INTERVAL_MS / 1000} Sek.
