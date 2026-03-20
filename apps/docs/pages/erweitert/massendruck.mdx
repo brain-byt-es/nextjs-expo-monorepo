@@ -1,0 +1,69 @@
+---
+title: Etiketten-Massendruck
+---
+
+import { Callout } from 'nextra/components'
+
+# Etiketten-Massendruck
+
+Der Massendruck ermöglicht es, hunderte Etiketten in einem Durchgang zu drucken. Wählen Sie Artikel aus, weisen Sie eine Vorlage zu und starten Sie den Druck — auf Papier, als PDF oder direkt auf einen Zebra-Drucker via ZPL.
+
+## Batch starten
+
+Es gibt zwei Wege, einen Massendruck zu starten:
+
+1. **Aus der Listenansicht**: Wählen Sie Artikel per Checkbox → **Aktionen → Etiketten drucken**.
+2. **Über das Druckmenü**: Navigieren Sie zu **Einstellungen → Etiketten → Massendruck** und erstellen Sie einen neuen Druckauftrag.
+
+## Druckauftrag konfigurieren
+
+| Einstellung | Beschreibung |
+|-------------|-------------|
+| **Vorlage** | Etikettenvorlage aus dem Etiketten-Designer wählen |
+| **Artikel** | Manuell, per Filter oder per Barcode-Scan hinzufügen |
+| **Anzahl pro Artikel** | Standard: 1. Individuell anpassbar (z.B. 3 Etiketten für Paletten) |
+| **Sortierung** | Nach Name, Artikelnummer, Standort oder Kategorie |
+| **Seitenformat** | A4 (Avery-Raster), Endlos (Zebra/Brother) oder benutzerdefiniert |
+
+## Vorlagen
+
+Der Massendruck nutzt die im Etiketten-Designer erstellten Vorlagen. Falls keine Vorlage zugewiesen ist, wird die Standardvorlage des jeweiligen Artikeltyps verwendet.
+
+<Callout type="info">
+Erstellen Sie separate Vorlagen für verschiedene Druckertypen. Eine A4-Vorlage für den Laserdrucker und eine Endlos-Vorlage für den Zebra-Etikettendrucker.
+</Callout>
+
+## Ausgabeformate
+
+### PDF-Druck
+
+Generiert ein druckfertiges PDF mit allen Etiketten im gewählten Seitenformat. Unterstützt Avery-Raster (z.B. L4732, L7160) für vorgestanzte Etikettenbögen.
+
+### ZPL-Export (Zebra-Drucker)
+
+Erzeugt ZPL-Code für den direkten Druck auf Zebra-Etikettendruckern. Der Code wird entweder:
+- direkt an den verbundenen Drucker gesendet, oder
+- als `.zpl`-Datei heruntergeladen.
+
+### Brother-Drucker
+
+Für Brother QL-Drucker wird das native Brother-Format über die USB-/Netzwerkverbindung gesendet.
+
+<Callout type="warning">
+Bei mehr als 200 Etiketten wird der Druckauftrag in Teilaufträge à 200 Stück aufgeteilt, um Speicherprobleme zu vermeiden. Der Fortschritt wird in einer Fortschrittsanzeige dargestellt.
+</Callout>
+
+## Vorschau
+
+Vor dem Druck zeigt die Vorschau die ersten 5 Etiketten mit echten Daten. Prüfen Sie Layout, Datenbindung und Barcode-Lesbarkeit, bevor Sie den vollständigen Druck starten.
+
+## Druckprotokoll
+
+Jeder Massendruck wird protokolliert: Zeitpunkt, Benutzer, Vorlage, Anzahl und Status. Das Protokoll finden Sie unter **Einstellungen → Etiketten → Druckprotokoll**.
+
+## Verwandte Funktionen
+
+- [Etiketten-Designer](/erweitert/etiketten-designer) — Vorlagen erstellen und bearbeiten
+- [Barcode-Generator](/erweitert/barcode-generator) — Barcode-Nummern generieren
+- [Etikettendrucker](/hardware/etikettendrucker) — Drucker einrichten und konfigurieren
+- [Bulk-Operationen](/erweitert/bulk-operationen) — Mehrfachauswahl in Listenansichten

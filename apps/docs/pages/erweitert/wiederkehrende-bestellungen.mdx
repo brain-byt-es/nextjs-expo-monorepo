@@ -1,0 +1,68 @@
+---
+title: Wiederkehrende Bestellungen
+---
+
+import { Callout } from 'nextra/components'
+
+# Wiederkehrende Bestellungen
+
+Wiederkehrende Bestellungen automatisieren die Nachbestellung von Verbrauchsmaterialien. Definieren Sie Artikel, Mengen, Lieferanten und Frequenz — LogistikApp erstellt die Bestellungen automatisch zum konfigurierten Zeitpunkt.
+
+## Regel erstellen
+
+1. Navigieren Sie zu **Bestellungen → Wiederkehrend** oder nutzen Sie **Cmd+K** → «Wiederkehrende Bestellung».
+2. Klicken Sie auf **Neue Regel**.
+3. Konfigurieren Sie die Regel:
+
+| Feld | Beschreibung |
+|------|-------------|
+| **Name** | Bezeichnung der Regel (z.B. «Büromaterial monatlich») |
+| **Lieferant** | Lieferant aus dem Lieferantenverzeichnis |
+| **Frequenz** | Täglich, wöchentlich, zweiwöchentlich oder monatlich |
+| **Wochentag / Monatstag** | Konkreter Ausführungstag (z.B. Montag oder 1. des Monats) |
+| **Artikel** | Ein oder mehrere Artikel mit fester Bestellmenge |
+
+## Artikel konfigurieren
+
+Fügen Sie der Regel beliebig viele Artikel hinzu:
+
+- **Material** — aus dem Artikelstamm wählen
+- **Menge** — feste Bestellmenge pro Durchlauf
+- **Einheit** — wird automatisch vom Material übernommen
+- **Preis** — optional, wird vom Lieferanten-Preisverzeichnis vorgeschlagen
+
+<Callout type="info">
+Aktivieren Sie **«Menge an Verbrauch anpassen»**, um die Bestellmenge automatisch auf Basis des durchschnittlichen Verbrauchs der letzten 30 Tage zu berechnen.
+</Callout>
+
+## Ausführung
+
+Zum konfigurierten Zeitpunkt erstellt ein Inngest-Cron-Job die Bestellung automatisch. Je nach Einstellung wird die Bestellung als **Entwurf** (manuelle Freigabe) oder **direkt bestätigt** erstellt.
+
+- **Entwurf**: Sie erhalten eine Benachrichtigung und können die Bestellung vor dem Versand prüfen
+- **Automatisch**: Die Bestellung wird sofort an den Lieferanten gesendet (E-Mail oder API)
+
+## Übersicht und Protokoll
+
+Die Regelübersicht zeigt für jede aktive Regel:
+
+- Nächster Ausführungszeitpunkt
+- Letzte Ausführung mit Status (Erfolg / Fehler)
+- Gesamtanzahl bisheriger Ausführungen
+- Geschätzter Bestellwert
+
+Klicken Sie auf eine Regel, um das vollständige Ausführungsprotokoll einzusehen.
+
+## Regel pausieren oder löschen
+
+Pausieren Sie eine Regel vorübergehend (z.B. während Betriebsferien), ohne sie zu löschen. Pausierte Regeln werden grau dargestellt und können jederzeit reaktiviert werden.
+
+<Callout type="warning">
+Beim Löschen einer Regel werden keine bereits erstellten Bestellungen entfernt. Offene Entwürfe müssen manuell storniert werden.
+</Callout>
+
+## Verwandte Funktionen
+
+- [Auto-Nachbestellung](/automatisierung/auto-nachbestellung) — Bestandsbasierte Nachbestellung bei Mindestbestand
+- [Lieferanten & Preise](/finanzen/lieferantenpreise) — Preisvergleich und Lieferantenverzeichnis
+- [Bestandsoptimierung](/erweitert/bestandsoptimierung) — Min/Max-Empfehlungen für optimale Bestellmengen

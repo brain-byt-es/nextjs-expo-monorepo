@@ -1,0 +1,63 @@
+---
+title: Kommissionen-Kanban
+---
+
+import { Callout } from 'nextra/components'
+
+# Kommissionen-Kanban
+
+Das Kanban Board bietet eine visuelle Übersicht aller Kommissionen und ermöglicht es, den Fortschritt per Drag-and-Drop zu steuern. Vier Spalten bilden den gesamten Ablauf von der Erstellung bis zur Auslieferung ab.
+
+## Board öffnen
+
+Navigieren Sie zu **Kommissionen → Kanban** oder öffnen Sie das Board über die Command Palette (**Cmd+K** → «Kanban»).
+
+## Spalten
+
+| Spalte | Beschreibung |
+|--------|-------------|
+| **Offen** | Neue Kommissionen, die noch nicht begonnen wurden |
+| **In Bearbeitung** | Kommissionen, die gerade kommissioniert werden |
+| **Bereit** | Vollständig kommissioniert und zur Abholung/Versand bereit |
+| **Ausgeliefert** | Abgeschlossene Kommissionen |
+
+Ziehen Sie eine Karte von einer Spalte in die nächste, um den Status zu ändern. Die Statusänderung wird sofort gespeichert und im Aktivitätsprotokoll erfasst.
+
+## Karten-Ansicht
+
+Jede Karte zeigt auf einen Blick:
+
+- **Kommissionsnummer** und Kunde
+- **Anzahl Positionen** (z.B. 8/12 kommissioniert)
+- **Fortschrittsbalken** — farbkodiert nach Vollständigkeit (rot < 50%, gelb < 100%, grün = 100%)
+- **Fälligkeitsdatum** — überfällige Karten werden rot markiert
+- **Zugewiesener Mitarbeiter** als Avatar
+
+## Filter und Sortierung
+
+Über die Filterleiste am oberen Rand können Sie das Board eingrenzen:
+
+- **Standort** — nur Kommissionen eines bestimmten Lagers
+- **Mitarbeiter** — nur zugewiesene Kommissionen
+- **Fälligkeitszeitraum** — heute, diese Woche, überfällig
+- **Priorität** — Dringend, Hoch, Normal, Niedrig
+
+<Callout type="info">
+Filter werden in der URL gespeichert. Teilen Sie den Link, um Kollegen die gleiche Ansicht zu zeigen.
+</Callout>
+
+## Fortschrittsbalken
+
+Der Fortschrittsbalken aktualisiert sich automatisch, wenn Positionen kommissioniert werden. Klicken Sie auf eine Karte, um die Detailansicht mit allen Positionen, Mengen und dem aktuellen Kommissionierstatus zu öffnen.
+
+## Tastatursteuerung
+
+- **Pfeiltasten** — zwischen Karten navigieren
+- **Enter** — Karte öffnen
+- **Leertaste** — Karte in nächste Spalte verschieben
+
+## Verwandte Funktionen
+
+- [Lieferschein PDF & Unterschrift](/erweitert/lieferschein-pdf) — PDF aus fertiger Kommission erstellen
+- [Benachrichtigungszentrale](/erweitert/benachrichtigungen) — Alerts bei überfälligen Kommissionen
+- [Bulk-Operationen](/erweitert/bulk-operationen) — Mehrere Kommissionen gleichzeitig verschieben
