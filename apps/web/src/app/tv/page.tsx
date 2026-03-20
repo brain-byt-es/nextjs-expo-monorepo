@@ -139,7 +139,7 @@ function KpiCard({
           : "bg-white/5 border-white/10 text-white",
       ].join(" ")}
     >
-      <Icon className={`size-10 ${alert ? "text-red-400" : "text-blue-400"}`} />
+      <Icon className={`size-10 ${alert ? "text-red-400" : "text-orange-400"}`} />
       <span className="text-6xl font-black tabular-nums tracking-tight">{value}</span>
       <span className="text-2xl font-semibold text-white/70">{label}</span>
       {sub && <span className="text-lg text-white/50">{sub}</span>}
@@ -287,7 +287,7 @@ function ActivityView({ items }: { items: ActivityItem[] | null }) {
   }
   return (
     <section className="flex-1 flex flex-col gap-6 p-10 overflow-hidden">
-      <h2 className="text-3xl font-bold text-blue-400 uppercase tracking-widest flex items-center gap-3">
+      <h2 className="text-3xl font-bold text-orange-400 uppercase tracking-widest flex items-center gap-3">
         <IconActivity className="size-8" />
         Letzte Aktivitäten
       </h2>
@@ -301,7 +301,7 @@ function ActivityView({ items }: { items: ActivityItem[] | null }) {
               className={[
                 "text-lg font-bold rounded-lg px-3 py-1 w-32 text-center shrink-0",
                 item.source === "stock"
-                  ? "bg-blue-900/50 text-blue-300"
+                  ? "bg-orange-900/50 text-orange-300"
                   : "bg-purple-900/50 text-purple-300",
               ].join(" ")}
             >
@@ -444,7 +444,7 @@ function ProgressBar({ duration }: { duration: number }) {
   return (
     <div className="h-1 w-full bg-white/10">
       <div
-        className="h-full bg-blue-500 transition-none"
+        className="h-full bg-orange-500 transition-none"
         style={{ width: `${pct}%` }}
       />
     </div>
@@ -584,7 +584,7 @@ export default function TvPage() {
         {/* Logo / org name */}
         <div className="flex items-center gap-3">
           <div className="text-2xl font-black tracking-tight">
-            Logistik<span className="text-blue-400">App</span>
+            Logistik<span className="text-orange-400">App</span>
           </div>
           {orgName && (
             <>
@@ -604,7 +604,7 @@ export default function TvPage() {
               className={[
                 "flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all",
                 i === viewIndex
-                  ? "bg-blue-600 text-white"
+                  ? "bg-orange-600 text-white"
                   : "bg-white/10 text-white/40 hover:bg-white/15 hover:text-white/60",
               ].join(" ")}
             >
