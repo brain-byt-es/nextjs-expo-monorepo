@@ -8,7 +8,11 @@
     "start": "next start --port 3003",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:report": "playwright show-report"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -75,6 +79,7 @@
     "zod-to-openapi": "^0.2.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "^4",
