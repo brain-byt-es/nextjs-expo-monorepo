@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd ../.. && npx turbo build --filter=@repo/docs",
   "installCommand": "cd ../.. && pnpm install",
+  "buildCommand": "next build",
   "framework": "nextjs"
 }
