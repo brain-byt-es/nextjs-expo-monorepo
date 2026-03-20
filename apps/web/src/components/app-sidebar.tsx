@@ -51,6 +51,8 @@ import {
   IconShieldCheck,
   IconAdjustments,
   IconLink,
+  IconAntenna,
+  IconPrinter,
 } from "@tabler/icons-react"
 import { useTranslations } from "next-intl"
 import { useShortcutsDialog } from "@/components/shortcuts-dialog"
@@ -591,6 +593,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: "Handscanner",
         url: "/dashboard/settings/scanner",
         icon: IconBarcode,
+        hideable: true,
+      },
+      {
+        title: "Etikettendrucker",
+        url: "/dashboard/settings/printer",
+        icon: IconPrinter,
+        hideable: true,
+      },
+      {
+        title: "RFID Reader",
+        url: "/dashboard/settings/rfid",
+        icon: IconAntenna,
+        hideable: true,
+      },
+      {
+        title: "Schnelltasten",
+        url: "/dashboard/settings/keypad",
+        icon: IconKeyboard,
         hideable: true,
       },
       {

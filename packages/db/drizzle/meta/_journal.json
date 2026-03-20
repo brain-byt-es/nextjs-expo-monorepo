@@ -15,6 +15,13 @@
       "when": 1773846909924,
       "tag": "0001_smiling_ozymandias",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1773986190598,
+      "tag": "0002_thankful_warpath",
+      "breakpoints": true
     }
   ]
 }

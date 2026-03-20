@@ -160,6 +160,7 @@ export default function AppLayout() {
       <Tabs.Screen name="geofencing" options={{ href: null }} />
       <Tabs.Screen name="watch" options={{ href: null }} />
       <Tabs.Screen name="beacons" options={{ href: null }} />
+      <Tabs.Screen name="scanner-settings" options={{ href: null }} />
     </Tabs>
       {isDemoMode && <DemoBanner />}
       <OfflineBanner />
