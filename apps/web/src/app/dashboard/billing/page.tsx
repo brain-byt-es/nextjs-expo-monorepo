@@ -33,6 +33,7 @@ const plans: Plan[] = [
     features: [
       "Bis 5 Benutzer",
       "Bis 3 Standorte",
+      "Bis 500 Artikel",
       "Material- & Werkzeugverwaltung",
       "Barcode-Scanner (Kamera + Handscanner)",
       "Kommissionen & Warenkorb",
@@ -49,8 +50,9 @@ const plans: Plan[] = [
     priceMonthly: 199,
     priceYearly: 169,
     features: [
+      "Alles aus Starter, plus:",
       "Bis 25 Benutzer",
-      "Unbegrenzte Standorte",
+      "Unbegrenzte Standorte & Artikel",
       "Zeiterfassung mit Live-Timer",
       "Lieferverfolgung (Kanban)",
       "Garantieansprüche-Workflow",
@@ -72,8 +74,8 @@ const plans: Plan[] = [
     priceYearly: 599,
     isEnterprise: true,
     features: [
+      "Alles aus Professional, plus:",
       "Unbegrenzte Benutzer",
-      "Alles aus Professional",
       "UHF RFID Reader-Support",
       "Workflow Engine & Automatisierungen",
       "Public API & Webhooks",
@@ -82,7 +84,9 @@ const plans: Plan[] = [
       "Etikettendrucker (Zebra ZPL)",
       "Multi-Company Reporting",
       "SLA-Garantie 99.9%",
-      "Dedizierter Ansprechpartner",
+      "Prioritäts-Support",
+      "Zugang zu allen zukünftigen Features",
+      "…und vieles mehr",
     ],
   },
 ]

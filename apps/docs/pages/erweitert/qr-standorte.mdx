@@ -1,0 +1,65 @@
+---
+title: QR-Codes für Standorte & Regale
+---
+
+import { Callout } from 'nextra/components'
+
+# QR-Codes für Standorte & Regale
+
+Generieren Sie druckbare QR-Codes für Standorte, Regale und Lagerbereiche. Beim Scannen öffnet sich eine öffentliche Seite mit dem aktuellen Bestand — ohne Login erforderlich.
+
+## QR-Code generieren
+
+1. Öffnen Sie die Detailseite eines Standorts.
+2. Klicken Sie auf **QR-Code generieren** in der Aktionsleiste.
+3. Wählen Sie die gewünschten Optionen:
+
+| Option | Beschreibung |
+|--------|-------------|
+| **Grösse** | Klein (30 mm), Mittel (50 mm), Gross (80 mm) |
+| **Inhalt** | Standortname, Adresse und Logo optional einblenden |
+| **Fehlerkorrektur** | Niedrig (7%) oder Hoch (30%) — Hoch empfohlen bei rauen Umgebungen |
+| **Farbe** | Standard schwarz/weiss oder in Unternehmensfarben |
+
+## Öffentliche Scan-Seite
+
+Der QR-Code verlinkt auf eine öffentliche URL im Format `/public/standort/{token}`. Die Seite zeigt:
+
+- **Standortname** und Adresse
+- **Bestandsliste** — alle Materialien am Standort mit aktueller Menge
+- **Suchfeld** — Material nach Name oder Artikelnummer filtern
+- **Bestandsstatus** — farbkodiert (grün = OK, gelb = niedrig, rot = kritisch)
+
+<Callout type="info">
+Die öffentliche Seite erfordert keinen Login. Sensible Daten (Preise, Lieferanten) werden automatisch ausgeblendet. Unter **Einstellungen → Öffentliche Seiten** steuern Sie, welche Informationen sichtbar sind.
+</Callout>
+
+## Batch-Generierung
+
+Generieren Sie QR-Codes für mehrere Standorte gleichzeitig:
+
+1. Gehen Sie zu **Standorte → Listenansicht**.
+2. Wählen Sie die gewünschten Standorte per Checkbox.
+3. Klicken Sie auf **QR-Codes drucken** in der Bulk-Aktionsleiste.
+
+Alle QR-Codes werden als ein druckfertiges PDF mit konfigurierbarem Layout (1, 2 oder 4 pro Seite) erstellt.
+
+## Regale und Unterbereiche
+
+Für Standorte mit mehreren Regalen können Sie separate QR-Codes pro Regalbereich erstellen. Definieren Sie Regale unter **Standort → Regale** und generieren Sie pro Regal einen eigenen Code mit dem Regalbezeichner.
+
+<Callout type="warning">
+QR-Code-Tokens können unter **Einstellungen → Öffentliche Seiten** widerrufen werden. Ein widerrufener Token zeigt eine Fehlermeldung statt Bestandsdaten.
+</Callout>
+
+## Drucktipps
+
+- Verwenden Sie **wetterfeste Etiketten** für Aussenlager und Fahrzeuge
+- Mindestgrösse **30 mm** für zuverlässiges Scannen mit Smartphone-Kameras
+- Hohe Fehlerkorrektur (30%) bei Standorten mit Schmutz- oder Feuchtigkeitsbelastung
+
+## Verwandte Funktionen
+
+- [QR Self-Service](/erweitert/qr-self-service) — QR-basierte Buchungen ohne Login
+- [Barcode-Generator](/erweitert/barcode-generator) — Barcodes für einzelne Artikel
+- [Etiketten-Designer](/erweitert/etiketten-designer) — Individuelle Etikettenvorlagen gestalten

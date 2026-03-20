@@ -6,6 +6,39 @@ title: Changelog
 
 Alle Änderungen, Verbesserungen und Fehlerbehebungen werden hier dokumentiert.
 
+## v2.8.0 – Kanban, Recurring Orders & Druck – 2026-03-20
+
+Diese Version bringt ein Kanban Board für Kommissionen, wiederkehrende Bestellungen, eine Material-Fotogalerie, QR-Codes für Standorte, erweiterte Schichtübergabe und Etiketten-Massendruck.
+
+### Kommissionen & Bestellungen
+
+- **[Kommissionen-Kanban](/erweitert/kommissionen-kanban)**: Visuelles Kanban Board mit vier Spalten (Offen, In Bearbeitung, Bereit, Ausgeliefert). Drag-and-Drop Statusänderung, Fortschrittsbalken pro Karte, Filter nach Standort, Mitarbeiter und Fälligkeit.
+- **[Wiederkehrende Bestellungen](/erweitert/wiederkehrende-bestellungen)**: Automatische Nachbestellung von Verbrauchsmaterialien. Konfigurierbare Frequenz (täglich bis monatlich), Lieferant und Artikelliste. Optionale Verbrauchsanpassung auf Basis der letzten 30 Tage.
+
+### Dokumentation & Druck
+
+- **[Foto-Galerie](/erweitert/foto-galerie)**: Mehrere Bilder pro Material oder Werkzeug hinterlegen. Lightbox mit Zoom, Drag-and-Drop Sortierung, Titelbild für Listenansichten und Etiketten.
+- **[QR-Codes für Standorte](/erweitert/qr-standorte)**: Druckbare QR-Codes für Standorte und Regale. Öffentliche Scan-Seite mit Bestandsübersicht ohne Login. Batch-Generierung als PDF.
+- **[Etiketten-Massendruck](/erweitert/massendruck)**: Hunderte Etiketten in einem Durchgang drucken. PDF (Avery-Raster), ZPL (Zebra) und Brother-Format. Vorschau, Sortierung und Druckprotokoll.
+
+### Berichte
+
+- **[Schichtübergabe-Zusammenfassung](/berichte/schichtuebergabe)**: Kompakte Schicht-Zusammenfassung mit KPIs, Highlights, Übergabe-Notizen und Checkliste. PDF-Export und E-Mail-Versand. Konfigurierbare Schichtzeiten.
+
+### Verbessert
+
+- Kanban Board unterstützt Tastaturnavigation (Pfeiltasten, Enter, Leertaste)
+- Foto-Galerie komprimiert Bilder automatisch auf max. 2048 px
+- QR-Codes mit hoher Fehlerkorrektur (30%) für raue Umgebungen
+
+### Behoben
+
+- Massendruck brach bei Vorlagen mit Sonderzeichen im Namen ab (#539)
+- QR-Code öffentliche Seite zeigte archivierte Materialien an (#542)
+- Wiederkehrende Bestellungen ignorierten Feiertage im Zeitplan (#545)
+
+---
+
 ## v2.7.0 – Import, Export & Migration – 2026-03-20
 
 Diese Version bringt einen vollständigen Import/Export-Workflow und einen Migrations-Assistenten für den Wechsel von Drittsystemen zu LogistikApp.

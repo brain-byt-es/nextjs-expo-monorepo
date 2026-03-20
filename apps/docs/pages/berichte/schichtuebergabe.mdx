@@ -1,0 +1,65 @@
+---
+title: Schichtübergabe-Zusammenfassung
+---
+
+import { Callout } from 'nextra/components'
+
+# Schichtübergabe-Zusammenfassung
+
+Die Schichtübergabe-Zusammenfassung bietet eine kompakte Übersicht aller relevanten Vorgänge einer Schicht. Sie ergänzt den detaillierten [Schicht-Übergabe-Report](/berichte/schicht-uebergabe) mit einer schnellen, tabellarischen Zusammenfassung für den täglichen Gebrauch.
+
+## Zusammenfassung aufrufen
+
+Navigieren Sie zu **Berichte → Schichtübergabe** oder nutzen Sie **Cmd+K** → «Schichtübergabe». Die Zusammenfassung zeigt standardmässig die aktuelle Schicht.
+
+## Schicht-Zeiträume
+
+Konfigurieren Sie unter **Einstellungen → Betrieb → Schichten** bis zu drei Schichten:
+
+| Schicht | Standardzeit | Anpassbar |
+|---------|-------------|-----------|
+| **Frühschicht** | 06:00 – 14:00 | Ja |
+| **Spätschicht** | 14:00 – 22:00 | Ja |
+| **Nachtschicht** | 22:00 – 06:00 | Ja |
+
+Die Zusammenfassung filtert alle Buchungen und Ereignisse automatisch auf den gewählten Zeitraum.
+
+## Inhalte
+
+Die Zusammenfassung enthält vier Bereiche:
+
+- **KPIs** — Buchungen, Wareneingänge, Warenausgänge und offene Positionen der Schicht
+- **Highlights** — Besondere Vorkommnisse (kritischer Bestand erreicht, überfällige Werkzeuge, abgelehnte Anfragen)
+- **Übergabe-Notizen** — Freitextfeld für manuelle Hinweise an die nächste Schicht
+- **Checkliste** — Konfigurierbare Punkte (z.B. «Tor 3 geschlossen», «Kühlhaus geprüft»), die abgehakt werden müssen
+
+<Callout type="info">
+Die Übergabe-Checkliste wird unter **Einstellungen → Betrieb → Übergabe-Checkliste** definiert. Nicht abgehakte Punkte werden im Report farblich hervorgehoben.
+</Callout>
+
+## PDF-Export
+
+Klicken Sie auf **PDF exportieren**, um die Zusammenfassung als druckfertiges Dokument zu generieren. Das PDF enthält:
+
+- Unternehmenslogo und Schicht-Zeitraum
+- Alle vier Inhaltsbereiche
+- Signaturfelder für abgebende und übernehmende Schichtführung
+- QR-Code zur digitalen Verifizierung
+
+## Per E-Mail senden
+
+Klicken Sie auf **E-Mail senden** und wählen Sie Empfänger aus der Benutzerliste oder geben Sie externe E-Mail-Adressen ein. Die Zusammenfassung wird als PDF-Anhang versandt.
+
+<Callout type="warning">
+Automatische E-Mail-Zustellung nach Schichtende konfigurieren Sie unter **Einstellungen → Benachrichtigungen → Schichtübergabe**. Empfänger können pro Schicht unterschiedlich sein.
+</Callout>
+
+## Archiv
+
+Alle Schichtübergaben werden automatisch archiviert und sind unter **Berichte → Schichtübergabe → Archiv** durchsuchbar. Filtermöglichkeiten: Datum, Schicht, Standort und Verfasser.
+
+## Verwandte Funktionen
+
+- [Schicht-Übergabe-Report](/berichte/schicht-uebergabe) — Ausführlicher Tagesbericht mit Benutzer-Aufschlüsselung
+- [Aktivitätsprotokoll](/erweitert/aktivitaetsprotokoll) — Detailliertes Audit-Trail aller Buchungen
+- [Geplante Berichte](/automatisierung/geplante-berichte) — Weitere automatische Berichte konfigurieren

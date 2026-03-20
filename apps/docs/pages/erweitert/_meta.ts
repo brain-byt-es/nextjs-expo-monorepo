@@ -36,5 +36,10 @@ export default {
   "datenhaltung": "Datenhaltung & Aufbewahrungsfristen",
   "datenimport": "Smart Import Wizard",
   "datenexport": "Datenexport (CSV/JSON)",
-  "migration": "Migrations-Assistent"
+  "migration": "Migrations-Assistent",
+  "kommissionen-kanban": "Kommissionen-Kanban",
+  "wiederkehrende-bestellungen": "Wiederkehrende Bestellungen",
+  "foto-galerie": "Foto-Galerie",
+  "qr-standorte": "QR-Codes für Standorte",
+  "massendruck": "Etiketten-Massendruck"
 }
