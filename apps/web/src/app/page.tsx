@@ -302,6 +302,8 @@ const PLANS = [
       "Branchen-Templates",
       "SLA-Garantie 99.9%",
       "Prioritäts-Support",
+      "Zugang zu allen zukünftigen Features",
+      "…und vieles mehr",
     ],
     cta: "Kontakt aufnehmen", href: "mailto:sales@logistikapp.ch", highlight: false,
   },

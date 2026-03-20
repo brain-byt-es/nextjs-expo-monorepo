@@ -85,6 +85,8 @@ const plans: Plan[] = [
       "Multi-Company Reporting",
       "SLA-Garantie 99.9%",
       "Prioritäts-Support",
+      "Zugang zu allen zukünftigen Features",
+      "…und vieles mehr",
     ],
   },
 ]
