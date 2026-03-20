@@ -53,6 +53,7 @@ import {
   IconLink,
   IconAntenna,
   IconPrinter,
+  IconPuzzle,
 } from "@tabler/icons-react"
 import { useTranslations } from "next-intl"
 import { useShortcutsDialog } from "@/components/shortcuts-dialog"
@@ -61,6 +62,7 @@ import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
+import { OnlineUsers } from "@/components/online-users"
 import { SidebarFavorites } from "@/components/sidebar-favorites"
 import {
   Sidebar,
@@ -631,6 +633,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: IconLink,
         hideable: true,
       },
+      {
+        title: "Plugins",
+        url: "/dashboard/settings/plugins",
+        icon: IconPuzzle,
+        hideable: true,
+      },
     ],
   }
 
@@ -806,6 +814,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
 
       <SidebarFooter>
+        <OnlineUsers />
         <NavUser />
 
         {/* ── Footer utility row — only shown when NOT in edit mode ── */}
