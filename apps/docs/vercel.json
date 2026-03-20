@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd ../.. && npx turbo build --filter=@repo/docs",
+  "installCommand": "cd ../.. && pnpm install",
+  "framework": "nextjs",
+  "nodeVersion": "20.x"
+}
