@@ -1,10 +1,16 @@
 "use client"
 
 import { useSession } from "@/lib/auth-client"
-import { useRouter, usePathname } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useEffect } from "react"
-import { Package } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { AdminSidebar } from "@/components/admin-sidebar"
+import { ModeToggle } from "@/components/theme/theme-toggle"
+import { Separator } from "@/components/ui/separator"
+import {
+  SidebarProvider,
+  SidebarInset,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
 
 // Better-Auth admin plugin adds 'role' to user but types need explicit cast
 interface SessionUser {
@@ -12,17 +18,9 @@ interface SessionUser {
   [key: string]: unknown
 }
 
-const NAV_ITEMS = [
-  { href: "/admin", label: "Uebersicht" },
-  { href: "/admin/organizations", label: "Organisationen" },
-  { href: "/admin/users", label: "Benutzer" },
-  { href: "/admin/payments", label: "Umsatz" },
-]
-
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { data: session, isPending } = useSession()
   const router = useRouter()
-  const pathname = usePathname()
   const user = session?.user as SessionUser | undefined
 
   useEffect(() => {
@@ -44,46 +42,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-screen">
-      <header className="border-b bg-background">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <a href="/admin" className="flex items-center gap-2">
-              <Package className="h-5 w-5 text-primary" />
-              <span className="text-xl font-bold">LogistikApp</span>
-              <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
-                Admin
-              </span>
-            </a>
-            <nav className="flex gap-4 text-sm">
-              {NAV_ITEMS.map((item) => {
-                const isActive =
-                  item.href === "/admin"
-                    ? pathname === "/admin"
-                    : pathname.startsWith(item.href)
-                return (
-                  <a
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      "transition-colors",
-                      isActive
-                        ? "text-foreground font-medium"
-                        : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    {item.label}
-                  </a>
-                )
-              })}
-            </nav>
+    <SidebarProvider>
+      <AdminSidebar />
+      <SidebarInset>
+        <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b">
+          <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
+            <SidebarTrigger className="-ml-1" />
+            <Separator orientation="vertical" className="mx-2 data-[orientation=vertical]:h-4" />
+            <h1 className="text-base font-medium">Admin</h1>
+            <div className="ml-auto flex items-center gap-2">
+              <ModeToggle />
+            </div>
           </div>
-          <a href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground">
-            Zurueck zum Dashboard
-          </a>
+        </header>
+        <div className="flex flex-1 flex-col p-4 lg:p-6">
+          {children}
         </div>
-      </header>
-      <main className="container mx-auto px-4 py-8">{children}</main>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }
