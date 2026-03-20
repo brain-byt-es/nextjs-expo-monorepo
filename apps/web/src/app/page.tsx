@@ -674,15 +674,6 @@ function FeatureComparisonSection() {
         { name: "SLA 99.9%", starter: false, pro: false, enterprise: true },
       ],
     },
-    {
-      name: "Limits",
-      features: [
-        { name: "Benutzer", starter: "5" as string | boolean, pro: "25" as string | boolean, enterprise: "Unbegrenzt" as string | boolean },
-        { name: "Standorte", starter: "3" as string | boolean, pro: "Unbegrenzt" as string | boolean, enterprise: "Unbegrenzt" as string | boolean },
-        { name: "Artikel", starter: "500" as string | boolean, pro: "Unbegrenzt" as string | boolean, enterprise: "Unbegrenzt" as string | boolean },
-        { name: "Support", starter: "E-Mail" as string | boolean, pro: "Priorität" as string | boolean, enterprise: "Priorität" as string | boolean },
-      ],
-    },
   ]
 
   return (
