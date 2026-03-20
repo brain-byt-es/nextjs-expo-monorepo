@@ -249,6 +249,7 @@ const PLANS = [
     features: [
       "Bis 5 Benutzer",
       "Bis 3 Standorte",
+      "Bis 500 Artikel",
       "Material- & Werkzeugverwaltung",
       "Barcode-Scanner (Kamera + Handscanner)",
       "Kommissionen & Warenkorb",
@@ -263,9 +264,9 @@ const PLANS = [
     monthly: 199, yearly: 169,
     desc: "Für wachsende Betriebe mit Vollausstattung.",
     features: [
-      "Bis 25 Benutzer",
-      "Unbegrenzte Standorte",
       "Alles aus Starter, plus:",
+      "Bis 25 Benutzer",
+      "Unbegrenzte Standorte & Artikel",
       "Zeiterfassung mit Live-Timer",
       "Lieferverfolgung (Kanban)",
       "Garantieansprüche-Workflow",
@@ -286,8 +287,8 @@ const PLANS = [
     monthly: -1, yearly: -1,
     desc: "Für Unternehmen mit individuellen Anforderungen.",
     features: [
-      "Unbegrenzte Benutzer",
       "Alles aus Professional, plus:",
+      "Unbegrenzte Benutzer",
       "UHF RFID Reader-Support",
       "Workflow Engine & Automatisierungen",
       "Public API & Webhooks",
