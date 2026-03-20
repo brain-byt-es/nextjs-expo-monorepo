@@ -172,7 +172,7 @@ function KpiView({ stats }: { stats: DashboardStats | null }) {
   return (
     <section className="flex-1 flex flex-col gap-3 lg:gap-6 p-4 lg:p-10">
       <h2 className="text-xl lg:text-3xl font-bold text-white/60 uppercase tracking-widest">Übersicht</h2>
-      <div className="flex-1 grid grid-cols-2 gap-6">
+      <div className="flex-1 grid grid-cols-3 gap-3 lg:gap-6">
         <KpiCard icon={IconPackage} label="Materialien" value={stats.materials} />
         <KpiCard icon={IconTool} label="Werkzeuge" value={stats.tools} />
         <KpiCard
@@ -189,8 +189,6 @@ function KpiView({ stats }: { stats: DashboardStats | null }) {
           alert={stats.overdueToolsCount > 0}
           sub={stats.overdueToolsCount > 0 ? "Rückgabe ausstehend" : "Alle zurückgegeben"}
         />
-      </div>
-      <div className="grid grid-cols-2 gap-6">
         <KpiCard icon={IconKey} label="Schlüssel" value={stats.keys} />
         <KpiCard icon={IconUsers} label="Benutzer" value={stats.users} />
       </div>
@@ -598,7 +596,7 @@ export default function TvPage() {
   if (isPending || !session) return null
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col select-none font-sans">
+    <div className="h-screen bg-gray-950 text-white flex flex-col select-none font-sans overflow-hidden">
       {/* ── Header bar ──────────────────────────────────────────────────────── */}
       <header className="flex items-center justify-between px-4 lg:px-10 py-3 lg:py-5 bg-black/40 border-b border-white/10 shrink-0">
         {/* Logo / org name */}
