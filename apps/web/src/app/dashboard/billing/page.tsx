@@ -82,7 +82,7 @@ const plans: Plan[] = [
       "Etikettendrucker (Zebra ZPL)",
       "Multi-Company Reporting",
       "SLA-Garantie 99.9%",
-      "Dedizierter Ansprechpartner",
+      "Prioritäts-Support",
     ],
   },
 ]
