@@ -11,6 +11,7 @@ import {
   IconTrash,
   IconLoader2,
 } from "@tabler/icons-react"
+import { FeatureGate } from "@/components/upgrade-prompt"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -52,6 +53,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { InfoTooltip } from "@/components/info-tooltip"
+import { TOOLTIPS } from "@/lib/tooltip-texts"
 import {
   BarChart,
   Bar,
@@ -148,6 +151,14 @@ function getElapsedSeconds(startTime: string): number {
 
 // ── Page ───────────────────────────────────────────────────────────────────────
 export default function TimeTrackingPage() {
+  return (
+    <FeatureGate featureId="time_tracking">
+      <TimeTrackingPageContent />
+    </FeatureGate>
+  )
+}
+
+function TimeTrackingPageContent() {
   // Data state
   const [entries, setEntries] = useState<TimeEntry[]>([])
   const [commissionsList, setCommissionsList] = useState<Commission[]>([])
@@ -858,7 +869,10 @@ export default function TimeTrackingPage() {
             </div>
 
             <div className="flex items-center justify-between">
-              <Label htmlFor="billable-switch">Abrechenbar</Label>
+              <span className="flex items-center gap-1.5">
+                <Label htmlFor="billable-switch">Abrechenbar</Label>
+                <InfoTooltip text={TOOLTIPS.timeTrackingBillable} />
+              </span>
               <Switch
                 id="billable-switch"
                 checked={newBillable}
@@ -867,7 +881,10 @@ export default function TimeTrackingPage() {
             </div>
 
             <div className="space-y-2">
-              <Label>Stundensatz (CHF)</Label>
+              <span className="flex items-center gap-1.5">
+                <Label>Stundensatz (CHF)</Label>
+                <InfoTooltip text={TOOLTIPS.timeTrackingRate} />
+              </span>
               <Input
                 type="number"
                 step="0.5"

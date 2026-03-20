@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback, useMemo } from "react"
+import { FeatureGate } from "@/components/upgrade-prompt"
 import {
   IconShieldCheck,
   IconPlus,
@@ -168,6 +169,14 @@ function StatusBadge({ status }: { status: ClaimStatus }) {
 // ─── Page ────────────────────────────────────────────────────────────────────
 
 export default function WarrantyClaimsPage() {
+  return (
+    <FeatureGate featureId="warranty_claims">
+      <WarrantyClaimsPageContent />
+    </FeatureGate>
+  )
+}
+
+function WarrantyClaimsPageContent() {
   const { orgId } = useOrganization()
 
   const [claims, setClaims] = useState<WarrantyClaim[]>([])

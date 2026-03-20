@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import { FeatureGate } from "@/components/upgrade-prompt"
 import { IconPlus, IconCopy, IconTrash, IconTruck, IconUsers, IconExternalLink, IconCheck, IconSearch, IconLink, IconLoader2 } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,6 +13,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Skeleton } from "@/components/ui/skeleton"
+import { InfoTooltip } from "@/components/info-tooltip"
+import { TOOLTIPS } from "@/lib/tooltip-texts"
 
 interface PortalToken { id: string; token: string; email: string; isActive: boolean; lastAccessedAt: string | null; expiresAt: string | null; createdAt: string; supplierId?: string; supplierName?: string; customerId?: string; customerName?: string }
 interface SelectOption { id: string; name: string; email: string | null }
@@ -119,7 +122,7 @@ function CreateTokenDialog({ open, onOpenChange, type, onCreated }: { open: bool
             )}
           </div>
           <div className="space-y-2"><Label>E-Mail-Adresse</Label><Input type="email" placeholder="kontakt@beispiel.ch" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
-          <div className="space-y-2"><Label>Gültigkeit</Label>
+          <div className="space-y-2"><Label className="inline-flex items-center gap-1.5">Gültigkeit <InfoTooltip text={TOOLTIPS.portalExpiry} /></Label>
             <Select value={expiresInDays} onValueChange={setExpiresInDays}><SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent><SelectItem value="30">30 Tage</SelectItem><SelectItem value="90">90 Tage</SelectItem><SelectItem value="180">180 Tage</SelectItem><SelectItem value="365">1 Jahr</SelectItem><SelectItem value="never">Unbegrenzt</SelectItem></SelectContent></Select>
           </div>
@@ -134,6 +137,14 @@ function CreateTokenDialog({ open, onOpenChange, type, onCreated }: { open: bool
 }
 
 export default function PortalsPage() {
+  return (
+    <FeatureGate featureId="portals">
+      <PortalsPageContent />
+    </FeatureGate>
+  )
+}
+
+function PortalsPageContent() {
   const [vendorTokens, setVendorTokens] = useState<PortalToken[]>([])
   const [customerTokens, setCustomerTokens] = useState<PortalToken[]>([])
   const [loadingVendor, setLoadingVendor] = useState(true)

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
+import { FeatureGate } from "@/components/upgrade-prompt"
 import {
   IconAdjustments,
   IconRefresh,
@@ -30,6 +31,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { InfoTooltip } from "@/components/info-tooltip"
+import { TOOLTIPS } from "@/lib/tooltip-texts"
 import {
   Table,
   TableBody,
@@ -122,6 +125,14 @@ function SkeletonRow() {
 // ── Main Page ─────────────────────────────────────────────────────────────
 
 export default function StockAutoAdjustPage() {
+  return (
+    <FeatureGate featureId="stock_optimization">
+      <StockAutoAdjustPageContent />
+    </FeatureGate>
+  )
+}
+
+function StockAutoAdjustPageContent() {
   const [rows, setRows] = useState<AutoAdjustRow[]>([])
   const [loading, setLoading] = useState(true)
   const [calculating, setCalculating] = useState(false)
@@ -313,8 +324,9 @@ export default function StockAutoAdjustPage() {
               </DialogHeader>
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">
+                  <label className="text-sm font-medium flex items-center gap-1.5">
                     Betrachtungszeitraum (Tage)
+                    <InfoTooltip text={TOOLTIPS.stockLookbackDays} />
                   </label>
                   <Input
                     type="number"
@@ -329,8 +341,9 @@ export default function StockAutoAdjustPage() {
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">
+                  <label className="text-sm font-medium flex items-center gap-1.5">
                     Sicherheitsfaktor
+                    <InfoTooltip text={TOOLTIPS.stockSafetyFactor} />
                   </label>
                   <Input
                     type="number"

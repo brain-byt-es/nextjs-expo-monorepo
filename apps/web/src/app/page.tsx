@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { Fragment, useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/logo"
@@ -19,6 +19,14 @@ import {
   IconScan,
   IconDatabase,
   IconCurrencyFrank,
+  IconBarcode,
+  IconPrinter,
+  IconAntenna,
+  IconScale,
+  IconNfc,
+  IconBluetooth,
+  IconDeviceWatch,
+  IconKeyboard,
 } from "@tabler/icons-react"
 import { BrandLogo } from "@/components/integrations/brand-logo"
 
@@ -221,34 +229,75 @@ const CELLS = Array.from({ length: 48 }, (_, i) => ({
 
 /* ─── Data ───────────────────────────────────────────────────── */
 const FEATURES = [
-  { icon: IconPackage,  code: "MAT", title: "Materialien & Bestand",    desc: "Meldebestände, Ablaufdaten, Chargen- und Seriennummern. Vollständige Bestandsführung auf Knopfdruck." },
-  { icon: IconTool,     code: "WRK", title: "Werkzeug-Tracking",         desc: "Aus- und Einchecken, Buchungshistorie, Wartungsfristen und Zustandsverfolgung für jedes Gerät." },
-  { icon: IconTruck,    code: "FAH", title: "Fahrzeug-Bestände",          desc: "Jedes Fahrzeug als eigener Lagerort. Immer wissen, was im Transporter ist." },
-  { icon: IconMapPin,   code: "STO", title: "Mehrere Standorte",          desc: "Lager, Fahrzeuge, Baustellen — alle Bestände zentral in einer Ansicht." },
-  { icon: IconShoppingCart, code: "ORD", title: "Bestellwesen",           desc: "Bezugsquellen, Warenkorb und Bestellpositionen — von der Anfrage bis zum Wareneingang." },
-  { icon: IconHistory,  code: "HIS", title: "Lückenlose Historie",        desc: "Jede Buchung, jede Änderung — vollständig protokolliert und jederzeit abrufbar." },
+  { icon: IconPackage,        code: "INV", title: "Inventarverwaltung",          desc: "Material, Werkzeuge, Schlüssel — alles an einem Ort. EAN-Lookup aus 8 Datenbanken mit über 100 Mio. Produkten." },
+  { icon: IconTool,           code: "WRK", title: "Werkzeug-Tracking",         desc: "Aus- und Einchecken, Wartungskalender, Kalibrierung, Checklisten und lückenlose Buchungshistorie." },
+  { icon: IconTruck,          code: "LFG", title: "Lieferverfolgung",          desc: "Kanban-Board mit Drag & Drop. Schweizer Spediteure: Post, DHL, DPD, Planzer. Tracking-Links inklusive." },
+  { icon: IconMapPin,         code: "STO", title: "Standorte & Karte",         desc: "Lager, Fahrzeuge, Baustellen — GPS-Karte, Grundriss-Ansicht und Geofencing für Auto-Checkin." },
+  { icon: IconShoppingCart,   code: "ORD", title: "Bestellwesen",              desc: "Warenkorb, Bestellpositionen, Lieferantenpreise und automatische Nachbestellung bei Unterschreitung." },
+  { icon: IconHistory,        code: "ZEI", title: "Zeiterfassung",             desc: "Live-Timer, Stundensätze, Wochenauswertung und CSV-Export. Projekte und Kommissionen zuweisbar." },
 ]
 
 const PLANS = [
   {
     name: "Starter",
-    monthly: 29, yearly: 25, // ~14% discount
+    monthly: 59, yearly: 49,
     desc: "Für kleine Teams und Einsteiger.",
-    features: ["Bis 3 Benutzer", "500 Artikel", "2 Standorte", "Barcode-Scanner", "E-Mail Support"],
+    features: [
+      "Bis 5 Benutzer",
+      "Bis 3 Standorte",
+      "Material- & Werkzeugverwaltung",
+      "Barcode-Scanner (Kamera + Handscanner)",
+      "Kommissionen & Warenkorb",
+      "Bestellwesen & Wareneingang",
+      "Mobile App (iOS & Android)",
+      "E-Mail Support",
+    ],
     cta: "Kostenlos starten", href: "/signup", highlight: false,
   },
   {
     name: "Professional",
-    monthly: 89, yearly: 75, // ~16% discount
+    monthly: 199, yearly: 169,
     desc: "Für wachsende Betriebe mit Vollausstattung.",
-    features: ["Bis 15 Benutzer", "Unbegrenzte Artikel", "Unbegrenzte Standorte", "KI-Erkennung & Prognose", "Mobile App + Offline", "Automatisierungen", "Prioritäts-Support"],
+    features: [
+      "Bis 25 Benutzer",
+      "Unbegrenzte Standorte",
+      "Alles aus Starter, plus:",
+      "Zeiterfassung mit Live-Timer",
+      "Lieferverfolgung (Kanban)",
+      "Garantieansprüche-Workflow",
+      "Bestandsoptimierung (KI)",
+      "Budget- & Kostenstellen",
+      "Umbuchungen zwischen Standorten",
+      "Kunden- & Lieferanten-Portal",
+      "Erweiterte Berichte & PDF-Export",
+      "Wartungskalender + iCal",
+      "KI-Fotorkennung & Prognose",
+      "Offline-Modus + Sync",
+      "Prioritäts-Support",
+    ],
     cta: "14 Tage testen", href: "/signup", highlight: true,
   },
   {
     name: "Enterprise",
-    monthly: 0, yearly: 0,
+    monthly: -1, yearly: -1,
     desc: "Für Unternehmen mit individuellen Anforderungen.",
-    features: ["Unbegrenzte Benutzer", "SSO / SAML", "SLA-Garantie", "Public API & Webhooks", "Branchen-Templates", "Dedizierter Ansprechpartner"],
+    features: [
+      "Unbegrenzte Benutzer",
+      "Alles aus Professional, plus:",
+      "UHF RFID Reader-Support",
+      "Workflow Engine & Automatisierungen",
+      "Public API & Webhooks",
+      "Custom Branding (Logo & Farben)",
+      "SSO / SAML / Azure AD",
+      "Multi-Company Reporting",
+      "Genehmigungsworkflows",
+      "Etikettendrucker (Zebra ZPL)",
+      "Bluetooth-Waagen",
+      "Grundriss-Ansicht",
+      "Branchen-Templates",
+      "SLA-Garantie 99.9%",
+      "Dedizierter Ansprechpartner",
+    ],
     cta: "Kontakt aufnehmen", href: "mailto:sales@logistikapp.ch", highlight: false,
   },
 ]
@@ -267,19 +316,19 @@ const LIVE_INTEGRATIONS = [
   { name: "Abacus",  desc: "AbaNinja / Abacus ERP",     color: "#003087", short: "ac",  badge: "Verfügbar" },
   { name: "Vertec",  desc: "CRM & Projektplanung",       color: "#FF6900", short: "vt",  badge: "Verfügbar" },
   { name: "Zebra",   desc: "ZPL Etikettendruck",         color: "#1a1a1a", short: "zbr", badge: "Verfügbar" },
+  { name: "Stripe",  desc: "Online-Zahlungen",           color: "#635BFF", short: "str", badge: "Verfügbar" },
+  { name: "WhatsApp",desc: "Benachrichtigungen",          color: "#25D366", short: "wa",  badge: "Verfügbar" },
+  { name: "Zapier",  desc: "2000+ App-Verbindungen",     color: "#FF4A00", short: "zp",  badge: "Verfügbar" },
+  { name: "Webhooks",desc: "13 Event-Typen, HMAC-signiert", color: "#1a1a1a", short: "wh", badge: "Verfügbar" },
 ]
 
 const UPCOMING_INTEGRATIONS = [
   { name: "SAP Business One", color: "#008FD3", short: "sap" },
   { name: "Microsoft Teams",  color: "#6264A7", short: "ms"  },
-  { name: "WhatsApp",         color: "#25D366", short: "wa"  },
   { name: "Procore",          color: "#F37021", short: "pc"  },
   { name: "Geotab",           color: "#E31837", short: "gt"  },
-  { name: "Zapier",           color: "#FF4A00", short: "zp"  },
   { name: "Make",             color: "#6D00CC", short: "mk"  },
   { name: "QuickBooks",       color: "#2CA01C", short: "qb"  },
-  { name: "Azure AD / Entra", color: "#0078D4", short: "az"  },
-  { name: "REST API",         color: "#1a1a1a", short: "api" },
 ]
 
 /* ─── Cost Calculator ───────────────────────────────────────── */
@@ -388,9 +437,9 @@ function PricingSection() {
 
       <div className="grid md:grid-cols-3 gap-px bg-border">
         {PLANS.map(plan => {
-          const isEnterprise = plan.monthly === 0
-          const price = isEnterprise ? "Auf Anfrage" : `CHF ${yearly ? plan.yearly : plan.monthly}`
-          const per = isEnterprise ? "" : yearly ? "/Mo (jährl.)" : "/Mo"
+          const isEnterprise = plan.monthly < 0
+          const price = isEnterprise ? "ab CHF 699" : `CHF ${yearly ? plan.yearly : plan.monthly}`
+          const per = isEnterprise ? "/Mo" : yearly ? "/Mo (jährl.)" : "/Mo"
           const yearlyTotal = isEnterprise ? null : plan.yearly * 12
           const monthlyTotal = isEnterprise ? null : plan.monthly * 12
           const savings = monthlyTotal && yearlyTotal ? monthlyTotal - yearlyTotal : 0
@@ -439,6 +488,141 @@ function PricingSection() {
   )
 }
 
+/* ─── Peripherals Section ────────────────────────────────────── */
+function PeripheralsSection() {
+  const peripherals = [
+    { name: "Handscanner", desc: "Zebra, Honeywell, Datalogic — USB & Bluetooth", icon: IconBarcode },
+    { name: "Etikettendrucker", desc: "Zebra ZPL, Brother QL — Barcode-Labels drucken", icon: IconPrinter },
+    { name: "RFID Reader", desc: "UHF RFID für Paletten & Container (Zebra, Impinj)", icon: IconAntenna },
+    { name: "Bluetooth-Waagen", desc: "Material wiegen bei Ein-/Ausgang", icon: IconScale },
+    { name: "NFC Tags", desc: "Werkzeuge und Standorte taggen", icon: IconNfc },
+    { name: "iBeacons", desc: "Indoor-Positionierung im Lager", icon: IconBluetooth },
+    { name: "Apple Watch", desc: "Quick Scan, Timer, Checkin/Checkout", icon: IconDeviceWatch },
+    { name: "Industrie-Keypads", desc: "F-Tasten für Schnellaktionen (Cherry, X-Keys)", icon: IconKeyboard },
+  ]
+
+  return (
+    <section id="peripherals" className="mx-auto w-full max-w-7xl px-6 py-24">
+      <div className="mb-10 border-b border-border pb-6">
+        <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-2">{`// 05 — Hardware`}</div>
+        <h2 className="text-3xl lg:text-4xl font-bold">Jedes Gerät. Sofort einsatzbereit.</h2>
+        <p className="text-muted-foreground mt-2 max-w-2xl">Einstecken, verbinden, loslegen — keine Treiber, keine Konfiguration. LogistikApp unterstützt alle gängigen Lager-Peripheriegeräte.</p>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-border">
+        {peripherals.map(p => (
+          <div key={p.name} className="bg-background p-6 flex flex-col gap-2">
+            <p.icon className="size-6 text-primary" />
+            <h3 className="font-semibold text-sm">{p.name}</h3>
+            <p className="text-xs text-muted-foreground">{p.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+/* ─── Feature Comparison Section ─────────────────────────────── */
+function FeatureComparisonSection() {
+  const categories = [
+    {
+      name: "Grundfunktionen",
+      features: [
+        { name: "Materialverwaltung", starter: true, pro: true, enterprise: true },
+        { name: "Werkzeug-Tracking", starter: true, pro: true, enterprise: true },
+        { name: "Schlüsselverwaltung", starter: true, pro: true, enterprise: true },
+        { name: "Kommissionen", starter: true, pro: true, enterprise: true },
+        { name: "Bestellwesen", starter: true, pro: true, enterprise: true },
+        { name: "Barcode Scanner (Kamera)", starter: true, pro: true, enterprise: true },
+        { name: "Handscanner (USB/BT)", starter: true, pro: true, enterprise: true },
+        { name: "Mobile App", starter: true, pro: true, enterprise: true },
+        { name: "EAN-Produkterkennung (100M+)", starter: true, pro: true, enterprise: true },
+      ],
+    },
+    {
+      name: "Erweitert",
+      features: [
+        { name: "Zeiterfassung & Timer", starter: false, pro: true, enterprise: true },
+        { name: "Lieferverfolgung (Kanban)", starter: false, pro: true, enterprise: true },
+        { name: "Garantieansprüche", starter: false, pro: true, enterprise: true },
+        { name: "Bestandsoptimierung (KI)", starter: false, pro: true, enterprise: true },
+        { name: "Budgets & Kostenstellen", starter: false, pro: true, enterprise: true },
+        { name: "Umbuchungen", starter: false, pro: true, enterprise: true },
+        { name: "Kunden-Portal", starter: false, pro: true, enterprise: true },
+        { name: "Lieferanten-Portal", starter: false, pro: true, enterprise: true },
+        { name: "PDF-Lieferscheine", starter: false, pro: true, enterprise: true },
+        { name: "Wartungskalender + iCal", starter: false, pro: true, enterprise: true },
+        { name: "KI-Fotorkennung", starter: false, pro: true, enterprise: true },
+        { name: "KI-Bedarfsprognose", starter: false, pro: true, enterprise: true },
+        { name: "Offline-Modus", starter: false, pro: true, enterprise: true },
+      ],
+    },
+    {
+      name: "Enterprise",
+      features: [
+        { name: "UHF RFID Reader", starter: false, pro: false, enterprise: true },
+        { name: "Workflow Engine", starter: false, pro: false, enterprise: true },
+        { name: "Genehmigungsworkflows", starter: false, pro: false, enterprise: true },
+        { name: "Public API & Webhooks", starter: false, pro: false, enterprise: true },
+        { name: "Custom Branding", starter: false, pro: false, enterprise: true },
+        { name: "SSO / SAML", starter: false, pro: false, enterprise: true },
+        { name: "Multi-Company Reporting", starter: false, pro: false, enterprise: true },
+        { name: "Etikettendrucker (Zebra ZPL)", starter: false, pro: false, enterprise: true },
+        { name: "Bluetooth-Waagen", starter: false, pro: false, enterprise: true },
+        { name: "Grundriss-Ansicht", starter: false, pro: false, enterprise: true },
+        { name: "Branchen-Templates", starter: false, pro: false, enterprise: true },
+        { name: "SLA 99.9%", starter: false, pro: false, enterprise: true },
+      ],
+    },
+    {
+      name: "Limits",
+      features: [
+        { name: "Benutzer", starter: "5" as string | boolean, pro: "25" as string | boolean, enterprise: "Unbegrenzt" as string | boolean },
+        { name: "Standorte", starter: "3" as string | boolean, pro: "Unbegrenzt" as string | boolean, enterprise: "Unbegrenzt" as string | boolean },
+        { name: "Artikel", starter: "500" as string | boolean, pro: "Unbegrenzt" as string | boolean, enterprise: "Unbegrenzt" as string | boolean },
+        { name: "Support", starter: "E-Mail" as string | boolean, pro: "Priorität" as string | boolean, enterprise: "Dediziert" as string | boolean },
+      ],
+    },
+  ]
+
+  return (
+    <section id="comparison" className="mx-auto w-full max-w-7xl px-6 py-24">
+      <div className="mb-10 border-b border-border pb-6">
+        <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-2">{`// 06 — Vergleich`}</div>
+        <h2 className="text-3xl lg:text-4xl font-bold">Alle Funktionen im Überblick</h2>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border">
+              <th className="text-left py-4 pr-4 font-mono text-xs text-muted-foreground w-1/3">Funktion</th>
+              <th className="text-center py-4 px-4 font-mono text-xs text-muted-foreground">Starter</th>
+              <th className="text-center py-4 px-4 font-mono text-xs text-primary font-bold">Professional</th>
+              <th className="text-center py-4 px-4 font-mono text-xs text-muted-foreground">Enterprise</th>
+            </tr>
+          </thead>
+          <tbody>
+            {categories.map(cat => (
+              <Fragment key={cat.name}>
+                <tr>
+                  <td colSpan={4} className="pt-6 pb-2 font-mono text-[10px] tracking-[0.2em] uppercase text-primary font-bold">{cat.name}</td>
+                </tr>
+                {cat.features.map(f => (
+                  <tr key={f.name} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+                    <td className="py-3 pr-4 text-muted-foreground">{f.name}</td>
+                    <td className="text-center py-3 px-4">{typeof f.starter === "string" ? <span className="text-xs font-mono">{f.starter}</span> : f.starter ? <IconCheck className="size-4 text-primary mx-auto" /> : <span className="text-muted-foreground/30">—</span>}</td>
+                    <td className="text-center py-3 px-4">{typeof f.pro === "string" ? <span className="text-xs font-mono">{f.pro}</span> : f.pro ? <IconCheck className="size-4 text-primary mx-auto" /> : <span className="text-muted-foreground/30">—</span>}</td>
+                    <td className="text-center py-3 px-4">{typeof f.enterprise === "string" ? <span className="text-xs font-mono">{f.enterprise}</span> : f.enterprise ? <IconCheck className="size-4 text-primary mx-auto" /> : <span className="text-muted-foreground/30">—</span>}</td>
+                  </tr>
+                ))}
+              </Fragment>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  )
+}
+
 /* ─── Page ───────────────────────────────────────────────────── */
 export default function LandingPage() {
   const [navSolid, setNavSolid] = useState(false)
@@ -466,6 +650,8 @@ export default function LandingPage() {
               <a href="#scan"         className="hover:text-foreground transition-colors">Scan</a>
               <a href="#integrations" className="hover:text-foreground transition-colors">Integrationen</a>
               <a href="#pricing"      className="hover:text-foreground transition-colors">Preise</a>
+              <a href="#peripherals"  className="hover:text-foreground transition-colors">Hardware</a>
+              <a href="#comparison"   className="hover:text-foreground transition-colors">Vergleich</a>
               <a href="#trust"        className="hover:text-foreground transition-colors">Sicherheit</a>
             </nav>
             <div className="flex items-center gap-1.5">
@@ -900,8 +1086,8 @@ export default function LandingPage() {
                 </h2>
               </div>
               <div className="hidden md:flex flex-col items-end font-mono text-[10px] tracking-widest text-muted-foreground">
-                <div className="text-primary">4 VERFÜGBAR</div>
-                <div>22+ GEPLANT</div>
+                <div className="text-primary">8 VERFÜGBAR</div>
+                <div>6+ GEPLANT</div>
               </div>
             </div>
 
@@ -937,7 +1123,7 @@ export default function LandingPage() {
                 <span className="size-1.5 rounded-full bg-border" />
                 <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground">In Entwicklung</span>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
                 {UPCOMING_INTEGRATIONS.map(integration => (
                   <div key={integration.name} className="opacity-50 border border-border rounded-lg p-3 bg-background flex flex-col items-center gap-2 text-center">
                     <BrandLogo name={integration.name} fallbackColor={integration.color} fallbackShort={integration.short} size={32} />
@@ -955,7 +1141,7 @@ export default function LandingPage() {
                   Alle Integrationen ansehen
                 </Button>
               </Link>
-              <span className="font-mono text-[10px] text-muted-foreground">22+ Integrationen · Buchhaltung, ERP, Fleet, Spital</span>
+              <span className="font-mono text-[10px] text-muted-foreground">14+ Integrationen · Buchhaltung, ERP, Automation, Webhooks</span>
             </div>
           </div>
         </section>
@@ -993,6 +1179,12 @@ export default function LandingPage() {
         {/* ══ PRICING ══════════════════════════════════════ */}
         <PricingSection />
 
+        {/* ══ PERIPHERALS ════════════════════════════════════ */}
+        <PeripheralsSection />
+
+        {/* ══ FEATURE COMPARISON ═════════════════════════════ */}
+        <FeatureComparisonSection />
+
         {/* ══ CTA ══════════════════════════════════════════ */}
         <section className="mx-auto w-full max-w-7xl px-6 pb-24">
           <div className="relative overflow-hidden border border-primary/20 rounded-lg p-16 text-center">
@@ -1028,6 +1220,8 @@ export default function LandingPage() {
                 © {new Date().getFullYear()} BrainBytes GmbH · LogistikApp
               </p>
               <div className="flex gap-6 font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
+                <a href="#peripherals" className="hover:text-foreground transition-colors">Hardware</a>
+                <a href="#comparison" className="hover:text-foreground transition-colors">Vergleich</a>
                 <Link href="/login"  className="hover:text-foreground transition-colors">Anmelden</Link>
                 <Link href="/signup" className="hover:text-foreground transition-colors">Registrieren</Link>
               </div>

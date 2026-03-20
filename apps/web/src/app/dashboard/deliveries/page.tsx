@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo, useEffect, useCallback } from "react"
+import { FeatureGate } from "@/components/upgrade-prompt"
 import {
   IconTruck,
   IconSearch,
@@ -61,6 +62,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
+import { InfoTooltip } from "@/components/info-tooltip"
+import { TOOLTIPS } from "@/lib/tooltip-texts"
 
 // ── Types ──────────────────────────────────────────────────────────────
 type DeliveryStatus = "ordered" | "confirmed" | "shipped" | "in_transit" | "delivered"
@@ -336,7 +339,7 @@ function CreateDeliveryDialog({ open, onClose, onCreated, orders }: {
             </Select>
           </div>
           <div className="space-y-1.5">
-            <Label>Spediteur</Label>
+            <Label className="inline-flex items-center gap-1.5">Spediteur <InfoTooltip text={TOOLTIPS.deliveryCarrier} /></Label>
             <Select value={carrier} onValueChange={setCarrier}>
               <SelectTrigger><SelectValue placeholder="Spediteur wählen..." /></SelectTrigger>
               <SelectContent>{CARRIERS.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}</SelectContent>
@@ -357,6 +360,14 @@ function CreateDeliveryDialog({ open, onClose, onCreated, orders }: {
 
 // ── Main Page ──────────────────────────────────────────────────────────
 export default function DeliveriesPage() {
+  return (
+    <FeatureGate featureId="delivery_tracking">
+      <DeliveriesPageContent />
+    </FeatureGate>
+  )
+}
+
+function DeliveriesPageContent() {
   const [deliveries, setDeliveries] = useState<Delivery[]>([])
   const [availableOrders, setAvailableOrders] = useState<Order[]>([])
   const [availableSuppliers, setAvailableSuppliers] = useState<Supplier[]>([])
@@ -443,7 +454,7 @@ export default function DeliveriesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Lieferverfolgung</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground flex items-center gap-2">Lieferverfolgung <InfoTooltip text={TOOLTIPS.deliveryOverdue} side="right" /></h1>
           <p className="text-sm text-muted-foreground mt-0.5">{stats.total} Lieferungen verfolgen</p>
         </div>
         <div className="flex items-center gap-2">

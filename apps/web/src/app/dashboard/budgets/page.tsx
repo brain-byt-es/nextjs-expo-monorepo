@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import { FeatureGate } from "@/components/upgrade-prompt"
 import {
   IconPlus,
   IconWallet,
@@ -399,6 +400,14 @@ function SummaryStats({ budgets }: { budgets: Budget[] }) {
 
 // ── Page ───────────────────────────────────────────────────────────────────────
 export default function BudgetsPage() {
+  return (
+    <FeatureGate featureId="budgets">
+      <BudgetsPageContent />
+    </FeatureGate>
+  )
+}
+
+function BudgetsPageContent() {
   const [budgetList, setBudgetList] = useState<Budget[]>([])
   const [loading, setLoading] = useState(true)
 

@@ -9,6 +9,8 @@ import { SiteHeader } from "@/components/site-header"
 import { BrandProvider } from "@/components/brand-provider"
 import { BarcodeScannerProvider } from "@/components/barcode-scanner-provider"
 import { ShortcutsDialogProvider } from "@/components/shortcuts-dialog"
+import { WelcomeTour } from "@/components/welcome-tour"
+import { FeatureGateProvider } from "@/components/feature-gate-provider"
 import {
   SidebarInset,
   SidebarProvider,
@@ -71,6 +73,7 @@ export default function DashboardLayout({
   }
 
   return (
+    <FeatureGateProvider>
     <BrandProvider>
       <BarcodeScannerProvider>
       <ShortcutsDialogProvider>
@@ -90,9 +93,11 @@ export default function DashboardLayout({
             </div>
           </SidebarInset>
           <CommandPalette />
+          <WelcomeTour />
         </SidebarProvider>
       </ShortcutsDialogProvider>
       </BarcodeScannerProvider>
     </BrandProvider>
+    </FeatureGateProvider>
   )
 }

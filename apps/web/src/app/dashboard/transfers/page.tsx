@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo, useEffect, useCallback } from "react"
+import { FeatureGate } from "@/components/upgrade-prompt"
 import {
   IconPlus,
   IconSearch,
@@ -565,6 +566,14 @@ function TransferDetailDialog({
 
 // ── Page ────────────────────────────────────────────────────────────────
 export default function TransfersPage() {
+  return (
+    <FeatureGate featureId="transfers">
+      <TransfersPageContent />
+    </FeatureGate>
+  )
+}
+
+function TransfersPageContent() {
   const [transfers, setTransfers] = useState<Transfer[]>([])
   const [locations, setLocations] = useState<Location[]>([])
   const [materials, setMaterials] = useState<Material[]>([])
