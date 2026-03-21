@@ -77,9 +77,6 @@ const EVENT_TYPE_CONFIG: Record<EventType, { icon: React.ComponentType<{ classNa
   commission: { icon: IconClipboardList, label: "commissions", bg: "bg-muted", text: "text-muted-foreground" },
 }
 
-// WEEKDAYS and MONTHS are derived from translations in the component
-
-
 function getDaysInMonth(year: number, month: number) {
   return new Date(year, month + 1, 0).getDate()
 }
@@ -88,34 +85,39 @@ function getFirstDayOfMonth(year: number, month: number) {
 }
 
 // ── Status helpers ──────────────────────────────────────────────────────
-const STATUS_CONFIG: Record<MaintenanceStatus, { label: string; badgeClass: string; rowClass: string }> = {
-  overdue: {
-    label: t("overdue"),
-    badgeClass: "bg-destructive/15 text-destructive border-destructive/30",
-    rowClass: "border-l-4 border-l-destructive",
-  },
-  "this-week": {
-    label: t("thisWeek"),
-    badgeClass: "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30",
-    rowClass: "border-l-4 border-l-amber-500",
-  },
-  upcoming: {
-    label: t("upcoming"),
-    badgeClass: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30",
-    rowClass: "border-l-4 border-l-emerald-500",
-  },
+function getStatusConfig(t: (key: string) => string): Record<MaintenanceStatus, { label: string; badgeClass: string; rowClass: string }> {
+  return {
+    overdue: {
+      label: t("overdue"),
+      badgeClass: "bg-destructive/15 text-destructive border-destructive/30",
+      rowClass: "border-l-4 border-l-destructive",
+    },
+    "this-week": {
+      label: t("thisWeek"),
+      badgeClass: "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30",
+      rowClass: "border-l-4 border-l-amber-500",
+    },
+    upcoming: {
+      label: t("upcoming"),
+      badgeClass: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30",
+      rowClass: "border-l-4 border-l-emerald-500",
+    },
+  }
 }
 
-const FILTER_LABELS: Record<MaintenanceFilter, string> = {
-  all: t("all"),
-  overdue: "Überfällig",
-  "this-week": "Diese Woche",
-  upcoming: "Demnächst",
+function getFilterLabels(t: (key: string) => string): Record<MaintenanceFilter, string> {
+  return {
+    all: t("all"),
+    overdue: t("overdue"),
+    "this-week": t("thisWeek"),
+    upcoming: t("upcoming"),
+  }
 }
 
 // ── iCal subscription button ────────────────────────────────────────────
 
 function IcalSubscribeButton() {
+  const t = useTranslations("calendar")
   const [loading, setLoading] = useState(false)
   const [feedUrl, setFeedUrl] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
@@ -193,7 +195,10 @@ function MaintenanceRow({
   onReschedule: (id: string, newDate: string) => void
   rescheduling: boolean
 }) {
+  const t = useTranslations("calendar")
+  const tc = useTranslations("common")
   const [completing, setCompleting] = useState(false)
+  const STATUS_CONFIG = getStatusConfig(t)
   const cfg = STATUS_CONFIG[item.status]
 
   const handleComplete = async () => {
@@ -307,6 +312,7 @@ function DayCell({
   onSelect,
   onDropMaintenance,
 }: DayCellProps) {
+  const t = useTranslations("calendar")
   const [dragOver, setDragOver] = useState(false)
 
   return (
@@ -362,6 +368,20 @@ function DayCell({
 // ── Page ───────────────────────────────────────────────────────────────
 export default function CalendarPage() {
   const t = useTranslations("calendar")
+
+  const STATUS_CONFIG = getStatusConfig(t)
+  const FILTER_LABELS = getFilterLabels(t)
+
+  const MONTHS = [
+    t("months.jan"), t("months.feb"), t("months.mar"), t("months.apr"),
+    t("months.may"), t("months.jun"), t("months.jul"), t("months.aug"),
+    t("months.sep"), t("months.oct"), t("months.nov"), t("months.dec"),
+  ]
+
+  const WEEKDAYS = [
+    t("weekdays.mon"), t("weekdays.tue"), t("weekdays.wed"), t("weekdays.thu"),
+    t("weekdays.fri"), t("weekdays.sat"), t("weekdays.sun"),
+  ]
 
   // ── Calendar state ─────────────────────────────────────────────────
   const today = new Date()
@@ -611,7 +631,7 @@ export default function CalendarPage() {
                 </div>
 
                 <div className="grid grid-cols-7 border-b border-border">
-                  {WEEKDAYS.map(day => (
+                  {WEEKDAYS.map((day: string) => (
                     <div key={day} className="py-2.5 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                       {day}
                     </div>

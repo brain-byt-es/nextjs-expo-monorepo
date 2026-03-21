@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import { useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import {
   IconPlus,
@@ -65,12 +66,7 @@ interface Location {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-const STATUS_LABELS: Record<string, string> = {
-  draft: "Entwurf",
-  in_progress: "In Bearbeitung",
-  completed: "Abgeschlossen",
-  cancelled: "Storniert",
-}
+// STATUS_LABELS now handled via translations
 
 const STATUS_VARIANTS: Record<
   string,
@@ -95,6 +91,7 @@ function formatDate(dateStr: string | null): string {
 // Component
 // ---------------------------------------------------------------------------
 export default function InventoryPage() {
+  const t = useTranslations("inventoryCount")
   const router = useRouter()
 
   const [counts, setCounts] = useState<InventoryCount[]>([])
@@ -146,7 +143,7 @@ export default function InventoryPage() {
   // Create new count
   const handleCreate = async () => {
     if (!newName.trim()) {
-      setCreateError("Name ist erforderlich")
+      setCreateError(t("nameRequired"))
       return
     }
     setCreating(true)

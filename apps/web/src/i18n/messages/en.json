@@ -273,7 +273,22 @@
     "goToTable": "Go to table view",
     "noCommissionsInColumn": "No commissions",
     "entry": "entry",
-    "entries": "entries"
+    "entries": "entries",
+    "entriesOpen": "{open} of {total} entries open",
+    "statuses": {
+      "open": "Open",
+      "inProgress": "In progress",
+      "completed": "Completed"
+    },
+    "progress": "Progress",
+    "noCommissionsFound": "No commissions found",
+    "adjustSearch": "Adjust your search.",
+    "createFirst": "Create your first commission.",
+    "printDeliveryNote": "Print delivery note",
+    "printDeliveryNotes": "Print {count} delivery note",
+    "printDeliveryNotesPlural": "Print {count} delivery notes",
+    "selectAll": "Select all",
+    "selectItem": "Select {number}"
   },
   "orders": {
     "title": "Orders",

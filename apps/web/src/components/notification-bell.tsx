@@ -65,7 +65,8 @@ function NotificationIcon({
 
 // ── Relative time ─────────────────────────────────────────────────────────────
 
-function relativeTime(dateStr: string): string {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function relativeTime(dateStr: string, t: (key: string) => string): string {
   const now = Date.now()
   const then = new Date(dateStr).getTime()
   const diffSec = Math.floor((now - then) / 1000)
@@ -302,7 +303,7 @@ export function NotificationBell() {
                           </p>
                         )}
                         <p className="mt-1 text-[10px] text-muted-foreground/60">
-                          {relativeTime(n.createdAt)}
+                          {relativeTime(n.createdAt, t)}
                         </p>
                       </div>
                     </button>

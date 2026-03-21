@@ -66,18 +66,18 @@ function getRiskColor(score: number): string {
   return "hsl(142, 76%, 36%)"                    // green
 }
 
-function conditionBadge(condition: string | null) {
+function conditionBadge(condition: string | null, t: ReturnType<typeof useTranslations<"maintenanceAi">>) {
   switch (condition) {
     case "good":
-      return <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Gut</Badge>
+      return <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">{t("conditions.good")}</Badge>
     case "damaged":
-      return <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">Beschädigt</Badge>
+      return <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">{t("conditions.damaged")}</Badge>
     case "repair":
-      return <Badge className="bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200">Reparatur</Badge>
+      return <Badge className="bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200">{t("conditions.repair")}</Badge>
     case "decommissioned":
-      return <Badge variant="destructive">Ausgemustert</Badge>
+      return <Badge variant="destructive">{t("conditions.decommissioned")}</Badge>
     default:
-      return <Badge variant="outline">Unbekannt</Badge>
+      return <Badge variant="outline">{t("conditions.unknown")}</Badge>
   }
 }
 
@@ -107,6 +107,7 @@ const PIE_COLORS = ["hsl(0, 72%, 51%)", "hsl(45, 93%, 47%)", "hsl(142, 76%, 36%)
 
 // ── Page ────────────────────────────────────────────────────────────────────────
 export default function MaintenanceAIPage() {
+  const t = useTranslations("maintenanceAi")
   const [data, setData] = useState<PredictionData | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -130,9 +131,9 @@ export default function MaintenanceAIPage() {
 
   const pieData = data
     ? [
-        { name: "Kritisch (>80)", value: data.summary.critical },
-        { name: "Warnung (50-80)", value: data.summary.warning },
-        { name: "Normal (<50)", value: data.summary.normal },
+        { name: t("pieCritical"), value: data.summary.critical },
+        { name: t("pieWarning"), value: data.summary.warning },
+        { name: t("pieNormal"), value: data.summary.normal },
       ].filter((d) => d.value > 0)
     : []
 
@@ -143,12 +144,11 @@ export default function MaintenanceAIPage() {
         <div className="flex items-center gap-2">
           <IconBrain className="size-6 text-primary" />
           <h1 className="text-2xl font-bold tracking-tight">
-            KI-Wartungsprognose
+            {t("title")}
           </h1>
         </div>
         <p className="text-sm text-muted-foreground">
-          Vorausschauende Wartungsanalyse basierend auf Buchungshistorie und
-          Zustandsdaten
+          {t("description")}
         </p>
       </div>
 
@@ -161,11 +161,10 @@ export default function MaintenanceAIPage() {
           <CardContent className="flex flex-col items-center justify-center py-20">
             <IconTool className="mb-4 size-12 text-muted-foreground/40" />
             <p className="text-lg font-medium text-muted-foreground">
-              Keine Werkzeugdaten vorhanden
+              {t("noToolData")}
             </p>
             <p className="text-sm text-muted-foreground">
-              Erstellen Sie Werkzeuge und erfassen Sie Buchungen, um
-              Wartungsprognosen zu erhalten.
+              {t("noToolDataDesc")}
             </p>
           </CardContent>
         </Card>
@@ -175,7 +174,7 @@ export default function MaintenanceAIPage() {
           <div className="grid gap-4 sm:grid-cols-3">
             <Card className="border-red-200 dark:border-red-900">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Kritisch</CardTitle>
+                <CardTitle className="text-sm font-medium">{t("critical")}</CardTitle>
                 <IconAlertTriangle className="size-4 text-red-500" />
               </CardHeader>
               <CardContent>
@@ -183,14 +182,14 @@ export default function MaintenanceAIPage() {
                   {data.summary.critical}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Risiko-Score &gt; 80
+                  {t("riskScoreAbove80")}
                 </p>
               </CardContent>
             </Card>
 
             <Card className="border-yellow-200 dark:border-yellow-900">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Warnung</CardTitle>
+                <CardTitle className="text-sm font-medium">{t("warning")}</CardTitle>
                 <IconAlertCircle className="size-4 text-yellow-500" />
               </CardHeader>
               <CardContent>
@@ -198,14 +197,14 @@ export default function MaintenanceAIPage() {
                   {data.summary.warning}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Risiko-Score 50 &ndash; 80
+                  {t("riskScore50to80")}
                 </p>
               </CardContent>
             </Card>
 
             <Card className="border-green-200 dark:border-green-900">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Normal</CardTitle>
+                <CardTitle className="text-sm font-medium">{t("normal")}</CardTitle>
                 <IconCircleCheck className="size-4 text-green-500" />
               </CardHeader>
               <CardContent>
@@ -213,7 +212,7 @@ export default function MaintenanceAIPage() {
                   {data.summary.normal}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Risiko-Score &lt; 50
+                  {t("riskScoreBelow50")}
                 </p>
               </CardContent>
             </Card>
@@ -225,9 +224,9 @@ export default function MaintenanceAIPage() {
             {pieData.length > 0 && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-base">Risikoverteilung</CardTitle>
+                  <CardTitle className="text-base">{t("riskDistribution")}</CardTitle>
                   <CardDescription>
-                    Verteilung der Werkzeuge nach Risiko-Score
+                    {t("riskDistributionDesc")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -267,22 +266,17 @@ export default function MaintenanceAIPage() {
                   <IconInfoCircle className="mt-0.5 size-5 shrink-0 text-blue-600 dark:text-blue-400" />
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                      Wie funktioniert die KI-Prognose?
+                      {t("howItWorks")}
                     </p>
                     <p className="text-sm text-blue-800 dark:text-blue-200">
-                      Die KI-Prognose basiert auf historischen Buchungsdaten und
-                      Zustandsberichten. Folgende Faktoren fliessen in die
-                      Bewertung ein:
+                      {t("howItWorksDesc")}
                     </p>
                     <ul className="list-inside list-disc space-y-1 text-sm text-blue-800 dark:text-blue-200">
-                      <li>Aktueller Zustand des Werkzeugs</li>
-                      <li>Wartungsintervalle und überfällige Wartungen</li>
-                      <li>
-                        Zustandstrend aus Checklisten-Ergebnissen (lineare
-                        Regression)
-                      </li>
-                      <li>Nutzungshäufigkeit (Buchungsfrequenz)</li>
-                      <li>Alter und erwartete Lebensdauer</li>
+                      <li>{t("factor1")}</li>
+                      <li>{t("factor2")}</li>
+                      <li>{t("factor3")}</li>
+                      <li>{t("factor4")}</li>
+                      <li>{t("factor5")}</li>
                     </ul>
                   </div>
                 </div>
@@ -294,10 +288,10 @@ export default function MaintenanceAIPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-base">
-                Alle Werkzeuge nach Risiko
+                {t("allToolsByRisk")}
               </CardTitle>
               <CardDescription>
-                Sortiert nach Risiko-Score (höchster zuerst)
+                {t("allToolsByRiskDesc")}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -305,14 +299,14 @@ export default function MaintenanceAIPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Werkzeug</TableHead>
-                      <TableHead>Zustand</TableHead>
-                      <TableHead>Trend</TableHead>
-                      <TableHead>Letzte Wartung</TableHead>
-                      <TableHead>Nächste Wartung (geplant)</TableHead>
-                      <TableHead>KI-Prognose</TableHead>
-                      <TableHead className="text-right">Risiko-Score</TableHead>
-                      <TableHead>Aktion</TableHead>
+                      <TableHead>{t("tool")}</TableHead>
+                      <TableHead>{t("conditionLabel")}</TableHead>
+                      <TableHead>{t("trend")}</TableHead>
+                      <TableHead>{t("lastMaintenance")}</TableHead>
+                      <TableHead>{t("nextMaintenancePlanned")}</TableHead>
+                      <TableHead>{t("aiPrediction")}</TableHead>
+                      <TableHead className="text-right">{t("riskScore")}</TableHead>
+                      <TableHead>{t("action")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -328,24 +322,24 @@ export default function MaintenanceAIPage() {
                             )}
                           </div>
                           <div className="mt-0.5 text-xs text-muted-foreground">
-                            {tool.totalBookings} Buchungen
+                            {t("bookingsCount", { count: tool.totalBookings })}
                             {tool.avgDaysBetweenBookings != null && (
                               <> &middot; &oslash; {tool.avgDaysBetweenBookings}d</>
                             )}
                           </div>
                         </TableCell>
-                        <TableCell>{conditionBadge(tool.condition)}</TableCell>
+                        <TableCell>{conditionBadge(tool.condition, t)}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1.5">
                             {trendIcon(tool.conditionTrend)}
                             <span className="text-xs capitalize text-muted-foreground">
                               {tool.conditionTrend === "improving"
-                                ? "Besser"
+                                ? t("trendImproving")
                                 : tool.conditionTrend === "declining"
-                                  ? "Schlechter"
+                                  ? t("trendDeclining")
                                   : tool.conditionTrend === "stable"
-                                    ? "Stabil"
-                                    : "Unbekannt"}
+                                    ? t("trendStable")
+                                    : t("trendUnknown")}
                             </span>
                           </div>
                         </TableCell>
@@ -399,7 +393,7 @@ export default function MaintenanceAIPage() {
                               className="flex items-center gap-1.5"
                             >
                               <IconCalendarEvent className="size-3.5" />
-                              <span className="hidden sm:inline">Wartung planen</span>
+                              <span className="hidden sm:inline">{t("planMaintenance")}</span>
                             </a>
                           </Button>
                         </TableCell>

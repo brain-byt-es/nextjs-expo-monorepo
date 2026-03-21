@@ -75,14 +75,16 @@ const TYPE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = 
   user: IconUser,
 }
 
-const TYPE_LABELS: Record<string, string> = {
-  warehouse: tl("types.warehouse"),
-  vehicle: tl("types.vehicle"),
-  site: tl("types.site"),
-  station: tl("types.station"),
-  practice: tl("types.practice"),
-  operating_room: tl("types.operatingRoom"),
-  user: tl("types.user"),
+function getTypeLabels(t: (key: string) => string): Record<string, string> {
+  return {
+    warehouse: t("types.warehouse"),
+    vehicle: t("types.vehicle"),
+    site: t("types.site"),
+    station: t("types.station"),
+    practice: t("types.practice"),
+    operating_room: t("types.operatingRoom"),
+    user: t("types.user"),
+  }
 }
 
 const TYPE_COLOR_CLASSES: Record<string, string> = {
@@ -100,6 +102,7 @@ const TYPE_COLOR_CLASSES: Record<string, string> = {
 // ---------------------------------------------------------------------------
 export default function MapPage() {
   const t = useTranslations("map")
+  const TYPE_LABELS = getTypeLabels(t)
   const [locations, setLocations] = useState<LocationRow[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")

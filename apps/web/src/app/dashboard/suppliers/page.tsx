@@ -370,11 +370,11 @@ export default function SuppliersPage() {
                                 <p className="text-xs text-muted-foreground font-mono">{materialNumber}</p>
                               </div>
                               {hasMultiple && (
-                                <Badge variant="secondary" className="text-xs ml-1">{sources.length} Quellen</Badge>
+                                <Badge variant="secondary" className="text-xs ml-1">{sources.length} {t("sources")}</Badge>
                               )}
                             </div>
                           ) : (
-                            <span className="pl-6 text-sm text-muted-foreground">↳ Alternativ</span>
+                            <span className="pl-6 text-sm text-muted-foreground">↳ {t("alternative")}</span>
                           )}
                         </TableCell>
                         <TableCell>
@@ -397,7 +397,7 @@ export default function SuppliersPage() {
                               onClick={() => toggleCart(source.id)}
                             >
                               <IconShoppingCart className="size-3" />
-                              {inCart ? "Im Warenkorb" : "Bestellen"}
+                              {inCart ? t("inCartLabel") : t("order")}
                             </Button>
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>

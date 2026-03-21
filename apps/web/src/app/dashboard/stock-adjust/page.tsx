@@ -65,7 +65,8 @@ interface AutoAdjustRow {
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
-function formatRelativeTime(iso: string | null, t: (key: string, values?: Record<string, unknown>) => string): string {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function formatRelativeTime(iso: string | null, t: (key: string, values?: any) => string): string {
   if (!iso) return t("never")
   const diff = (Date.now() - new Date(iso).getTime()) / 1000
   if (diff < 60) return t("justNow")

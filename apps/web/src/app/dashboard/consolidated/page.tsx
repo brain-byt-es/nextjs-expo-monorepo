@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useTranslations } from "next-intl"
 import Link from "next/link"
 import {
   IconBuilding,
@@ -48,18 +49,7 @@ interface ConsolidatedStats {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-const ROLE_LABELS: Record<string, string> = {
-  owner: "Inhaber",
-  admin: "Admin",
-  member: "Mitglied",
-}
-
-const INDUSTRY_LABELS: Record<string, string> = {
-  handwerk: "Handwerk",
-  rettungsdienst: "Rettungsdienst",
-  arztpraxis: "Arztpraxis",
-  spital: "Spital",
-}
+// Role and industry labels are now handled via translations
 
 function roleBadgeClass(role: string | null): string {
   if (role === "owner") return "bg-primary/10 text-primary border-border"
@@ -71,6 +61,7 @@ function roleBadgeClass(role: string | null): string {
 // Component
 // ---------------------------------------------------------------------------
 export default function ConsolidatedPage() {
+  const t = useTranslations("consolidated")
   const [stats, setStats] = useState<ConsolidatedStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -85,7 +76,7 @@ export default function ConsolidatedPage() {
         const data: ConsolidatedStats = await res.json()
         setStats(data)
       } catch {
-        setError("Die konsolidierten Statistiken konnten nicht geladen werden.")
+        setError(t("loadError"))
       } finally {
         setLoading(false)
       }
@@ -131,7 +122,7 @@ export default function ConsolidatedPage() {
             className="mt-4"
             onClick={() => window.location.reload()}
           >
-            Erneut versuchen
+            {t("retry")}
           </Button>
         </div>
       </div>
@@ -149,14 +140,13 @@ export default function ConsolidatedPage() {
             <IconChartBar className="size-6 text-muted-foreground" />
           </div>
           <div className="max-w-sm space-y-1">
-            <h3 className="text-lg font-medium">Nur eine Organisation</h3>
+            <h3 className="text-lg font-medium">{t("singleOrg")}</h3>
             <p className="text-sm text-muted-foreground">
-              Die konsolidierte Ansicht ist verf&uuml;gbar, sobald Sie Mitglied
-              in mehr als einer Organisation sind.
+              {t("singleOrgDesc")}
             </p>
           </div>
           <Button asChild>
-            <Link href="/dashboard">Zum Dashboard</Link>
+            <Link href="/dashboard">{t("goToDashboard")}</Link>
           </Button>
         </div>
       </div>
@@ -173,35 +163,35 @@ export default function ConsolidatedPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">
-          Konsolidierter Bericht
+          {t("title")}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {orgs.length} Organisationen &bull; Gesamtbestand im Überblick
+          {t("orgCount", { count: orgs.length })} &bull; {t("overviewSubtitle")}
         </p>
       </div>
 
       {/* Totals KPI strip */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <KpiCard
-          label="Standorte gesamt"
+          label={t("totalLocations")}
           value={totals.locations}
           icon={IconMapPin}
           colorClass="bg-blue-100 text-blue-700"
         />
         <KpiCard
-          label="Materialien gesamt"
+          label={t("totalMaterials")}
           value={totals.materials}
           icon={IconPackage}
           colorClass="bg-orange-100 text-orange-700"
         />
         <KpiCard
-          label="Werkzeuge gesamt"
+          label={t("totalTools")}
           value={totals.tools}
           icon={IconTool}
           colorClass="bg-green-100 text-green-700"
         />
         <KpiCard
-          label="Schlüssel gesamt"
+          label={t("totalKeys")}
           value={totals.keys}
           icon={IconKey}
           colorClass="bg-purple-100 text-purple-700"
@@ -210,7 +200,7 @@ export default function ConsolidatedPage() {
 
       {/* Per-org cards */}
       <div>
-        <h2 className="mb-4 text-base font-semibold">Nach Organisation</h2>
+        <h2 className="mb-4 text-base font-semibold">{t("byOrganization")}</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {orgs.map((org) => (
             <OrgCard key={org.id} org={org} />
@@ -253,8 +243,9 @@ function KpiCard({
 }
 
 function OrgCard({ org }: { org: OrgStat }) {
-  const industryLabel = org.industry ? (INDUSTRY_LABELS[org.industry] ?? org.industry) : null
-  const roleLabel = org.role ? (ROLE_LABELS[org.role] ?? org.role) : null
+  const t = useTranslations("consolidated")
+  const industryLabel = org.industry ? (t(`industries.${org.industry}` as Parameters<typeof t>[0]) || org.industry) : null
+  const roleLabel = org.role ? (t(`roles.${org.role}` as Parameters<typeof t>[0]) || org.role) : null
 
   return (
     <Card className="flex flex-col">
@@ -294,16 +285,16 @@ function OrgCard({ org }: { org: OrgStat }) {
       <CardContent className="flex flex-1 flex-col justify-between gap-4">
         {/* Count grid */}
         <div className="grid grid-cols-2 gap-2">
-          <CountItem icon={IconMapPin} label="Standorte" value={org.counts.locations} />
-          <CountItem icon={IconPackage} label="Materialien" value={org.counts.materials} />
-          <CountItem icon={IconTool} label="Werkzeuge" value={org.counts.tools} />
-          <CountItem icon={IconKey} label="Schlüssel" value={org.counts.keys} />
+          <CountItem icon={IconMapPin} label={t("locations")} value={org.counts.locations} />
+          <CountItem icon={IconPackage} label={t("materials")} value={org.counts.materials} />
+          <CountItem icon={IconTool} label={t("tools")} value={org.counts.tools} />
+          <CountItem icon={IconKey} label={t("keys")} value={org.counts.keys} />
         </div>
 
         {/* Switch link */}
         <Button variant="outline" size="sm" asChild className="w-full">
           <Link href={`/dashboard?org=${org.slug}`}>
-            Zur Organisation wechseln
+            {t("switchToOrg")}
             <IconArrowRight className="ml-1 size-3.5" />
           </Link>
         </Button>

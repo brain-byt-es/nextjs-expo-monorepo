@@ -273,7 +273,22 @@
     "goToTable": "Zur Tabellenansicht",
     "noCommissionsInColumn": "Keine Kommissionen",
     "entry": "Eintrag",
-    "entries": "Einträge"
+    "entries": "Einträge",
+    "entriesOpen": "{open} von {total} Einträgen offen",
+    "statuses": {
+      "open": "Offen",
+      "inProgress": "In Bearbeitung",
+      "completed": "Abgeschlossen"
+    },
+    "progress": "Fortschritt",
+    "noCommissionsFound": "Keine Kommissionen gefunden",
+    "adjustSearch": "Passen Sie Ihre Suche an.",
+    "createFirst": "Erstellen Sie Ihre erste Kommission.",
+    "printDeliveryNote": "Lieferschein drucken",
+    "printDeliveryNotes": "{count} Lieferschein drucken",
+    "printDeliveryNotesPlural": "{count} Lieferscheine drucken",
+    "selectAll": "Alle auswählen",
+    "selectItem": "{number} auswählen"
   },
   "orders": {
     "title": "Bestellungen",

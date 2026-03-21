@@ -128,6 +128,7 @@ function CreateGeofenceDialog({
   onCreated: () => void
   locations: Location[]
 }) {
+  const t = useTranslations("geofences")
   const [locationId, setLocationId] = useState("")
   const [latitude, setLatitude] = useState("")
   const [longitude, setLongitude] = useState("")

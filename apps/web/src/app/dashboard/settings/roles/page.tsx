@@ -156,6 +156,7 @@ interface PermissionMatrixProps {
 }
 
 function PermissionMatrix({ permMap, onChange, readonly = false }: PermissionMatrixProps) {
+  const ts = useTranslations("settings")
   const toggle = (resource: Resource, action: Action) => {
     if (readonly) return
     const updated = { ...permMap, [resource]: { ...permMap[resource], [action]: !permMap[resource][action] } }

@@ -69,6 +69,7 @@ function CreateFloorPlanDialog({
   locations: LocationOption[];
   onCreated: (fp: FloorPlan) => void;
 }) {
+  const t = useTranslations("floorPlan");
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [imageUrl, setImageUrl] = useState("");
@@ -204,6 +205,7 @@ function DeleteConfirmDialog({
   onConfirm: () => void;
   loading: boolean;
 }) {
+  const t = useTranslations("floorPlan");
   const [open, setOpen] = useState(false);
   return (
     <Dialog open={open} onOpenChange={setOpen}>

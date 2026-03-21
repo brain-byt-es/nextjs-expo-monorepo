@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useCallback } from "react"
+import { useTranslations } from "next-intl"
 import {
   IconClipboardText,
   IconClockHour5,
@@ -330,6 +331,7 @@ function printHandover(data: HandoverData, notes: string) {
 // Main Page
 // ---------------------------------------------------------------------------
 export default function ShiftHandoverPage() {
+  const t = useTranslations("shiftHandover")
   const [date, setDate] = useState(today())
   const [shift, setShift] = useState<ShiftKey>("early")
   const [data, setData] = useState<HandoverData | null>(null)
@@ -405,15 +407,14 @@ export default function ShiftHandoverPage() {
       {/* Header */}
       <div>
         <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
-          Betrieb
+          {t("sectionLabel")}
         </p>
         <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
           <IconClipboardText className="size-6 text-primary" />
-          Schichtübergabe
+          {t("title")}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Zusammenfassung aller Aktivitäten einer Schicht zur Übergabe an das
-          nächste Team.
+          {t("description")}
         </p>
       </div>
 
@@ -425,9 +426,9 @@ export default function ShiftHandoverPage() {
               <ShiftIcon className="size-5 text-primary" />
             </div>
             <div>
-              <CardTitle className="text-base">Schicht auswählen</CardTitle>
+              <CardTitle className="text-base">{t("selectShift")}</CardTitle>
               <CardDescription className="text-xs">
-                Wählen Sie Datum und Schichtzeit für die Übergabe.
+                {t("selectShiftDesc")}
               </CardDescription>
             </div>
           </div>
@@ -435,7 +436,7 @@ export default function ShiftHandoverPage() {
         <CardContent>
           <div className="flex flex-wrap items-end gap-4">
             <div className="flex flex-col gap-1.5">
-              <Label className="text-xs">Datum</Label>
+              <Label className="text-xs">{t("dateLabel")}</Label>
               <Input
                 type="date"
                 value={date}
@@ -445,7 +446,7 @@ export default function ShiftHandoverPage() {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label className="text-xs">Schicht</Label>
+              <Label className="text-xs">{t("shiftLabel")}</Label>
               <Select
                 value={shift}
                 onValueChange={(v) => setShift(v as ShiftKey)}
@@ -479,7 +480,7 @@ export default function ShiftHandoverPage() {
               ) : (
                 <IconClockHour5 className="size-4" />
               )}
-              Laden
+              {t("load")}
             </Button>
             <div className="ml-auto flex gap-2">
               <Button
@@ -494,7 +495,7 @@ export default function ShiftHandoverPage() {
                 ) : (
                   <IconPrinter className="size-4" />
                 )}
-                Als PDF exportieren
+                {t("exportPdf")}
               </Button>
               <Button
                 variant="outline"
@@ -508,7 +509,7 @@ export default function ShiftHandoverPage() {
                 ) : (
                   <IconMail className="size-4" />
                 )}
-                Per E-Mail senden
+                {t("sendEmail")}
               </Button>
             </div>
           </div>
@@ -520,7 +521,7 @@ export default function ShiftHandoverPage() {
           )}
           {emailSuccess && (
             <p className="mt-3 text-sm text-green-600">
-              Schichtübergabe wurde erfolgreich per E-Mail versandt.
+              {t("emailSuccess")}
             </p>
           )}
         </CardContent>
