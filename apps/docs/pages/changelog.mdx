@@ -6,6 +6,35 @@ title: Changelog
 
 Alle Änderungen, Verbesserungen und Fehlerbehebungen werden hier dokumentiert.
 
+## v2.9.0 – Mobile Companion Update – 2026-03-21
+
+Diese Version bringt acht neue Screens in die mobile App — damit sind alle wichtigen Funktionen auch unterwegs verfügbar.
+
+### Mobile App
+
+- **[Zeiterfassung](/mobile-app/zeiterfassung)**: Live-Timer mit Kommissionszuweisung, Start/Stopp, Wochenstatistik und manueller Nacherfassung. Timer läuft serverseitig weiter.
+- **[KI-Chat](/mobile-app/ki-chat)**: Natürlichsprachige Fragen an den KI-Assistenten. Streaming-Antworten, vorgeschlagene Prompts und direkte Aktionen (Bestellung erstellen, Bestand abfragen).
+- **[Schichtübergabe](/mobile-app/schichtuebergabe)**: Schicht wählen, automatische Zusammenfassung mit KPIs, Übergabe-Notizen erfassen, per E-Mail senden oder als PDF exportieren.
+- **[Lieferverfolgung](/mobile-app/lieferverfolgung)**: Status-Filter (Bestellt, Unterwegs, Zugestellt, Überfällig), Sendungs-Timeline, Statusänderung und direkte Tracking-Links für Schweizer Spediteure.
+- **[Garantieansprüche](/mobile-app/garantieansprueche)**: Anspruch stellen mit Fotos und Mangelbeschreibung. Automatische Garantiefrist-Prüfung. Status verfolgen von Entwurf bis Erledigung.
+- **[Sicherheit](/mobile-app/sicherheit)**: 2FA einrichten und verwalten, aktive Sitzungen einsehen und remote beenden, Sprache ändern (DE/FR/IT/EN).
+- **[Budgets](/mobile-app/budgets)**: Kostenstellenübersicht mit Fortschrittsbalken und Farbkodierung. Periodenfilter (Monat/Quartal/Jahr). Push-Warnungen bei Budgetüberschreitung.
+- **[Wiederkehrende Bestellungen](/mobile-app/wiederkehrende-bestellungen)**: Alle automatischen Nachbestellregeln einsehen. Aktivieren/Pausieren per Schalter. Verbrauchsanpassung und Ausführungshistorie.
+
+### Verbessert
+
+- Alle neuen Screens unterstützen Offline-Modus mit automatischer Synchronisation
+- Push-Benachrichtigungen für Budgetwarnungen und Garantie-Statusänderungen
+- Schichtübergabe-Archiv mit 90-Tage-Aufbewahrung
+
+### Behoben
+
+- Zeiterfassungs-Timer zeigte nach App-Neustart falsche Dauer an (#548)
+- KI-Chat verlor Kontext bei Wechsel zwischen Tabs (#551)
+- Lieferverfolgung erkannte DPD-Sendungsnummern nicht korrekt (#554)
+
+---
+
 ## v2.8.0 – Kanban, Recurring Orders & Druck – 2026-03-20
 
 Diese Version bringt ein Kanban Board für Kommissionen, wiederkehrende Bestellungen, eine Material-Fotogalerie, QR-Codes für Standorte, erweiterte Schichtübergabe und Etiketten-Massendruck.

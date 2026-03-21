@@ -13,5 +13,13 @@ export default {
   "bluetooth-beacons": "Bluetooth Beacons",
   "watch-app": "Apple Watch App",
   "sprachassistent": "Siri & Google Assistant",
-  "offline-karten": "Offline-Karten"
+  "offline-karten": "Offline-Karten",
+  "zeiterfassung": "Zeiterfassung",
+  "ki-chat": "KI-Chat",
+  "schichtuebergabe": "Schichtübergabe",
+  "lieferverfolgung": "Lieferverfolgung",
+  "garantieansprueche": "Garantieansprüche",
+  "sicherheit": "Sicherheit",
+  "budgets": "Budgets",
+  "wiederkehrende-bestellungen": "Wiederkehrende Bestellungen"
 }
