@@ -71,14 +71,14 @@ const MOCK_EVENTS: CalendarEvent[] = [
 ]
 
 const EVENT_TYPE_CONFIG: Record<EventType, { icon: React.ComponentType<{ className?: string }>; label: string; bg: string; text: string }> = {
-  toolBooking: { icon: IconTool, label: "Werkzeug Buchungen", bg: "bg-primary/10", text: "text-primary" },
-  task: { icon: IconChecklist, label: "Aufgaben", bg: "bg-primary/10", text: "text-primary" },
-  order: { icon: IconFileInvoice, label: "Bestellungen", bg: "bg-secondary/10", text: "text-secondary" },
-  commission: { icon: IconClipboardList, label: "Kommissionen", bg: "bg-muted", text: "text-muted-foreground" },
+  toolBooking: { icon: IconTool, label: "toolBookings", bg: "bg-primary/10", text: "text-primary" },
+  task: { icon: IconChecklist, label: "tasks", bg: "bg-primary/10", text: "text-primary" },
+  order: { icon: IconFileInvoice, label: "orders", bg: "bg-secondary/10", text: "text-secondary" },
+  commission: { icon: IconClipboardList, label: "commissions", bg: "bg-muted", text: "text-muted-foreground" },
 }
 
-const WEEKDAYS = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
-const MONTHS = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
+// WEEKDAYS and MONTHS are derived from translations in the component
+
 
 function getDaysInMonth(year: number, month: number) {
   return new Date(year, month + 1, 0).getDate()
@@ -90,24 +90,24 @@ function getFirstDayOfMonth(year: number, month: number) {
 // ── Status helpers ──────────────────────────────────────────────────────
 const STATUS_CONFIG: Record<MaintenanceStatus, { label: string; badgeClass: string; rowClass: string }> = {
   overdue: {
-    label: "Überfällig",
+    label: t("overdue"),
     badgeClass: "bg-destructive/15 text-destructive border-destructive/30",
     rowClass: "border-l-4 border-l-destructive",
   },
   "this-week": {
-    label: "Diese Woche",
+    label: t("thisWeek"),
     badgeClass: "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30",
     rowClass: "border-l-4 border-l-amber-500",
   },
   upcoming: {
-    label: "Demnächst",
+    label: t("upcoming"),
     badgeClass: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30",
     rowClass: "border-l-4 border-l-emerald-500",
   },
 }
 
 const FILTER_LABELS: Record<MaintenanceFilter, string> = {
-  all: "Alle",
+  all: t("all"),
   overdue: "Überfällig",
   "this-week": "Diese Woche",
   upcoming: "Demnächst",
@@ -155,7 +155,7 @@ function IcalSubscribeButton() {
         ) : (
           <IconLink className="size-4" />
         )}
-        Kalender abonnieren
+        {t("subscribe")}
       </Button>
     )
   }
@@ -202,7 +202,7 @@ function MaintenanceRow({
       const res = await fetch(`/api/tools/${item.id}/maintenance`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ notes: "Wartung durchgeführt" }),
+        body: JSON.stringify({ notes: "Maintenance completed" }),
       })
       if (res.ok) {
         onComplete(item.id)
@@ -234,7 +234,7 @@ function MaintenanceRow({
         </div>
         <div className="flex items-center gap-3 mt-0.5 flex-wrap text-xs text-muted-foreground">
           <span>
-            Fällig:{" "}
+            {t("due")}:{" "}
             <strong className="text-foreground">
               {new Date(item.nextMaintenanceDate + "T00:00:00").toLocaleDateString("de-CH", {
                 day: "2-digit",
@@ -248,12 +248,12 @@ function MaintenanceRow({
               {Math.abs(item.daysUntil)} Tag{Math.abs(item.daysUntil) !== 1 ? "e" : ""} überfällig
             </span>
           )}
-          {item.assignedUserName && <span>Zugewiesen: {item.assignedUserName}</span>}
-          {item.homeLocationName && <span>Standort: {item.homeLocationName}</span>}
+          {item.assignedUserName && <span>{t("assignedTo")}: {item.assignedUserName}</span>}
+          {item.homeLocationName && <span>{t("location")}: {item.homeLocationName}</span>}
         </div>
         {/* Reschedule date input */}
         <div className="flex items-center gap-2 mt-2">
-          <span className="text-xs text-muted-foreground">Verschieben:</span>
+          <span className="text-xs text-muted-foreground">{t("reschedule")}:</span>
           <input
             type="date"
             defaultValue={item.nextMaintenanceDate}
@@ -268,7 +268,7 @@ function MaintenanceRow({
 
       <div className="shrink-0 flex items-center gap-2">
         <Button variant="outline" size="sm" asChild>
-          <Link href={`/dashboard/tools/${item.id}`}>Details</Link>
+          <Link href={`/dashboard/tools/${item.id}`}>{tc("details")}</Link>
         </Button>
         <Button
           size="sm"
@@ -277,7 +277,7 @@ function MaintenanceRow({
           className="gap-1.5"
         >
           <IconCheck className="size-3.5" />
-          {completing ? "..." : "Wartung durchführen"}
+          {completing ? "..." : t("performMaintenance")}
         </Button>
       </div>
     </div>
@@ -352,7 +352,7 @@ function DayCell({
           </div>
         ))}
         {dayEvents.length > 3 && (
-          <div className="text-[10px] text-muted-foreground pl-1">+{dayEvents.length - 3} weitere</div>
+          <div className="text-[10px] text-muted-foreground pl-1">+{dayEvents.length - 3} {t("more")}</div>
         )}
       </div>
     </div>
@@ -489,7 +489,7 @@ export default function CalendarPage() {
       map.get(key)!.push({
         id: `maint-${item.id}`,
         type: "task",
-        title: `Wartung: ${item.name}`,
+        title: `${t("maintenancePlanner")}: ${item.name}`,
         subtitle: STATUS_CONFIG[item.status].label,
         date: key,
         color: item.status === "overdue"
@@ -500,7 +500,7 @@ export default function CalendarPage() {
       })
     })
     return map
-  }, [activeTypes, maintenance])
+  }, [activeTypes, maintenance, t])
 
   const selectedEvents = selectedDay ? (eventsForDate.get(selectedDay) ?? []) : []
   const todayStr = today.toISOString().split("T")[0]!
@@ -517,7 +517,7 @@ export default function CalendarPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("title")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            Übersicht aller Buchungen, Aufgaben und anstehenden Wartungen
+            {t("subtitle")}
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
@@ -689,12 +689,12 @@ export default function CalendarPage() {
                   <CardContent className="p-4">
                     <div className="flex flex-col items-center justify-center gap-3 py-8 text-center">
                       <IconCalendar className="size-10 text-muted-foreground/30" />
-                      <p className="text-sm text-muted-foreground">Tag auswählen um Ereignisse anzuzeigen</p>
-                      <p className="text-xs text-muted-foreground/70">Wartungstermine können per Drag &amp; Drop verschoben werden</p>
+                      <p className="text-sm text-muted-foreground">{t("selectDay")}</p>
+                      <p className="text-xs text-muted-foreground/70">{t("dragHint")}</p>
                     </div>
 
                     <div className="mt-2 border-t border-border pt-4">
-                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Demnächst</p>
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">{t("upcoming")}</p>
                       {MOCK_EVENTS
                         .filter(ev => activeTypes.has(ev.type) && ev.date >= todayStr)
                         .sort((a, b) => a.date.localeCompare(b.date))
@@ -763,11 +763,11 @@ export default function CalendarPage() {
                 <IconTool className="size-12 text-muted-foreground/30" />
                 <p className="text-sm text-muted-foreground">
                   {filter === "all"
-                    ? "Keine anstehenden Wartungen in den nächsten 30 Tagen."
+                    ? t("noMaintenanceAll")
                     : `Keine Einträge für Filter: ${FILTER_LABELS[filter]}`}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  Wartungsintervalle können bei jedem Werkzeug hinterlegt werden.
+                  {t("maintenanceHint")}
                 </p>
               </CardContent>
             </Card>
@@ -789,8 +789,8 @@ export default function CalendarPage() {
           {!maintenanceLoading && (
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-semibold">Zusammenfassung (30 Tage)</CardTitle>
-                <CardDescription>Wartungen in den nächsten 30 Tagen</CardDescription>
+                <CardTitle className="text-sm font-semibold">{t("summary30")}</CardTitle>
+                <CardDescription>{t("maintenanceNext30")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-3 gap-4 text-center">

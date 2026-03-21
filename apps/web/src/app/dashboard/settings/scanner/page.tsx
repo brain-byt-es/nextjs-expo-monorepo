@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useEffect, useState } from "react"
 import { useScannerSettings } from "@/components/barcode-scanner-provider"
 import { Button } from "@/components/ui/button"
@@ -25,6 +27,7 @@ import {
 // Scanner settings page — /dashboard/settings/scanner
 // ---------------------------------------------------------------------------
 export default function ScannerSettingsPage() {
+  const ts = useTranslations("settings")
   const {
     enabled,
     soundEnabled,
@@ -54,7 +57,7 @@ export default function ScannerSettingsPage() {
       {/* Page header */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight">
-          Handscanner-Einstellungen
+          {ts("scannerTitle")}
         </h1>
         <p className="mt-2 text-muted-foreground">
           Konfigurieren Sie die Erkennung von Hardware-Barcode-Scannern im

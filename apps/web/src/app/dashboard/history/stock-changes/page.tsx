@@ -90,6 +90,7 @@ function downloadCsv(headers: string[], rows: (string | number | null | undefine
 
 export default function HistoryStockChangesPage() {
   const t = useTranslations("history")
+  const tc = useTranslations("common")
   const [search, setSearch] = useState("")
   const [typeFilter, setTypeFilter] = useState("all")
   const [dateFrom, setDateFrom] = useState("")
@@ -148,22 +149,22 @@ export default function HistoryStockChangesPage() {
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 max-w-sm">
           <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-          <Input placeholder="Material suchen…" value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} className="pl-9" />
+          <Input placeholder={tc("search")} value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} className="pl-9" />
         </div>
         <Select value={typeFilter} onValueChange={v => { setTypeFilter(v); setPage(1) }}>
           <SelectTrigger className="w-40">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Alle Typen</SelectItem>
-            <SelectItem value="in">Eingang</SelectItem>
-            <SelectItem value="out">Ausgang</SelectItem>
-            <SelectItem value="transfer">Umbuchung</SelectItem>
-            <SelectItem value="correction">Korrektur</SelectItem>
+            <SelectItem value="all">{t("allTypes")}</SelectItem>
+            <SelectItem value="in">{t("typeIn")}</SelectItem>
+            <SelectItem value="out">{t("typeOut")}</SelectItem>
+            <SelectItem value="transfer">{t("typeTransfer")}</SelectItem>
+            <SelectItem value="correction">{t("typeCorrection")}</SelectItem>
           </SelectContent>
         </Select>
         <div className="flex items-center gap-2">
-          <label className="text-sm text-muted-foreground whitespace-nowrap">Von</label>
+          <label className="text-sm text-muted-foreground whitespace-nowrap">{t("dateFrom")}</label>
           <input
             type="date"
             value={dateFrom}
@@ -172,7 +173,7 @@ export default function HistoryStockChangesPage() {
           />
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-sm text-muted-foreground whitespace-nowrap">Bis</label>
+          <label className="text-sm text-muted-foreground whitespace-nowrap">{t("dateTo")}</label>
           <input
             type="date"
             value={dateTo}
@@ -211,7 +212,7 @@ export default function HistoryStockChangesPage() {
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[130px] cursor-pointer select-none" onClick={() => toggleSort("user")}>
                     {t("user")}<SortIcon sortKey={sortKey} sortDir={sortDir} col="user" />
                   </TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Grund</TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("reason")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -254,8 +255,8 @@ export default function HistoryStockChangesPage() {
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <span>
           {total === 0
-            ? "Keine Einträge"
-            : `Zeige ${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, total)} von ${total} Einträgen`}
+            ? t("noEntries")
+            : t("showingRange", { from: (page - 1) * PAGE_SIZE + 1, to: Math.min(page * PAGE_SIZE, total), total })}
         </span>
         <div className="flex items-center gap-1">
           <Button

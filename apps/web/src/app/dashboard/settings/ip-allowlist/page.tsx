@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import {
@@ -47,6 +49,7 @@ import {
 // ── Main Page ──────────────────────────────────────────────────────────────
 
 export default function IpAllowlistPage() {
+  const ts = useTranslations("settings")
   const [allowlist, setAllowlist] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const [currentIp, setCurrentIp] = useState<string | null>(null)
@@ -136,7 +139,7 @@ export default function IpAllowlistPage() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight">
-          IP-Zugriffsbeschränkung
+          {ts("ipAllowlistTitle")}
         </h1>
         <p className="mt-2 text-muted-foreground">
           Zugriff auf die Organisation auf bestimmte IP-Adressen beschränken.

@@ -5,70 +5,35 @@ import { usePathname } from "next/navigation"
 import { LogoMark } from "@/components/logo"
 import { useBrand } from "@/components/brand-provider"
 import {
+  IconBuilding,
   IconCalendar,
-  IconCalendarEvent,
-  IconInbox,
+  IconChartBar,
+  IconCheck,
   IconChecklist,
+  IconChevronDown,
   IconChevronRight,
-  IconClipboardCheck,
   IconClipboardList,
   IconDashboard,
   IconDatabase,
-  IconExternalLink,
   IconEye,
   IconEyeOff,
-  IconFileInvoice,
   IconHelp,
   IconHistory,
+  IconInbox,
   IconKey,
+  IconKeyboard,
+  IconLink,
   IconMapPin,
-  IconMap,
   IconPackage,
   IconPencil,
-  IconPlugConnected,
-  IconReportAnalytics,
-  IconUsers,
-  IconSettings,
-  IconBell,
-  IconListDetails,
-  IconShoppingCart,
-  IconTool,
-  IconTruck,
-  IconShield,
-  IconBolt,
-  IconBuilding,
-  IconChevronDown,
-  IconChartBar,
-  IconCheck,
-  IconKeyboard,
-  IconBrain,
-  IconDeviceTv,
-  IconBarcode,
-  IconLayoutKanban,
-  IconArrowsTransferDown,
-  IconWallet,
-  IconClockHour5,
-  IconShieldCheck,
-  IconAdjustments,
-  IconLink,
-  IconAntenna,
   IconPrinter,
-  IconPuzzle,
-  IconGitBranch,
-  IconDevices,
-  IconShieldLock,
-  IconClock,
-  IconMail,
-  IconRuler,
-  IconUpload,
-  IconTransfer,
-  IconClipboardText,
-  IconRepeat,
+  IconReportAnalytics,
+  IconSettings,
+  IconTool,
 } from "@tabler/icons-react"
 import { useTranslations } from "next-intl"
 import { useShortcutsDialog } from "@/components/shortcuts-dialog"
 
-import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
@@ -338,13 +303,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   // ── Nav item definitions ─────────────────────────────────────────────────
   const data = {
-    // Items that can be hidden. Key matches what is stored in localStorage.
     navMain: [
       {
         title: t("overview"),
         url: "/dashboard",
         icon: IconDashboard,
-        hideable: false, // always visible
+        hideable: false,
       },
       {
         title: t("materials"),
@@ -371,22 +335,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         hideable: true,
       },
       {
-        title: "Zeiterfassung",
-        url: "/dashboard/time-tracking",
-        icon: IconClockHour5,
+        title: "Anfragen",
+        url: "/dashboard/requests",
+        icon: IconInbox,
         hideable: true,
-      },
-      {
-        title: "Kanban",
-        url: "/dashboard/kanban",
-        icon: IconLayoutKanban,
-        hideable: true,
-      },
-      {
-        title: "Inventur",
-        url: "/dashboard/inventory",
-        icon: IconClipboardCheck,
-        hideable: true,
+        badge: pendingRequestCount,
       },
       {
         title: t("calendar"),
@@ -395,167 +348,52 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         hideable: true,
       },
       {
-        title: "Reservierungen",
-        url: "/dashboard/reservations",
-        icon: IconCalendarEvent,
-        hideable: true,
-      },
-      {
-        title: "Anfragen",
-        url: "/dashboard/requests",
-        icon: IconInbox,
-        hideable: true,
-        badge: pendingRequestCount,
-      },
-      {
         title: t("reports"),
         url: "/dashboard/reports",
         icon: IconReportAnalytics,
         hideable: true,
       },
-      {
-        title: "Schichtübergabe",
-        url: "/dashboard/shift-handover",
-        icon: IconClipboardText,
-        hideable: true,
-      },
-      {
-        title: "Geräte-Auslastung",
-        url: "/dashboard/utilization",
-        icon: IconChartBar,
-        hideable: true,
-      },
-      {
-        title: "KI-Wartungsprognose",
-        url: "/dashboard/maintenance-ai",
-        icon: IconBrain,
-        hideable: true,
-      },
-      {
-        title: "Lieferkette",
-        url: "/dashboard/supply-chain",
-        icon: IconGitBranch,
-        hideable: true,
-      },
-      {
-        title: "TV-Modus",
-        url: "/tv",
-        icon: IconDeviceTv,
-        hideable: true,
-        newTab: true,
-      },
-    ],
-    documents: [
-      {
-        name: t("locations"),
-        url: "/dashboard/locations",
-        icon: IconMapPin,
-        hideable: true,
-      },
-      {
-        name: "Karte",
-        url: "/dashboard/map",
-        icon: IconMap,
-        hideable: true,
-      },
-      {
-        name: t("suppliers"),
-        url: "/dashboard/suppliers",
-        icon: IconTruck,
-        hideable: true,
-      },
-      {
-        name: t("commissions"),
-        url: "/dashboard/commissions",
-        icon: IconClipboardList,
-        hideable: true,
-      },
-      {
-        name: "Kommissionen Kanban",
-        url: "/dashboard/commissions/kanban",
-        icon: IconLayoutKanban,
-        hideable: true,
-      },
-      {
-        name: "Umbuchungen",
-        url: "/dashboard/transfers",
-        icon: IconArrowsTransferDown,
-        hideable: true,
-      },
-      {
-        name: t("cart"),
-        url: "/dashboard/cart",
-        icon: IconShoppingCart,
-        hideable: true,
-      },
-      {
-        name: "Barcode-Generator",
-        url: "/dashboard/barcode-generator",
-        icon: IconBarcode,
-        hideable: true,
-      },
-      {
-        name: "Etiketten-Designer",
-        url: "/dashboard/label-designer",
-        icon: IconRuler,
-        hideable: true,
-      },
-      {
-        name: "Massendruck",
-        url: "/dashboard/batch-print",
-        icon: IconPrinter,
-        hideable: true,
-      },
-      {
-        name: t("openOrders"),
-        url: "/dashboard/orders",
-        icon: IconFileInvoice,
-        hideable: true,
-      },
-      {
-        name: "Wiederkehrende Bestellungen",
-        url: "/dashboard/recurring-orders",
-        icon: IconRepeat,
-        hideable: true,
-      },
-      {
-        name: "Lieferverfolgung",
-        url: "/dashboard/deliveries",
-        icon: IconTruck,
-        hideable: true,
-      },
-      {
-        name: "Garantieansprüche",
-        url: "/dashboard/warranty-claims",
-        icon: IconShieldCheck,
-        hideable: true,
-      },
-      {
-        name: "Bestandsoptimierung",
-        url: "/dashboard/stock-adjust",
-        icon: IconAdjustments,
-        hideable: true,
-      },
-      {
-        name: "Budgets",
-        url: "/dashboard/budgets",
-        icon: IconWallet,
-        hideable: true,
-      },
-      {
-        name: "Datenimport",
-        url: "/dashboard/import",
-        icon: IconUpload,
-        hideable: true,
-      },
-      {
-        name: "Migration",
-        url: "/dashboard/migration",
-        icon: IconTransfer,
-        hideable: true,
-      },
     ],
     navClouds: [
+      {
+        title: "Betrieb",
+        icon: IconClipboardList,
+        items: [
+          { title: t("commissions"), url: "/dashboard/commissions" },
+          { title: "Kommissionen Kanban", url: "/dashboard/commissions/kanban" },
+          { title: "Umbuchungen", url: "/dashboard/transfers" },
+          { title: t("openOrders"), url: "/dashboard/orders" },
+          { title: "Wiederkehrende Bestellungen", url: "/dashboard/recurring-orders" },
+          { title: "Lieferverfolgung", url: "/dashboard/deliveries" },
+          { title: t("cart"), url: "/dashboard/cart" },
+          { title: "Inventur", url: "/dashboard/inventory" },
+          { title: "Reservierungen", url: "/dashboard/reservations" },
+          { title: "Garantieansprüche", url: "/dashboard/warranty-claims" },
+        ],
+      },
+      {
+        title: "Standorte",
+        icon: IconMapPin,
+        items: [
+          { title: t("locations"), url: "/dashboard/locations" },
+          { title: "Karte", url: "/dashboard/map" },
+          { title: t("suppliers"), url: "/dashboard/suppliers" },
+        ],
+      },
+      {
+        title: "Planung & Analyse",
+        icon: IconChartBar,
+        items: [
+          { title: "Zeiterfassung", url: "/dashboard/time-tracking" },
+          { title: "Kanban", url: "/dashboard/kanban" },
+          { title: "Schichtübergabe", url: "/dashboard/shift-handover" },
+          { title: "Geräte-Auslastung", url: "/dashboard/utilization" },
+          { title: "KI-Wartungsprognose", url: "/dashboard/maintenance-ai" },
+          { title: "Lieferkette", url: "/dashboard/supply-chain" },
+          { title: "Bestandsoptimierung", url: "/dashboard/stock-adjust" },
+          { title: "Budgets", url: "/dashboard/budgets" },
+        ],
+      },
       {
         title: t("masterData"),
         icon: IconDatabase,
@@ -564,14 +402,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           { title: t("masterSuppliers"), url: "/dashboard/master/suppliers" },
           { title: t("masterProjects"), url: "/dashboard/master/projects" },
           { title: t("masterCustomers"), url: "/dashboard/master/customers" },
-          {
-            title: t("masterMaterialGroups"),
-            url: "/dashboard/master/material-groups",
-          },
-          {
-            title: t("masterToolGroups"),
-            url: "/dashboard/master/tool-groups",
-          },
+          { title: t("masterMaterialGroups"), url: "/dashboard/master/material-groups" },
+          { title: t("masterToolGroups"), url: "/dashboard/master/tool-groups" },
         ],
       },
       {
@@ -579,30 +411,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: IconHistory,
         items: [
           { title: t("historyOrders"), url: "/dashboard/history/orders" },
-          {
-            title: t("historyOrderItems"),
-            url: "/dashboard/history/order-items",
-          },
-          {
-            title: t("historyStockChanges"),
-            url: "/dashboard/history/stock-changes",
-          },
-          {
-            title: t("historyToolBookings"),
-            url: "/dashboard/history/tool-bookings",
-          },
-          {
-            title: t("historyCommissions"),
-            url: "/dashboard/history/commissions",
-          },
-          {
-            title: t("historyChangelog"),
-            url: "/dashboard/history/changelog",
-          },
-          {
-            title: "Aktivitätsprotokoll",
-            url: "/dashboard/history/activity",
-          },
+          { title: t("historyOrderItems"), url: "/dashboard/history/order-items" },
+          { title: t("historyStockChanges"), url: "/dashboard/history/stock-changes" },
+          { title: t("historyToolBookings"), url: "/dashboard/history/tool-bookings" },
+          { title: t("historyCommissions"), url: "/dashboard/history/commissions" },
+          { title: t("historyChangelog"), url: "/dashboard/history/changelog" },
+          { title: "Aktivitätsprotokoll", url: "/dashboard/history/activity" },
+        ],
+      },
+      {
+        title: "Werkzeuge & Druck",
+        icon: IconPrinter,
+        items: [
+          { title: "Barcode-Generator", url: "/dashboard/barcode-generator" },
+          { title: "Etiketten-Designer", url: "/dashboard/label-designer" },
+          { title: "Massendruck", url: "/dashboard/batch-print" },
+          { title: "Datenimport", url: "/dashboard/import" },
+          { title: "Migration", url: "/dashboard/migration" },
+          { title: "TV-Modus", url: "/tv", newTab: true },
         ],
       },
     ],
@@ -611,121 +437,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: t("settings"),
         url: "/dashboard/settings",
         icon: IconSettings,
-        hideable: false, // always visible
-      },
-      {
-        title: "Wartungs-Checklisten",
-        url: "/dashboard/settings/checklists",
-        icon: IconChecklist,
-        hideable: true,
-      },
-      {
-        title: t("customFields"),
-        url: "/dashboard/settings/custom-fields",
-        icon: IconListDetails,
-        hideable: true,
-      },
-      {
-        title: t("alerts"),
-        url: "/dashboard/settings/alerts",
-        icon: IconBell,
-        hideable: true,
-      },
-      {
-        title: "Automatisierungen",
-        url: "/dashboard/settings/automations",
-        icon: IconBolt,
-        hideable: true,
-      },
-      {
-        title: "Branding",
-        url: "/dashboard/settings/branding",
-        icon: IconSettings,
-        hideable: true,
-      },
-      {
-        title: t("team"),
-        url: "/dashboard/settings/team",
-        icon: IconUsers,
-        hideable: true,
-      },
-      {
-        title: "Rollen",
-        url: "/dashboard/settings/roles",
-        icon: IconShield,
-        hideable: true,
-      },
-      {
-        title: "KI-Funktionen",
-        url: "/dashboard/settings/ai",
-        icon: IconBrain,
-        hideable: true,
-      },
-      {
-        title: "Handscanner",
-        url: "/dashboard/settings/scanner",
-        icon: IconBarcode,
-        hideable: true,
-      },
-      {
-        title: "Etikettendrucker",
-        url: "/dashboard/settings/printer",
-        icon: IconPrinter,
-        hideable: true,
-      },
-      {
-        title: "RFID Reader",
-        url: "/dashboard/settings/rfid",
-        icon: IconAntenna,
-        hideable: true,
-      },
-      {
-        title: "Schnelltasten",
-        url: "/dashboard/settings/keypad",
-        icon: IconKeyboard,
-        hideable: true,
-      },
-      {
-        title: t("integrations"),
-        url: "/dashboard/settings/integrations",
-        icon: IconPlugConnected,
-        hideable: true,
+        hideable: false,
       },
       {
         title: "Externe Portale",
         url: "/dashboard/portals",
         icon: IconLink,
-        hideable: true,
-      },
-      {
-        title: "Plugins",
-        url: "/dashboard/settings/plugins",
-        icon: IconPuzzle,
-        hideable: true,
-      },
-      {
-        title: "Sitzungen",
-        url: "/dashboard/settings/sessions",
-        icon: IconDevices,
-        hideable: true,
-      },
-      {
-        title: "IP-Zugriff",
-        url: "/dashboard/settings/ip-allowlist",
-        icon: IconShieldLock,
-        hideable: true,
-      },
-      {
-        title: "Datenhaltung",
-        url: "/dashboard/settings/data-retention",
-        icon: IconClock,
-        hideable: true,
-      },
-      {
-        title: "E-Mail Posteingang",
-        url: "/dashboard/settings/email-inbox",
-        icon: IconMail,
-        hideable: true,
+        hideable: false,
       },
     ],
   }
@@ -734,10 +452,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const visibleNavMain = editMode
     ? data.navMain
     : data.navMain.filter((item) => !item.hideable || !hiddenItems.has(item.url))
-
-  const visibleDocuments = editMode
-    ? data.documents
-    : data.documents.filter((item) => !item.hideable || !hiddenItems.has(item.url))
 
   const visibleNavSecondary = editMode
     ? data.navSecondary
@@ -787,39 +501,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <NavMain items={visibleNavMain} />
         )}
 
-        {/* ── Documents / Betrieb ───────────────────────────────── */}
-        {editMode ? (
+        {/* ── Collapsible sections ──────────────────────────────── */}
+        {!editMode && (
           <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-            <SidebarGroupLabel>Betrieb</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {data.documents.map((item) => (
-                  <EditModeRow
-                    key={item.url}
-                    icon={item.icon}
-                    title={item.name}
-                    hidden={hiddenItems.has(item.url)}
-                    onToggle={() => toggleHidden(item.url)}
-                  />
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
+            {data.navClouds.map((section) => (
+              <CollapsibleSection
+                key={section.title}
+                title={section.title}
+                icon={section.icon}
+                items={section.items}
+              />
+            ))}
           </SidebarGroup>
-        ) : (
-          <NavDocuments items={visibleDocuments} />
         )}
-
-        {/* ── Collapsible sections (Stammdaten / Verlauf) ──────── */}
-        <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-          {data.navClouds.map((section) => (
-            <CollapsibleSection
-              key={section.title}
-              title={section.title}
-              icon={section.icon}
-              items={section.items}
-            />
-          ))}
-        </SidebarGroup>
 
         {/* ── Secondary nav ─────────────────────────────────────── */}
         {editMode ? (
@@ -856,22 +550,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               items={visibleNavSecondary}
               className="mt-auto"
             />
-            {/* Hilfe — external link, always shown */}
+            {/* Hilfe — triggers welcome tour */}
             <SidebarGroup className="pb-2">
               <SidebarGroupContent>
                 <SidebarMenu>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <a
-                        href="https://docs.logistikapp.ch"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2"
-                      >
-                        <IconHelp className="size-4 shrink-0" />
-                        <span>{t("help")}</span>
-                        <IconExternalLink className="ml-auto size-3.5 text-muted-foreground/70" aria-hidden />
-                      </a>
+                    <SidebarMenuButton
+                      asChild={false}
+                      onClick={() => {
+                        window.dispatchEvent(new Event("restart-welcome-tour"))
+                      }}
+                      className="flex items-center gap-2"
+                    >
+                      <IconHelp className="size-4 shrink-0" />
+                      <span>{t("help")}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
@@ -944,7 +636,7 @@ function CollapsibleSection({
 }: {
   title: string
   icon: React.ComponentType<{ className?: string }>
-  items: { title: string; url: string }[]
+  items: { title: string; url: string; newTab?: boolean }[]
 }) {
   const pathname = usePathname()
   const hasActive = items.some(
@@ -972,7 +664,10 @@ function CollapsibleSection({
                   return (
                     <SidebarMenuSubItem key={item.url}>
                       <SidebarMenuSubButton asChild isActive={isActive}>
-                        <a href={item.url}>
+                        <a
+                          href={item.url}
+                          {...(item.newTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                        >
                           <span>{item.title}</span>
                         </a>
                       </SidebarMenuSubButton>

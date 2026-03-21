@@ -1,11 +1,14 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState, useEffect, useCallback } from "react"
 import { IconSparkles } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import { AiChatPanel } from "@/components/ai-chat-panel"
 
 export function AiChatTrigger() {
+  const t = useTranslations("aiChat")
   const [open, setOpen] = useState(false)
   const [hasApiKey, setHasApiKey] = useState(false)
 
@@ -42,7 +45,7 @@ export function AiChatTrigger() {
         onClick={() => setOpen(true)}
         size="icon"
         className="fixed bottom-6 right-6 z-50 size-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
-        title="KI-Assistent (⌘J)"
+        title={`${t("triggerTitle")} (⌘J)`}
       >
         <IconSparkles className="size-6" />
         {/* Pulsing dot when API key is configured */}

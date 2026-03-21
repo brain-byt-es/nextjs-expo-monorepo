@@ -224,10 +224,10 @@ export default function TasksPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("title")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            {counts.open} offen · {counts.inProgress} in Bearbeitung
+            {counts.open} {t("openCount")} · {counts.inProgress} {t("inProgressCount")}
             {counts.overdue > 0 && ` · `}
             {counts.overdue > 0 && (
-              <span className="text-destructive font-medium">{counts.overdue} überfällig</span>
+              <span className="text-destructive font-medium">{counts.overdue} {t("overdueCount")}</span>
             )}
           </p>
         </div>
@@ -276,10 +276,10 @@ export default function TasksPage() {
         </div>
         <Select value={priorityFilter} onValueChange={setPriorityFilter}>
           <SelectTrigger className="w-40">
-            <SelectValue placeholder="Priorität" />
+            <SelectValue placeholder={t("priority")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Alle Prioritäten</SelectItem>
+            <SelectItem value="all">{t("allPriorities")}</SelectItem>
             <SelectItem value="high">{t("priorities.high")}</SelectItem>
             <SelectItem value="medium">{t("priorities.medium")}</SelectItem>
             <SelectItem value="low">{t("priorities.low")}</SelectItem>
@@ -302,9 +302,9 @@ export default function TasksPage() {
                 <IconChecklist className="size-12 text-muted-foreground/40" />
               </EmptyMedia>
               <EmptyHeader>
-                <EmptyTitle>Keine Aufgaben gefunden</EmptyTitle>
+                <EmptyTitle>{t("noTasksFound")}</EmptyTitle>
                 <EmptyDescription>
-                  {search ? "Passen Sie Ihre Suche an." : "Erstellen Sie Ihre erste Aufgabe."}
+                  {search ? t("adjustSearch") : t("createFirst")}
                 </EmptyDescription>
               </EmptyHeader>
             </Empty>
@@ -380,7 +380,7 @@ export default function TasksPage() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem className="gap-2">
-                              <IconEye className="size-4" /> Details
+                              <IconEye className="size-4" /> {tc("details")}
                             </DropdownMenuItem>
                             <DropdownMenuItem className="gap-2">
                               <IconEdit className="size-4" /> {tc("edit")}

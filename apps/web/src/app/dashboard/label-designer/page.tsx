@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import * as React from "react"
 import { nanoid } from "nanoid"
 import {
@@ -131,6 +133,7 @@ function createDefaultElement(type: LabelElementType, width: number): LabelEleme
 // ─── Component ──────────────────────────────────────────────────────
 
 export default function LabelDesignerPage() {
+  const t = useTranslations("labelDesigner")
   const [state, dispatch] = React.useReducer(reducer, {
     elements: [],
     selectedId: null,
@@ -259,7 +262,7 @@ export default function LabelDesignerPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Etiketten-Designer</h2>
+          <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>
           <p className="text-muted-foreground">
             Erstelle benutzerdefinierte Barcode-Etiketten per Drag & Drop
           </p>
@@ -285,7 +288,7 @@ export default function LabelDesignerPage() {
         <div className="space-y-4">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Elemente</CardTitle>
+              <CardTitle className="text-sm">{t("addField")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-1">
               {[
@@ -311,7 +314,7 @@ export default function LabelDesignerPage() {
 
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Etikettengrösse</CardTitle>
+              <CardTitle className="text-sm">{t("title")}</CardTitle>
             </CardHeader>
             <CardContent>
               <Select
@@ -336,7 +339,7 @@ export default function LabelDesignerPage() {
           {savedTemplates.length > 0 && (
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm">Gespeicherte Vorlagen</CardTitle>
+                <CardTitle className="text-sm">{t("newTemplate")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-1">
                 {savedTemplates.map((t) => (
@@ -433,7 +436,7 @@ export default function LabelDesignerPage() {
         <div className="space-y-4">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm">Eigenschaften</CardTitle>
+              <CardTitle className="text-sm">Properties</CardTitle>
             </CardHeader>
             <CardContent>
               {selectedElement ? (

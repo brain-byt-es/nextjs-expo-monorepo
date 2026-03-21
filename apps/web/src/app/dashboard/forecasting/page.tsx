@@ -7,6 +7,7 @@
  */
 
 import { useState, useEffect, useCallback, useMemo } from "react"
+import { useTranslations } from "next-intl"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import {
@@ -77,19 +78,6 @@ function stockoutStatus(days: number, consumption: number): ForecastRow["status"
   return "ok"
 }
 
-function statusBadge(status: ForecastRow["status"]) {
-  switch (status) {
-    case "critical":
-      return <Badge variant="destructive">Kritisch (&lt;7 Tage)</Badge>
-    case "warning":
-      return <Badge className="bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-400/30">Warnung (&lt;30 Tage)</Badge>
-    case "ok":
-      return <Badge variant="secondary">OK</Badge>
-    case "no-data":
-      return <Badge variant="outline" className="text-muted-foreground">Keine Daten</Badge>
-  }
-}
-
 function SortIcon({ col, sort }: { col: SortKey; sort: { key: SortKey; dir: SortDir } }) {
   if (sort.key !== col) return <IconSelector className="size-3.5 ml-1 text-muted-foreground" />
   return sort.dir === "asc"
@@ -100,6 +88,7 @@ function SortIcon({ col, sort }: { col: SortKey; sort: { key: SortKey; dir: Sort
 // ── Main Component ────────────────────────────────────────────────────────────
 
 export default function ForecastingPage() {
+  const t = useTranslations("forecasting")
   const router = useRouter()
 
   const [rows, setRows] = useState<ForecastRow[]>([])
@@ -127,6 +116,19 @@ export default function ForecastingPage() {
     [orgId]
   )
 
+  function statusBadge(status: ForecastRow["status"]) {
+    switch (status) {
+      case "critical":
+        return <Badge variant="destructive">{t("statusCritical")}</Badge>
+      case "warning":
+        return <Badge className="bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border-yellow-400/30">{t("statusWarning")}</Badge>
+      case "ok":
+        return <Badge variant="secondary">{t("statusOk")}</Badge>
+      case "no-data":
+        return <Badge variant="outline" className="text-muted-foreground">{t("statusNoData")}</Badge>
+    }
+  }
+
   // ── Fetch all materials, then fan-out forecast requests ───────────────────
 
   const load = useCallback(async () => {
@@ -135,9 +137,8 @@ export default function ForecastingPage() {
     setSelected(new Set())
     setBulkDone(false)
     try {
-      // 1. Fetch all active materials (up to 200)
       const matRes = await fetch("/api/materials?limit=200&page=1", { headers: authHeaders })
-      if (!matRes.ok) throw new Error("Materialien konnten nicht geladen werden.")
+      if (!matRes.ok) throw new Error(t("couldNotLoad"))
       const matJson = await matRes.json()
       const mats: MaterialMeta[] = (Array.isArray(matJson) ? matJson : matJson.data ?? []).map(
         (m: Record<string, unknown>) => ({
@@ -154,7 +155,6 @@ export default function ForecastingPage() {
         return
       }
 
-      // 2. Fan-out forecast requests (batch of 10 concurrent to avoid overload)
       const BATCH = 10
       const result: ForecastRow[] = []
 
@@ -205,11 +205,11 @@ export default function ForecastingPage() {
 
       setRows(result)
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unbekannter Fehler")
+      setError(err instanceof Error ? err.message : t("unknownError"))
     } finally {
       setLoading(false)
     }
-  }, [authHeaders, leadTime])
+  }, [authHeaders, leadTime, t])
 
   useEffect(() => {
     void load()
@@ -286,11 +286,10 @@ export default function ForecastingPage() {
     setBulkOrdering(true)
     try {
       const selectedRows = rows.filter((r) => selected.has(r.material.id))
-      const today = new Date().toISOString().slice(0, 10)
+      const todayStr = new Date().toISOString().slice(0, 10)
 
-      // Group by "no supplier" — create one draft order with all items
       const rand = Math.random().toString(36).slice(2, 6).toUpperCase()
-      const orderNumber = `PROG-BULK-${today}-${rand}`
+      const orderNumber = `PROG-BULK-${todayStr}-${rand}`
 
       await fetch("/api/orders", {
         method: "POST",
@@ -301,7 +300,7 @@ export default function ForecastingPage() {
         body: JSON.stringify({
           orderNumber,
           status: "draft",
-          orderDate: today,
+          orderDate: todayStr,
           currency: "CHF",
           notes: `Prognose-Sammelbestellung (${selectedRows.length} Positionen) — ${new Date().toLocaleDateString("de-CH")}`,
           items: selectedRows.map((r) => ({
@@ -343,9 +342,9 @@ export default function ForecastingPage() {
       {/* Header */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Nachfrageprognose</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            KI-gestützte Bedarfsprognose und Nachbestellvorschläge für alle aktiven Materialien.
+            {t("description")}
           </p>
         </div>
         <Button
@@ -356,7 +355,7 @@ export default function ForecastingPage() {
           className="gap-2 self-start"
         >
           <IconRefresh className={`size-4 ${loading ? "animate-spin" : ""}`} />
-          Aktualisieren
+          {t("refresh")}
         </Button>
       </div>
 
@@ -372,34 +371,34 @@ export default function ForecastingPage() {
         <Card className="border-destructive/30">
           <CardContent className="p-4">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              Kritisch (&lt; 7 Tage)
+              {t("criticalLess7")}
             </p>
             <p className="mt-2 text-3xl font-bold tabular-nums text-destructive">
               {counts.critical}
             </p>
-            <p className="mt-1 text-xs text-muted-foreground">Materialien mit sofortigem Handlungsbedarf</p>
+            <p className="mt-1 text-xs text-muted-foreground">{t("immediateAction")}</p>
           </CardContent>
         </Card>
         <Card className="border-yellow-400/30">
           <CardContent className="p-4">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              Warnung (&lt; 30 Tage)
+              {t("warningLess30")}
             </p>
             <p className="mt-2 text-3xl font-bold tabular-nums text-yellow-600 dark:text-yellow-400">
               {counts.warning}
             </p>
-            <p className="mt-1 text-xs text-muted-foreground">Materialien mit baldiger Nachbestellung</p>
+            <p className="mt-1 text-xs text-muted-foreground">{t("reorderSoon")}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              Ausreichend bevorratet
+              {t("sufficientStock")}
             </p>
             <p className="mt-2 text-3xl font-bold tabular-nums text-green-600 dark:text-green-400">
               {counts.ok}
             </p>
-            <p className="mt-1 text-xs text-muted-foreground">Kein Handlungsbedarf</p>
+            <p className="mt-1 text-xs text-muted-foreground">{t("noAction")}</p>
           </CardContent>
         </Card>
       </div>
@@ -413,9 +412,9 @@ export default function ForecastingPage() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Alle Materialien</SelectItem>
-              <SelectItem value="critical">Nur kritisch (&lt; 7 Tage)</SelectItem>
-              <SelectItem value="warning">Kritisch + Warnung</SelectItem>
+              <SelectItem value="all">{t("allMaterials")}</SelectItem>
+              <SelectItem value="critical">{t("criticalOnly")}</SelectItem>
+              <SelectItem value="warning">{t("criticalAndWarning")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -430,17 +429,17 @@ export default function ForecastingPage() {
             {bulkDone ? (
               <>
                 <IconCheck className="size-4" />
-                Bestellungen erstellt
+                {t("ordersCreated")}
               </>
             ) : bulkOrdering ? (
               <>
                 <IconLoader2 className="size-4 animate-spin" />
-                Wird erstellt…
+                {t("creating")}
               </>
             ) : (
               <>
                 <IconShoppingCart className="size-4" />
-                {selected.size} Bestellungen erstellen
+                {t("createOrders", { count: selected.size })}
               </>
             )}
           </Button>
@@ -450,15 +449,15 @@ export default function ForecastingPage() {
       {/* Table */}
       <Card>
         <CardHeader className="pb-0">
-          <CardTitle className="text-base">Materialien mit Prognose</CardTitle>
+          <CardTitle className="text-base">{t("materialsWithForecast")}</CardTitle>
           <CardDescription className="text-xs">
-            {displayed.length} von {rows.length} Materialien · Letzte 90 Tage Verbrauchsdaten
+            {t("materialsCount", { displayed: displayed.length, total: rows.length })}
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
           {displayed.length === 0 ? (
             <div className="flex items-center justify-center py-16 text-sm text-muted-foreground">
-              Keine Materialien gefunden.
+              {t("noMaterials")}
             </div>
           ) : (
             <Table>
@@ -468,7 +467,7 @@ export default function ForecastingPage() {
                     <Checkbox
                       checked={selected.size === displayed.length && displayed.length > 0}
                       onCheckedChange={toggleAll}
-                      aria-label="Alle auswählen"
+                      aria-label={t("selectAll")}
                     />
                   </TableHead>
                   <TableHead>
@@ -476,34 +475,34 @@ export default function ForecastingPage() {
                       className="flex items-center text-xs font-medium hover:text-foreground"
                       onClick={() => toggleSort("name")}
                     >
-                      Material <SortIcon col="name" sort={sort} />
+                      {t("material")} <SortIcon col="name" sort={sort} />
                     </button>
                   </TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>{t("statusLabel")}</TableHead>
                   <TableHead>
                     <button
                       className="flex items-center text-xs font-medium hover:text-foreground"
                       onClick={() => toggleSort("daysUntilStockout")}
                     >
-                      Tage bis Nullbestand <SortIcon col="daysUntilStockout" sort={sort} />
+                      {t("daysUntilStockout")} <SortIcon col="daysUntilStockout" sort={sort} />
                     </button>
                   </TableHead>
-                  <TableHead>Aktueller Bestand</TableHead>
+                  <TableHead>{t("currentStock")}</TableHead>
                   <TableHead>
                     <button
                       className="flex items-center text-xs font-medium hover:text-foreground"
                       onClick={() => toggleSort("avgDailyConsumption")}
                     >
-                      Ø Verbrauch/Tag <SortIcon col="avgDailyConsumption" sort={sort} />
+                      {t("avgDailyConsumption")} <SortIcon col="avgDailyConsumption" sort={sort} />
                     </button>
                   </TableHead>
-                  <TableHead>Empf. Menge</TableHead>
+                  <TableHead>{t("recommendedQty")}</TableHead>
                   <TableHead>
                     <button
                       className="flex items-center text-xs font-medium hover:text-foreground"
                       onClick={() => toggleSort("confidence")}
                     >
-                      Konfidenz <SortIcon col="confidence" sort={sort} />
+                      {t("confidence")} <SortIcon col="confidence" sort={sort} />
                     </button>
                   </TableHead>
                   <TableHead className="w-24" />
@@ -522,7 +521,7 @@ export default function ForecastingPage() {
                         <Checkbox
                           checked={isSelected}
                           onCheckedChange={() => toggleSelect(row.material.id)}
-                          aria-label={`${row.material.name} auswählen`}
+                          aria-label={t("selectItem", { name: row.material.name })}
                           disabled={row.status === "no-data"}
                         />
                       </TableCell>
@@ -555,7 +554,7 @@ export default function ForecastingPage() {
                           {days === null ? "—" : days}
                         </span>
                         {days !== null && (
-                          <span className="ml-1 text-xs text-muted-foreground">Tage</span>
+                          <span className="ml-1 text-xs text-muted-foreground">{t("days")}</span>
                         )}
                       </TableCell>
                       <TableCell className="tabular-nums">
@@ -597,7 +596,7 @@ export default function ForecastingPage() {
                       <TableCell>
                         <Link href={`/dashboard/materials/${row.material.id}?tab=prognose`}>
                           <Button variant="ghost" size="sm" className="h-7 text-xs">
-                            Details
+                            {t("details")}
                           </Button>
                         </Link>
                       </TableCell>

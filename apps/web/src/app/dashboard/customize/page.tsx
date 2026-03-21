@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import "react-grid-layout/css/styles.css"
 import "react-resizable/css/styles.css"
 
@@ -104,6 +106,8 @@ function getOrgHeaders(): HeadersInit {
 
 // ── Page component ────────────────────────────────────────────────────────────
 export default function CustomizeDashboardPage() {
+  const t = useTranslations("customize")
+  const tc = useTranslations("common")
   const [items, setItems] = useState<WidgetItem[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -273,13 +277,13 @@ export default function CustomizeDashboardPage() {
         )
       }
 
-      toast.success("Layout gespeichert")
+      toast.success(t("layoutSaved"))
     } catch {
-      toast.error("Fehler beim Speichern — bitte versuche es erneut.")
+      toast.error(t("saveError"))
     } finally {
       setSaving(false)
     }
-  }, [items])
+  }, [items, t])
 
   // ── Reset to default ────────────────────────────────────────────────────────
   const handleReset = useCallback(async () => {
@@ -311,13 +315,13 @@ export default function CustomizeDashboardPage() {
         })
       )
 
-      toast.success("Layout auf Standard zurückgesetzt")
+      toast.success(t("layoutReset"))
     } catch {
-      toast.error("Fehler beim Zurücksetzen")
+      toast.error(t("resetError"))
     } finally {
       setSaving(false)
     }
-  }, [items])
+  }, [items, t])
 
   // ── Grid layouts ────────────────────────────────────────────────────────────
   const layouts = buildLayouts(items)
@@ -354,7 +358,7 @@ export default function CustomizeDashboardPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-64 max-h-[480px] overflow-y-auto">
-              <DropdownMenuLabel>Verfügbare Widgets</DropdownMenuLabel>
+              <DropdownMenuLabel>{t("availableWidgets")}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {WIDGET_CATALOG.map((meta) => (
                 <DropdownMenuItem
@@ -390,7 +394,7 @@ export default function CustomizeDashboardPage() {
               </DialogHeader>
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button variant="outline">Abbrechen</Button>
+                  <Button variant="outline">{tc("cancel")}</Button>
                 </DialogClose>
                 <Button variant="destructive" onClick={() => void handleReset()}>
                   Zurücksetzen
@@ -420,7 +424,7 @@ export default function CustomizeDashboardPage() {
         {loading ? (
           <div className="flex items-center justify-center py-24 text-sm text-muted-foreground gap-2">
             <IconLoader2 className="size-4 animate-spin" />
-            Layout wird geladen…
+            {t("layoutLoading")}
           </div>
         ) : (
           <ResponsiveGridLayout

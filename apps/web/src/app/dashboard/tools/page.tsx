@@ -113,11 +113,11 @@ interface ToolsResponse {
 // ---------------------------------------------------------------------------
 const ITEMS_PER_PAGE = 20
 
-const conditionConfig: Record<ToolCondition, { label: string; className: string }> = {
-  good: { label: "Gut", className: "bg-secondary/10 text-secondary border-transparent" },
-  damaged: { label: "Beschädigt", className: "bg-primary/10 text-primary border-transparent" },
-  repair: { label: "Reparatur", className: "bg-destructive/10 text-destructive border-transparent" },
-  decommissioned: { label: "Ausgemustert", className: "bg-muted text-muted-foreground border-transparent" },
+const conditionClassNames: Record<ToolCondition, string> = {
+  good: "bg-secondary/10 text-secondary border-transparent",
+  damaged: "bg-primary/10 text-primary border-transparent",
+  repair: "bg-destructive/10 text-destructive border-transparent",
+  decommissioned: "bg-muted text-muted-foreground border-transparent",
 }
 
 function formatDate(dateStr: string | null): string {
@@ -154,7 +154,7 @@ function downloadCsv(rows: ToolRow[], filename: string) {
         r.groupName ?? "",
         r.homeLocationName ?? "",
         r.assignedUserName ?? "",
-        r.condition ? (conditionConfig[r.condition]?.label ?? r.condition) : "",
+        r.condition ?? "",
         r.serialNumber ?? "",
         r.nextMaintenanceDate ?? "",
       ]
@@ -412,21 +412,21 @@ export default function ToolsPage() {
           <Checkbox
             checked={allVisibleSelected ? true : someVisibleSelected ? "indeterminate" : false}
             onCheckedChange={toggleSelectAll}
-            aria-label="Alle auswählen"
+            aria-label={t("selectAll")}
           />
         ),
         cell: ({ row }) => (
           <Checkbox
             checked={selectedIds.has(row.original.id)}
             onCheckedChange={() => toggleRow(row.original.id)}
-            aria-label={`${row.original.name} auswählen`}
+            aria-label={t("selectItem", { name: row.original.name })}
             onClick={(e) => e.stopPropagation()}
           />
         ),
       },
       {
         accessorKey: "image",
-        header: () => "Bild",
+        header: () => t("image"),
         size: 60,
         enableSorting: false,
         cell: ({ row }) => {
@@ -569,10 +569,10 @@ export default function ToolsPage() {
         cell: ({ row }) => {
           const cond = row.original.condition
           if (!cond) return <span className="text-muted-foreground">\u2014</span>
-          const cfg = conditionConfig[cond]
+          const cls = conditionClassNames[cond]
           return (
-            <Badge variant="outline" className={`text-xs ${cfg.className}`}>
-              {cfg.label}
+            <Badge variant="outline" className={`text-xs ${cls}`}>
+              {t(`conditions.${cond}`)}
             </Badge>
           )
         },
@@ -685,7 +685,7 @@ export default function ToolsPage() {
             onClick={() => router.push("/dashboard/tools/import")}
           >
             <IconUpload className="size-4" />
-            Import
+            {tc("import")}
           </Button>
           <Button
             variant="outline"
@@ -694,7 +694,7 @@ export default function ToolsPage() {
             onClick={() => router.push("/dashboard/tools/labels")}
           >
             <IconTag className="size-4" />
-            Etiketten
+            {t("labels")}
           </Button>
           <Button onClick={() => router.push("/dashboard/tools/new")}>
             <IconPlus className="size-4" />
@@ -745,10 +745,10 @@ export default function ToolsPage() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{tc("all")}</SelectItem>
-            <SelectItem value="good">Gut</SelectItem>
-            <SelectItem value="damaged">Besch&auml;digt</SelectItem>
-            <SelectItem value="repair">Reparatur</SelectItem>
-            <SelectItem value="decommissioned">Ausgemustert</SelectItem>
+            <SelectItem value="good">{t("conditions.good")}</SelectItem>
+            <SelectItem value="damaged">{t("conditions.damaged")}</SelectItem>
+            <SelectItem value="repair">{t("conditions.repair")}</SelectItem>
+            <SelectItem value="decommissioned">{t("conditions.decommissioned")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -780,14 +780,14 @@ export default function ToolsPage() {
             <h3 className="mt-4 text-lg font-medium">
               {debouncedSearch || conditionFilter !== "all" || groupFilter !== "all"
                 ? tc("noData")
-                : "Erfassen Sie Ihr erstes Werkzeug"}
+                : t("createFirst")}
             </h3>
             <p className="mt-1 text-sm text-muted-foreground">
               {debouncedSearch
-                ? "Versuchen Sie einen anderen Suchbegriff"
+                ? t("tryDifferentSearch")
                 : conditionFilter !== "all" || groupFilter !== "all"
-                  ? "Keine Werkzeuge entsprechen dem Filter"
-                  : "Beginnen Sie mit dem Aufbau Ihrer Werkzeugverwaltung"}
+                  ? t("noFilterMatch")
+                  : t("startBuilding")}
             </p>
             {!debouncedSearch && conditionFilter === "all" && groupFilter === "all" && (
               <Button
@@ -848,7 +848,7 @@ export default function ToolsPage() {
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
             {(page - 1) * ITEMS_PER_PAGE + 1}&ndash;
-            {Math.min(page * ITEMS_PER_PAGE, total)} von {total}
+            {Math.min(page * ITEMS_PER_PAGE, total)} {tc("of")} {total}
           </p>
           <div className="flex items-center gap-2">
             <Button
@@ -885,11 +885,9 @@ export default function ToolsPage() {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Werkzeug l&ouml;schen</DialogTitle>
+            <DialogTitle>{t("deleteTool")}</DialogTitle>
             <DialogDescription>
-              M&ouml;chten Sie &laquo;{deleteTarget?.name}&raquo; wirklich
-              l&ouml;schen? Diese Aktion kann nicht r&uuml;ckg&auml;ngig
-              gemacht werden.
+              {t("deleteConfirmMessage", { name: deleteTarget?.name ?? "" })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -915,7 +913,7 @@ export default function ToolsPage() {
           is per-tool, not a bulk-updatable field in the current tools API) */}
       <BulkActionBar
         selectedCount={selectedIds.size}
-        entityLabel="Werkzeuge"
+        entityLabel={t("title")}
         groups={groups}
         onDelete={handleBulkDelete}
         onChangeGroup={handleBulkChangeGroup}

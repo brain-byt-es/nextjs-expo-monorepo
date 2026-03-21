@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import dynamic from "next/dynamic"
 import { useState, useEffect, useMemo } from "react"
 import Link from "next/link"
@@ -74,13 +76,13 @@ const TYPE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = 
 }
 
 const TYPE_LABELS: Record<string, string> = {
-  warehouse: "Lager",
-  vehicle: "Fahrzeug",
-  site: "Baustelle",
-  station: "Station",
-  practice: "Praxis",
-  operating_room: "OP-Saal",
-  user: "Nutzer",
+  warehouse: tl("types.warehouse"),
+  vehicle: tl("types.vehicle"),
+  site: tl("types.site"),
+  station: tl("types.station"),
+  practice: tl("types.practice"),
+  operating_room: tl("types.operatingRoom"),
+  user: tl("types.user"),
 }
 
 const TYPE_COLOR_CLASSES: Record<string, string> = {
@@ -97,6 +99,7 @@ const TYPE_COLOR_CLASSES: Record<string, string> = {
 // Component
 // ---------------------------------------------------------------------------
 export default function MapPage() {
+  const t = useTranslations("map")
   const [locations, setLocations] = useState<LocationRow[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
@@ -163,7 +166,7 @@ export default function MapPage() {
         {/* Header */}
         <div className="flex items-center justify-between border-b px-4 py-3">
           <div>
-            <h1 className="text-base font-semibold">Karte</h1>
+            <h1 className="text-base font-semibold">{t("title")}</h1>
             <p className="text-xs text-muted-foreground">
               {withCoords} von {locations.length} Standorten mit GPS
             </p>
@@ -178,14 +181,14 @@ export default function MapPage() {
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Standort suchen..."
+              placeholder={t("searchLocation")}
               className="pl-9 text-sm"
             />
           </div>
           <Select value={typeFilter} onValueChange={setTypeFilter}>
             <SelectTrigger className="text-sm">
               <IconFilter className="mr-2 size-3.5" />
-              <SelectValue placeholder="Alle Typen" />
+              <SelectValue placeholder={t("allTypes")} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Alle Typen</SelectItem>
@@ -209,7 +212,7 @@ export default function MapPage() {
           ) : filtered.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-2 p-8 text-center text-sm text-muted-foreground">
               <IconMapPin className="size-8 opacity-40" />
-              <span>Keine Standorte gefunden</span>
+              <span>{t("noLocationsFound")}</span>
             </div>
           ) : (
             <ul className="divide-y">
@@ -303,7 +306,7 @@ export default function MapPage() {
       <main className="relative flex-1">
         {loading ? (
           <div className="flex h-full items-center justify-center bg-muted">
-            <p className="text-sm text-muted-foreground">Karte wird geladen...</p>
+            <p className="text-sm text-muted-foreground">{t("mapLoading")}</p>
           </div>
         ) : (
           <MapView
@@ -320,14 +323,14 @@ export default function MapPage() {
               <div className="flex flex-col items-center gap-3 text-center">
                 <IconMapPin className="size-10 text-muted-foreground" />
                 <h2 className="text-base font-semibold">
-                  Keine GPS-Koordinaten
+                  {t("noGpsTitle")}
                 </h2>
                 <p className="max-w-xs text-sm text-muted-foreground">
                   Tragen Sie Breitengrad und L&auml;ngengrad bei Ihren
                   Standorten ein, um diese auf der Karte anzuzeigen.
                 </p>
                 <Button asChild size="sm">
-                  <Link href="/dashboard/locations">Zu den Standorten</Link>
+                  <Link href="/dashboard/locations">{t("goToLocations")}</Link>
                 </Button>
               </div>
             </div>

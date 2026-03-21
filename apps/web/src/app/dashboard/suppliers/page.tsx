@@ -81,7 +81,7 @@ const MOCK_SOURCES: SourceItem[] = [
   { id: "9", materialName: "Elektro-Installationsband", materialNumber: "M-007", supplierName: "Hilti AG", supplierId: "S1", articleNumber: "HI-EB-10", purchasePrice: 2.30, priceDate: "2025-01-25", quantityPerOrder: 10, orderUnit: "Rollen", inCart: false },
 ]
 
-const SUPPLIERS = ["Alle Lieferanten", "Hilti AG", "Würth Schweiz", "Debrunner Acifer", "Bossard AG", "Haberkorn AG"]
+const SUPPLIER_NAMES = ["Hilti AG", "Würth Schweiz", "Debrunner Acifer", "Bossard AG", "Haberkorn AG"]
 
 function formatCHF(val: number | null) {
   if (val === null) return "—"
@@ -140,7 +140,7 @@ export default function SuppliersPage() {
   const tc = useTranslations("common")
 
   const [search, setSearch] = useState("")
-  const [supplierFilter, setSupplierFilter] = useState("Alle Lieferanten")
+  const [supplierFilter, setSupplierFilter] = useState("all")
   const [cartItems, setCartItems] = useState<Set<string>>(new Set(MOCK_SOURCES.filter(s => s.inCart).map(s => s.id)))
   const [loading] = useState(false)
   const [sortKey, setSortKey] = useState<SupplierSortKey | null>(null)
@@ -162,7 +162,7 @@ export default function SuppliersPage() {
         s.materialName.toLowerCase().includes(search.toLowerCase()) ||
         s.articleNumber.toLowerCase().includes(search.toLowerCase()) ||
         s.materialNumber.toLowerCase().includes(search.toLowerCase())
-      const matchSupplier = supplierFilter === "Alle Lieferanten" || s.supplierName === supplierFilter
+      const matchSupplier = supplierFilter === "all" || s.supplierName === supplierFilter
       return matchSearch && matchSupplier
     })
   }, [search, supplierFilter])
@@ -252,17 +252,17 @@ export default function SuppliersPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("title")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            {MOCK_SOURCES.length} Bezugsquellen · {cartItems.size} im Warenkorb
+            {MOCK_SOURCES.length} {t("title")} · {cartItems.size} {t("inCart")}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="icon" onClick={handleExportCsv} title="CSV exportieren">
+          <Button variant="outline" size="icon" onClick={handleExportCsv} title={t("csvExport")}>
             <IconDownload className="size-4" />
           </Button>
           <Button variant="outline" className="gap-2" asChild>
             <a href="/dashboard/cart">
               <IconShoppingCart className="size-4" />
-              Warenkorb ({cartItems.size})
+              {t("cart")} ({cartItems.size})
             </a>
           </Button>
           <Button className="gap-2">
@@ -288,7 +288,8 @@ export default function SuppliersPage() {
             <SelectValue placeholder={t("filterBySupplier")} />
           </SelectTrigger>
           <SelectContent>
-            {SUPPLIERS.map(s => (
+            <SelectItem value="all">{t("allSuppliers")}</SelectItem>
+            {SUPPLIER_NAMES.map(s => (
               <SelectItem key={s} value={s}>{s}</SelectItem>
             ))}
           </SelectContent>
@@ -308,9 +309,9 @@ export default function SuppliersPage() {
                 <IconTruck className="size-12 text-muted-foreground/40" />
               </EmptyMedia>
               <EmptyHeader>
-                <EmptyTitle>Keine Bezugsquellen gefunden</EmptyTitle>
+                <EmptyTitle>{t("noSourcesFound")}</EmptyTitle>
                 <EmptyDescription>
-                  {search ? "Passen Sie Ihre Suche an." : "Fügen Sie Ihre erste Bezugsquelle hinzu."}
+                  {search ? t("adjustSearch") : t("addFirstSource")}
                 </EmptyDescription>
               </EmptyHeader>
             </Empty>

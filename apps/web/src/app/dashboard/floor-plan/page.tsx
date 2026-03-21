@@ -1,4 +1,6 @@
-"use client";
+"use client"
+
+import { useTranslations } from "next-intl";
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
@@ -111,11 +113,11 @@ function CreateFloorPlanDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm">+ Neuer Grundriss</Button>
+        <Button size="sm">{t("newFloorPlan")}</Button>
       </DialogTrigger>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Neuer Grundriss</DialogTitle>
+          <DialogTitle>{t("dialogTitle")}</DialogTitle>
           <DialogDescription>
             Lade einen Grundriss hoch und verknüpfe ihn mit einem Lagerort.
           </DialogDescription>
@@ -217,7 +219,7 @@ function DeleteConfirmDialog({
       </DialogTrigger>
       <DialogContent className="max-w-sm">
         <DialogHeader>
-          <DialogTitle>Grundriss löschen?</DialogTitle>
+          <DialogTitle>{t("deleteTitle")}</DialogTitle>
           <DialogDescription>
             <strong>{fpName}</strong> und alle platzierten Marker werden
             permanent gelöscht.
@@ -246,6 +248,7 @@ function DeleteConfirmDialog({
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function FloorPlanPage() {
+  const t = useTranslations("floorPlan")
   const { orgId } = useOrganization();
   const [floorPlans, setFloorPlans] = useState<FloorPlan[]>([]);
   const [locations, setLocations] = useState<LocationOption[]>([]);
@@ -347,7 +350,7 @@ export default function FloorPlanPage() {
           <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1">
             Lagerorte
           </p>
-          <h1 className="text-2xl font-semibold tracking-tight">Grundriss-Ansicht</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
           <p className="text-sm text-muted-foreground mt-1 max-w-xl">
             Platziere Materialien, Werkzeuge und Schlüssel auf einem Grundrissplan.
             Bestandsniveaus werden farbig hervorgehoben.
@@ -376,7 +379,7 @@ export default function FloorPlanPage() {
 
       {!loading && floorPlans.length === 0 && !pageError && (
         <div className="rounded-xl border border-dashed border-border p-10 text-center">
-          <p className="text-sm font-medium mb-1">Noch kein Grundriss vorhanden</p>
+          <p className="text-sm font-medium mb-1">{t("emptyTitle")}</p>
           <p className="text-xs text-muted-foreground font-mono mb-4">
             Erstelle einen Grundriss und markiere Positionen von Materialien und
             Werkzeugen.
@@ -462,7 +465,7 @@ export default function FloorPlanPage() {
             ) : (
               <div className="h-64 rounded-xl border border-dashed border-border flex items-center justify-center">
                 <p className="text-sm text-muted-foreground">
-                  Wähle einen Grundriss aus der Liste.
+                  {t("selectPlan")}
                 </p>
               </div>
             )}

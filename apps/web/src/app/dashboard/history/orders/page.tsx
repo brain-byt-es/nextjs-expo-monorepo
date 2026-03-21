@@ -91,6 +91,7 @@ function downloadCsv(headers: string[], rows: (string | number | null | undefine
 
 export default function HistoryOrdersPage() {
   const t = useTranslations("history")
+  const tc = useTranslations("common")
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [dateFrom, setDateFrom] = useState("")
@@ -149,20 +150,20 @@ export default function HistoryOrdersPage() {
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 max-w-sm">
           <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-          <Input placeholder="Suchen…" value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} className="pl-9" />
+          <Input placeholder={tc("search")} value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} className="pl-9" />
         </div>
         <Select value={statusFilter} onValueChange={v => { setStatusFilter(v); setPage(1) }}>
           <SelectTrigger className="w-40">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Alle Status</SelectItem>
-            <SelectItem value="delivered">Geliefert</SelectItem>
-            <SelectItem value="cancelled">Storniert</SelectItem>
+            <SelectItem value="all">{t("allStatuses")}</SelectItem>
+            <SelectItem value="delivered">{t("statuses.delivered")}</SelectItem>
+            <SelectItem value="cancelled">{t("statuses.cancelled")}</SelectItem>
           </SelectContent>
         </Select>
         <div className="flex items-center gap-2">
-          <label className="text-sm text-muted-foreground whitespace-nowrap">Von</label>
+          <label className="text-sm text-muted-foreground whitespace-nowrap">{t("dateFrom")}</label>
           <input
             type="date"
             value={dateFrom}
@@ -171,7 +172,7 @@ export default function HistoryOrdersPage() {
           />
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-sm text-muted-foreground whitespace-nowrap">Bis</label>
+          <label className="text-sm text-muted-foreground whitespace-nowrap">{t("dateTo")}</label>
           <input
             type="date"
             value={dateTo}
@@ -204,7 +205,7 @@ export default function HistoryOrdersPage() {
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[120px] cursor-pointer select-none" onClick={() => toggleSort("status")}>
                     {t("status")}<SortIcon sortKey={sortKey} sortDir={sortDir} col="status" />
                   </TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[80px] text-center">Pos.</TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[80px] text-center">{t("positions")}</TableHead>
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[110px] text-right cursor-pointer select-none" onClick={() => toggleSort("total")}>
                     Total<SortIcon sortKey={sortKey} sortDir={sortDir} col="total" />
                   </TableHead>
@@ -248,8 +249,8 @@ export default function HistoryOrdersPage() {
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <span>
           {total === 0
-            ? "Keine Einträge"
-            : `Zeige ${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, total)} von ${total} Einträgen`}
+            ? t("noEntries")
+            : t("showingRange", { from: (page - 1) * PAGE_SIZE + 1, to: Math.min(page * PAGE_SIZE, total), total })}
         </span>
         <div className="flex items-center gap-1">
           <Button

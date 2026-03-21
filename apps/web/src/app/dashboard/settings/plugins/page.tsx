@@ -1,4 +1,6 @@
-"use client";
+"use client"
+
+import { useTranslations } from "next-intl";
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
@@ -40,6 +42,7 @@ const CATEGORIES = [
 // ─── Page ────────────────────────────────────────────────────────────────────
 
 export default function PluginsMarketplacePage() {
+  const ts = useTranslations("settings")
   const router = useRouter();
   useOrganization();
 
@@ -129,12 +132,12 @@ export default function PluginsMarketplacePage() {
           <IconPuzzle className="size-5 text-primary" />
         </div>
         <div>
-          <h1 className="text-xl font-semibold">Plugin Marketplace</h1>
+          <h1 className="text-xl font-semibold">{ts("pluginsTitle")}</h1>
           <p className="text-sm text-muted-foreground">
-            Erweitern Sie LogistikApp mit Plugins.{" "}
+            {ts("pluginsDesc")}{" "}
             {installedCount > 0 && (
               <span className="font-medium text-foreground">
-                {installedCount} installiert
+                {installedCount} {ts("installed")}
               </span>
             )}
           </p>
@@ -148,7 +151,7 @@ export default function PluginsMarketplacePage() {
         <div className="relative flex-1">
           <IconSearch className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Plugins durchsuchen..."
+            placeholder={ts("searchPlugins")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-8"
@@ -178,8 +181,8 @@ export default function PluginsMarketplacePage() {
           <IconPuzzle className="mb-3 size-10 text-muted-foreground/40" />
           <p className="text-sm text-muted-foreground">
             {search || category !== "all"
-              ? "Keine Plugins gefunden, die Ihren Filtern entsprechen."
-              : "Noch keine Plugins verfügbar."}
+              ? ts("noPluginsFound")
+              : ts("noPluginsAvailable")}
           </p>
         </div>
       ) : (

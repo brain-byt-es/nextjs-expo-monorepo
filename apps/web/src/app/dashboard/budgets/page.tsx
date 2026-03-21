@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import { useTranslations } from "next-intl"
 import { FeatureGate } from "@/components/upgrade-prompt"
 import {
   IconPlus,
@@ -77,7 +78,7 @@ function formatDate(iso: string | null): string {
   })
 }
 
-function getStatusColor(pct: number): {
+function getStatusColor(pct: number, t: (key: string) => string): {
   bar: string
   text: string
   badge: "default" | "secondary" | "destructive"
@@ -89,7 +90,7 @@ function getStatusColor(pct: number): {
       bar: "bg-red-500",
       text: "text-red-600 dark:text-red-400",
       badge: "destructive",
-      label: "Kritisch",
+      label: t("critical"),
       icon: <IconAlertTriangle className="size-3" />,
     }
   }
@@ -98,7 +99,7 @@ function getStatusColor(pct: number): {
       bar: "bg-amber-500",
       text: "text-amber-600 dark:text-amber-400",
       badge: "secondary",
-      label: "Achtung",
+      label: t("warning"),
       icon: <IconInfoCircle className="size-3" />,
     }
   }
@@ -106,16 +107,9 @@ function getStatusColor(pct: number): {
     bar: "bg-emerald-500",
     text: "text-emerald-600 dark:text-emerald-400",
     badge: "default",
-    label: "Im Budget",
+    label: t("onBudget"),
     icon: <IconCheck className="size-3" />,
   }
-}
-
-const PERIOD_LABELS: Record<string, string> = {
-  monthly: "Monatlich",
-  quarterly: "Quartalsweise",
-  yearly: "Jährlich",
-  project: "Projektbezogen",
 }
 
 // ── Create Budget Dialog ───────────────────────────────────────────────────────
@@ -124,6 +118,8 @@ interface CreateBudgetDialogProps {
 }
 
 function CreateBudgetDialog({ onCreated }: CreateBudgetDialogProps) {
+  const t = useTranslations("budgets")
+  const tc = useTranslations("common")
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
@@ -173,27 +169,27 @@ function CreateBudgetDialog({ onCreated }: CreateBudgetDialogProps) {
       <DialogTrigger asChild>
         <Button className="gap-2">
           <IconPlus className="size-4" />
-          Budget erstellen
+          {t("createBudget")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Neues Budget erstellen</DialogTitle>
+            <DialogTitle>{t("newBudgetTitle")}</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="budget-name">Name</Label>
+              <Label htmlFor="budget-name">{t("nameLabel")}</Label>
               <Input
                 id="budget-name"
-                placeholder="z.B. Q1 2026 Elektro"
+                placeholder={t("namePlaceholder")}
                 value={form.name}
                 onChange={(e) => update("name", e.target.value)}
                 required
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="budget-amount">Betrag (CHF)</Label>
+              <Label htmlFor="budget-amount">{t("amountLabel")}</Label>
               <Input
                 id="budget-amount"
                 type="number"
@@ -206,22 +202,22 @@ function CreateBudgetDialog({ onCreated }: CreateBudgetDialogProps) {
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="budget-period">Periode</Label>
+              <Label htmlFor="budget-period">{t("periodLabel")}</Label>
               <Select value={form.period} onValueChange={(v) => update("period", v)}>
                 <SelectTrigger id="budget-period">
-                  <SelectValue placeholder="Periode wählen (optional)" />
+                  <SelectValue placeholder={t("periodPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="monthly">Monatlich</SelectItem>
-                  <SelectItem value="quarterly">Quartalsweise</SelectItem>
-                  <SelectItem value="yearly">Jährlich</SelectItem>
-                  <SelectItem value="project">Projektbezogen</SelectItem>
+                  <SelectItem value="monthly">{t("monthly")}</SelectItem>
+                  <SelectItem value="quarterly">{t("quarterly")}</SelectItem>
+                  <SelectItem value="yearly">{t("yearly")}</SelectItem>
+                  <SelectItem value="project">{t("projectBased")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="grid gap-2">
-                <Label htmlFor="budget-start">Startdatum</Label>
+                <Label htmlFor="budget-start">{t("startDate")}</Label>
                 <Input
                   id="budget-start"
                   type="date"
@@ -230,7 +226,7 @@ function CreateBudgetDialog({ onCreated }: CreateBudgetDialogProps) {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="budget-end">Enddatum</Label>
+                <Label htmlFor="budget-end">{t("endDate")}</Label>
                 <Input
                   id="budget-end"
                   type="date"
@@ -247,14 +243,14 @@ function CreateBudgetDialog({ onCreated }: CreateBudgetDialogProps) {
               onClick={() => setOpen(false)}
               disabled={loading}
             >
-              Abbrechen
+              {tc("cancel")}
             </Button>
             <Button
               type="submit"
               disabled={loading || !form.name.trim() || !form.amountChf}
             >
               {loading && <IconLoader2 className="mr-2 size-4 animate-spin" />}
-              Erstellen
+              {tc("create")}
             </Button>
           </DialogFooter>
         </form>
@@ -265,11 +261,19 @@ function CreateBudgetDialog({ onCreated }: CreateBudgetDialogProps) {
 
 // ── Budget Card ────────────────────────────────────────────────────────────────
 function BudgetCard({ budget }: { budget: Budget }) {
+  const t = useTranslations("budgets")
   const pct = budget.amount > 0
     ? Math.min(Math.round((budget.spent / budget.amount) * 100), 100)
     : 0
-  const status = getStatusColor(pct)
+  const status = getStatusColor(pct, t)
   const remaining = budget.amount - budget.spent
+
+  const PERIOD_LABELS: Record<string, string> = {
+    monthly: t("monthly"),
+    quarterly: t("quarterly"),
+    yearly: t("yearly"),
+    project: t("projectBased"),
+  }
 
   return (
     <Card className="flex flex-col gap-0 overflow-hidden">
@@ -310,8 +314,8 @@ function BudgetCard({ budget }: { budget: Budget }) {
         {/* Progress bar */}
         <div className="space-y-1.5">
           <div className="flex justify-between text-xs text-muted-foreground">
-            <span>Verbraucht</span>
-            <span>Budget</span>
+            <span>{t("consumed")}</span>
+            <span>{t("budget")}</span>
           </div>
           <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-secondary">
             <div
@@ -328,14 +332,14 @@ function BudgetCard({ budget }: { budget: Budget }) {
         {/* Stats row */}
         <div className="grid grid-cols-2 gap-2 rounded-md border bg-muted/40 p-2.5 text-xs">
           <div>
-            <p className="text-muted-foreground">Verbleibend</p>
+            <p className="text-muted-foreground">{t("remaining")}</p>
             <p className={`font-semibold ${remaining < 0 ? "text-red-600 dark:text-red-400" : "text-foreground"}`}>
               {formatCHF(Math.abs(remaining))}
-              {remaining < 0 && " überschritten"}
+              {remaining < 0 && ` ${t("exceeded")}`}
             </p>
           </div>
           <div>
-            <p className="text-muted-foreground">Zeitraum</p>
+            <p className="text-muted-foreground">{t("period")}</p>
             <p className="font-medium text-foreground">
               {budget.startDate
                 ? `${formatDate(budget.startDate)} – ${formatDate(budget.endDate)}`
@@ -350,6 +354,7 @@ function BudgetCard({ budget }: { budget: Budget }) {
 
 // ── Summary Stats ──────────────────────────────────────────────────────────────
 function SummaryStats({ budgets }: { budgets: Budget[] }) {
+  const t = useTranslations("budgets")
   const total = budgets.reduce((s, b) => s + b.amount, 0)
   const spent = budgets.reduce((s, b) => s + b.spent, 0)
   const over = budgets.filter((b) => b.spent > b.amount).length
@@ -359,27 +364,27 @@ function SummaryStats({ budgets }: { budgets: Budget[] }) {
 
   const stats = [
     {
-      label: "Gesamtbudget",
+      label: t("totalBudget"),
       value: formatCHF(total),
-      sub: `${budgets.length} Budgets`,
+      sub: t("budgetsCount", { count: budgets.length }),
     },
     {
-      label: "Gesamt verbraucht",
+      label: t("totalSpent"),
       value: formatCHF(spent),
       sub:
         total > 0
-          ? `${Math.round((spent / total) * 100)}% des Gesamtbudgets`
+          ? t("ofTotalBudget", { pct: Math.round((spent / total) * 100) })
           : "—",
     },
     {
-      label: "Kritisch (>90%)",
+      label: t("criticalOver90"),
       value: String(critical),
-      sub: over > 0 ? `${over} überschritten` : "Keine überschritten",
+      sub: over > 0 ? t("exceededCount", { count: over }) : t("noneExceeded"),
     },
     {
-      label: "Verbleibend",
+      label: t("remaining"),
       value: formatCHF(Math.max(0, total - spent)),
-      sub: total > 0 ? `${Math.round(Math.max(0, (total - spent) / total) * 100)}% verfügbar` : "—",
+      sub: total > 0 ? t("available", { pct: Math.round(Math.max(0, (total - spent) / total) * 100) }) : "—",
     },
   ]
 
@@ -408,6 +413,7 @@ export default function BudgetsPage() {
 }
 
 function BudgetsPageContent() {
+  const t = useTranslations("budgets")
   const [budgetList, setBudgetList] = useState<Budget[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -439,9 +445,9 @@ function BudgetsPageContent() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Budgets</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Budgetübersicht und Kostenkontrolle für Projekte und Zeiträume.
+            {t("pageDescription")}
           </p>
         </div>
         <CreateBudgetDialog onCreated={handleCreated} />
@@ -474,10 +480,9 @@ function BudgetsPageContent() {
             <IconChartBar className="size-12 text-muted-foreground/40" />
           </EmptyMedia>
           <EmptyHeader>
-            <EmptyTitle>Noch keine Budgets</EmptyTitle>
+            <EmptyTitle>{t("emptyTitle")}</EmptyTitle>
             <EmptyDescription>
-              Erstellen Sie Ihr erstes Budget, um Ausgaben zu verfolgen und
-              Kostenkontrolle zu betreiben.
+              {t("emptyDescription")}
             </EmptyDescription>
           </EmptyHeader>
           <CreateBudgetDialog onCreated={handleCreated} />

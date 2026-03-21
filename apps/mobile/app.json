@@ -22,8 +22,7 @@
       "bundleIdentifier": "ch.logistikapp.mobile",
       "icon": "./assets/images/icon.png",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false,
-        "NFCReaderUsageDescription": "LogistikApp nutzt NFC zum Lesen und Beschreiben von Inventar-Tags."
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -60,7 +59,6 @@
           "androidCollapsedTitle": "#{unread_notifications} neue Mitteilungen"
         }
       ],
-      "react-native-nfc-manager"
     ],
     "extra": {
       "eas": {

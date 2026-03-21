@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import {
   IconAlertTriangle,
   IconAlertCircle,
@@ -41,70 +42,13 @@ interface AnomalyWithStatus extends AnomalyEvent {
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
-const TYPE_LABELS: Record<AnomalyEvent["type"], string> = {
-  unusual_quantity: "Ungewöhnliche Menge",
-  off_hours: "Ausserhalb Geschäftszeit",
-  unusual_location: "Ungewöhnlicher Lagerort",
-  consumption_spike: "Verbrauchsspitze",
-  bulk_withdrawal: "Massenentnahme",
-}
-
-const SEVERITY_CONFIG = {
-  high: {
-    label: "Kritisch",
-    badgeClass: "bg-destructive/10 text-destructive border-destructive/30",
-    borderClass: "border-l-destructive",
-    iconColor: "text-destructive",
-    bgColor: "bg-destructive/10",
-    Icon: IconAlertCircle,
-  },
-  medium: {
-    label: "Mittel",
-    badgeClass: "bg-amber-500/10 text-amber-700 border-amber-500/30",
-    borderClass: "border-l-amber-500",
-    iconColor: "text-amber-600",
-    bgColor: "bg-amber-500/10",
-    Icon: IconAlertTriangle,
-  },
-  low: {
-    label: "Niedrig",
-    badgeClass: "bg-blue-500/10 text-blue-700 border-blue-500/30",
-    borderClass: "border-l-blue-400",
-    iconColor: "text-blue-500",
-    bgColor: "bg-blue-500/10",
-    Icon: IconInfoCircle,
-  },
-}
-
-const STATUS_CONFIG: Record<
-  AnomalyStatus,
-  { label: string; badgeClass: string }
-> = {
-  open: {
-    label: "Offen",
-    badgeClass: "bg-muted text-muted-foreground",
-  },
-  reviewed: {
-    label: "Geprüft",
-    badgeClass: "bg-emerald-500/10 text-emerald-700 border-emerald-500/30",
-  },
-  false_alarm: {
-    label: "Falschalarm",
-    badgeClass: "bg-slate-100 text-slate-500",
-  },
-  confirmed: {
-    label: "Bestätigt",
-    badgeClass: "bg-destructive/10 text-destructive border-destructive/30",
-  },
-}
-
-function formatRelativeTime(iso: string): string {
+function formatRelativeTime(iso: string, t: ReturnType<typeof useTranslations<"anomalies">>): string {
   const diff = (Date.now() - new Date(iso).getTime()) / 1000
-  if (diff < 60) return "Gerade eben"
-  if (diff < 3600) return `vor ${Math.floor(diff / 60)} Min.`
-  if (diff < 86400) return `vor ${Math.floor(diff / 3600)} Std.`
+  if (diff < 60) return t("justNow")
+  if (diff < 3600) return t("minutesAgo", { count: Math.floor(diff / 60) })
+  if (diff < 86400) return t("hoursAgo", { count: Math.floor(diff / 3600) })
   if (diff < 86400 * 7)
-    return `vor ${Math.floor(diff / 86400)} Tag${Math.floor(diff / 86400) !== 1 ? "en" : ""}`
+    return t("daysAgo", { count: Math.floor(diff / 86400) })
   return new Date(iso).toLocaleDateString("de-CH", {
     day: "2-digit",
     month: "2-digit",
@@ -117,10 +61,54 @@ function formatRelativeTime(iso: string): string {
 function AnomalyCard({
   anomaly,
   onStatusChange,
+  t,
 }: {
   anomaly: AnomalyWithStatus
   onStatusChange: (id: string, status: AnomalyStatus) => void
+  t: ReturnType<typeof useTranslations<"anomalies">>
 }) {
+  const TYPE_LABELS: Record<AnomalyEvent["type"], string> = {
+    unusual_quantity: t("types.unusualQuantity"),
+    off_hours: t("types.offHours"),
+    unusual_location: t("types.unusualLocation"),
+    consumption_spike: t("types.consumptionSpike"),
+    bulk_withdrawal: t("types.bulkWithdrawal"),
+  }
+
+  const SEVERITY_CONFIG = {
+    high: {
+      label: t("critical"),
+      badgeClass: "bg-destructive/10 text-destructive border-destructive/30",
+      borderClass: "border-l-destructive",
+      iconColor: "text-destructive",
+      bgColor: "bg-destructive/10",
+      Icon: IconAlertCircle,
+    },
+    medium: {
+      label: t("medium"),
+      badgeClass: "bg-amber-500/10 text-amber-700 border-amber-500/30",
+      borderClass: "border-l-amber-500",
+      iconColor: "text-amber-600",
+      bgColor: "bg-amber-500/10",
+      Icon: IconAlertTriangle,
+    },
+    low: {
+      label: t("low"),
+      badgeClass: "bg-blue-500/10 text-blue-700 border-blue-500/30",
+      borderClass: "border-l-blue-400",
+      iconColor: "text-blue-500",
+      bgColor: "bg-blue-500/10",
+      Icon: IconInfoCircle,
+    },
+  }
+
+  const STATUS_CONFIG: Record<AnomalyStatus, { label: string; badgeClass: string }> = {
+    open: { label: t("statuses.open"), badgeClass: "bg-muted text-muted-foreground" },
+    reviewed: { label: t("statuses.reviewed"), badgeClass: "bg-emerald-500/10 text-emerald-700 border-emerald-500/30" },
+    false_alarm: { label: t("statuses.falseAlarm"), badgeClass: "bg-slate-100 text-slate-500" },
+    confirmed: { label: t("statuses.confirmed"), badgeClass: "bg-destructive/10 text-destructive border-destructive/30" },
+  }
+
   const cfg = SEVERITY_CONFIG[anomaly.severity]
   const statusCfg = STATUS_CONFIG[anomaly.status]
   const Icon = cfg.Icon
@@ -129,81 +117,68 @@ function AnomalyCard({
     <Card className={`border-l-4 ${cfg.borderClass} transition-shadow hover:shadow-md`}>
       <CardContent className="pt-4 pb-4">
         <div className="flex items-start gap-3">
-          {/* Icon */}
-          <div
-            className={`flex size-9 shrink-0 items-center justify-center rounded-xl ${cfg.bgColor}`}
-          >
+          <div className={`flex size-9 shrink-0 items-center justify-center rounded-xl ${cfg.bgColor}`}>
             <Icon className={`size-4.5 ${cfg.iconColor}`} />
           </div>
 
-          {/* Main content */}
           <div className="min-w-0 flex-1 space-y-2">
-            {/* Header row */}
             <div className="flex flex-wrap items-start gap-2">
-              <span
-                className={`inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium ${cfg.badgeClass}`}
-              >
+              <span className={`inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium ${cfg.badgeClass}`}>
                 {cfg.label}
               </span>
               <span className="inline-flex items-center rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground">
                 {TYPE_LABELS[anomaly.type]}
               </span>
-              <span
-                className={`inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium ${statusCfg.badgeClass}`}
-              >
+              <span className={`inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-medium ${statusCfg.badgeClass}`}>
                 {statusCfg.label}
               </span>
             </div>
 
-            {/* Description */}
             <p className="text-sm font-medium leading-snug">{anomaly.description}</p>
 
-            {/* Meta: material, user, location, expected range */}
             <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
               {anomaly.materialName && (
                 <span>
-                  <span className="font-medium text-foreground/70">Material:</span>{" "}
+                  <span className="font-medium text-foreground/70">{t("material")}:</span>{" "}
                   {anomaly.materialName}
                 </span>
               )}
               {anomaly.userName && (
                 <span>
-                  <span className="font-medium text-foreground/70">Nutzer:</span>{" "}
+                  <span className="font-medium text-foreground/70">{t("userLabel")}:</span>{" "}
                   {anomaly.userName}
                 </span>
               )}
               {anomaly.locationName && (
                 <span>
-                  <span className="font-medium text-foreground/70">Lagerort:</span>{" "}
+                  <span className="font-medium text-foreground/70">{t("locationLabel")}:</span>{" "}
                   {anomaly.locationName}
                 </span>
               )}
               {anomaly.expectedRange && (
                 <span>
-                  <span className="font-medium text-foreground/70">Erwarteter Bereich:</span>{" "}
-                  {anomaly.expectedRange.min}–{anomaly.expectedRange.max} Stk.
+                  <span className="font-medium text-foreground/70">{t("expectedRange")}:</span>{" "}
+                  {anomaly.expectedRange.min}–{anomaly.expectedRange.max} {t("pcs")}
                 </span>
               )}
               {anomaly.quantity !== undefined && (
                 <span>
-                  <span className="font-medium text-foreground/70">Tatsächliche Menge:</span>{" "}
+                  <span className="font-medium text-foreground/70">{t("actualQuantity")}:</span>{" "}
                   <span className={anomaly.severity === "high" ? "text-destructive font-semibold" : ""}>
-                    {anomaly.quantity} Stk.
+                    {anomaly.quantity} {t("pcs")}
                   </span>
                 </span>
               )}
             </div>
 
-            {/* Time */}
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <IconClock className="size-3" />
               <time dateTime={anomaly.detectedAt} title={new Date(anomaly.detectedAt).toLocaleString("de-CH")}>
-                Erkannt {formatRelativeTime(anomaly.detectedAt)}
+                {t("detected")} {formatRelativeTime(anomaly.detectedAt, t)}
               </time>
             </div>
           </div>
 
-          {/* Status action buttons */}
           <div className="flex shrink-0 flex-col gap-1.5 items-end">
             {anomaly.status === "open" && (
               <>
@@ -214,7 +189,7 @@ function AnomalyCard({
                   onClick={() => onStatusChange(anomaly.id, "reviewed")}
                 >
                   <IconCheck className="size-3" />
-                  Geprüft
+                  {t("reviewed")}
                 </Button>
                 <Button
                   size="sm"
@@ -223,7 +198,7 @@ function AnomalyCard({
                   onClick={() => onStatusChange(anomaly.id, "false_alarm")}
                 >
                   <IconX className="size-3" />
-                  Falschalarm
+                  {t("falseAlarm")}
                 </Button>
                 <Button
                   size="sm"
@@ -232,7 +207,7 @@ function AnomalyCard({
                   onClick={() => onStatusChange(anomaly.id, "confirmed")}
                 >
                   <IconAlertCircle className="size-3" />
-                  Bestätigen
+                  {t("confirm")}
                 </Button>
               </>
             )}
@@ -243,7 +218,7 @@ function AnomalyCard({
                 className="h-7 gap-1 text-xs text-muted-foreground"
                 onClick={() => onStatusChange(anomaly.id, "open")}
               >
-                Zurücksetzen
+                {t("resetStatus")}
               </Button>
             )}
             {anomaly.stockChangeId && (
@@ -251,7 +226,7 @@ function AnomalyCard({
                 href={`/dashboard/history/stock-changes`}
                 className="text-xs text-primary hover:underline"
               >
-                Details anzeigen
+                {t("showDetails")}
               </Link>
             )}
           </div>
@@ -288,6 +263,7 @@ function SkeletonCard() {
 // ── Main page ──────────────────────────────────────────────────────────────
 
 export default function AnomaliesPage() {
+  const t = useTranslations("anomalies")
   const [anomalies, setAnomalies] = useState<AnomalyWithStatus[]>([])
   const [loading, setLoading] = useState(true)
   const [refreshKey, setRefreshKey] = useState(0)
@@ -296,7 +272,6 @@ export default function AnomaliesPage() {
   const [filterStatus, setFilterStatus] = useState<string>("all")
   const isMounted = useRef(false)
 
-  // Persist status changes in local state (in a real app, these would go to a DB table)
   const [statusOverrides, setStatusOverrides] = useState<
     Record<string, AnomalyStatus>
   >({})
@@ -340,13 +315,11 @@ export default function AnomaliesPage() {
     setStatusOverrides(overrides)
   }, [anomalies])
 
-  // Merge status overrides
   const anomaliesWithStatus: AnomalyWithStatus[] = anomalies.map((a) => ({
     ...a,
     status: statusOverrides[a.id] ?? "open",
   }))
 
-  // Apply filters
   const filtered = anomaliesWithStatus.filter((a) => {
     if (filterSeverity !== "all" && a.severity !== filterSeverity) return false
     if (filterType !== "all" && a.type !== filterType) return false
@@ -368,16 +341,16 @@ export default function AnomaliesPage() {
             <Button variant="ghost" size="sm" asChild className="gap-1.5 -ml-2 h-7 text-muted-foreground">
               <Link href="/dashboard">
                 <IconArrowLeft className="size-3.5" />
-                Dashboard
+                {t("dashboard")}
               </Link>
             </Button>
           </div>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
             <IconAlertTriangle className="size-6 text-amber-500" />
-            Anomalieerkennung
+            {t("title")}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Statistische Analyse der Lagerbewegungen der letzten 7 Tage
+            {t("description")}
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
@@ -389,7 +362,7 @@ export default function AnomaliesPage() {
               className="gap-1.5"
             >
               <IconShieldCheck className="size-3.5" />
-              Alle als geprüft
+              {t("markAllReviewed")}
             </Button>
           )}
           <Button
@@ -399,7 +372,7 @@ export default function AnomaliesPage() {
             className="gap-1.5"
           >
             <IconRefresh className="size-3.5" />
-            Aktualisieren
+            {t("refresh")}
           </Button>
         </div>
       </div>
@@ -416,7 +389,7 @@ export default function AnomaliesPage() {
                 ) : (
                   <p className="text-2xl font-bold tabular-nums text-destructive">{highCount}</p>
                 )}
-                <p className="text-xs text-muted-foreground">Kritisch</p>
+                <p className="text-xs text-muted-foreground">{t("critical")}</p>
               </div>
             </CardContent>
           </Card>
@@ -429,7 +402,7 @@ export default function AnomaliesPage() {
                 ) : (
                   <p className="text-2xl font-bold tabular-nums text-amber-600">{mediumCount}</p>
                 )}
-                <p className="text-xs text-muted-foreground">Mittel</p>
+                <p className="text-xs text-muted-foreground">{t("medium")}</p>
               </div>
             </CardContent>
           </Card>
@@ -442,7 +415,7 @@ export default function AnomaliesPage() {
                 ) : (
                   <p className="text-2xl font-bold tabular-nums text-blue-600">{lowCount}</p>
                 )}
-                <p className="text-xs text-muted-foreground">Niedrig</p>
+                <p className="text-xs text-muted-foreground">{t("low")}</p>
               </div>
             </CardContent>
           </Card>
@@ -455,38 +428,38 @@ export default function AnomaliesPage() {
           <IconFilter className="size-4 text-muted-foreground shrink-0" />
           <Select value={filterSeverity} onValueChange={setFilterSeverity}>
             <SelectTrigger className="h-8 w-[140px] text-xs">
-              <SelectValue placeholder="Schweregrad" />
+              <SelectValue placeholder={t("critical")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Alle Schweregrade</SelectItem>
-              <SelectItem value="high">Kritisch</SelectItem>
-              <SelectItem value="medium">Mittel</SelectItem>
-              <SelectItem value="low">Niedrig</SelectItem>
+              <SelectItem value="all">{t("allSeverities")}</SelectItem>
+              <SelectItem value="high">{t("critical")}</SelectItem>
+              <SelectItem value="medium">{t("medium")}</SelectItem>
+              <SelectItem value="low">{t("low")}</SelectItem>
             </SelectContent>
           </Select>
           <Select value={filterType} onValueChange={setFilterType}>
             <SelectTrigger className="h-8 w-[200px] text-xs">
-              <SelectValue placeholder="Typ" />
+              <SelectValue placeholder={t("types.unusualQuantity")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Alle Typen</SelectItem>
-              <SelectItem value="unusual_quantity">Ungewöhnliche Menge</SelectItem>
-              <SelectItem value="off_hours">Ausserhalb Geschäftszeit</SelectItem>
-              <SelectItem value="unusual_location">Ungewöhnlicher Lagerort</SelectItem>
-              <SelectItem value="consumption_spike">Verbrauchsspitze</SelectItem>
-              <SelectItem value="bulk_withdrawal">Massenentnahme</SelectItem>
+              <SelectItem value="all">{t("allTypes")}</SelectItem>
+              <SelectItem value="unusual_quantity">{t("types.unusualQuantity")}</SelectItem>
+              <SelectItem value="off_hours">{t("types.offHours")}</SelectItem>
+              <SelectItem value="unusual_location">{t("types.unusualLocation")}</SelectItem>
+              <SelectItem value="consumption_spike">{t("types.consumptionSpike")}</SelectItem>
+              <SelectItem value="bulk_withdrawal">{t("types.bulkWithdrawal")}</SelectItem>
             </SelectContent>
           </Select>
           <Select value={filterStatus} onValueChange={setFilterStatus}>
             <SelectTrigger className="h-8 w-[150px] text-xs">
-              <SelectValue placeholder="Status" />
+              <SelectValue placeholder={t("statuses.open")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Alle Status</SelectItem>
-              <SelectItem value="open">Offen</SelectItem>
-              <SelectItem value="reviewed">Geprüft</SelectItem>
-              <SelectItem value="false_alarm">Falschalarm</SelectItem>
-              <SelectItem value="confirmed">Bestätigt</SelectItem>
+              <SelectItem value="all">{t("allStatuses")}</SelectItem>
+              <SelectItem value="open">{t("statuses.open")}</SelectItem>
+              <SelectItem value="reviewed">{t("statuses.reviewed")}</SelectItem>
+              <SelectItem value="false_alarm">{t("statuses.falseAlarm")}</SelectItem>
+              <SelectItem value="confirmed">{t("statuses.confirmed")}</SelectItem>
             </SelectContent>
           </Select>
           {(filterSeverity !== "all" || filterType !== "all" || filterStatus !== "all") && (
@@ -501,12 +474,12 @@ export default function AnomaliesPage() {
               }}
             >
               <IconX className="size-3" />
-              Filter zurücksetzen
+              {t("resetFilters")}
             </Button>
           )}
           {!loading && (
             <span className="ml-auto text-xs text-muted-foreground">
-              {filtered.length} von {anomaliesWithStatus.length} Anomali{anomaliesWithStatus.length !== 1 ? "en" : "e"}
+              {filtered.length} {t("countOf" as Parameters<typeof t>[0], { filtered: filtered.length, total: anomaliesWithStatus.length } as never) || `von ${anomaliesWithStatus.length}`}
             </span>
           )}
         </div>
@@ -525,13 +498,13 @@ export default function AnomaliesPage() {
               <div>
                 <p className="text-sm font-medium">
                   {anomaliesWithStatus.length === 0
-                    ? "Keine Anomalien erkannt"
-                    : "Keine Anomalien für diesen Filter"}
+                    ? t("noAnomalies")
+                    : t("noAnomaliesForFilter")}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
                   {anomaliesWithStatus.length === 0
-                    ? "Die Lagerbewegungen der letzten 7 Tage sind unauffällig."
-                    : "Versuche die Filter anzupassen."}
+                    ? t("noAnomaliesDesc")
+                    : t("tryAdjustFilters")}
                 </p>
               </div>
             </CardContent>
@@ -542,6 +515,7 @@ export default function AnomaliesPage() {
               key={anomaly.id}
               anomaly={anomaly}
               onStatusChange={handleStatusChange}
+              t={t}
             />
           ))
         )}
@@ -552,23 +526,23 @@ export default function AnomaliesPage() {
         <section className="px-4 lg:px-6">
           <Card className="bg-muted/40">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Erkennungsmethodik</CardTitle>
+              <CardTitle className="text-sm">{t("methodology")}</CardTitle>
             </CardHeader>
             <CardContent className="text-xs text-muted-foreground space-y-1">
               <p>
-                <span className="font-medium text-foreground/70">Z-Score:</span> Mengen die mehr als 2.5 Standardabweichungen vom Mittelwert abweichen werden als anomal markiert.
+                <span className="font-medium text-foreground/70">Z-Score:</span> {t("zScore")}
               </p>
               <p>
-                <span className="font-medium text-foreground/70">Ausserhalb Geschäftszeit:</span> Buchungen vor 06:00, nach 22:00 oder am Wochenende.
+                <span className="font-medium text-foreground/70">{t("types.offHours")}:</span> {t("offHoursDesc")}
               </p>
               <p>
-                <span className="font-medium text-foreground/70">Verbrauchsspitze:</span> Tagesverbrauch grösser als das 3-fache des gleitenden Durchschnitts (letzte 7 Tage).
+                <span className="font-medium text-foreground/70">{t("types.consumptionSpike")}:</span> {t("consumptionSpikeDesc")}
               </p>
               <p>
-                <span className="font-medium text-foreground/70">Massenentnahme:</span> Einzeltransaktion grösser als das 5-fache des mittleren Einzelentnahme-Werts.
+                <span className="font-medium text-foreground/70">{t("types.bulkWithdrawal")}:</span> {t("bulkWithdrawalDesc")}
               </p>
               <p className="pt-1">
-                Basiszeitraum für Statistiken: letzte 30 Tage. Diese Erkennung kann Fehlalarme enthalten.
+                {t("baselinePeriod")}
               </p>
             </CardContent>
           </Card>

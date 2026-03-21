@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useEffect, useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import {
@@ -55,6 +57,7 @@ import {
 const ALL_ACTIONS = Object.entries(ACTION_LABELS) as [KeypadAction, string][]
 
 export default function KeypadSettingsPage() {
+  const ts = useTranslations("settings")
   // ── State (lazy-initialized from localStorage) ─────────────────────────
   const [enabled, setEnabled] = useState(() => isKeypadEnabled())
   const [keyMap, setKeyMap] = useState<Record<string, KeypadAction>>(() => loadKeyMap())
@@ -111,7 +114,7 @@ export default function KeypadSettingsPage() {
       {/* Page header */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight">
-          Schnelltasten / Keypad
+          {ts("keypadTitle")}
         </h1>
         <p className="mt-2 text-muted-foreground">
           Konfigurieren Sie die Tastenbelegung Ihres programmierbaren Keypads

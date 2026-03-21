@@ -128,7 +128,7 @@ export default function CartPage() {
       <div className="flex flex-col gap-6 p-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("title")}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">0 Artikel</p>
+          <p className="text-sm text-muted-foreground mt-0.5">0 {t("items")}</p>
         </div>
         <Card className="border-0 shadow-sm">
           <CardContent>
@@ -154,7 +154,7 @@ export default function CartPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("title")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            {items.length} Artikel · {bySupplier.length} Lieferanten · <span className="font-medium text-foreground">{formatCHF(grandTotal)}</span>
+            {items.length} {t("items")} · {bySupplier.length} {t("suppliers")} · <span className="font-medium text-foreground">{formatCHF(grandTotal)}</span>
           </p>
         </div>
         <Button variant="outline" size="sm" className="gap-2 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={clearCart}>
@@ -170,10 +170,10 @@ export default function CartPage() {
           {suppliers.length > 1 && (
             <Select value={supplierFilter} onValueChange={setSupplierFilter}>
               <SelectTrigger className="w-52">
-                <SelectValue placeholder="Alle Lieferanten" />
+                <SelectValue placeholder={t("allSuppliers")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Alle Lieferanten</SelectItem>
+                <SelectItem value="all">{t("allSuppliers")}</SelectItem>
                 {suppliers.map(s => (
                   <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
                 ))}
@@ -261,7 +261,7 @@ export default function CartPage() {
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-semibold text-foreground flex items-center gap-2">
                 <IconFileInvoice className="size-4 text-muted-foreground" />
-                Bestellübersicht
+                {t("orderSummary")}
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
@@ -270,22 +270,22 @@ export default function CartPage() {
                   <div key={name} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                     <div>
                       <p className="text-sm font-medium text-foreground">{name}</p>
-                      <p className="text-xs text-muted-foreground">{supplierItems.length} Artikel</p>
+                      <p className="text-xs text-muted-foreground">{supplierItems.length} {t("items")}</p>
                     </div>
                     <p className="text-sm font-semibold text-foreground">{formatCHF(total)}</p>
                   </div>
                 ))}
                 <div className="pt-2 flex items-center justify-between">
-                  <p className="text-sm font-semibold text-foreground">Gesamt</p>
+                  <p className="text-sm font-semibold text-foreground">{t("grandTotal")}</p>
                   <p className="text-lg font-bold text-foreground">{formatCHF(grandTotal)}</p>
                 </div>
                 <div className="flex items-start gap-2 bg-primary/10 rounded-lg p-3">
                   <IconAlertCircle className="size-4 text-primary flex-shrink-0 mt-0.5" />
-                  <p className="text-xs text-primary">{bySupplier.length} separate Bestellungen werden erzeugt (je Lieferant eine).</p>
+                  <p className="text-xs text-primary">{t("separateOrdersInfo", { count: bySupplier.length })}</p>
                 </div>
                 <Button className="w-full gap-2" onClick={handleGenerateOrder} disabled={generatingOrder}>
                   <IconFileInvoice className="size-4" />
-                  {generatingOrder ? "Wird erzeugt…" : t("generateOrder")}
+                  {generatingOrder ? t("generating") : t("generateOrder")}
                 </Button>
               </div>
             </CardContent>

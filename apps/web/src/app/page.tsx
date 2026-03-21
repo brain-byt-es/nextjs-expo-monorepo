@@ -116,11 +116,9 @@ const STYLES = `
 function CustomCursor() {
   const dotRef  = useRef<HTMLDivElement>(null)
   const ringRef = useRef<HTMLDivElement>(null)
-  const [isPointer, setIsPointer] = useState(false)
-
-  useEffect(() => {
-    setIsPointer(window.matchMedia("(pointer: fine)").matches)
-  }, [])
+  const [isPointer] = useState(() =>
+    typeof window !== "undefined" ? window.matchMedia("(pointer: fine)").matches : false
+  )
 
   useEffect(() => {
     if (!isPointer) return

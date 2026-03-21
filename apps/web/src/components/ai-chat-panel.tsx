@@ -396,7 +396,7 @@ export function AiChatPanel({
         setIsLoading(false)
       }
     },
-    [input, isLoading, messages, pathname]
+    [input, isLoading, messages, pathname, t]
   )
 
   // Clear chat

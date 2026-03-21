@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState, useEffect, useRef } from "react"
 import {
   Card,
@@ -26,6 +28,8 @@ interface AlertSettingsData {
 }
 
 export default function AlertSettingsPage() {
+  const ts = useTranslations("settings")
+  const tc = useTranslations("common")
   const [settings, setSettings] = useState<AlertSettingsData>({
     id: null,
     whatsappPhone: "",
@@ -126,7 +130,7 @@ export default function AlertSettingsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20 text-sm text-muted-foreground">
-        Einstellungen laden...
+        {ts("loadingSettings")}
       </div>
     )
   }
@@ -134,9 +138,9 @@ export default function AlertSettingsPage() {
   return (
     <div className="space-y-8 px-4 py-4 md:px-6 md:py-6 lg:px-8 lg:py-8 max-w-2xl">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Benachrichtigungen</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{ts("alertsTitle")}</h1>
         <p className="text-muted-foreground mt-2">
-          Konfiguriere automatische Alerts bei Unterbestand und fälligen Wartungen.
+          {ts("alertsDesc")}
         </p>
       </div>
 
@@ -156,9 +160,9 @@ export default function AlertSettingsPage() {
         {/* Alert Channels */}
         <Card>
           <CardHeader>
-            <CardTitle>Benachrichtigungskanäle</CardTitle>
+            <CardTitle>{ts("channels")}</CardTitle>
             <CardDescription>
-              Lege fest, auf welchen Wegen du informiert werden möchtest.
+              {ts("channelsDesc")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
@@ -228,9 +232,9 @@ export default function AlertSettingsPage() {
         {/* Thresholds */}
         <Card>
           <CardHeader>
-            <CardTitle>Schwellenwerte</CardTitle>
+            <CardTitle>{ts("thresholds")}</CardTitle>
             <CardDescription>
-              Ab wann soll ein Alert ausgeloest werden?
+              {ts("thresholdsDesc")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
@@ -277,7 +281,7 @@ export default function AlertSettingsPage() {
         {/* Auto-Nachbestellung */}
         <Card>
           <CardHeader>
-            <CardTitle>Auto-Nachbestellung</CardTitle>
+            <CardTitle>{ts("autoReorder")}</CardTitle>
             <CardDescription>
               Automatisch Bestellvorschläge (Entwürfe) erstellen, wenn der Meldebestand unterschritten wird.
             </CardDescription>
@@ -323,7 +327,7 @@ export default function AlertSettingsPage() {
 
         <div className="flex items-center gap-3">
           <Button type="submit" disabled={saving}>
-            {saving ? "Speichern..." : "Einstellungen speichern"}
+            {saving ? tc("loading") : ts("saveSettings")}
           </Button>
           {saved && (
             <p className="text-sm text-emerald-600 dark:text-emerald-400">

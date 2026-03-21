@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback, useMemo } from "react"
+import { useTranslations } from "next-intl"
 import {
   IconPlus,
   IconRepeat,
@@ -79,10 +80,13 @@ interface Material {
 }
 
 // ── Constants ─────────────────────────────────────────────────────────
-const FREQUENCY_LABELS: Record<string, string> = {
-  weekly: "Wöchentlich",
-  biweekly: "Alle 2 Wochen",
-  monthly: "Monatlich",
+function useFrequencyLabels() {
+  const t = useTranslations("recurringOrders")
+  return {
+    weekly: t("weekly"),
+    biweekly: t("biweekly"),
+    monthly: t("monthly"),
+  } as Record<string, string>
 }
 
 const FREQUENCY_COLORS: Record<string, string> = {
@@ -91,7 +95,10 @@ const FREQUENCY_COLORS: Record<string, string> = {
   monthly: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
 }
 
-const DAY_NAMES = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"]
+function useDayNames() {
+  const t = useTranslations("recurringOrders")
+  return [t("sunday"), t("monday"), t("tuesday"), t("wednesday"), t("thursday"), t("friday"), t("saturday")]
+}
 
 function formatDate(iso: string | null) {
   if (!iso) return "—"
@@ -118,6 +125,9 @@ function CreateRecurringOrderDialog({
   materials: Material[]
   onCreated: () => void
 }) {
+  const t = useTranslations("recurringOrders")
+  const tc = useTranslations("common")
+  const dayNames = useDayNames()
   const [open, setOpen] = useState(false)
   const [saving, setSaving] = useState(false)
   const [name, setName] = useState("")
@@ -184,24 +194,24 @@ function CreateRecurringOrderDialog({
       <DialogTrigger asChild>
         <Button className="gap-2">
           <IconPlus className="size-4" />
-          Neue wiederkehrende Bestellung
+          {t("newRecurringOrder")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Neue wiederkehrende Bestellung</DialogTitle>
+          <DialogTitle>{t("dialogTitle")}</DialogTitle>
           <DialogDescription>
-            Automatisieren Sie regelmässige Bestellungen bei Ihren Lieferanten.
+            {t("dialogDescription")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-2">
           {/* Name */}
           <div className="space-y-1.5">
-            <Label htmlFor="ro-name">Bezeichnung</Label>
+            <Label htmlFor="ro-name">{t("designation")}</Label>
             <Input
               id="ro-name"
-              placeholder="z.B. Wöchentliche Verbrauchsmaterial-Bestellung"
+              placeholder={t("designationPlaceholder")}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -209,10 +219,10 @@ function CreateRecurringOrderDialog({
 
           {/* Supplier */}
           <div className="space-y-1.5">
-            <Label>Lieferant</Label>
+            <Label>{t("supplier")}</Label>
             <Select value={supplierId} onValueChange={setSupplierId}>
               <SelectTrigger>
-                <SelectValue placeholder="Lieferant wählen" />
+                <SelectValue placeholder={t("supplierPlaceholder")} />
               </SelectTrigger>
               <SelectContent>
                 {suppliers.map((s) => (
@@ -226,15 +236,15 @@ function CreateRecurringOrderDialog({
 
           {/* Frequency */}
           <div className="space-y-1.5">
-            <Label>Frequenz</Label>
+            <Label>{t("frequency")}</Label>
             <Select value={frequency} onValueChange={setFrequency}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="weekly">Wöchentlich</SelectItem>
-                <SelectItem value="biweekly">Alle 2 Wochen</SelectItem>
-                <SelectItem value="monthly">Monatlich</SelectItem>
+                <SelectItem value="weekly">{t("weekly")}</SelectItem>
+                <SelectItem value="biweekly">{t("biweekly")}</SelectItem>
+                <SelectItem value="monthly">{t("monthly")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -242,15 +252,15 @@ function CreateRecurringOrderDialog({
           {/* Day */}
           {frequency !== "monthly" ? (
             <div className="space-y-1.5">
-              <Label>Wochentag</Label>
+              <Label>{t("weekday")}</Label>
               <Select value={dayOfWeek} onValueChange={setDayOfWeek}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {DAY_NAMES.map((name, i) => (
+                  {dayNames.map((dayName, i) => (
                     <SelectItem key={i} value={String(i)}>
-                      {name}
+                      {dayName}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -258,7 +268,7 @@ function CreateRecurringOrderDialog({
             </div>
           ) : (
             <div className="space-y-1.5">
-              <Label>Tag im Monat</Label>
+              <Label>{t("dayOfMonth")}</Label>
               <Select value={dayOfMonth} onValueChange={setDayOfMonth}>
                 <SelectTrigger>
                   <SelectValue />
@@ -277,10 +287,10 @@ function CreateRecurringOrderDialog({
           {/* Items */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label>Artikel</Label>
+              <Label>{t("articles")}</Label>
               <Button type="button" variant="ghost" size="sm" className="gap-1 h-7 text-xs" onClick={addItem}>
                 <IconPlus className="size-3" />
-                Artikel hinzufügen
+                {t("addArticle")}
               </Button>
             </div>
             {orderItems.map((item, idx) => (
@@ -290,7 +300,7 @@ function CreateRecurringOrderDialog({
                   onValueChange={(v) => updateItem(idx, "materialId", v)}
                 >
                   <SelectTrigger className="flex-1">
-                    <SelectValue placeholder="Material wählen" />
+                    <SelectValue placeholder={t("materialPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
                     {materials.map((m) => (
@@ -328,16 +338,16 @@ function CreateRecurringOrderDialog({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>
-            Abbrechen
+            {tc("cancel")}
           </Button>
           <Button onClick={handleSubmit} disabled={saving || !name || !supplierId}>
             {saving ? (
               <>
                 <IconLoader2 className="size-4 animate-spin mr-1" />
-                Speichern...
+                {t("saving")}
               </>
             ) : (
-              "Erstellen"
+              tc("create")
             )}
           </Button>
         </DialogFooter>
@@ -348,6 +358,9 @@ function CreateRecurringOrderDialog({
 
 // ── Page ──────────────────────────────────────────────────────────────
 export default function RecurringOrdersPage() {
+  const t = useTranslations("recurringOrders")
+  const frequencyLabels = useFrequencyLabels()
+  const dayNames = useDayNames()
   const [orders, setOrders] = useState<RecurringOrder[]>([])
   const [suppliers, setSuppliers] = useState<Supplier[]>([])
   const [materials, setMaterials] = useState<Material[]>([])
@@ -434,10 +447,10 @@ export default function RecurringOrdersPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground flex items-center gap-2">
             <IconRepeat className="size-6" />
-            Wiederkehrende Bestellungen
+            {t("title")}
           </h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            Automatisierte Nachbestellungen bei Ihren Lieferanten
+            {t("pageDescription")}
           </p>
         </div>
         <CreateRecurringOrderDialog
@@ -453,7 +466,7 @@ export default function RecurringOrdersPage() {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <IconPlayerPlay className="size-4 text-green-600" />
-              <p className="text-xs text-muted-foreground">Aktiv</p>
+              <p className="text-xs text-muted-foreground">{t("active")}</p>
             </div>
             <p className="text-3xl font-bold text-foreground mt-1">{activeCount}</p>
           </CardContent>
@@ -462,7 +475,7 @@ export default function RecurringOrdersPage() {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <IconPlayerPause className="size-4 text-amber-600" />
-              <p className="text-xs text-muted-foreground">Pausiert</p>
+              <p className="text-xs text-muted-foreground">{t("paused")}</p>
             </div>
             <p className="text-3xl font-bold text-foreground mt-1">{pausedCount}</p>
           </CardContent>
@@ -471,12 +484,12 @@ export default function RecurringOrdersPage() {
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
               <IconCalendar className="size-4 text-blue-600" />
-              <p className="text-xs text-muted-foreground">Nächste Ausführung</p>
+              <p className="text-xs text-muted-foreground">{t("nextExecution")}</p>
             </div>
             <p className="text-3xl font-bold text-foreground mt-1">
               {nextDays !== null ? (
                 <>
-                  {nextDays} <span className="text-base font-normal text-muted-foreground">Tage</span>
+                  {nextDays} <span className="text-base font-normal text-muted-foreground">{t("days")}</span>
                 </>
               ) : (
                 "—"
@@ -501,9 +514,9 @@ export default function RecurringOrdersPage() {
                 <IconRepeat className="size-12 text-muted-foreground/40" />
               </EmptyMedia>
               <EmptyHeader>
-                <EmptyTitle>Keine wiederkehrenden Bestellungen</EmptyTitle>
+                <EmptyTitle>{t("emptyTitle")}</EmptyTitle>
                 <EmptyDescription>
-                  Erstellen Sie Ihre erste automatische Bestellung.
+                  {t("emptyDescription")}
                 </EmptyDescription>
               </EmptyHeader>
             </Empty>
@@ -512,19 +525,19 @@ export default function RecurringOrdersPage() {
               <TableHeader>
                 <TableRow className="hover:bg-transparent border-b border-border">
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Bezeichnung
+                    {t("headerDesignation")}
                   </TableHead>
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[160px]">
-                    Lieferant
+                    {t("headerSupplier")}
                   </TableHead>
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[140px]">
-                    Frequenz
+                    {t("headerFrequency")}
                   </TableHead>
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[140px]">
-                    Nächste Ausführung
+                    {t("headerNextExecution")}
                   </TableHead>
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[100px]">
-                    Status
+                    {t("headerStatus")}
                   </TableHead>
                   <TableHead className="w-[60px]" />
                 </TableRow>
@@ -541,7 +554,7 @@ export default function RecurringOrdersPage() {
                         <div>
                           <p className="font-medium text-sm text-foreground">{order.name}</p>
                           <p className="text-xs text-muted-foreground">
-                            {(order.items as { materialId: string; quantity: number }[]).length} Artikel
+                            {t("articlesCount", { count: (order.items as { materialId: string; quantity: number }[]).length })}
                           </p>
                         </div>
                       </TableCell>
@@ -558,13 +571,13 @@ export default function RecurringOrdersPage() {
                           variant="secondary"
                           className={FREQUENCY_COLORS[order.frequency] ?? ""}
                         >
-                          {FREQUENCY_LABELS[order.frequency] ?? order.frequency}
+                          {frequencyLabels[order.frequency] ?? order.frequency}
                         </Badge>
                         <p className="text-[10px] text-muted-foreground mt-0.5">
                           {order.frequency === "monthly"
-                            ? `Am ${order.dayOfMonth ?? 1}. des Monats`
+                            ? t("onDayOfMonth", { day: order.dayOfMonth ?? 1 })
                             : order.dayOfWeek !== null
-                              ? DAY_NAMES[order.dayOfWeek]
+                              ? dayNames[order.dayOfWeek]
                               : ""}
                         </p>
                       </TableCell>
@@ -572,7 +585,7 @@ export default function RecurringOrdersPage() {
                         <p className="text-sm text-foreground">{formatDate(order.nextRunAt)}</p>
                         {days !== null && order.isActive && (
                           <p className="text-[10px] text-muted-foreground">
-                            in {days} {days === 1 ? "Tag" : "Tagen"}
+                            {t("inDays", { count: days, unit: days === 1 ? t("day") : t("days") })}
                           </p>
                         )}
                       </TableCell>
@@ -584,7 +597,7 @@ export default function RecurringOrdersPage() {
                             className="scale-90"
                           />
                           <span className="text-xs text-muted-foreground">
-                            {order.isActive ? "Aktiv" : "Pausiert"}
+                            {order.isActive ? t("active") : t("paused")}
                           </span>
                         </div>
                       </TableCell>

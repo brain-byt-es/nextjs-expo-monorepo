@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import {
@@ -92,6 +94,7 @@ const ENTITIES = [
 // ── Main Page ──────────────────────────────────────────────────────────────
 
 export default function DataRetentionPage() {
+  const ts = useTranslations("settings")
   const [config, setConfig] = useState<RetentionConfig>(DEFAULT_CONFIG)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -188,9 +191,9 @@ export default function DataRetentionPage() {
     <div className="space-y-6 px-4 py-4 md:px-6 md:py-6 lg:px-8 lg:py-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Datenhaltung</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{ts("dataRetentionTitle")}</h1>
         <p className="mt-2 text-muted-foreground">
-          Aufbewahrungsfristen für historische Daten konfigurieren.
+          {ts("dataRetentionDesc")}
         </p>
       </div>
 

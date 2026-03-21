@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest"
 import { BUILTIN_PLUGINS, getBuiltinPlugin } from "@/lib/plugin-registry"
-import type { PluginManifest } from "@/lib/plugin-sdk"
 
 const VALID_CATEGORIES = ["import", "export", "integration", "utility"] as const
 

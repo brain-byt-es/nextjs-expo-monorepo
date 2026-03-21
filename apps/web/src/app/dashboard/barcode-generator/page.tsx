@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState, useEffect, useCallback } from "react"
 import {
   BarcodeLabelView,
@@ -267,6 +269,8 @@ function BatchPanel({
 // Main page
 // ---------------------------------------------------------------------------
 export default function BarcodeGeneratorPage() {
+  const t = useTranslations("barcodeGenerator")
+  const tc = useTranslations("common")
   const [itemType, setItemType] = useState<ItemType>("material")
   const [search, setSearch] = useState("")
   const [items, setItems] = useState<UnbarcodedItem[]>([])
@@ -468,7 +472,7 @@ export default function BarcodeGeneratorPage() {
             <div className="relative">
               <IconSearch className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
               <Input
-                placeholder="Suchen..."
+                placeholder={tc("search")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="pl-8 h-8 text-sm"
@@ -600,7 +604,7 @@ export default function BarcodeGeneratorPage() {
             <div className="flex flex-col items-center justify-center h-full gap-4 text-center text-muted-foreground">
               <IconBarcode className="size-16 opacity-20" />
               <div>
-                <p className="text-lg font-medium">Artikel auswählen</p>
+                <p className="text-lg font-medium">{t("selectItem")}</p>
                 <p className="text-sm">
                   Wählen Sie links einen Artikel aus, um einen Barcode zu erstellen.
                 </p>

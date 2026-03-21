@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState, useCallback } from "react"
 import {
   IconSearch,
@@ -232,6 +234,8 @@ function StockStatusBadge({
 // Main component
 // ---------------------------------------------------------------------------
 export default function TraceabilityPage() {
+  const t = useTranslations("traceability")
+  const tc = useTranslations("common")
   const [searchBatch, setSearchBatch] = useState("")
   const [searchSerial, setSearchSerial] = useState("")
   const [loading, setLoading] = useState(false)
@@ -258,18 +262,18 @@ export default function TraceabilityPage() {
       const res = await fetch(`/api/traceability?${params.toString()}`)
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
-        setError(data.error ?? "Fehler beim Laden der Daten")
+        setError(data.error ?? t("loadError"))
         return
       }
 
       const data: TraceResult = await res.json()
       setResult(data)
     } catch {
-      setError("Verbindungsfehler. Bitte versuchen Sie es erneut.")
+      setError(t("connectionError"))
     } finally {
       setLoading(false)
     }
-  }, [searchBatch, searchSerial])
+  }, [searchBatch, searchSerial, t])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") void handleSearch()
@@ -293,7 +297,7 @@ export default function TraceabilityPage() {
         <CardContent className="p-6">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div className="space-y-2">
-              <Label htmlFor="batch-search">Chargennummer</Label>
+              <Label htmlFor="batch-search">{t("batchNumber")}</Label>
               <Input
                 id="batch-search"
                 placeholder="z.B. CH-2026-001"
@@ -303,7 +307,7 @@ export default function TraceabilityPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="serial-search">Seriennummer</Label>
+              <Label htmlFor="serial-search">{t("serialNumber")}</Label>
               <Input
                 id="serial-search"
                 placeholder="z.B. SN-00812345"
@@ -319,7 +323,7 @@ export default function TraceabilityPage() {
                 className="w-full sm:w-auto"
               >
                 <IconSearch className="size-4" />
-                {loading ? "Suche..." : "Suchen"}
+                {loading ? t("searching") : tc("search")}
               </Button>
             </div>
           </div>

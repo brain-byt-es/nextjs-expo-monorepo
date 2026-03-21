@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import { useTranslations } from "next-intl"
 import { useSession } from "@/lib/auth-client"
 import { Button } from "@/components/ui/button"
 import {
@@ -92,6 +93,9 @@ function formatDate(iso: string) {
 
 export default function TeamPage() {
   const { data: session } = useSession()
+  const ts = useTranslations("settings")
+  const tt = useTranslations("settings.team")
+  const tc = useTranslations("common")
 
   const [org, setOrg] = useState<OrgInfo | null>(null)
   const [members, setMembers] = useState<OrgMember[]>([])
@@ -196,9 +200,9 @@ export default function TeamPage() {
       }
 
       if (json.invited) {
-        setInviteSuccess(`Einladungs-E-Mail wurde an ${inviteEmail} gesendet.`)
+        setInviteSuccess(tt("inviteSent", { email: inviteEmail }))
       } else {
-        setInviteSuccess(`${inviteEmail} wurde dem Team hinzugefügt.`)
+        setInviteSuccess(tt("addedToTeam", { email: inviteEmail }))
         fetchMembers(org.id)
       }
 
@@ -300,7 +304,7 @@ export default function TeamPage() {
     return (
       <div className="px-4 py-8 md:px-6 lg:px-8">
         <p className="text-muted-foreground text-sm">
-          Keine Organisation gefunden. Bitte erstelle zuerst eine Organisation.
+          {tt("noOrgFound")}
         </p>
       </div>
     )
@@ -312,11 +316,11 @@ export default function TeamPage() {
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1">
-            Einstellungen
+            {ts("title")}
           </p>
-          <h1 className="text-2xl font-semibold tracking-tight">Team</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{tt("title")}</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Verwalte die Mitglieder von <strong>{org.name}</strong>.
+            {tt("subtitle", { org: org.name })}
           </p>
         </div>
 
@@ -325,26 +329,25 @@ export default function TeamPage() {
             <DialogTrigger asChild>
               <Button size="sm" className="shrink-0">
                 <IconUserPlus className="mr-2 size-4" />
-                Mitglied einladen
+                {tt("inviteMember")}
               </Button>
             </DialogTrigger>
 
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
-                <DialogTitle>Mitglied einladen</DialogTitle>
+                <DialogTitle>{tt("inviteMember")}</DialogTitle>
                 <DialogDescription>
-                  Gib die E-Mail-Adresse der Person ein, die du einladen möchtest.
-                  Falls sie noch kein Konto hat, erhält sie einen Registrierungslink.
+                  {tt("inviteDescription")}
                 </DialogDescription>
               </DialogHeader>
 
               <form onSubmit={handleInvite} className="space-y-4 pt-2">
                 <div className="space-y-2">
-                  <Label htmlFor="invite-email">E-Mail-Adresse</Label>
+                  <Label htmlFor="invite-email">{tt("emailAddress")}</Label>
                   <Input
                     id="invite-email"
                     type="email"
-                    placeholder="name@beispiel.ch"
+                    placeholder="name@example.com"
                     value={inviteEmail}
                     onChange={(e) => setInviteEmail(e.target.value)}
                     disabled={isInviting}
@@ -353,7 +356,7 @@ export default function TeamPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="invite-role">Organisationsrolle</Label>
+                  <Label htmlFor="invite-role">{tt("orgRole")}</Label>
                   <Select
                     value={inviteRole}
                     onValueChange={(v) => setInviteRole(v as "admin" | "member")}
@@ -363,28 +366,28 @@ export default function TeamPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="member">Mitglied</SelectItem>
-                      <SelectItem value="admin">Admin</SelectItem>
+                      <SelectItem value="member">{tt("member")}</SelectItem>
+                      <SelectItem value="admin">{tt("admin")}</SelectItem>
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-muted-foreground">
-                    Admins können Mitglieder einladen und verwalten.
+                    {tt("adminCanManage")}
                   </p>
                 </div>
 
                 {rbacRoles.length > 0 && (
                   <div className="space-y-2">
-                    <Label htmlFor="invite-rbac-role">Berechtigungsrolle</Label>
+                    <Label htmlFor="invite-rbac-role">{tt("permissionRole")}</Label>
                     <Select
                       value={inviteRbacRoleId || "none"}
                       onValueChange={setInviteRbacRoleId}
                       disabled={isInviting}
                     >
                       <SelectTrigger id="invite-rbac-role">
-                        <SelectValue placeholder="Standardberechtigungen" />
+                        <SelectValue placeholder={tt("defaultPermissions")} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="none">Standardberechtigungen</SelectItem>
+                        <SelectItem value="none">{tt("defaultPermissions")}</SelectItem>
                         {rbacRoles.map((r) => (
                           <SelectItem key={r.id} value={r.id}>
                             {r.name}
@@ -393,7 +396,7 @@ export default function TeamPage() {
                       </SelectContent>
                     </Select>
                     <p className="text-xs text-muted-foreground">
-                      Legt fest, auf welche Bereiche die Person zugreifen darf.
+                      {tt("permissionDesc")}
                     </p>
                   </div>
                 )}
@@ -413,10 +416,10 @@ export default function TeamPage() {
                     onClick={() => handleDialogClose(false)}
                     disabled={isInviting}
                   >
-                    Abbrechen
+                    {tc("cancel")}
                   </Button>
                   <Button type="submit" disabled={isInviting || !inviteEmail}>
-                    {isInviting ? "Wird gesendet…" : "Einladung senden"}
+                    {isInviting ? tt("sending") : tt("sendInvite")}
                   </Button>
                 </DialogFooter>
               </form>
@@ -436,7 +439,7 @@ export default function TeamPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <IconUsers className="size-4" />
-            Teammitglieder
+            {tt("teamMembers")}
             {members.length > 0 && (
               <Badge variant="secondary" className="ml-1">
                 {members.length}
@@ -444,7 +447,7 @@ export default function TeamPage() {
             )}
           </CardTitle>
           <CardDescription>
-            Alle Personen, die Zugang zu dieser Organisation haben.
+            {tt("allMembersDesc")}
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
@@ -456,17 +459,17 @@ export default function TeamPage() {
             </div>
           ) : members.length === 0 ? (
             <div className="py-12 text-center text-sm text-muted-foreground">
-              Noch keine Mitglieder.
+              {tt("noMembers")}
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>E-Mail</TableHead>
-                  <TableHead>Org-Rolle</TableHead>
-                  <TableHead>Berechtigungsrolle</TableHead>
-                  <TableHead>Beigetreten</TableHead>
+                  <TableHead>{tc("name")}</TableHead>
+                  <TableHead>{tt("email")}</TableHead>
+                  <TableHead>{tt("orgRoleCol")}</TableHead>
+                  <TableHead>{tt("permRoleCol")}</TableHead>
+                  <TableHead>{tt("joined")}</TableHead>
                   {canInvite && <TableHead className="w-12" />}
                 </TableRow>
               </TableHeader>
@@ -487,7 +490,7 @@ export default function TeamPage() {
                       <TableCell className="font-medium">
                         {member.userName ?? "—"}
                         {isSelf && (
-                          <span className="ml-1.5 text-xs text-muted-foreground">(du)</span>
+                          <span className="ml-1.5 text-xs text-muted-foreground">({tt("you")})</span>
                         )}
                       </TableCell>
                       <TableCell className="text-muted-foreground text-sm">
@@ -504,11 +507,11 @@ export default function TeamPage() {
                             disabled={savingRoleFor === member.id}
                           >
                             <SelectTrigger className="h-7 text-xs w-40">
-                              <SelectValue placeholder="Keine Rolle" />
+                              <SelectValue placeholder={tt("noRole")} />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="none">
-                                <span className="text-muted-foreground">Keine Rolle</span>
+                                <span className="text-muted-foreground">{tt("noRole")}</span>
                               </SelectItem>
                               {rbacRoles.map((r) => (
                                 <SelectItem key={r.id} value={r.id}>
@@ -535,7 +538,7 @@ export default function TeamPage() {
                               className="size-8 text-muted-foreground hover:text-destructive"
                               disabled={removingId === member.id}
                               onClick={() => handleRemove(member.id)}
-                              title="Mitglied entfernen"
+                              title={tt("removeMember")}
                             >
                               <IconTrash className="size-4" />
                             </Button>

@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useEffect, useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import {
@@ -43,6 +45,7 @@ import {
 // Printer settings page — /dashboard/settings/printer
 // ---------------------------------------------------------------------------
 export default function PrinterSettingsPage() {
+  const ts = useTranslations("settings")
   const [settings, setSettings] = useState<PrinterSettings>(loadPrinterSettings)
   const [testStatus, setTestStatus] = useState<"idle" | "printing" | "success" | "error">("idle")
   const [testError, setTestError] = useState<string | null>(null)
@@ -100,7 +103,7 @@ export default function PrinterSettingsPage() {
       {/* Page header */}
       <div>
         <h1 className="text-3xl font-bold tracking-tight">
-          Etikettendrucker
+          {ts("printerTitle")}
         </h1>
         <p className="mt-2 text-muted-foreground">
           Konfigurieren Sie Ihren Etikettendrucker für Material-, Werkzeug- und

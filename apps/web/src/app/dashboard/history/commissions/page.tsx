@@ -67,6 +67,7 @@ function downloadCsv(headers: string[], rows: (string | number | null | undefine
 
 export default function HistoryCommissionsPage() {
   const t = useTranslations("history")
+  const tc = useTranslations("common")
   const [search, setSearch] = useState("")
   const [dateFrom, setDateFrom] = useState("")
   const [dateTo, setDateTo] = useState("")
@@ -126,10 +127,10 @@ export default function HistoryCommissionsPage() {
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 max-w-sm">
           <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-          <Input placeholder="Kommission oder Kunde suchen…" value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} className="pl-9" />
+          <Input placeholder={tc("search")} value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} className="pl-9" />
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-sm text-muted-foreground whitespace-nowrap">Von</label>
+          <label className="text-sm text-muted-foreground whitespace-nowrap">{t("dateFrom")}</label>
           <input
             type="date"
             value={dateFrom}
@@ -138,7 +139,7 @@ export default function HistoryCommissionsPage() {
           />
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-sm text-muted-foreground whitespace-nowrap">Bis</label>
+          <label className="text-sm text-muted-foreground whitespace-nowrap">{t("dateTo")}</label>
           <input
             type="date"
             value={dateTo}
@@ -219,8 +220,8 @@ export default function HistoryCommissionsPage() {
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <span>
           {total === 0
-            ? "Keine Einträge"
-            : `Zeige ${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, total)} von ${total} Einträgen`}
+            ? t("noEntries")
+            : t("showingRange", { from: (page - 1) * PAGE_SIZE + 1, to: Math.min(page * PAGE_SIZE, total), total })}
         </span>
         <div className="flex items-center gap-1">
           <Button

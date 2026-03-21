@@ -91,6 +91,7 @@ function downloadCsv(headers: string[], rows: (string | number | null | undefine
 
 export default function HistoryToolBookingsPage() {
   const t = useTranslations("history")
+  const tc = useTranslations("common")
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
   const [dateFrom, setDateFrom] = useState("")
@@ -149,21 +150,21 @@ export default function HistoryToolBookingsPage() {
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 max-w-sm">
           <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-          <Input placeholder="Werkzeug oder Person…" value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} className="pl-9" />
+          <Input placeholder={tc("search")} value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} className="pl-9" />
         </div>
         <Select value={statusFilter} onValueChange={v => { setStatusFilter(v); setPage(1) }}>
           <SelectTrigger className="w-44">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Alle Status</SelectItem>
-            <SelectItem value="returned">Zurückgegeben</SelectItem>
-            <SelectItem value="checkedOut">Ausgecheckt</SelectItem>
-            <SelectItem value="overdue">Überfällig</SelectItem>
+            <SelectItem value="all">{t("allStatuses")}</SelectItem>
+            <SelectItem value="returned">{t("returned")}</SelectItem>
+            <SelectItem value="checkedOut">{t("checkedOutStatus")}</SelectItem>
+            <SelectItem value="overdue">{t("overdueStatus")}</SelectItem>
           </SelectContent>
         </Select>
         <div className="flex items-center gap-2">
-          <label className="text-sm text-muted-foreground whitespace-nowrap">Von</label>
+          <label className="text-sm text-muted-foreground whitespace-nowrap">{t("dateFrom")}</label>
           <input
             type="date"
             value={dateFrom}
@@ -172,7 +173,7 @@ export default function HistoryToolBookingsPage() {
           />
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-sm text-muted-foreground whitespace-nowrap">Bis</label>
+          <label className="text-sm text-muted-foreground whitespace-nowrap">{t("dateTo")}</label>
           <input
             type="date"
             value={dateTo}
@@ -262,8 +263,8 @@ export default function HistoryToolBookingsPage() {
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <span>
           {total === 0
-            ? "Keine Einträge"
-            : `Zeige ${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, total)} von ${total} Einträgen`}
+            ? t("noEntries")
+            : t("showingRange", { from: (page - 1) * PAGE_SIZE + 1, to: Math.min(page * PAGE_SIZE, total), total })}
         </span>
         <div className="flex items-center gap-1">
           <Button

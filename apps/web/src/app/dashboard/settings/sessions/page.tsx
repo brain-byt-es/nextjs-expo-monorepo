@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import {
@@ -123,6 +125,7 @@ function formatDate(dateStr: string): string {
 // ── Main Page ──────────────────────────────────────────────────────────────
 
 export default function SessionsPage() {
+  const ts = useTranslations("settings")
   const [sessions, setSessions] = useState<SessionEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [revoking, setRevoking] = useState<string | null>(null)
@@ -191,9 +194,9 @@ export default function SessionsPage() {
     <div className="space-y-6 px-4 py-4 md:px-6 md:py-6 lg:px-8 lg:py-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Aktive Sitzungen</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{ts("sessionsTitle")}</h1>
         <p className="mt-2 text-muted-foreground">
-          Alle angemeldeten Geräte und Browser verwalten.
+          {ts("sessionsDesc")}
         </p>
       </div>
 

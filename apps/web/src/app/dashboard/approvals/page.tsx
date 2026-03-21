@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import { useTranslations } from "next-intl"
 import { IconCheck, IconX, IconClockHour4, IconInbox } from "@tabler/icons-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -41,16 +42,22 @@ type TabStatus = "pending" | "approved" | "rejected"
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-const REQUEST_TYPE_LABELS: Record<string, string> = {
-  tool_checkout: "Werkzeug-Ausleihe",
-  order: "Bestellung",
-  stock_change: "Bestandsänderung",
+function useRequestTypeLabels() {
+  const t = useTranslations("approvals")
+  return {
+    tool_checkout: t("toolCheckout"),
+    order: t("order"),
+    stock_change: t("stockChange"),
+  } as Record<string, string>
 }
 
-const ENTITY_TYPE_LABELS: Record<string, string> = {
-  tool: "Werkzeug",
-  material: "Material",
-  order: "Bestellung",
+function useEntityTypeLabels() {
+  const t = useTranslations("approvals")
+  return {
+    tool: t("entityTool"),
+    material: t("entityMaterial"),
+    order: t("entityOrder"),
+  } as Record<string, string>
 }
 
 function formatDateTime(iso: string) {
@@ -64,11 +71,12 @@ function formatDateTime(iso: string) {
 }
 
 function StatusBadge({ status }: { status: ApprovalRow["status"] }) {
+  const t = useTranslations("approvals")
   if (status === "pending") {
     return (
       <Badge variant="outline" className="border-yellow-400 text-yellow-700 bg-yellow-50">
         <IconClockHour4 className="size-3 mr-1" />
-        Ausstehend
+        {t("pending")}
       </Badge>
     )
   }
@@ -76,14 +84,14 @@ function StatusBadge({ status }: { status: ApprovalRow["status"] }) {
     return (
       <Badge variant="outline" className="border-green-500 text-green-700 bg-green-50">
         <IconCheck className="size-3 mr-1" />
-        Genehmigt
+        {t("approved")}
       </Badge>
     )
   }
   return (
     <Badge variant="outline" className="border-red-400 text-red-700 bg-red-50">
       <IconX className="size-3 mr-1" />
-      Abgelehnt
+      {t("rejected")}
     </Badge>
   )
 }
@@ -97,18 +105,22 @@ interface ApprovalCardProps {
 }
 
 function ApprovalCard({ approval, onDecide, deciding }: ApprovalCardProps) {
+  const t = useTranslations("approvals")
+  const requestTypeLabels = useRequestTypeLabels()
+  const entityTypeLabels = useEntityTypeLabels()
+
   return (
     <Card>
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
             <CardTitle className="text-base">
-              {REQUEST_TYPE_LABELS[approval.requestType] ?? approval.requestType}
+              {requestTypeLabels[approval.requestType] ?? approval.requestType}
             </CardTitle>
             <CardDescription className="mt-0.5">
-              {ENTITY_TYPE_LABELS[approval.entityType] ?? approval.entityType} &mdash; von{" "}
+              {entityTypeLabels[approval.entityType] ?? approval.entityType} &mdash; {t("from")}{" "}
               <span className="font-medium text-foreground">
-                {approval.requesterName ?? approval.requesterEmail ?? "Unbekannt"}
+                {approval.requesterName ?? approval.requesterEmail ?? t("unknown")}
               </span>
             </CardDescription>
           </div>
@@ -117,19 +129,19 @@ function ApprovalCard({ approval, onDecide, deciding }: ApprovalCardProps) {
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-          <span className="text-muted-foreground">Beantragt</span>
+          <span className="text-muted-foreground">{t("requestedAt")}</span>
           <span>{formatDateTime(approval.requestedAt)}</span>
 
           {approval.resolvedAt && (
             <>
-              <span className="text-muted-foreground">Entschieden</span>
+              <span className="text-muted-foreground">{t("resolvedAt")}</span>
               <span>{formatDateTime(approval.resolvedAt)}</span>
             </>
           )}
 
           {approval.approverName && (
             <>
-              <span className="text-muted-foreground">Von</span>
+              <span className="text-muted-foreground">{t("decidedBy")}</span>
               <span>{approval.approverName}</span>
             </>
           )}
@@ -150,7 +162,7 @@ function ApprovalCard({ approval, onDecide, deciding }: ApprovalCardProps) {
               disabled={deciding === approval.id}
             >
               <IconCheck className="size-4 mr-1" />
-              Genehmigen
+              {t("approve")}
             </Button>
             <Button
               size="sm"
@@ -160,7 +172,7 @@ function ApprovalCard({ approval, onDecide, deciding }: ApprovalCardProps) {
               disabled={deciding === approval.id}
             >
               <IconX className="size-4 mr-1" />
-              Ablehnen
+              {t("reject")}
             </Button>
           </div>
         )}
@@ -172,10 +184,11 @@ function ApprovalCard({ approval, onDecide, deciding }: ApprovalCardProps) {
 // ─── Empty state ──────────────────────────────────────────────────────────────
 
 function EmptyState({ status }: { status: TabStatus }) {
+  const t = useTranslations("approvals")
   const labels: Record<TabStatus, string> = {
-    pending: "Keine ausstehenden Genehmigungen",
-    approved: "Keine genehmigten Anfragen",
-    rejected: "Keine abgelehnten Anfragen",
+    pending: t("emptyPending"),
+    approved: t("emptyApproved"),
+    rejected: t("emptyRejected"),
   }
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -188,6 +201,8 @@ function EmptyState({ status }: { status: TabStatus }) {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function ApprovalsPage() {
+  const t = useTranslations("approvals")
+  const tc = useTranslations("common")
   const { orgId } = useOrganization()
 
   const [tab, setTab] = useState<TabStatus>("pending")
@@ -277,15 +292,15 @@ export default function ApprovalsPage() {
     }
   }
 
-  const statusLabel = dialogTarget?.status === "approved" ? "genehmigen" : "ablehnen"
+  const statusLabel = dialogTarget?.status === "approved" ? t("approve").toLowerCase() : t("reject").toLowerCase()
 
   return (
     <div className="flex flex-col gap-6 px-4 py-6 lg:px-6">
       {/* Page header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Genehmigungen</h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Bearbeite ausstehende Genehmigungsanfragen deines Teams.
+          {t("pageDescription")}
         </p>
       </div>
 
@@ -293,15 +308,15 @@ export default function ApprovalsPage() {
       <Tabs value={tab} onValueChange={(v) => setTab(v as TabStatus)}>
         <TabsList>
           <TabsTrigger value="pending" className="gap-2">
-            Ausstehend
+            {t("pending")}
             {pendingCount !== null && pendingCount > 0 && (
               <Badge className="h-5 min-w-5 px-1.5 text-xs rounded-full">
                 {pendingCount}
               </Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger value="approved">Genehmigt</TabsTrigger>
-          <TabsTrigger value="rejected">Abgelehnt</TabsTrigger>
+          <TabsTrigger value="approved">{t("approved")}</TabsTrigger>
+          <TabsTrigger value="rejected">{t("rejected")}</TabsTrigger>
         </TabsList>
 
         {(["pending", "approved", "rejected"] as const).map((s) => (
@@ -335,19 +350,18 @@ export default function ApprovalsPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              Anfrage {dialogTarget?.status === "approved" ? "genehmigen" : "ablehnen"}
+              {dialogTarget?.status === "approved" ? t("approveTitle") : t("rejectTitle")}
             </DialogTitle>
             <DialogDescription>
-              Du bist dabei, diese Anfrage zu {statusLabel}. Optional kannst du eine Notiz
-              hinterlassen.
+              {t("dialogDescription", { action: statusLabel })}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-2">
-            <Label htmlFor="decision-notes">Notiz (optional)</Label>
+            <Label htmlFor="decision-notes">{t("noteLabel")}</Label>
             <Textarea
               id="decision-notes"
-              placeholder="Grund oder Hinweis..."
+              placeholder={t("notePlaceholder")}
               value={dialogNotes}
               onChange={(e) => setDialogNotes(e.target.value)}
               rows={3}
@@ -356,7 +370,7 @@ export default function ApprovalsPage() {
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)} disabled={submitting}>
-              Abbrechen
+              {tc("cancel")}
             </Button>
             <Button
               onClick={handleDecisionConfirm}
@@ -364,10 +378,10 @@ export default function ApprovalsPage() {
               variant={dialogTarget?.status === "rejected" ? "destructive" : "default"}
             >
               {submitting
-                ? "Wird gespeichert..."
+                ? t("saving")
                 : dialogTarget?.status === "approved"
-                  ? "Genehmigen"
-                  : "Ablehnen"}
+                  ? t("approve")
+                  : t("reject")}
             </Button>
           </DialogFooter>
         </DialogContent>

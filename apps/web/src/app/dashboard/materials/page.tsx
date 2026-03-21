@@ -471,14 +471,14 @@ export default function MaterialsPage() {
           <Checkbox
             checked={allVisibleSelected ? true : someVisibleSelected ? "indeterminate" : false}
             onCheckedChange={toggleSelectAll}
-            aria-label="Alle auswählen"
+            aria-label={t("selectAll")}
           />
         ),
         cell: ({ row }) => (
           <Checkbox
             checked={selectedIds.has(row.original.id)}
             onCheckedChange={() => toggleRow(row.original.id)}
-            aria-label={`${row.original.name} auswählen`}
+            aria-label={t("selectItem", { name: row.original.name })}
             onClick={(e) => e.stopPropagation()}
           />
         ),
@@ -776,7 +776,7 @@ export default function MaterialsPage() {
             onClick={() => router.push("/dashboard/materials/duplicates")}
           >
             <IconCopy className="size-4" />
-            Duplikate prüfen
+            {t("checkDuplicates")}
           </Button>
           <Button variant="outline" size="sm" onClick={handleExport}>
             <IconDownload className="size-4" />
@@ -789,7 +789,7 @@ export default function MaterialsPage() {
             onClick={() => router.push("/dashboard/materials/import")}
           >
             <IconUpload className="size-4" />
-            Import
+            {tc("import")}
           </Button>
           <Button
             variant="outline"
@@ -798,7 +798,7 @@ export default function MaterialsPage() {
             onClick={() => router.push("/dashboard/materials/labels")}
           >
             <IconTag className="size-4" />
-            Etiketten
+            {t("labels")}
           </Button>
           <Button onClick={() => router.push("/dashboard/materials/new")}>
             <IconPlus className="size-4" />
@@ -862,7 +862,7 @@ export default function MaterialsPage() {
             setLowStockOnly(pressed)
             setPage(1)
           }}
-          aria-label="Nur Meldebestand anzeigen"
+          aria-label={t("lowStockOnly")}
           className={
             lowStockOnly
               ? "border border-orange-500/40 bg-orange-500/10 text-orange-600 hover:bg-orange-500/20 hover:text-orange-600 data-[state=on]:bg-orange-500/10 data-[state=on]:text-orange-600"
@@ -872,7 +872,7 @@ export default function MaterialsPage() {
           <IconAlertTriangle
             className={`size-4 ${lowStockOnly ? "text-orange-500" : "text-muted-foreground"}`}
           />
-          <span className="ml-1.5 text-sm">Nur Meldebestand</span>
+          <span className="ml-1.5 text-sm">{t("lowStockOnly")}</span>
         </Toggle>
         <Toggle
           pressed={expiringOnly}
@@ -880,7 +880,7 @@ export default function MaterialsPage() {
             setExpiringOnly(pressed)
             setPage(1)
           }}
-          aria-label="Nur ablaufende anzeigen"
+          aria-label={t("expiringOnly")}
           className={
             expiringOnly
               ? "border border-red-500/40 bg-red-500/10 text-red-600 hover:bg-red-500/20 hover:text-red-600 data-[state=on]:bg-red-500/10 data-[state=on]:text-red-600"
@@ -890,7 +890,7 @@ export default function MaterialsPage() {
           <IconClock
             className={`size-4 ${expiringOnly ? "text-red-500" : "text-muted-foreground"}`}
           />
-          <span className="ml-1.5 text-sm">Nur ablaufende</span>
+          <span className="ml-1.5 text-sm">{t("expiringOnly")}</span>
         </Toggle>
       </div>
 
@@ -922,14 +922,14 @@ export default function MaterialsPage() {
             <h3 className="mt-4 text-lg font-medium">
               {debouncedSearch || lowStockOnly
                 ? tc("noData")
-                : "Erstellen Sie Ihr erstes Material"}
+                : t("createFirst")}
             </h3>
             <p className="mt-1 text-sm text-muted-foreground">
               {debouncedSearch
-                ? "Versuchen Sie einen anderen Suchbegriff"
+                ? t("tryDifferentSearch")
                 : lowStockOnly
-                  ? "Kein Material hat aktuell einen kritischen Bestand"
-                  : "Beginnen Sie mit dem Aufbau Ihres Materialbestands"}
+                  ? t("noLowStock")
+                  : t("startBuilding")}
             </p>
             {!debouncedSearch && !lowStockOnly && (
               <Button
@@ -1000,7 +1000,7 @@ export default function MaterialsPage() {
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
             {(page - 1) * ITEMS_PER_PAGE + 1}&ndash;
-            {Math.min(page * ITEMS_PER_PAGE, total)} von {total}
+            {Math.min(page * ITEMS_PER_PAGE, total)} {tc("of")} {total}
           </p>
           <div className="flex items-center gap-2">
             <Button
@@ -1037,11 +1037,9 @@ export default function MaterialsPage() {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Material l&ouml;schen</DialogTitle>
+            <DialogTitle>{t("deleteMaterial")}</DialogTitle>
             <DialogDescription>
-              M&ouml;chten Sie &laquo;{deleteTarget?.name}&raquo; wirklich
-              l&ouml;schen? Diese Aktion kann nicht r&uuml;ckg&auml;ngig gemacht
-              werden.
+              {t("deleteConfirmMessage", { name: deleteTarget?.name ?? "" })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -1066,7 +1064,7 @@ export default function MaterialsPage() {
       {/* Bulk action bar */}
       <BulkActionBar
         selectedCount={selectedIds.size}
-        entityLabel="Materialien"
+        entityLabel={t("title")}
         groups={groups}
         locations={locations}
         onDelete={handleBulkDelete}

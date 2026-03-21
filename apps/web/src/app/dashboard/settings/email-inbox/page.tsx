@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState, useEffect, useCallback } from "react"
 import {
   IconMail,
@@ -120,6 +122,7 @@ function formatDate(iso: string): string {
 // ---------------------------------------------------------------------------
 
 export default function EmailInboxPage() {
+  const ts = useTranslations("settings")
   const [emails, setEmails] = useState<ParsedEmailItem[]>([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
@@ -206,10 +209,10 @@ export default function EmailInboxPage() {
         </p>
         <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
           <IconMail className="size-6 text-primary" />
-          E-Mail Posteingang
+          {ts("emailInboxTitle")}
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Lieferanten-E-Mails automatisch parsen und als Entwürfe anlegen.
+          {ts("emailInboxDesc")}
         </p>
       </div>
 

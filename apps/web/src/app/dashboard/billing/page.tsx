@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState, useEffect } from "react"
 import { useSession } from "@/lib/auth-client"
 import { createPortalSession, createCheckoutSession } from "@/lib/stripe"
@@ -100,6 +102,7 @@ const stripeConfigured = Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 // Page
 // ---------------------------------------------------------------------------
 export default function BillingPage() {
+  const t = useTranslations("billingPage")
   const { data: session } = useSession()
   const [isLoading, setIsLoading] = useState(false)
   const [actionPlanId, setActionPlanId] = useState<string | null>(null)
@@ -166,7 +169,7 @@ export default function BillingPage() {
     <div className="space-y-8 px-4 py-4 md:px-6 md:py-6 lg:px-8 lg:py-8">
       {/* ── Header ── */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Abrechnung &amp; Pläne</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
         <p className="text-muted-foreground mt-2">
           Verwalte dein Abonnement und deine Rechnungsinformationen.
         </p>
@@ -184,7 +187,7 @@ export default function BillingPage() {
       {/* ── Current Plan Summary ── */}
       <Card>
         <CardHeader>
-          <CardTitle>Aktueller Plan</CardTitle>
+          <CardTitle>{t("currentPlan")}</CardTitle>
           <CardDescription>
             Du nutzt derzeit den{" "}
             <span className="capitalize font-medium">{currentPlan}</span>-Plan.
@@ -225,7 +228,7 @@ export default function BillingPage() {
 
       {/* ── Billing Interval Toggle ── */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold tracking-tight">Pläne vergleichen</h2>
+        <h2 className="text-2xl font-bold tracking-tight">{t("comparePlans")}</h2>
         <div className="flex items-center gap-1 rounded-lg border p-1 text-sm">
           <button
             type="button"
@@ -346,7 +349,7 @@ export default function BillingPage() {
                     variant="outline"
                     asChild
                   >
-                    <a href="mailto:sales@logistikapp.ch">Kontakt aufnehmen</a>
+                    <a href="mailto:sales@logistikapp.ch">{t("contactSales")}</a>
                   </Button>
                 ) : (
                   <Button
@@ -375,7 +378,7 @@ export default function BillingPage() {
       {/* ── Rechnungen ── */}
       <Card>
         <CardHeader>
-          <CardTitle>Rechnungen</CardTitle>
+          <CardTitle>{t("invoices")}</CardTitle>
           <CardDescription>Vergangene Rechnungen und Zahlungen einsehen.</CardDescription>
         </CardHeader>
         <CardContent>
@@ -398,7 +401,7 @@ export default function BillingPage() {
       {/* ── Zahlungsmethoden ── */}
       <Card>
         <CardHeader>
-          <CardTitle>Zahlungsmethoden</CardTitle>
+          <CardTitle>{t("paymentMethods")}</CardTitle>
           <CardDescription>Zahlungsinformationen verwalten.</CardDescription>
         </CardHeader>
         <CardContent>

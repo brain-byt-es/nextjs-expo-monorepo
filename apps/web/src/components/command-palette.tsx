@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
@@ -39,6 +41,7 @@ interface PaletteItem {
 }
 
 export function CommandPalette() {
+  const t = useTranslations("commandPalette")
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [selectedIdx, setSelectedIdx] = useState(0)
@@ -183,7 +186,7 @@ export function CommandPalette() {
             autoFocus
             value={query}
             onChange={e => { setQuery(e.target.value); setSelectedIdx(0) }}
-            placeholder="Suchen oder navigieren…"
+            placeholder={t("searchPlaceholder")}
             className="flex-1 py-[14px] text-sm bg-transparent outline-none placeholder:text-muted-foreground/50 font-mono tracking-tight"
           />
           <kbd className="hidden sm:inline-flex h-5 items-center gap-px text-[10px] font-mono text-muted-foreground/60 border border-border/60 rounded-sm px-1.5 leading-none shrink-0">
@@ -273,9 +276,9 @@ export function CommandPalette() {
 
         {/* Footer */}
         <div className="border-t border-border/60 bg-muted/30 px-4 py-2 flex items-center gap-5">
-          <FooterHint keys={["↑", "↓"]} label="navigieren" />
-          <FooterHint keys={["↵"]} label="öffnen" />
-          <FooterHint keys={["ESC"]} label="schliessen" />
+          <FooterHint keys={["↑", "↓"]} label={t("navigate")} />
+          <FooterHint keys={["↵"]} label={t("open")} />
+          <FooterHint keys={["ESC"]} label={t("close")} />
           <div className="ml-auto flex items-center gap-1.5">
             <kbd className="inline-flex h-4 items-center gap-px text-[9px] font-mono text-muted-foreground/50 border border-border/50 rounded-sm px-1 leading-none">
               ⌘K

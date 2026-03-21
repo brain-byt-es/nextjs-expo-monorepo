@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState, useEffect, useCallback } from "react"
 import { useSession } from "@/lib/auth-client"
 import { Button } from "@/components/ui/button"
@@ -175,7 +177,7 @@ function PermissionMatrix({ permMap, onChange, readonly = false }: PermissionMat
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-40 min-w-[140px]">Ressource</TableHead>
+            <TableHead className="w-40 min-w-[140px]">{ts("resource")}</TableHead>
             {ACTIONS.map((a) => (
               <TableHead key={a} className="w-24 text-center text-xs">
                 {ACTION_LABELS[a]}
@@ -222,6 +224,8 @@ function PermissionMatrix({ permMap, onChange, readonly = false }: PermissionMat
 // ── Main Component ─────────────────────────────────────────────────────────
 
 export default function RolesPage() {
+  const ts = useTranslations("settings")
+  const tc = useTranslations("common")
   useSession()
 
   const [org, setOrg] = useState<OrgInfo | null>(null)
@@ -410,7 +414,7 @@ export default function RolesPage() {
     return (
       <div className="px-4 py-8 md:px-6 lg:px-8">
         <p className="text-muted-foreground text-sm">
-          Keine Organisation gefunden.
+          {ts("noOrgFound")}
         </p>
       </div>
     )
@@ -427,7 +431,7 @@ export default function RolesPage() {
             </p>
             <h1 className="text-2xl font-semibold tracking-tight">Rollen & Berechtigungen</h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Steuere, was Mitglieder in <strong>{org.name}</strong> sehen und tun dürfen.
+              {ts("rolesDesc", { org: org.name })}
             </p>
           </div>
 
@@ -436,19 +440,19 @@ export default function RolesPage() {
               <DialogTrigger asChild>
                 <Button size="sm" className="shrink-0">
                   <IconShieldPlus className="mr-2 size-4" />
-                  Neue Rolle
+                  {ts("newRole")}
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle>Benutzerdefinierte Rolle erstellen</DialogTitle>
+                  <DialogTitle>{ts("createCustomRole")}</DialogTitle>
                   <DialogDescription>
                     Gib der Rolle einen Namen und lege die Berechtigungen fest.
                   </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleCreate} className="space-y-6 pt-2">
                   <div className="space-y-2">
-                    <Label htmlFor="role-name">Rollenname</Label>
+                    <Label htmlFor="role-name">{ts("roleNameLabel")}</Label>
                     <Input
                       id="role-name"
                       placeholder="z. B. Fahrer, Einkäufer"
@@ -459,7 +463,7 @@ export default function RolesPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Berechtigungen</Label>
+                    <Label>{ts("permissionsLabel")}</Label>
                     <div className="rounded-md border">
                       <PermissionMatrix
                         permMap={newRolePerms}
@@ -480,7 +484,7 @@ export default function RolesPage() {
                       Abbrechen
                     </Button>
                     <Button type="submit" disabled={isCreating || !newRoleName.trim()}>
-                      {isCreating ? "Wird erstellt…" : "Rolle erstellen"}
+                      {isCreating ? ts("creating") : ts("createReport")}
                     </Button>
                   </DialogFooter>
                 </form>
@@ -500,7 +504,7 @@ export default function RolesPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
               <IconShield className="size-4" />
-              Rollen
+              {ts("roles")}
               {rolesList.length > 0 && (
                 <Badge variant="secondary" className="ml-1">
                   {rolesList.length}
@@ -508,7 +512,7 @@ export default function RolesPage() {
               )}
             </CardTitle>
             <CardDescription>
-              Systemrollen sind schreibgeschützt. Nur benutzerdefinierte Rollen können gelöscht werden.
+              {ts("systemRolesReadonly")}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-0">
@@ -526,9 +530,9 @@ export default function RolesPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Rolle</TableHead>
-                    <TableHead>Typ</TableHead>
-                    <TableHead>Erstellt</TableHead>
+                    <TableHead>{ts("roles")}</TableHead>
+                    <TableHead>{tc("status")}</TableHead>
+                    <TableHead>{tc("created")}</TableHead>
                     {canManageRoles && <TableHead className="w-24 text-right" />}
                   </TableRow>
                 </TableHeader>
@@ -554,7 +558,7 @@ export default function RolesPage() {
                           {role.isSystem ? (
                             <Badge variant="secondary" className="text-xs">System</Badge>
                           ) : (
-                            <Badge variant="outline" className="text-xs">Benutzerdefiniert</Badge>
+                            <Badge variant="outline" className="text-xs">{ts("custom")}</Badge>
                           )}
                         </TableCell>
                         <TableCell className="text-muted-foreground text-sm">
@@ -641,11 +645,11 @@ export default function RolesPage() {
                   onClick={() => setEditRole(null)}
                   disabled={isSaving}
                 >
-                  {LOCKED_ROLE_SLUGS.has(editRole.slug) ? "Schliessen" : "Abbrechen"}
+                  {LOCKED_ROLE_SLUGS.has(editRole.slug) ? tc("close") : tc("cancel")}
                 </Button>
                 {!LOCKED_ROLE_SLUGS.has(editRole.slug) && (
                   <Button onClick={handleSave} disabled={isSaving}>
-                    {isSaving ? "Wird gespeichert…" : "Speichern"}
+                    {isSaving ? tc("loading") : tc("save")}
                   </Button>
                 )}
               </DialogFooter>

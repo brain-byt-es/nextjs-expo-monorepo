@@ -84,6 +84,7 @@ function downloadCsv(headers: string[], rows: (string | number | null | undefine
 
 export default function HistoryChangelogPage() {
   const t = useTranslations("history")
+  const tc = useTranslations("common")
   const [search, setSearch] = useState("")
   const [entityFilter, setEntityFilter] = useState("all")
   const [dateFrom, setDateFrom] = useState("")
@@ -142,14 +143,14 @@ export default function HistoryChangelogPage() {
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 max-w-sm">
           <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-          <Input placeholder="Artikel, Feld oder Benutzer…" value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} className="pl-9" />
+          <Input placeholder={tc("search")} value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} className="pl-9" />
         </div>
         <Select value={entityFilter} onValueChange={v => { setEntityFilter(v); setPage(1) }}>
           <SelectTrigger className="w-44">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Alle Typen</SelectItem>
+            <SelectItem value="all">{t("allTypes")}</SelectItem>
             <SelectItem value="tool">Werkzeug</SelectItem>
             <SelectItem value="material">Material</SelectItem>
             <SelectItem value="location">Lagerort</SelectItem>
@@ -159,7 +160,7 @@ export default function HistoryChangelogPage() {
           </SelectContent>
         </Select>
         <div className="flex items-center gap-2">
-          <label className="text-sm text-muted-foreground whitespace-nowrap">Von</label>
+          <label className="text-sm text-muted-foreground whitespace-nowrap">{t("dateFrom")}</label>
           <input
             type="date"
             value={dateFrom}
@@ -168,7 +169,7 @@ export default function HistoryChangelogPage() {
           />
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-sm text-muted-foreground whitespace-nowrap">Bis</label>
+          <label className="text-sm text-muted-foreground whitespace-nowrap">{t("dateTo")}</label>
           <input
             type="date"
             value={dateTo}
@@ -198,7 +199,7 @@ export default function HistoryChangelogPage() {
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[130px] cursor-pointer select-none" onClick={() => toggleSort("field")}>
                     {t("field")}<SortIcon sortKey={sortKey} sortDir={sortDir} col="field" />
                   </TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Änderung</TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("change")}</TableHead>
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[130px] cursor-pointer select-none" onClick={() => toggleSort("changedBy")}>
                     {t("user")}<SortIcon sortKey={sortKey} sortDir={sortDir} col="changedBy" />
                   </TableHead>
@@ -254,8 +255,8 @@ export default function HistoryChangelogPage() {
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <span>
           {total === 0
-            ? "Keine Einträge"
-            : `Zeige ${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, total)} von ${total} Einträgen`}
+            ? t("noEntries")
+            : t("showingRange", { from: (page - 1) * PAGE_SIZE + 1, to: Math.min(page * PAGE_SIZE, total), total })}
         </span>
         <div className="flex items-center gap-1">
           <Button

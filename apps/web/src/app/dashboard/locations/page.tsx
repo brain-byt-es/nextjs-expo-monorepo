@@ -399,7 +399,7 @@ export default function LocationsPage() {
       },
       {
         accessorKey: "address",
-        header: () => "Adresse",
+        header: () => t("address"),
         size: 200,
         enableSorting: false,
         cell: ({ row }) => (
@@ -410,7 +410,7 @@ export default function LocationsPage() {
       },
       {
         accessorKey: "isActive",
-        header: () => "Status",
+        header: () => tc("status"),
         size: 90,
         enableSorting: false,
         cell: ({ row }) =>
@@ -419,14 +419,14 @@ export default function LocationsPage() {
               variant="outline"
               className="bg-secondary/10 text-secondary border-secondary/30"
             >
-              Aktiv
+              {tc("active")}
             </Badge>
           ) : (
             <Badge
               variant="outline"
               className="bg-muted text-muted-foreground border-border"
             >
-              Inaktiv
+              {tc("inactive")}
             </Badge>
           ),
       },
@@ -549,10 +549,10 @@ export default function LocationsPage() {
           }}
           className="ml-auto"
         >
-          <ToggleGroupItem value="table" aria-label="Tabellenansicht">
+          <ToggleGroupItem value="table" aria-label={t("tableView")}>
             <IconLayoutList className="size-4" />
           </ToggleGroupItem>
-          <ToggleGroupItem value="grid" aria-label="Kachelansicht">
+          <ToggleGroupItem value="grid" aria-label={t("gridView")}>
             <IconLayoutGrid className="size-4" />
           </ToggleGroupItem>
         </ToggleGroup>
@@ -583,12 +583,12 @@ export default function LocationsPage() {
             <h3 className="text-lg font-medium">
               {debouncedSearch
                 ? tc("noData")
-                : "Keine Lagerorte vorhanden"}
+                : t("noLocations")}
             </h3>
             <p className="text-sm text-muted-foreground">
               {debouncedSearch
-                ? "Versuchen Sie einen anderen Suchbegriff"
-                : "Erstellen Sie Ihren ersten Lagerort, um Materialien, Werkzeuge und Schlüssel zu verwalten."}
+                ? t("tryDifferentSearch")
+                : t("createFirstDescription")}
             </p>
           </div>
           {!debouncedSearch && (
@@ -646,7 +646,7 @@ export default function LocationsPage() {
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
             {(page - 1) * ITEMS_PER_PAGE + 1}&ndash;
-            {Math.min(page * ITEMS_PER_PAGE, total)} von {total}
+            {Math.min(page * ITEMS_PER_PAGE, total)} {tc("of")} {total}
           </p>
           <div className="flex items-center gap-2">
             <Button
@@ -683,11 +683,9 @@ export default function LocationsPage() {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Lagerort l&ouml;schen</DialogTitle>
+            <DialogTitle>{t("deleteLocation")}</DialogTitle>
             <DialogDescription>
-              M&ouml;chten Sie &laquo;{deleteTarget?.name}&raquo; wirklich
-              l&ouml;schen? Diese Aktion kann nicht r&uuml;ckg&auml;ngig gemacht
-              werden.
+              {t("deleteConfirmMessage", { name: deleteTarget?.name ?? "" })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -765,10 +763,10 @@ function LocationGrid({
               )}
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <IconPackage className="size-3.5" />
-                <span>Materialien</span>
+                <span>{t("materials")}</span>
                 <span className="ml-auto">
                   <IconTool className="mr-1 inline size-3.5" />
-                  Werkzeuge
+                  {t("tools")}
                 </span>
                 <IconKey className="size-3.5" />
               </div>

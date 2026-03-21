@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState, useEffect, useMemo, useCallback } from "react"
 import {
   useReactTable,
@@ -148,6 +150,7 @@ function BatteryIndicator({ level }: { level: number | null }) {
 // Page
 // ---------------------------------------------------------------------------
 export default function BeaconsPage() {
+  const t = useTranslations("beacons")
   const [beacons, setBeacons] = useState<BeaconRow[]>([])
   const [stats, setStats] = useState<BeaconStats>({ active: 0, lowBattery: 0, coveredLocations: 0 })
   const [locations, setLocations] = useState<Location[]>([])
@@ -458,7 +461,7 @@ export default function BeaconsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Bluetooth Beacons</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
           <p className="text-muted-foreground text-sm">
             Verwalte und ueberwache alle registrierten BLE-Beacons deiner Organisation.
           </p>
@@ -478,7 +481,7 @@ export default function BeaconsPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Aktive Beacons</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("title")}</CardTitle>
             <IconBluetooth className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>

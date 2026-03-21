@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
+import { describe, it, expect } from "vitest"
 
 // We test the scanner detection logic by simulating keydown events on the document.
 // The hook attaches a keydown listener, so we can test it via JSDOM/happy-dom events.

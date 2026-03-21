@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState, useEffect, useCallback } from "react"
 import { useOrganization } from "@/hooks/use-organization"
 import { Button } from "@/components/ui/button"
@@ -89,6 +91,7 @@ function formatDate(d: string | null): string {
 // Component
 // ---------------------------------------------------------------------------
 export default function ScheduledReportsPage() {
+  const ts = useTranslations("settings")
   const { orgId } = useOrganization()
   const [reports, setReports] = useState<ScheduledReport[]>([])
   const [loading, setLoading] = useState(true)
@@ -201,10 +204,10 @@ export default function ScheduledReportsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
-            Geplante Berichte
+            {ts("scheduledReportsTitle")}
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Berichte werden automatisch per E-Mail als CSV verschickt.
+            {ts("scheduledReportsDesc")}
           </p>
         </div>
         <Button size="sm" onClick={() => setCreateOpen(true)}>
@@ -224,7 +227,7 @@ export default function ScheduledReportsPage() {
           <CardContent className="flex flex-col items-center justify-center py-16">
             <IconFileText className="size-10 text-muted-foreground/30 mb-3" />
             <p className="text-sm text-muted-foreground">
-              Noch keine geplanten Berichte
+              {ts("noReportsYet")}
             </p>
             <Button
               variant="outline"
@@ -240,11 +243,11 @@ export default function ScheduledReportsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Berichtstyp</TableHead>
-                <TableHead>Zeitplan</TableHead>
-                <TableHead>Format</TableHead>
-                <TableHead>Empfänger</TableHead>
-                <TableHead>Zuletzt gesendet</TableHead>
+                <TableHead>{ts("reportType")}</TableHead>
+                <TableHead>{ts("schedule")}</TableHead>
+                <TableHead>{ts("format")}</TableHead>
+                <TableHead>{ts("recipients")}</TableHead>
+                <TableHead>{ts("lastSent")}</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="w-16" />
               </TableRow>
@@ -305,16 +308,16 @@ export default function ScheduledReportsPage() {
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Neuen geplanten Bericht erstellen</DialogTitle>
+            <DialogTitle>{ts("scheduledReportsTitle")}</DialogTitle>
             <DialogDescription>
-              Der Bericht wird automatisch per E-Mail verschickt.
+              {ts("scheduledReportsDesc")}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-2">
             {/* Report type */}
             <div className="space-y-2">
-              <Label>Berichtstyp</Label>
+              <Label>{ts("reportType")}</Label>
               <Select
                 value={form.reportType}
                 onValueChange={(v) => setForm((f) => ({ ...f, reportType: v }))}
@@ -333,7 +336,7 @@ export default function ScheduledReportsPage() {
 
             {/* Schedule */}
             <div className="space-y-2">
-              <Label>Zeitplan</Label>
+              <Label>{ts("schedule")}</Label>
               <Select
                 value={form.schedule}
                 onValueChange={(v) => setForm((f) => ({ ...f, schedule: v }))}
@@ -351,7 +354,7 @@ export default function ScheduledReportsPage() {
 
             {/* Format */}
             <div className="space-y-2">
-              <Label>Format</Label>
+              <Label>{ts("format")}</Label>
               <Select
                 value={form.format}
                 onValueChange={(v) => setForm((f) => ({ ...f, format: v }))}
@@ -368,7 +371,7 @@ export default function ScheduledReportsPage() {
 
             {/* Recipients */}
             <div className="space-y-2">
-              <Label>Empfänger (E-Mail-Adressen)</Label>
+              <Label>{ts("recipients")}</Label>
               <textarea
                 className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] focus-visible:outline-none"
                 placeholder="max@mustermann.ch&#10;anna@beispiel.ch"
@@ -400,7 +403,7 @@ export default function ScheduledReportsPage() {
               Abbrechen
             </Button>
             <Button onClick={handleCreate} disabled={creating}>
-              {creating ? "Wird erstellt…" : "Bericht erstellen"}
+              {creating ? ts("creating") : ts("createReport")}
             </Button>
           </DialogFooter>
         </DialogContent>

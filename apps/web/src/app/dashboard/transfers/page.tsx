@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo, useEffect, useCallback } from "react"
+import { useTranslations } from "next-intl"
 import { FeatureGate } from "@/components/upgrade-prompt"
 import {
   IconPlus,
@@ -104,35 +105,35 @@ interface Material {
 }
 
 // ── Config ──────────────────────────────────────────────────────────────
-const STATUS_CONFIG: Record<
-  TransferStatus,
-  { label: string; color: string; icon: React.ComponentType<{ className?: string }> }
-> = {
-  pending: {
-    label: "Ausstehend",
-    color: "bg-muted text-muted-foreground",
-    icon: IconClock,
-  },
-  approved: {
-    label: "Genehmigt",
-    color: "bg-primary/10 text-primary",
-    icon: IconCheck,
-  },
-  in_transit: {
-    label: "Unterwegs",
-    color: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
-    icon: IconTruck,
-  },
-  completed: {
-    label: "Abgeschlossen",
-    color: "bg-secondary/10 text-secondary",
-    icon: IconCheck,
-  },
-  cancelled: {
-    label: "Storniert",
-    color: "bg-destructive/10 text-destructive",
-    icon: IconX,
-  },
+function useStatusConfig() {
+  const t = useTranslations("transfers")
+  return {
+    pending: {
+      label: t("pending"),
+      color: "bg-muted text-muted-foreground",
+      icon: IconClock,
+    },
+    approved: {
+      label: t("approved"),
+      color: "bg-primary/10 text-primary",
+      icon: IconCheck,
+    },
+    in_transit: {
+      label: t("inTransit"),
+      color: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
+      icon: IconTruck,
+    },
+    completed: {
+      label: t("completed"),
+      color: "bg-secondary/10 text-secondary",
+      icon: IconCheck,
+    },
+    cancelled: {
+      label: t("cancelled"),
+      color: "bg-destructive/10 text-destructive",
+      icon: IconX,
+    },
+  } as Record<TransferStatus, { label: string; color: string; icon: React.ComponentType<{ className?: string }> }>
 }
 
 function formatDate(iso: string) {
@@ -160,6 +161,8 @@ function CreateTransferDialog({
   locations: Location[]
   materials: Material[]
 }) {
+  const t = useTranslations("transfers")
+  const tc = useTranslations("common")
   const [fromId, setFromId] = useState("")
   const [toId, setToId] = useState("")
   const [notes, setNotes] = useState("")
@@ -187,15 +190,15 @@ function CreateTransferDialog({
 
     const validLines = lines.filter((l) => l.materialId && l.quantity > 0)
     if (!fromId || !toId) {
-      setError("Bitte Quell- und Ziellager auswählen.")
+      setError(t("errorSelectLocations"))
       return
     }
     if (fromId === toId) {
-      setError("Quell- und Ziellager müssen unterschiedlich sein.")
+      setError(t("errorSameLocation"))
       return
     }
     if (validLines.length === 0) {
-      setError("Mindestens eine Position erforderlich.")
+      setError(t("errorMinOneItem"))
       return
     }
 
@@ -216,13 +219,13 @@ function CreateTransferDialog({
       })
       if (!res.ok) {
         const data = await res.json()
-        setError((data as { error?: string }).error ?? "Fehler beim Erstellen")
+        setError((data as { error?: string }).error ?? t("errorCreating"))
         return
       }
       onCreated()
       onClose()
     } catch {
-      setError("Netzwerkfehler. Bitte erneut versuchen.")
+      setError(t("errorNetwork"))
     } finally {
       setSaving(false)
     }
@@ -242,17 +245,17 @@ function CreateTransferDialog({
     <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Neuer Umbuchungsauftrag</DialogTitle>
+          <DialogTitle>{t("newTransferTitle")}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           {/* Locations row */}
           <div className="grid grid-cols-[1fr_auto_1fr] items-end gap-2">
             <div className="flex flex-col gap-1.5">
-              <Label>Von Lager</Label>
+              <Label>{t("fromLocation")}</Label>
               <Select value={fromId} onValueChange={setFromId}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Quellort wählen…" />
+                  <SelectValue placeholder={t("fromPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent>
                   {locations.map((l) => (
@@ -265,10 +268,10 @@ function CreateTransferDialog({
             </div>
             <IconArrowRight className="size-4 text-muted-foreground mb-2.5" />
             <div className="flex flex-col gap-1.5">
-              <Label>Nach Lager</Label>
+              <Label>{t("toLocation")}</Label>
               <Select value={toId} onValueChange={setToId}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Zielort wählen…" />
+                  <SelectValue placeholder={t("toPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent>
                   {locations
@@ -285,13 +288,13 @@ function CreateTransferDialog({
 
           {/* Line items */}
           <div className="flex flex-col gap-2">
-            <Label>Positionen</Label>
+            <Label>{t("positions")}</Label>
             <div className="rounded-lg border border-border overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
-                    <TableHead className="text-xs w-[60%]">Material</TableHead>
-                    <TableHead className="text-xs w-[25%]">Menge</TableHead>
+                    <TableHead className="text-xs w-[60%]">{t("material")}</TableHead>
+                    <TableHead className="text-xs w-[25%]">{t("quantity")}</TableHead>
                     <TableHead className="w-[15%]" />
                   </TableRow>
                 </TableHeader>
@@ -304,7 +307,7 @@ function CreateTransferDialog({
                           onValueChange={(v) => updateLine(idx, "materialId", v)}
                         >
                           <SelectTrigger className="h-8 text-sm">
-                            <SelectValue placeholder="Material wählen…" />
+                            <SelectValue placeholder={t("materialPlaceholder")} />
                           </SelectTrigger>
                           <SelectContent>
                             {materials.map((m) => (
@@ -352,17 +355,17 @@ function CreateTransferDialog({
               onClick={addLine}
             >
               <IconPlus className="size-3.5" />
-              Position hinzufügen
+              {t("addPosition")}
             </Button>
           </div>
 
           {/* Notes */}
           <div className="flex flex-col gap-1.5">
-            <Label>Notizen (optional)</Label>
+            <Label>{t("notesOptional")}</Label>
             <Textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="Bemerkungen zum Umbuchungsauftrag…"
+              placeholder={t("notesPlaceholder")}
               rows={2}
               className="resize-none text-sm"
             />
@@ -374,10 +377,10 @@ function CreateTransferDialog({
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={handleClose}>
-              Abbrechen
+              {tc("cancel")}
             </Button>
             <Button type="submit" disabled={saving}>
-              {saving ? "Wird erstellt…" : "Auftrag erstellen"}
+              {saving ? t("creating") : t("createOrder")}
             </Button>
           </DialogFooter>
         </form>
@@ -396,11 +399,14 @@ function TransferDetailDialog({
   onClose: () => void
   onAction: (id: string, action: string) => Promise<void>
 }) {
+  const t = useTranslations("transfers")
+  const tc = useTranslations("common")
+  const statusConfig = useStatusConfig()
   const [acting, setActing] = useState(false)
 
   if (!transfer) return null
 
-  const statusCfg = STATUS_CONFIG[transfer.status]
+  const statusCfg = statusConfig[transfer.status]
   const StatusIcon = statusCfg.icon
 
   async function handleAction(action: string) {
@@ -418,7 +424,7 @@ function TransferDetailDialog({
       <DialogContent className="max-w-xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            Umbuchungsauftrag
+            {t("transferOrder")}
             <span
               className={cn(
                 "inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-md",
@@ -446,20 +452,20 @@ function TransferDetailDialog({
           {/* Meta */}
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div>
-              <p className="text-xs text-muted-foreground">Angefragt von</p>
+              <p className="text-xs text-muted-foreground">{t("requestedBy")}</p>
               <p className="font-medium text-foreground mt-0.5">
                 {transfer.requestedByName}
               </p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Erstellt am</p>
+              <p className="text-xs text-muted-foreground">{t("createdOn")}</p>
               <p className="font-medium text-foreground mt-0.5">
                 {formatDate(transfer.createdAt)}
               </p>
             </div>
             {transfer.approvedByName && (
               <div>
-                <p className="text-xs text-muted-foreground">Genehmigt von</p>
+                <p className="text-xs text-muted-foreground">{t("approvedBy")}</p>
                 <p className="font-medium text-foreground mt-0.5">
                   {transfer.approvedByName}
                 </p>
@@ -470,14 +476,14 @@ function TransferDetailDialog({
           {/* Items */}
           <div>
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
-              Positionen
+              {t("positions")}
             </p>
             <div className="rounded-lg border border-border overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
-                    <TableHead className="text-xs">Material</TableHead>
-                    <TableHead className="text-xs text-right">Menge</TableHead>
+                    <TableHead className="text-xs">{t("material")}</TableHead>
+                    <TableHead className="text-xs text-right">{t("quantity")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -506,7 +512,7 @@ function TransferDetailDialog({
           {transfer.notes && (
             <div>
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
-                Notizen
+                {tc("notes")}
               </p>
               <p className="text-sm text-foreground">{transfer.notes}</p>
             </div>
@@ -515,7 +521,7 @@ function TransferDetailDialog({
 
         <DialogFooter className="gap-2 flex-wrap">
           <Button variant="outline" onClick={onClose} disabled={acting}>
-            Schliessen
+            {tc("close")}
           </Button>
           {transfer.status === "pending" && (
             <>
@@ -526,7 +532,7 @@ function TransferDetailDialog({
                 disabled={acting}
               >
                 <IconX className="size-4 mr-1.5" />
-                Ablehnen
+                {t("reject")}
               </Button>
               <Button
                 size="sm"
@@ -534,7 +540,7 @@ function TransferDetailDialog({
                 disabled={acting}
               >
                 <IconCheck className="size-4 mr-1.5" />
-                Genehmigen
+                {t("approve")}
               </Button>
             </>
           )}
@@ -545,7 +551,7 @@ function TransferDetailDialog({
               disabled={acting}
             >
               <IconCheck className="size-4 mr-1.5" />
-              Abschliessen &amp; Lagerbestand buchen
+              {t("completeAndBook")}
             </Button>
           )}
           {transfer.status === "in_transit" && (
@@ -555,7 +561,7 @@ function TransferDetailDialog({
               disabled={acting}
             >
               <IconCheck className="size-4 mr-1.5" />
-              Als abgeschlossen markieren
+              {t("markCompleted")}
             </Button>
           )}
         </DialogFooter>
@@ -574,6 +580,9 @@ export default function TransfersPage() {
 }
 
 function TransfersPageContent() {
+  const t = useTranslations("transfers")
+  const tc = useTranslations("common")
+  const statusConfig = useStatusConfig()
   const [transfers, setTransfers] = useState<Transfer[]>([])
   const [locations, setLocations] = useState<Location[]>([])
   const [materials, setMaterials] = useState<Material[]>([])
@@ -655,6 +664,13 @@ function TransfersPageContent() {
     }
   }
 
+  const STAT_CARDS: [keyof typeof stats, string][] = [
+    ["pending", t("pending")],
+    ["approved", t("approved")],
+    ["in_transit", t("inTransit")],
+    ["completed", t("completed")],
+  ]
+
   return (
     <div className="flex flex-col gap-6 p-6">
       {/* Header */}
@@ -663,31 +679,24 @@ function TransfersPageContent() {
           <div className="flex items-center gap-2">
             <IconTruck className="size-5 text-primary" />
             <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-              Umbuchungsaufträge
+              {t("title")}
             </h1>
           </div>
           <p className="text-sm text-muted-foreground mt-0.5">
-            {stats.pending} ausstehend &middot; {stats.approved} genehmigt &middot;{" "}
-            {stats.in_transit} unterwegs
+            {stats.pending} {t("pending").toLowerCase()} &middot; {stats.approved} {t("approved").toLowerCase()} &middot;{" "}
+            {stats.in_transit} {t("inTransit").toLowerCase()}
           </p>
         </div>
         <Button className="gap-2" onClick={() => setShowCreate(true)}>
           <IconPlus className="size-4" />
-          Neuer Auftrag
+          {t("newOrder")}
         </Button>
       </div>
 
       {/* Stats cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {(
-          [
-            ["pending", "Ausstehend"],
-            ["approved", "Genehmigt"],
-            ["in_transit", "Unterwegs"],
-            ["completed", "Abgeschlossen"],
-          ] as [keyof typeof stats, string][]
-        ).map(([key, label]) => {
-          const cfg = STATUS_CONFIG[key as TransferStatus]
+        {STAT_CARDS.map(([key, label]) => {
+          const cfg = statusConfig[key as TransferStatus]
           const StatusIcon = cfg.icon
           return (
             <Card
@@ -726,7 +735,7 @@ function TransfersPageContent() {
         <div className="relative flex-1 min-w-[200px]">
           <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input
-            placeholder="Suchen nach Lager, Person…"
+            placeholder={t("searchPlaceholder")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-9"
@@ -734,14 +743,14 @@ function TransfersPageContent() {
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-44">
-            <SelectValue placeholder="Status" />
+            <SelectValue placeholder={tc("status")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Alle Status</SelectItem>
+            <SelectItem value="all">{t("allStatuses")}</SelectItem>
             {(
-              Object.entries(STATUS_CONFIG) as [
+              Object.entries(statusConfig) as [
                 TransferStatus,
-                (typeof STATUS_CONFIG)[TransferStatus],
+                (typeof statusConfig)[TransferStatus],
               ][]
             ).map(([key, cfg]) => (
               <SelectItem key={key} value={key}>
@@ -767,11 +776,11 @@ function TransfersPageContent() {
                 <IconTruck className="size-12 text-muted-foreground/40" />
               </EmptyMedia>
               <EmptyHeader>
-                <EmptyTitle>Keine Umbuchungsaufträge</EmptyTitle>
+                <EmptyTitle>{t("emptyTitle")}</EmptyTitle>
                 <EmptyDescription>
                   {search
-                    ? "Passen Sie Ihre Suche an."
-                    : "Erstellen Sie den ersten Umbuchungsauftrag."}
+                    ? t("emptySearchHint")
+                    : t("emptyCreateHint")}
                 </EmptyDescription>
               </EmptyHeader>
             </Empty>
@@ -780,26 +789,26 @@ function TransfersPageContent() {
               <TableHeader>
                 <TableRow className="hover:bg-transparent border-b border-border">
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[120px]">
-                    Status
+                    {tc("status")}
                   </TableHead>
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Strecke
+                    {t("route")}
                   </TableHead>
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[80px] text-center">
-                    Pos.
+                    {t("pos")}
                   </TableHead>
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[140px]">
-                    Angefragt von
+                    {t("requestedBy")}
                   </TableHead>
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[110px]">
-                    Datum
+                    {tc("date")}
                   </TableHead>
                   <TableHead className="w-[50px]" />
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filtered.map((transfer) => {
-                  const cfg = STATUS_CONFIG[transfer.status]
+                  const cfg = statusConfig[transfer.status]
                   const StatusIcon = cfg.icon
                   return (
                     <TableRow
@@ -862,7 +871,7 @@ function TransfersPageContent() {
                               className="gap-2"
                               onClick={() => setDetailTransfer(transfer)}
                             >
-                              <IconEye className="size-4" /> Details
+                              <IconEye className="size-4" /> {tc("details")}
                             </DropdownMenuItem>
                             {transfer.status === "pending" && (
                               <>
@@ -873,7 +882,7 @@ function TransfersPageContent() {
                                     handleAction(transfer.id, "approve")
                                   }
                                 >
-                                  <IconCheck className="size-4" /> Genehmigen
+                                  <IconCheck className="size-4" /> {t("approve")}
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                   className="gap-2 text-destructive focus:text-destructive"
@@ -881,7 +890,7 @@ function TransfersPageContent() {
                                     handleAction(transfer.id, "cancel")
                                   }
                                 >
-                                  <IconX className="size-4" /> Ablehnen
+                                  <IconX className="size-4" /> {t("reject")}
                                 </DropdownMenuItem>
                               </>
                             )}
@@ -895,7 +904,7 @@ function TransfersPageContent() {
                                     handleAction(transfer.id, "complete")
                                   }
                                 >
-                                  <IconCheck className="size-4" /> Abschliessen
+                                  <IconCheck className="size-4" /> {t("complete")}
                                 </DropdownMenuItem>
                               </>
                             )}

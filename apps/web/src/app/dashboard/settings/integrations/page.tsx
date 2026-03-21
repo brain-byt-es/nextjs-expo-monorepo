@@ -136,6 +136,8 @@ function IntegrationPlaceholder({
 }
 
 export default function IntegrationsPage() {
+  // Note: This is a server component. Translations are applied at the template level.
+  // Page-level titles use static text that matches the nav translations.
   return (
     <div className="space-y-10 px-4 py-4 md:px-6 md:py-6 lg:px-8 lg:py-8">
       {/* Header */}

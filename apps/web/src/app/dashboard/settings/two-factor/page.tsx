@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -35,6 +37,7 @@ import {
 // ─── Two-Factor Settings Page ────────────────────────────────────────────────
 
 export default function TwoFactorSettingsPage() {
+  const ts = useTranslations("settings")
   const router = useRouter()
   const [status, setStatus] = useState<{
     enabled: boolean
@@ -116,10 +119,10 @@ export default function TwoFactorSettingsPage() {
         </Button>
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
-            Zwei-Faktor-Authentifizierung
+            {ts("twoFactorTitle")}
           </h1>
           <p className="text-sm text-muted-foreground">
-            Zusatzliche Sicherheitsebene fur Ihr Konto verwalten.
+            {ts("twoFactorDesc")}
           </p>
         </div>
       </div>

@@ -126,11 +126,11 @@ const MOCK_ORDERS: Order[] = [
   },
 ]
 
-const STATUS_CONFIG: Record<OrderStatus, { label: string; color: string }> = {
-  ordered: { label: "Bestellt", color: "bg-primary/10 text-primary" },
-  partial: { label: "Teil-Lieferung", color: "bg-primary/10 text-primary" },
-  delivered: { label: "Geliefert", color: "bg-secondary/10 text-secondary" },
-  cancelled: { label: "Storniert", color: "bg-muted text-muted-foreground" },
+const STATUS_COLORS: Record<OrderStatus, string> = {
+  ordered: "bg-primary/10 text-primary",
+  partial: "bg-primary/10 text-primary",
+  delivered: "bg-secondary/10 text-secondary",
+  cancelled: "bg-muted text-muted-foreground",
 }
 
 function formatCHF(val: number) {
@@ -178,17 +178,17 @@ export default function OrdersPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("openPositions")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            {MOCK_ORDERS.filter(o => o.status !== "delivered" && o.status !== "cancelled").length} offene Bestellungen · {formatCHF(MOCK_ORDERS.filter(o => o.status === "ordered" || o.status === "partial").reduce((s, o) => s + o.total, 0))}
+            {MOCK_ORDERS.filter(o => o.status !== "delivered" && o.status !== "cancelled").length} {t("openOrders")} · {formatCHF(MOCK_ORDERS.filter(o => o.status === "ordered" || o.status === "partial").reduce((s, o) => s + o.total, 0))}
           </p>
         </div>
       </div>
 
       {/* Status quick filters */}
       <div className="flex gap-2 flex-wrap">
-        {["all", ...Object.keys(STATUS_CONFIG)].map(s => {
+        {["all", ...Object.keys(STATUS_COLORS)].map(s => {
           const isAll = s === "all"
           const count = isAll ? MOCK_ORDERS.length : MOCK_ORDERS.filter(o => o.status === s).length
-          const label = isAll ? "Alle" : STATUS_CONFIG[s as OrderStatus].label
+          const label = isAll ? tc("all") : t(`statuses.${s}`)
           return (
             <button
               key={s}
@@ -231,8 +231,8 @@ export default function OrdersPage() {
                 <IconFileInvoice className="size-12 text-muted-foreground/40" />
               </EmptyMedia>
               <EmptyHeader>
-                <EmptyTitle>Keine Bestellungen gefunden</EmptyTitle>
-                <EmptyDescription>Passen Sie Ihre Filter an.</EmptyDescription>
+                <EmptyTitle>{t("noOrdersFound")}</EmptyTitle>
+                <EmptyDescription>{t("adjustFilters")}</EmptyDescription>
               </EmptyHeader>
             </Empty>
           </CardContent>
@@ -241,7 +241,7 @@ export default function OrdersPage() {
         <div className="flex flex-col gap-3">
           {filtered.map((order) => {
             const isExpanded = expandedOrders.has(order.id)
-            const statusCfg = STATUS_CONFIG[order.status]
+            const statusColor = STATUS_COLORS[order.status]
 
             return (
               <Card key={order.id} className="border-0 shadow-sm overflow-hidden">
@@ -267,26 +267,26 @@ export default function OrdersPage() {
                       <span className="text-sm text-foreground">{order.supplierName}</span>
                     </div>
                     <div>
-                      <span className={`inline-flex items-center text-xs font-medium px-2 py-1 rounded-md ${statusCfg.color}`}>
-                        {statusCfg.label}
+                      <span className={`inline-flex items-center text-xs font-medium px-2 py-1 rounded-md ${statusColor}`}>
+                        {t(`statuses.${order.status}`)}
                       </span>
                     </div>
                     <div>
                       {order.deliveryNote ? (
                         <div>
-                          <p className="text-xs text-muted-foreground">Lieferschein</p>
+                          <p className="text-xs text-muted-foreground">{t("uploadDeliveryNote")}</p>
                           <p className="text-sm font-mono text-foreground">{order.deliveryNote}</p>
                         </div>
                       ) : (
                         <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5" onClick={(e) => e.stopPropagation()}>
                           <IconUpload className="size-3" />
-                          Lieferschein
+                          {t("uploadDeliveryNote")}
                         </Button>
                       )}
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-semibold text-foreground">{formatCHF(order.total)}</p>
-                      <p className="text-xs text-muted-foreground">{order.positions.length} Pos.</p>
+                      <p className="text-xs text-muted-foreground">{order.positions.length} {t("positions")}</p>
                     </div>
                   </div>
 
@@ -298,9 +298,9 @@ export default function OrdersPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem className="gap-2"><IconEye className="size-4" /> Details</DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2"><IconUpload className="size-4" /> Dokument hochladen</DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2 text-destructive focus:text-destructive"><IconTrash className="size-4" /> Stornieren</DropdownMenuItem>
+                        <DropdownMenuItem className="gap-2"><IconEye className="size-4" /> {tc("details")}</DropdownMenuItem>
+                        <DropdownMenuItem className="gap-2"><IconUpload className="size-4" /> {t("uploadDocument")}</DropdownMenuItem>
+                        <DropdownMenuItem className="gap-2 text-destructive focus:text-destructive"><IconTrash className="size-4" /> {t("cancel")}</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
@@ -312,12 +312,12 @@ export default function OrdersPage() {
                     <Table>
                       <TableHeader>
                         <TableRow className="hover:bg-transparent bg-muted/50">
-                          <TableHead className="text-xs font-medium text-muted-foreground pl-12">Artikel</TableHead>
-                          <TableHead className="text-xs font-medium text-muted-foreground w-[120px]">Bestellnr.</TableHead>
-                          <TableHead className="text-xs font-medium text-muted-foreground w-[130px] text-right">Bestellt</TableHead>
-                          <TableHead className="text-xs font-medium text-muted-foreground w-[130px] text-right">Geliefert</TableHead>
-                          <TableHead className="text-xs font-medium text-muted-foreground w-[110px] text-right">Preis/Stk</TableHead>
-                          <TableHead className="text-xs font-medium text-muted-foreground w-[110px] text-right">Total</TableHead>
+                          <TableHead className="text-xs font-medium text-muted-foreground pl-12">{t("article")}</TableHead>
+                          <TableHead className="text-xs font-medium text-muted-foreground w-[120px]">{t("orderNumber")}</TableHead>
+                          <TableHead className="text-xs font-medium text-muted-foreground w-[130px] text-right">{t("ordered")}</TableHead>
+                          <TableHead className="text-xs font-medium text-muted-foreground w-[130px] text-right">{t("delivered")}</TableHead>
+                          <TableHead className="text-xs font-medium text-muted-foreground w-[110px] text-right">{t("pricePerUnit")}</TableHead>
+                          <TableHead className="text-xs font-medium text-muted-foreground w-[110px] text-right">{t("total")}</TableHead>
                           <TableHead className="w-[80px]" />
                         </TableRow>
                       </TableHeader>
@@ -360,7 +360,7 @@ export default function OrdersPage() {
                                 {!isDelivered && (
                                   <Button variant="outline" size="sm" className="h-7 text-xs gap-1 text-secondary border-secondary/30 hover:bg-secondary/10">
                                     <IconCheck className="size-3" />
-                                    Buchen
+                                    {t("book")}
                                   </Button>
                                 )}
                               </TableCell>

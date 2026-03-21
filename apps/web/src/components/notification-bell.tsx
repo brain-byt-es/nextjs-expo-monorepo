@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import {
@@ -68,7 +70,7 @@ function relativeTime(dateStr: string): string {
   const then = new Date(dateStr).getTime()
   const diffSec = Math.floor((now - then) / 1000)
 
-  if (diffSec < 60) return "Gerade eben"
+  if (diffSec < 60) return t("justNow")
   if (diffSec < 3600) return `vor ${Math.floor(diffSec / 60)} Min.`
   if (diffSec < 86400) return `vor ${Math.floor(diffSec / 3600)} Std.`
   return `vor ${Math.floor(diffSec / 86400)} Tagen`
@@ -100,6 +102,7 @@ function buildEntityUrl(
 // ── Main component ────────────────────────────────────────────────────────────
 
 export function NotificationBell() {
+  const t = useTranslations("notifications")
   const router = useRouter()
   const [open, setOpen] = React.useState(false)
   const [notifications, setNotifications] = React.useState<AppNotification[]>([])
@@ -242,7 +245,7 @@ export function NotificationBell() {
                 title="Alle löschen"
               >
                 <IconX className="size-3" />
-                Löschen
+                {t("clearAll")}
               </button>
             </div>
           )}
@@ -254,7 +257,7 @@ export function NotificationBell() {
             <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
               <IconBell className="size-8 text-muted-foreground/30" />
               <p className="text-sm text-muted-foreground">
-                Keine neuen Benachrichtigungen
+                {t("empty")}
               </p>
             </div>
           ) : (

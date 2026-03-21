@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import {
   IconCalendar,
   IconCheck,
@@ -66,20 +67,23 @@ function formatDate(d: string) {
   })
 }
 
-function statusBadge(status: string) {
-  switch (status) {
-    case "pending":
-      return <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300">Ausstehend</Badge>
-    case "confirmed":
-      return <Badge className="bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300">Bestätigt</Badge>
-    case "active":
-      return <Badge className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300">Aktiv</Badge>
-    case "completed":
-      return <Badge className="bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-400">Abgeschlossen</Badge>
-    case "cancelled":
-      return <Badge variant="destructive">Abgesagt</Badge>
-    default:
-      return <Badge variant="outline">{status}</Badge>
+function useStatusBadge() {
+  const t = useTranslations("reservations")
+  return function StatusBadge(status: string) {
+    switch (status) {
+      case "pending":
+        return <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300">{t("pending")}</Badge>
+      case "confirmed":
+        return <Badge className="bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300">{t("confirmed")}</Badge>
+      case "active":
+        return <Badge className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300">{t("active")}</Badge>
+      case "completed":
+        return <Badge className="bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-400">{t("completed")}</Badge>
+      case "cancelled":
+        return <Badge variant="destructive">{t("cancelled")}</Badge>
+      default:
+        return <Badge variant="outline">{status}</Badge>
+    }
   }
 }
 
@@ -89,14 +93,17 @@ function entityIcon(type: string) {
     : <IconPackage className="size-3.5 text-muted-foreground" />
 }
 
-function entityLabel(type: string) {
-  return type === "tool" ? "Werkzeug" : "Material"
+function useEntityLabel() {
+  const t = useTranslations("reservations")
+  return (type: string) => type === "tool" ? t("tool") : t("material")
 }
 
 // ---------------------------------------------------------------------------
 // Timeline View
 // ---------------------------------------------------------------------------
 function TimelineView({ reservations }: { reservations: ReservationEntry[] }) {
+  const t = useTranslations("reservations")
+  const entityLabel = useEntityLabel()
   const now = new Date()
   const days: string[] = []
   for (let i = -2; i < 28; i++) {
@@ -122,7 +129,7 @@ function TimelineView({ reservations }: { reservations: ReservationEntry[] }) {
     return (
       <div className="flex flex-col items-center justify-center py-16">
         <IconCalendar className="size-10 text-muted-foreground/40 mb-3" />
-        <p className="text-sm text-muted-foreground">Keine aktiven Reservierungen</p>
+        <p className="text-sm text-muted-foreground">{t("noActiveReservations")}</p>
       </div>
     )
   }
@@ -133,7 +140,7 @@ function TimelineView({ reservations }: { reservations: ReservationEntry[] }) {
         {/* Header row — dates */}
         <div className="flex items-center gap-0 mb-1">
           <div className="w-48 shrink-0 text-xs font-medium text-muted-foreground px-2">
-            Element
+            {t("element")}
           </div>
           {days.map((day) => {
             const isToday = day === now.toISOString().split("T")[0]
@@ -180,7 +187,7 @@ function TimelineView({ reservations }: { reservations: ReservationEntry[] }) {
                 return (
                   <div
                     key={day}
-                    title={cell ? `${cell.userName || cell.userEmail || "Unbekannt"} — ${cell.purpose || ""}` : undefined}
+                    title={cell ? `${cell.userName || cell.userEmail || t("unknown")} — ${cell.purpose || ""}` : undefined}
                     className={`w-6 h-8 shrink-0 border-t border-b border-r ${bg} ${isToday ? "border-l-2 border-l-primary" : ""} transition-opacity`}
                   />
                 )
@@ -197,6 +204,10 @@ function TimelineView({ reservations }: { reservations: ReservationEntry[] }) {
 // Page
 // ---------------------------------------------------------------------------
 export default function ReservationsPage() {
+  const t = useTranslations("reservations")
+  const tc = useTranslations("common")
+  const statusBadge = useStatusBadge()
+  const entityLabel = useEntityLabel()
   const router = useRouter()
   const [reservations, setReservations] = useState<ReservationEntry[]>([])
   const [loading, setLoading] = useState(true)
@@ -261,14 +272,14 @@ export default function ReservationsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Reservierungen</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Übersicht aller Reservierungen für Werkzeuge und Materialien
+            {t("pageDescription")}
           </p>
         </div>
         <Button size="sm" variant="outline" onClick={load}>
           <IconRefresh className="size-4" />
-          Aktualisieren
+          {tc("refresh")}
         </Button>
       </div>
 
@@ -276,22 +287,22 @@ export default function ReservationsPage() {
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {[
           {
-            label: "Ausstehend",
+            label: t("pending"),
             count: reservations.filter((r) => r.status === "pending").length,
             cls: "text-yellow-600",
           },
           {
-            label: "Bestätigt",
+            label: t("confirmed"),
             count: reservations.filter((r) => r.status === "confirmed").length,
             cls: "text-blue-600",
           },
           {
-            label: "Aktiv",
+            label: t("active"),
             count: reservations.filter((r) => r.status === "active").length,
             cls: "text-green-600",
           },
           {
-            label: "Gesamt",
+            label: t("total"),
             count: reservations.length,
             cls: "text-foreground",
           },
@@ -312,7 +323,7 @@ export default function ReservationsPage() {
         <CardContent className="p-4">
           <div className="flex flex-wrap items-end gap-4">
             <div className="space-y-1.5">
-              <Label className="text-xs">Status</Label>
+              <Label className="text-xs">{t("statusFilter")}</Label>
               <Select
                 value={statusFilter}
                 onValueChange={(v) => setStatusFilter(v as StatusFilter)}
@@ -321,18 +332,18 @@ export default function ReservationsPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Alle</SelectItem>
-                  <SelectItem value="pending">Ausstehend</SelectItem>
-                  <SelectItem value="confirmed">Bestätigt</SelectItem>
-                  <SelectItem value="active">Aktiv</SelectItem>
-                  <SelectItem value="completed">Abgeschlossen</SelectItem>
-                  <SelectItem value="cancelled">Abgesagt</SelectItem>
+                  <SelectItem value="all">{tc("all")}</SelectItem>
+                  <SelectItem value="pending">{t("pending")}</SelectItem>
+                  <SelectItem value="confirmed">{t("confirmed")}</SelectItem>
+                  <SelectItem value="active">{t("active")}</SelectItem>
+                  <SelectItem value="completed">{t("completed")}</SelectItem>
+                  <SelectItem value="cancelled">{t("cancelled")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs">Typ</Label>
+              <Label className="text-xs">{t("typeFilter")}</Label>
               <Select
                 value={entityTypeFilter}
                 onValueChange={(v) => setEntityTypeFilter(v as "all" | "tool" | "material")}
@@ -341,15 +352,15 @@ export default function ReservationsPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Alle</SelectItem>
-                  <SelectItem value="tool">Werkzeuge</SelectItem>
-                  <SelectItem value="material">Materialien</SelectItem>
+                  <SelectItem value="all">{t("allTypes")}</SelectItem>
+                  <SelectItem value="tool">{t("tools")}</SelectItem>
+                  <SelectItem value="material">{t("materials")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs">Von</Label>
+              <Label className="text-xs">{t("from")}</Label>
               <Input
                 type="date"
                 className="h-8 text-xs w-36"
@@ -359,7 +370,7 @@ export default function ReservationsPage() {
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs">Bis</Label>
+              <Label className="text-xs">{t("to")}</Label>
               <Input
                 type="date"
                 className="h-8 text-xs w-36"
@@ -375,7 +386,7 @@ export default function ReservationsPage() {
               onClick={() => setMyOnly(!myOnly)}
             >
               <IconUser className="size-3.5" />
-              Meine Reservierungen
+              {t("myReservations")}
             </Button>
 
             <Button
@@ -390,7 +401,7 @@ export default function ReservationsPage() {
                 setMyOnly(false)
               }}
             >
-              Zurücksetzen
+              {tc("reset")}
             </Button>
           </div>
         </CardContent>
@@ -399,9 +410,9 @@ export default function ReservationsPage() {
       {/* Tabs: List / Timeline */}
       <Tabs defaultValue="list">
         <TabsList>
-          <TabsTrigger value="list">Liste</TabsTrigger>
+          <TabsTrigger value="list">{t("list")}</TabsTrigger>
           <TabsTrigger value="timeline">
-            Zeitachse
+            {t("timeline")}
             {pendingCount > 0 && (
               <span className="ml-1.5 flex size-4 items-center justify-center rounded-full bg-yellow-500 text-[10px] font-bold text-white">
                 {pendingCount}
@@ -422,18 +433,18 @@ export default function ReservationsPage() {
             ) : reservations.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16">
                 <IconCalendar className="size-10 text-muted-foreground/40 mb-3" />
-                <p className="text-sm text-muted-foreground">Keine Reservierungen gefunden</p>
+                <p className="text-sm text-muted-foreground">{t("noReservations")}</p>
               </div>
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Element</TableHead>
-                    <TableHead>Benutzer</TableHead>
-                    <TableHead>Zeitraum</TableHead>
-                    <TableHead>Zweck</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Aktionen</TableHead>
+                    <TableHead>{t("element")}</TableHead>
+                    <TableHead>{t("user")}</TableHead>
+                    <TableHead>{t("period")}</TableHead>
+                    <TableHead>{t("purpose")}</TableHead>
+                    <TableHead>{tc("status")}</TableHead>
+                    <TableHead className="text-right">{tc("actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -461,7 +472,7 @@ export default function ReservationsPage() {
                         <div className="flex items-center gap-1.5">
                           <IconUser className="size-3.5 text-muted-foreground" />
                           <span className="text-sm">
-                            {r.userName || r.userEmail || "Unbekannt"}
+                            {r.userName || r.userEmail || t("unknown")}
                           </span>
                         </div>
                       </TableCell>
@@ -486,7 +497,7 @@ export default function ReservationsPage() {
                                 onClick={() => handleStatusChange(r.id, "confirmed")}
                               >
                                 <IconCheck className="size-3.5" />
-                                Bestätigen
+                                {t("confirm")}
                               </Button>
                               <Button
                                 size="sm"
@@ -495,7 +506,7 @@ export default function ReservationsPage() {
                                 onClick={() => handleStatusChange(r.id, "cancelled")}
                               >
                                 <IconX className="size-3.5" />
-                                Absagen
+                                {t("cancel")}
                               </Button>
                             </>
                           )}
@@ -506,7 +517,7 @@ export default function ReservationsPage() {
                               className="h-7 px-2 text-xs"
                               onClick={() => handleStatusChange(r.id, "active")}
                             >
-                              Aktivieren
+                              {t("activate")}
                             </Button>
                           )}
                           {r.status === "active" && (
@@ -516,7 +527,7 @@ export default function ReservationsPage() {
                               className="h-7 px-2 text-xs"
                               onClick={() => handleStatusChange(r.id, "completed")}
                             >
-                              Abschliessen
+                              {t("complete")}
                             </Button>
                           )}
                           {(r.status === "completed" || r.status === "cancelled") && (
@@ -526,7 +537,7 @@ export default function ReservationsPage() {
                               className="h-7 px-2 text-xs text-destructive hover:bg-destructive/10"
                               onClick={() => handleDelete(r.id)}
                             >
-                              Löschen
+                              {t("deleteAction")}
                             </Button>
                           )}
                         </div>
@@ -543,7 +554,7 @@ export default function ReservationsPage() {
         <TabsContent value="timeline">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">Zeitachse — nächste 30 Tage</CardTitle>
+              <CardTitle className="text-base">{t("timelineTitle")}</CardTitle>
             </CardHeader>
             <CardContent>
               {loading ? (

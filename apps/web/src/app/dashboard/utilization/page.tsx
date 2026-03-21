@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import { useTranslations } from "next-intl"
 import {
   IconChartBar,
   IconTool,
@@ -83,6 +84,7 @@ function formatDate(iso: string | null): string {
 
 // ── Page ───────────────────────────────────────────────────────────────────────
 export default function UtilizationPage() {
+  const t = useTranslations("utilization")
   const [data, setData] = useState<UtilizationData | null>(null)
   const [loading, setLoading] = useState(true)
   const [period, setPeriod] = useState(30)
@@ -106,9 +108,9 @@ export default function UtilizationPage() {
   }, [fetchData])
 
   const periods = [
-    { label: "7 Tage", value: 7 },
-    { label: "30 Tage", value: 30 },
-    { label: "90 Tage", value: 90 },
+    { label: t("days7"), value: 7 },
+    { label: t("days30"), value: 30 },
+    { label: t("days90"), value: 90 },
   ]
 
   // Top 10 by utilization for chart (highest first)
@@ -128,10 +130,10 @@ export default function UtilizationPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
-            Geräte-Auslastung
+            {t("title")}
           </h1>
           <p className="text-sm text-muted-foreground">
-            Analyse der Werkzeug-Nutzung basierend auf Buchungsdaten
+            {t("description")}
           </p>
         </div>
 
@@ -159,11 +161,10 @@ export default function UtilizationPage() {
           <CardContent className="flex flex-col items-center justify-center py-20">
             <IconTool className="mb-4 size-12 text-muted-foreground/40" />
             <p className="text-lg font-medium text-muted-foreground">
-              Keine Werkzeugdaten vorhanden
+              {t("noToolData")}
             </p>
             <p className="text-sm text-muted-foreground">
-              Erstellen Sie Werkzeuge und erfassen Sie Buchungen, um die
-              Auslastung zu analysieren.
+              {t("noToolDataDesc")}
             </p>
           </CardContent>
         </Card>
@@ -174,7 +175,7 @@ export default function UtilizationPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
-                  &Oslash; Auslastung
+                  {t("avgUtilization")}
                 </CardTitle>
                 <IconChartBar className="size-4 text-muted-foreground" />
               </CardHeader>
@@ -183,7 +184,7 @@ export default function UtilizationPage() {
                   {data.summary.avgUtilization}%
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Über alle Werkzeuge im Zeitraum
+                  {t("avgUtilizationDesc")}
                 </p>
               </CardContent>
             </Card>
@@ -191,7 +192,7 @@ export default function UtilizationPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Meist genutzt
+                  {t("mostUsed")}
                 </CardTitle>
                 <IconTrendingUp className="size-4 text-green-500" />
               </CardHeader>
@@ -201,8 +202,8 @@ export default function UtilizationPage() {
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {data.summary.mostUsed
-                    ? `${data.summary.mostUsed.utilization}% Auslastung`
-                    : "Keine Daten"}
+                    ? `${data.summary.mostUsed.utilization}% ${t("utilization")}`
+                    : t("noData")}
                 </p>
               </CardContent>
             </Card>
@@ -210,7 +211,7 @@ export default function UtilizationPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Am wenigsten genutzt
+                  {t("leastUsed")}
                 </CardTitle>
                 <IconTrendingDown className="size-4 text-red-500" />
               </CardHeader>
@@ -220,8 +221,8 @@ export default function UtilizationPage() {
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {data.summary.leastUsed
-                    ? `${data.summary.leastUsed.utilization}% Auslastung`
-                    : "Keine Daten"}
+                    ? `${data.summary.leastUsed.utilization}% ${t("utilization")}`
+                    : t("noData")}
                 </p>
               </CardContent>
             </Card>
@@ -229,7 +230,7 @@ export default function UtilizationPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total Buchungsstunden
+                  {t("totalBookingHours")}
                 </CardTitle>
                 <IconClock className="size-4 text-muted-foreground" />
               </CardHeader>
@@ -238,7 +239,7 @@ export default function UtilizationPage() {
                   {data.summary.totalBookingHours}h
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Gesamte Ausleihzeit im Zeitraum
+                  {t("totalBookingHoursDesc")}
                 </p>
               </CardContent>
             </Card>
@@ -249,11 +250,10 @@ export default function UtilizationPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-base">
-                  Top 10 Werkzeuge nach Auslastung
+                  {t("top10ByUtilization")}
                 </CardTitle>
                 <CardDescription>
-                  Auslastungsrate in % ({period} Tage, basierend auf 8h
-                  Arbeitstag)
+                  {t("top10Desc", { period })}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -278,7 +278,7 @@ export default function UtilizationPage() {
                       <Tooltip
                         formatter={(value) => [
                           `${value}%`,
-                          "Auslastung",
+                          t("utilization"),
                         ]}
                       />
                       <Bar dataKey="auslastung" radius={[0, 4, 4, 0]}>
@@ -301,12 +301,10 @@ export default function UtilizationPage() {
             <IconInfoCircle className="mt-0.5 size-5 shrink-0 text-blue-600 dark:text-blue-400" />
             <div>
               <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                Tipp
+                {t("tip")}
               </p>
               <p className="text-sm text-blue-800 dark:text-blue-200">
-                Werkzeuge mit unter 10% Auslastung könnten verkauft oder
-                geteilt werden. Prüfen Sie regelmässig, ob selten genutzte
-                Geräte noch benötigt werden.
+                {t("tipText")}
               </p>
             </div>
           </div>
@@ -315,10 +313,10 @@ export default function UtilizationPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-base">
-                Alle Werkzeuge
+                {t("allTools")}
               </CardTitle>
               <CardDescription>
-                Sortiert nach Auslastung (niedrigste zuerst)
+                {t("allToolsDesc")}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -326,15 +324,15 @@ export default function UtilizationPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Werkzeug</TableHead>
-                      <TableHead>Artikelnr.</TableHead>
-                      <TableHead className="text-right">Buchungen</TableHead>
+                      <TableHead>{t("tool")}</TableHead>
+                      <TableHead>{t("articleNumber")}</TableHead>
+                      <TableHead className="text-right">{t("bookings")}</TableHead>
                       <TableHead className="text-right">
-                        Ausleih-Stunden
+                        {t("rentalHours")}
                       </TableHead>
-                      <TableHead>Letzte Nutzung</TableHead>
+                      <TableHead>{t("lastUsage")}</TableHead>
                       <TableHead className="text-right">
-                        Auslastung
+                        {t("utilization")}
                       </TableHead>
                     </TableRow>
                   </TableHeader>
@@ -357,7 +355,7 @@ export default function UtilizationPage() {
                           {formatDate(tool.lastBookingDate)}
                           {tool.daysSinceLastBooking !== null && (
                             <span className="ml-1 text-xs text-muted-foreground">
-                              (vor {tool.daysSinceLastBooking}d)
+                              ({t("agoShort", { count: tool.daysSinceLastBooking ?? 0 })})
                             </span>
                           )}
                         </TableCell>

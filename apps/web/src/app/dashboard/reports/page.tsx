@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useCallback } from "react"
+import { useTranslations } from "next-intl"
 import {
   IconPackage,
   IconTool,
@@ -130,28 +131,6 @@ function thirtyDaysAgo(): string {
   return d.toISOString().slice(0, 10)
 }
 
-const changeTypeLabels: Record<string, string> = {
-  in: "Eingang",
-  out: "Ausgang",
-  transfer: "Transfer",
-  correction: "Korrektur",
-  inventory: "Inventur",
-}
-
-const conditionLabels: Record<string, string> = {
-  good: "Gut",
-  damaged: "Beschädigt",
-  repair: "Reparatur",
-  decommissioned: "Ausgemustert",
-}
-
-const commissionStatusLabels: Record<string, string> = {
-  open: "Offen",
-  in_progress: "In Bearbeitung",
-  completed: "Abgeschlossen",
-  cancelled: "Storniert",
-}
-
 // ---------------------------------------------------------------------------
 // Report card sub-component
 // ---------------------------------------------------------------------------
@@ -165,6 +144,9 @@ interface ReportCardProps {
   onPrint: () => void
   loadingCsv: boolean
   loadingPrint: boolean
+  csvLabel: string
+  printLabel: string
+  filterLabel: string
 }
 
 function ReportCard({
@@ -177,6 +159,9 @@ function ReportCard({
   onPrint,
   loadingCsv,
   loadingPrint,
+  csvLabel,
+  printLabel,
+  filterLabel,
 }: ReportCardProps) {
   return (
     <Card className="flex flex-col">
@@ -201,7 +186,7 @@ function ReportCard({
       <CardContent className="flex flex-col gap-4">
         {/* Filters */}
         <div className="rounded-md border bg-muted/40 p-3">
-          <p className="mb-3 text-xs font-medium text-muted-foreground">Filter</p>
+          <p className="mb-3 text-xs font-medium text-muted-foreground">{filterLabel}</p>
           <div className="flex flex-col gap-2">{filters}</div>
         </div>
 
@@ -219,7 +204,7 @@ function ReportCard({
             ) : (
               <IconDownload className="size-4" />
             )}
-            CSV exportieren
+            {csvLabel}
           </Button>
           <Button
             variant="outline"
@@ -233,7 +218,7 @@ function ReportCard({
             ) : (
               <IconPrinter className="size-4" />
             )}
-            PDF drucken
+            {printLabel}
           </Button>
         </div>
       </CardContent>
@@ -245,6 +230,8 @@ function ReportCard({
 // Main page
 // ---------------------------------------------------------------------------
 export default function ReportsPage() {
+  const t = useTranslations("reports")
+
   // ── Inventarbericht filters ──────────────────────────────────────────────
   const [invLowStock, setInvLowStock] = useState(false)
   const [invLoading, setInvLoading] = useState<"csv" | "print" | null>(null)
@@ -280,9 +267,6 @@ export default function ReportsPage() {
     const res = await fetch(`/api/materials?${params}`)
     if (!res.ok) return []
     const json = await res.json()
-    // The materials API returns { data, pagination }; the list page adds
-    // totalStock/nearestExpiry from material_stocks.  We call the same
-    // endpoint that the materials list page uses (which does join stocks).
     let rows: MaterialReportRow[] = (json.data ?? []).map(
       (r: Record<string, unknown>) => ({
         id: r.id as string,
@@ -305,14 +289,14 @@ export default function ReportsPage() {
   }, [invLowStock])
 
   const INVENTORY_COLUMNS: ExportColumn<MaterialReportRow>[] = [
-    { label: "Nummer", accessor: (r) => r.number ?? "" },
-    { label: "Name", accessor: "name" },
-    { label: "Gruppe", accessor: (r) => r.groupName ?? "" },
-    { label: "Haupt-Lagerort", accessor: (r) => r.mainLocationName ?? "" },
-    { label: "Bestand", accessor: "totalStock" },
-    { label: "Einheit", accessor: (r) => r.unit ?? "" },
-    { label: "Meldebestand", accessor: (r) => r.reorderLevel ?? "" },
-    { label: "Nächstes Ablaufdatum", accessor: (r) => formatDate(r.nearestExpiry) },
+    { label: t("columns.number"), accessor: (r) => r.number ?? "" },
+    { label: t("columns.name"), accessor: "name" },
+    { label: t("columns.group"), accessor: (r) => r.groupName ?? "" },
+    { label: t("columns.mainLocation"), accessor: (r) => r.mainLocationName ?? "" },
+    { label: t("columns.stock"), accessor: "totalStock" },
+    { label: t("columns.unit"), accessor: (r) => r.unit ?? "" },
+    { label: t("columns.reorderLevel"), accessor: (r) => r.reorderLevel ?? "" },
+    { label: t("columns.nextExpiry"), accessor: (r) => formatDate(r.nearestExpiry) },
   ]
 
   const handleInventoryCsv = useCallback(async () => {
@@ -329,7 +313,7 @@ export default function ReportsPage() {
     setInvLoading("print")
     try {
       const rows = await fetchInventory()
-      printReport("Inventarbericht", rows, INVENTORY_COLUMNS)
+      printReport(t("inventory"), rows, INVENTORY_COLUMNS)
     } finally {
       setInvLoading(null)
     }
@@ -364,14 +348,14 @@ export default function ReportsPage() {
   }, [toolCondition, toolOverdue])
 
   const TOOL_COLUMNS: ExportColumn<ToolReportRow>[] = [
-    { label: "Nummer", accessor: (r) => r.number ?? "" },
-    { label: "Name", accessor: "name" },
-    { label: "Gruppe", accessor: (r) => r.groupName ?? "" },
-    { label: "Heimstandort", accessor: (r) => r.homeLocationName ?? "" },
-    { label: "Zugewiesen an", accessor: (r) => r.assignedUserName ?? "" },
-    { label: "Zustand", accessor: (r) => conditionLabels[r.condition ?? ""] ?? (r.condition ?? "") },
-    { label: "Seriennummer", accessor: (r) => r.serialNumber ?? "" },
-    { label: "Nächste Wartung", accessor: (r) => formatDate(r.nextMaintenanceDate) },
+    { label: t("columns.number"), accessor: (r) => r.number ?? "" },
+    { label: t("columns.name"), accessor: "name" },
+    { label: t("columns.group"), accessor: (r) => r.groupName ?? "" },
+    { label: t("columns.homeLocation"), accessor: (r) => r.homeLocationName ?? "" },
+    { label: t("columns.assignedTo"), accessor: (r) => r.assignedUserName ?? "" },
+    { label: t("columns.condition"), accessor: (r) => t(`conditions.${r.condition ?? ""}` as Parameters<typeof t>[0]) || (r.condition ?? "") },
+    { label: t("columns.serialNumber"), accessor: (r) => r.serialNumber ?? "" },
+    { label: t("columns.nextMaintenance"), accessor: (r) => formatDate(r.nextMaintenanceDate) },
   ]
 
   const handleToolCsv = useCallback(async () => {
@@ -388,7 +372,7 @@ export default function ReportsPage() {
     setToolLoading("print")
     try {
       const rows = await fetchTools()
-      printReport("Werkzeugbericht", rows, TOOL_COLUMNS)
+      printReport(t("tools"), rows, TOOL_COLUMNS)
     } finally {
       setToolLoading(null)
     }
@@ -418,7 +402,6 @@ export default function ReportsPage() {
         createdAt: r.createdAt as string,
       }),
     )
-    // Date filtering client-side (the API currently doesn't filter by date range)
     if (moveFrom) {
       rows = rows.filter((r) => new Date(r.createdAt) >= new Date(moveFrom))
     }
@@ -431,16 +414,16 @@ export default function ReportsPage() {
   }, [moveFrom, moveTo, moveType])
 
   const MOVE_COLUMNS: ExportColumn<StockChangeReportRow>[] = [
-    { label: "Datum", accessor: (r) => formatDate(r.createdAt) },
-    { label: "Material Nummer", accessor: (r) => r.materialNumber ?? "" },
-    { label: "Material", accessor: (r) => r.materialName ?? "" },
-    { label: "Lagerort", accessor: (r) => r.locationName ?? "" },
-    { label: "Benutzer", accessor: (r) => r.userName ?? "" },
-    { label: "Typ", accessor: (r) => changeTypeLabels[r.changeType] ?? r.changeType },
-    { label: "Menge", accessor: "quantity" },
-    { label: "Vorheriger Bestand", accessor: (r) => r.previousQuantity ?? "" },
-    { label: "Neuer Bestand", accessor: (r) => r.newQuantity ?? "" },
-    { label: "Notiz", accessor: (r) => r.notes ?? "" },
+    { label: t("columns.date"), accessor: (r) => formatDate(r.createdAt) },
+    { label: t("columns.materialNumber"), accessor: (r) => r.materialNumber ?? "" },
+    { label: t("columns.material"), accessor: (r) => r.materialName ?? "" },
+    { label: t("columns.location"), accessor: (r) => r.locationName ?? "" },
+    { label: t("columns.user"), accessor: (r) => r.userName ?? "" },
+    { label: t("columns.type" as Parameters<typeof t>[0]), accessor: (r) => t(`changeTypes.${r.changeType}` as Parameters<typeof t>[0]) || r.changeType },
+    { label: t("columns.quantity"), accessor: "quantity" },
+    { label: t("columns.previousStock"), accessor: (r) => r.previousQuantity ?? "" },
+    { label: t("columns.newStock"), accessor: (r) => r.newQuantity ?? "" },
+    { label: t("columns.note"), accessor: (r) => r.notes ?? "" },
   ]
 
   const handleMoveCsv = useCallback(async () => {
@@ -457,7 +440,7 @@ export default function ReportsPage() {
     setMoveLoading("print")
     try {
       const rows = await fetchStockChanges()
-      printReport("Bewegungsbericht", rows, MOVE_COLUMNS)
+      printReport(t("movements"), rows, MOVE_COLUMNS)
     } finally {
       setMoveLoading(null)
     }
@@ -484,7 +467,6 @@ export default function ReportsPage() {
         createdAt: r.createdAt as string,
       }),
     )
-    // Date filtering client-side
     if (commFrom) {
       rows = rows.filter((r) => new Date(r.createdAt) >= new Date(commFrom))
     }
@@ -497,14 +479,17 @@ export default function ReportsPage() {
   }, [commFrom, commTo, commStatus])
 
   const COMMISSION_COLUMNS: ExportColumn<CommissionReportRow>[] = [
-    { label: "Nummer", accessor: (r) => r.manualNumber ?? r.number ?? "" },
-    { label: "Name", accessor: "name" },
-    { label: "Status", accessor: (r) => commissionStatusLabels[r.status ?? ""] ?? (r.status ?? "") },
-    { label: "Ziel-Lagerort", accessor: (r) => r.targetLocationName ?? "" },
-    { label: "Kunde", accessor: (r) => r.customerName ?? "" },
-    { label: "Verantwortlich", accessor: (r) => r.responsibleName ?? "" },
-    { label: "Anzahl Einträge", accessor: "entryCount" },
-    { label: "Erstellt am", accessor: (r) => formatDate(r.createdAt) },
+    { label: t("columns.number"), accessor: (r) => r.manualNumber ?? r.number ?? "" },
+    { label: t("columns.name"), accessor: "name" },
+    { label: t("columns.status"), accessor: (r) => {
+      const key = r.status === "in_progress" ? "inProgress" : (r.status ?? "")
+      return t(`commissionStatuses.${key}` as Parameters<typeof t>[0]) || (r.status ?? "")
+    }},
+    { label: t("columns.targetLocation"), accessor: (r) => r.targetLocationName ?? "" },
+    { label: t("columns.customer"), accessor: (r) => r.customerName ?? "" },
+    { label: t("columns.responsible"), accessor: (r) => r.responsibleName ?? "" },
+    { label: t("columns.entryCount"), accessor: "entryCount" },
+    { label: t("columns.createdAt"), accessor: (r) => formatDate(r.createdAt) },
   ]
 
   const handleCommCsv = useCallback(async () => {
@@ -521,7 +506,7 @@ export default function ReportsPage() {
     setCommLoading("print")
     try {
       const rows = await fetchCommissions()
-      printReport("Lieferschein-Bericht", rows, COMMISSION_COLUMNS)
+      printReport(t("commissions"), rows, COMMISSION_COLUMNS)
     } finally {
       setCommLoading(null)
     }
@@ -538,14 +523,14 @@ export default function ReportsPage() {
   }, [expiryDays])
 
   const EXPIRY_COLUMNS: ExportColumn<ExpiryReportRow>[] = [
-    { label: "Material", accessor: "materialName" },
-    { label: "Nummer", accessor: (r) => r.materialNumber ?? "" },
-    { label: "Lagerort", accessor: (r) => r.locationName ?? "" },
-    { label: "Charge", accessor: (r) => r.batchNumber ?? "" },
-    { label: "Ablaufdatum", accessor: (r) => formatDate(r.expiryDate) },
-    { label: "Tage bis Ablauf", accessor: "daysUntil" },
-    { label: "Menge", accessor: "quantity" },
-    { label: "Einheit", accessor: (r) => r.unit ?? "" },
+    { label: t("columns.material"), accessor: "materialName" },
+    { label: t("columns.number"), accessor: (r) => r.materialNumber ?? "" },
+    { label: t("columns.location"), accessor: (r) => r.locationName ?? "" },
+    { label: t("columns.batch"), accessor: (r) => r.batchNumber ?? "" },
+    { label: t("columns.expiryDate"), accessor: (r) => formatDate(r.expiryDate) },
+    { label: t("columns.daysUntilExpiry"), accessor: "daysUntil" },
+    { label: t("columns.quantity"), accessor: "quantity" },
+    { label: t("columns.unit"), accessor: (r) => r.unit ?? "" },
   ]
 
   const handleExpiryCsv = useCallback(async () => {
@@ -560,7 +545,7 @@ export default function ReportsPage() {
     setExpiryLoading("print")
     try {
       const rows = await fetchExpiryReport()
-      printReport("Ablaufbericht", rows, EXPIRY_COLUMNS)
+      printReport(t("expiry"), rows, EXPIRY_COLUMNS)
     } finally { setExpiryLoading(null) }
   }, [fetchExpiryReport]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -571,42 +556,40 @@ export default function ReportsPage() {
     const res = await fetch(`/api/tools?${params}`)
     if (!res.ok) return []
     const json = await res.json()
-    // For each tool, call depreciation API to get currentBookValue
     const tools: Record<string, unknown>[] = json.data ?? []
     const depRows: DepreciationReportRow[] = []
-    // Fetch depreciation in parallel (capped at 50 to avoid flooding)
     const slice = tools.slice(0, 50)
     const deprResults = await Promise.allSettled(
       slice.map((t) => fetch(`/api/tools/${t.id}/depreciation`).then((r) => r.ok ? r.json() : null))
     )
-    slice.forEach((t, i) => {
+    slice.forEach((tool, i) => {
       const depr = deprResults[i]?.status === "fulfilled" ? deprResults[i].value : null
       depRows.push({
-        id: t.id as string,
-        number: (t.number as string | null) ?? null,
-        name: t.name as string,
-        groupName: (t.groupName as string | null) ?? null,
+        id: tool.id as string,
+        number: (tool.number as string | null) ?? null,
+        name: tool.name as string,
+        groupName: (tool.groupName as string | null) ?? null,
         purchasePrice: depr?.purchasePrice ?? 0,
         purchaseDate: depr?.purchaseDate ?? null,
         expectedLifeYears: depr?.lifeYears ?? null,
         currentBookValue: depr?.currentBookValue ?? 0,
         depreciationMethod: depr?.method ?? null,
-        condition: (t.condition as string | null) ?? null,
+        condition: (tool.condition as string | null) ?? null,
       })
     })
     return depRows
   }, [deprCondition])
 
   const DEPR_COLUMNS: ExportColumn<DepreciationReportRow>[] = [
-    { label: "Nummer", accessor: (r) => r.number ?? "" },
-    { label: "Name", accessor: "name" },
-    { label: "Gruppe", accessor: (r) => r.groupName ?? "" },
-    { label: "Kaufpreis (CHF)", accessor: (r) => r.purchasePrice.toFixed(2) },
-    { label: "Kaufdatum", accessor: (r) => formatDate(r.purchaseDate) },
-    { label: "Nutzungsdauer (J.)", accessor: (r) => r.expectedLifeYears ?? "" },
-    { label: "Buchwert (CHF)", accessor: (r) => r.currentBookValue.toFixed(2) },
-    { label: "Methode", accessor: (r) => r.depreciationMethod === "declining" ? "Degressiv" : r.depreciationMethod === "linear" ? "Linear" : "" },
-    { label: "Zustand", accessor: (r) => conditionLabels[r.condition ?? ""] ?? (r.condition ?? "") },
+    { label: t("columns.number"), accessor: (r) => r.number ?? "" },
+    { label: t("columns.name"), accessor: "name" },
+    { label: t("columns.group"), accessor: (r) => r.groupName ?? "" },
+    { label: t("columns.purchasePrice"), accessor: (r) => r.purchasePrice.toFixed(2) },
+    { label: t("columns.purchaseDate"), accessor: (r) => formatDate(r.purchaseDate) },
+    { label: t("columns.usefulLife"), accessor: (r) => r.expectedLifeYears ?? "" },
+    { label: t("columns.bookValue"), accessor: (r) => r.currentBookValue.toFixed(2) },
+    { label: t("columns.method"), accessor: (r) => r.depreciationMethod === "declining" ? t("columns.declining") : r.depreciationMethod === "linear" ? t("columns.linear") : "" },
+    { label: t("columns.condition"), accessor: (r) => t(`conditions.${r.condition ?? ""}` as Parameters<typeof t>[0]) || (r.condition ?? "") },
   ]
 
   const handleDeprCsv = useCallback(async () => {
@@ -621,7 +604,7 @@ export default function ReportsPage() {
     setDeprLoading("print")
     try {
       const rows = await fetchDepreciationReport()
-      printReport("Abschreibungsbericht", rows, DEPR_COLUMNS)
+      printReport(t("depreciation"), rows, DEPR_COLUMNS)
     } finally { setDeprLoading(null) }
   }, [fetchDepreciationReport]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -632,9 +615,9 @@ export default function ReportsPage() {
     <div className="flex flex-col gap-6 px-4 py-6 lg:px-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Berichte</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Exportieren Sie Ihre Daten als CSV oder drucken Sie sie als PDF aus.
+          {t("description")}
         </p>
       </div>
 
@@ -644,12 +627,15 @@ export default function ReportsPage() {
         {/* ── Inventarbericht ─────────────────────────────────────────── */}
         <ReportCard
           icon={IconPackage}
-          title="Inventarbericht"
-          description="Alle Materialien mit aktuellem Bestand, Lagerort und Ablaufdaten."
+          title={t("inventory")}
+          description={t("inventoryDesc")}
           loadingCsv={invLoading === "csv"}
           loadingPrint={invLoading === "print"}
           onCsv={handleInventoryCsv}
           onPrint={handleInventoryPrint}
+          csvLabel={t("csvExport")}
+          printLabel={t("pdfPrint")}
+          filterLabel={t("filterLabel")}
           filters={
             <label className="flex cursor-pointer items-center gap-2 text-sm">
               <input
@@ -660,7 +646,7 @@ export default function ReportsPage() {
               />
               <span className="flex items-center gap-1.5">
                 <IconAlertTriangle className="size-3.5 text-orange-500" />
-                Nur Artikel unter Meldebestand
+                {t("lowStockOnly")}
               </span>
             </label>
           }
@@ -669,26 +655,29 @@ export default function ReportsPage() {
         {/* ── Werkzeugbericht ──────────────────────────────────────────── */}
         <ReportCard
           icon={IconTool}
-          title="Werkzeugbericht"
-          description="Alle Werkzeuge mit Zustand, Zuweisung und Wartungsstatus."
+          title={t("tools")}
+          description={t("toolsDesc")}
           loadingCsv={toolLoading === "csv"}
           loadingPrint={toolLoading === "print"}
           onCsv={handleToolCsv}
           onPrint={handleToolPrint}
+          csvLabel={t("csvExport")}
+          printLabel={t("pdfPrint")}
+          filterLabel={t("filterLabel")}
           filters={
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
-                <Label className="w-20 shrink-0 text-xs">Zustand</Label>
+                <Label className="w-20 shrink-0 text-xs">{t("condition")}</Label>
                 <Select value={toolCondition} onValueChange={setToolCondition}>
                   <SelectTrigger className="h-8 flex-1 text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Alle</SelectItem>
-                    <SelectItem value="good">Gut</SelectItem>
-                    <SelectItem value="damaged">Beschädigt</SelectItem>
-                    <SelectItem value="repair">Reparatur</SelectItem>
-                    <SelectItem value="decommissioned">Ausgemustert</SelectItem>
+                    <SelectItem value="all">{t("conditions.all")}</SelectItem>
+                    <SelectItem value="good">{t("conditions.good")}</SelectItem>
+                    <SelectItem value="damaged">{t("conditions.damaged")}</SelectItem>
+                    <SelectItem value="repair">{t("conditions.repair")}</SelectItem>
+                    <SelectItem value="decommissioned">{t("conditions.decommissioned")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -701,7 +690,7 @@ export default function ReportsPage() {
                 />
                 <span className="flex items-center gap-1.5">
                   <IconAlertTriangle className="size-3.5 text-destructive" />
-                  Nur überfällige Wartung
+                  {t("overdueMaintenanceOnly")}
                 </span>
               </label>
             </div>
@@ -711,16 +700,19 @@ export default function ReportsPage() {
         {/* ── Bewegungsbericht ─────────────────────────────────────────── */}
         <ReportCard
           icon={IconArrowsTransferDown}
-          title="Bewegungsbericht"
-          description="Bestandsänderungen (Ein-/Ausgänge, Korrekturen) in einem Zeitraum."
+          title={t("movements")}
+          description={t("movementsDesc")}
           loadingCsv={moveLoading === "csv"}
           loadingPrint={moveLoading === "print"}
           onCsv={handleMoveCsv}
           onPrint={handleMovePrint}
+          csvLabel={t("csvExport")}
+          printLabel={t("pdfPrint")}
+          filterLabel={t("filterLabel")}
           filters={
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
-                <Label className="w-20 shrink-0 text-xs">Von</Label>
+                <Label className="w-20 shrink-0 text-xs">{t("from")}</Label>
                 <Input
                   type="date"
                   value={moveFrom}
@@ -729,7 +721,7 @@ export default function ReportsPage() {
                 />
               </div>
               <div className="flex items-center gap-2">
-                <Label className="w-20 shrink-0 text-xs">Bis</Label>
+                <Label className="w-20 shrink-0 text-xs">{t("to")}</Label>
                 <Input
                   type="date"
                   value={moveTo}
@@ -738,18 +730,18 @@ export default function ReportsPage() {
                 />
               </div>
               <div className="flex items-center gap-2">
-                <Label className="w-20 shrink-0 text-xs">Typ</Label>
+                <Label className="w-20 shrink-0 text-xs">{t("type")}</Label>
                 <Select value={moveType} onValueChange={setMoveType}>
                   <SelectTrigger className="h-8 flex-1 text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Alle</SelectItem>
-                    <SelectItem value="in">Eingang</SelectItem>
-                    <SelectItem value="out">Ausgang</SelectItem>
-                    <SelectItem value="transfer">Transfer</SelectItem>
-                    <SelectItem value="correction">Korrektur</SelectItem>
-                    <SelectItem value="inventory">Inventur</SelectItem>
+                    <SelectItem value="all">{t("conditions.all")}</SelectItem>
+                    <SelectItem value="in">{t("changeTypes.in")}</SelectItem>
+                    <SelectItem value="out">{t("changeTypes.out")}</SelectItem>
+                    <SelectItem value="transfer">{t("changeTypes.transfer")}</SelectItem>
+                    <SelectItem value="correction">{t("changeTypes.correction")}</SelectItem>
+                    <SelectItem value="inventory">{t("changeTypes.inventory")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -760,16 +752,19 @@ export default function ReportsPage() {
         {/* ── Lieferschein-Bericht ─────────────────────────────────────── */}
         <ReportCard
           icon={IconClipboardList}
-          title="Lieferschein-Bericht"
-          description="Kommissionen mit Status, Kunde und Anzahl der Einträge."
+          title={t("commissions")}
+          description={t("commissionsDesc")}
           loadingCsv={commLoading === "csv"}
           loadingPrint={commLoading === "print"}
           onCsv={handleCommCsv}
           onPrint={handleCommPrint}
+          csvLabel={t("csvExport")}
+          printLabel={t("pdfPrint")}
+          filterLabel={t("filterLabel")}
           filters={
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
-                <Label className="w-20 shrink-0 text-xs">Von</Label>
+                <Label className="w-20 shrink-0 text-xs">{t("from")}</Label>
                 <Input
                   type="date"
                   value={commFrom}
@@ -778,7 +773,7 @@ export default function ReportsPage() {
                 />
               </div>
               <div className="flex items-center gap-2">
-                <Label className="w-20 shrink-0 text-xs">Bis</Label>
+                <Label className="w-20 shrink-0 text-xs">{t("to")}</Label>
                 <Input
                   type="date"
                   value={commTo}
@@ -787,17 +782,17 @@ export default function ReportsPage() {
                 />
               </div>
               <div className="flex items-center gap-2">
-                <Label className="w-20 shrink-0 text-xs">Status</Label>
+                <Label className="w-20 shrink-0 text-xs">{t("columns.status")}</Label>
                 <Select value={commStatus} onValueChange={setCommStatus}>
                   <SelectTrigger className="h-8 flex-1 text-xs">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Alle</SelectItem>
-                    <SelectItem value="open">Offen</SelectItem>
-                    <SelectItem value="in_progress">In Bearbeitung</SelectItem>
-                    <SelectItem value="completed">Abgeschlossen</SelectItem>
-                    <SelectItem value="cancelled">Storniert</SelectItem>
+                    <SelectItem value="all">{t("commissionStatuses.all")}</SelectItem>
+                    <SelectItem value="open">{t("commissionStatuses.open")}</SelectItem>
+                    <SelectItem value="in_progress">{t("commissionStatuses.inProgress")}</SelectItem>
+                    <SelectItem value="completed">{t("commissionStatuses.completed")}</SelectItem>
+                    <SelectItem value="cancelled">{t("commissionStatuses.cancelled")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -808,24 +803,27 @@ export default function ReportsPage() {
         {/* ── Ablaufbericht ────────────────────────────────────────────── */}
         <ReportCard
           icon={IconCalendarOff}
-          title="Ablaufbericht"
-          description="Materialchargen mit Ablaufdatum nach FEFO sortiert."
+          title={t("expiry")}
+          description={t("expiryDesc")}
           loadingCsv={expiryLoading === "csv"}
           loadingPrint={expiryLoading === "print"}
           onCsv={handleExpiryCsv}
           onPrint={handleExpiryPrint}
+          csvLabel={t("csvExport")}
+          printLabel={t("pdfPrint")}
+          filterLabel={t("filterLabel")}
           filters={
             <div className="flex items-center gap-2">
-              <Label className="w-20 shrink-0 text-xs">Zeitraum</Label>
+              <Label className="w-20 shrink-0 text-xs">{t("period")}</Label>
               <Select value={expiryDays} onValueChange={setExpiryDays}>
                 <SelectTrigger className="h-8 flex-1 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="7">Nächste 7 Tage</SelectItem>
-                  <SelectItem value="30">Nächste 30 Tage</SelectItem>
-                  <SelectItem value="90">Nächste 90 Tage</SelectItem>
-                  <SelectItem value="365">Nächstes Jahr</SelectItem>
+                  <SelectItem value="7">{t("next7Days")}</SelectItem>
+                  <SelectItem value="30">{t("next30Days")}</SelectItem>
+                  <SelectItem value="90">{t("next90Days")}</SelectItem>
+                  <SelectItem value="365">{t("nextYear")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -835,25 +833,28 @@ export default function ReportsPage() {
         {/* ── Abschreibungsbericht ──────────────────────────────────────── */}
         <ReportCard
           icon={IconCurrencyEuro}
-          title="Abschreibungsbericht"
-          description="Aktuelle Buchwerte aller Werkzeuge, Gesamtflottenwert."
+          title={t("depreciation")}
+          description={t("depreciationDesc")}
           loadingCsv={deprLoading === "csv"}
           loadingPrint={deprLoading === "print"}
           onCsv={handleDeprCsv}
           onPrint={handleDeprPrint}
+          csvLabel={t("csvExport")}
+          printLabel={t("pdfPrint")}
+          filterLabel={t("filterLabel")}
           filters={
             <div className="flex items-center gap-2">
-              <Label className="w-20 shrink-0 text-xs">Zustand</Label>
+              <Label className="w-20 shrink-0 text-xs">{t("condition")}</Label>
               <Select value={deprCondition} onValueChange={setDeprCondition}>
                 <SelectTrigger className="h-8 flex-1 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Alle</SelectItem>
-                  <SelectItem value="good">Gut</SelectItem>
-                  <SelectItem value="damaged">Beschädigt</SelectItem>
-                  <SelectItem value="repair">Reparatur</SelectItem>
-                  <SelectItem value="decommissioned">Ausgemustert</SelectItem>
+                  <SelectItem value="all">{t("conditions.all")}</SelectItem>
+                  <SelectItem value="good">{t("conditions.good")}</SelectItem>
+                  <SelectItem value="damaged">{t("conditions.damaged")}</SelectItem>
+                  <SelectItem value="repair">{t("conditions.repair")}</SelectItem>
+                  <SelectItem value="decommissioned">{t("conditions.decommissioned")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>

@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -116,6 +118,7 @@ const EXPORT_INSTRUCTIONS: Record<string, { steps: string[]; tip: string }> = {
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export default function MigrationPage() {
+  const t = useTranslations("migrationPage")
   const router = useRouter()
   const [selectedSource, setSelectedSource] = useState<SourceSystem | null>(null)
 
@@ -213,7 +216,7 @@ export default function MigrationPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Daten-Migration</h1>
+          <h1 className="text-2xl font-bold">{t("title")}</h1>
           <p className="text-muted-foreground text-sm mt-1">
             Importieren Sie Ihre bestehenden Daten in wenigen Minuten
           </p>
@@ -298,7 +301,7 @@ export default function MigrationPage() {
           {/* Template downloads */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">CSV-Vorlagen herunterladen</CardTitle>
+              <CardTitle className="text-base">{t("csvTemplates")}</CardTitle>
               <CardDescription>
                 Nutzen Sie unsere Vorlagen, um Ihre Daten im richtigen Format vorzubereiten
               </CardDescription>
@@ -330,7 +333,7 @@ export default function MigrationPage() {
           {!bexioPreview && !bexioResult && (
             <Card>
               <CardHeader>
-                <CardTitle>Mit bexio verbinden</CardTitle>
+                <CardTitle>{t("connectBexio")}</CardTitle>
                 <CardDescription>
                   Geben Sie Ihren bexio API-Token ein, um Ihre Daten zu importieren.
                   Den Token finden Sie unter{" "}

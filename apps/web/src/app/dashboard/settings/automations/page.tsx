@@ -1,4 +1,6 @@
-"use client";
+"use client"
+
+import { useTranslations } from "next-intl";
 
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
@@ -873,6 +875,7 @@ function DeleteRuleDialog({
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function AutomationsPage() {
+  const ts = useTranslations("settings")
   const { orgId } = useOrganization();
   const [rules, setRules] = useState<WorkflowRule[]>([]);
   const [loading, setLoading] = useState(true);
@@ -948,9 +951,9 @@ export default function AutomationsPage() {
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1">
-            Einstellungen
+            {ts("title")}
           </p>
-          <h1 className="text-2xl font-semibold tracking-tight">Automatisierungen</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{ts("automationsTitle")}</h1>
           <p className="text-sm text-muted-foreground mt-1 max-w-xl">
             Definiere Regeln, die automatisch E-Mails senden, Aufgaben erstellen oder
             Ausbuchungen sperren — ausgelöst durch Ereignisse in LogistikApp.

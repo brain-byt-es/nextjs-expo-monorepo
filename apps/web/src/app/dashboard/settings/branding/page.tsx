@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState, useEffect, useCallback } from "react"
 import { IconRefresh, IconUpload, IconCheck } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
@@ -185,6 +187,8 @@ function BrandPreview({
 // Main component
 // ---------------------------------------------------------------------------
 export default function BrandingPage() {
+  const ts = useTranslations("settings")
+  const tc = useTranslations("common")
   const [org, setOrg] = useState<OrgBranding | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -293,9 +297,9 @@ export default function BrandingPage() {
   return (
     <div className="space-y-8 px-4 py-6 md:px-6 lg:px-8">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Branding</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">{ts("brandingTitle")}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Passen Sie Farben und Logo Ihrer Organisation an
+          {ts("brandingDesc")}
         </p>
       </div>
 
@@ -311,9 +315,9 @@ export default function BrandingPage() {
           {/* Colors */}
           <Card>
             <CardHeader>
-              <CardTitle>Farben</CardTitle>
+              <CardTitle>{ts("colors")}</CardTitle>
               <CardDescription>
-                Wählen Sie die Primär- und Akzentfarbe Ihrer Organisation
+                {ts("colorsDesc")}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -338,10 +342,9 @@ export default function BrandingPage() {
           {/* Logo */}
           <Card>
             <CardHeader>
-              <CardTitle>Logo</CardTitle>
+              <CardTitle>{ts("logo")}</CardTitle>
               <CardDescription>
-                Laden Sie das Logo Ihrer Organisation hoch (PNG, SVG, max.
-                500 KB)
+                {ts("logoDesc")}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -370,7 +373,7 @@ export default function BrandingPage() {
                 >
                   <div className="flex items-center gap-2 rounded-md border border-dashed border-input px-4 py-2.5 text-sm text-muted-foreground hover:border-primary hover:text-foreground">
                     <IconUpload className="size-4" />
-                    {logoUploading ? "Wird geladen..." : "Logo hochladen"}
+                    {logoUploading ? tc("loading") : ts("uploadLogo")}
                   </div>
                 </Label>
                 <input
@@ -388,7 +391,7 @@ export default function BrandingPage() {
           {/* Actions */}
           <div className="flex items-center gap-3">
             <Button onClick={handleSave} disabled={saving || logoUploading}>
-              {saving ? "Wird gespeichert..." : saved ? (
+              {saving ? tc("loading") : saved ? (
                 <>
                   <IconCheck className="size-4" />
                   Gespeichert
@@ -401,14 +404,14 @@ export default function BrandingPage() {
               disabled={saving}
             >
               <IconRefresh className="size-4" />
-              Auf Standard zurücksetzen
+              {ts("resetToDefault")}
             </Button>
           </div>
         </div>
 
         {/* Right: preview */}
         <div className="space-y-3">
-          <p className="text-sm font-medium text-muted-foreground">Vorschau</p>
+          <p className="text-sm font-medium text-muted-foreground">{ts("preview")}</p>
           <BrandPreview
             primaryColor={primaryColor}
             accentColor={accentColor}

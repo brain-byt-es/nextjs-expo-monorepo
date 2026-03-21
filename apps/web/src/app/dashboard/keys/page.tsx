@@ -203,7 +203,7 @@ export default function KeysPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("title")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            {MOCK_KEYS.length} Schlüssel · {stats.away} vergeben
+            {MOCK_KEYS.length} {t("title")} · {stats.away} {t("assigned")}
           </p>
         </div>
         <Button className="gap-2">
@@ -215,9 +215,9 @@ export default function KeysPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: "Gesamt", value: stats.total, color: "text-foreground" },
-          { label: "Zuhause", value: stats.home, color: "text-secondary" },
-          { label: "Vergeben", value: stats.away, color: "text-primary" },
+          { label: t("totalKeys"), value: stats.total, color: "text-foreground" },
+          { label: t("atHome"), value: stats.home, color: "text-secondary" },
+          { label: t("away"), value: stats.away, color: "text-primary" },
         ].map(({ label, value, color }) => (
           <Card key={label} className="border-0 bg-muted">
             <CardContent className="p-4">
@@ -241,10 +241,10 @@ export default function KeysPage() {
         </div>
         <Select value={typeFilter} onValueChange={setTypeFilter}>
           <SelectTrigger className="w-48">
-            <SelectValue placeholder="Typ" />
+            <SelectValue placeholder={t("keyType")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">{tc("all")} Typen</SelectItem>
+            <SelectItem value="all">{t("allTypes")}</SelectItem>
             <SelectItem value="building">{t("types.building")}</SelectItem>
             <SelectItem value="vehicle">{t("types.vehicle")}</SelectItem>
             <SelectItem value="safe">{t("types.safe")}</SelectItem>
@@ -254,12 +254,12 @@ export default function KeysPage() {
         </Select>
         <Select value={isHomeFilter} onValueChange={setIsHomeFilter}>
           <SelectTrigger className="w-44">
-            <SelectValue placeholder="Status" />
+            <SelectValue placeholder={tc("status")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Alle Status</SelectItem>
-            <SelectItem value="home">Zuhause</SelectItem>
-            <SelectItem value="away">Vergeben</SelectItem>
+            <SelectItem value="all">{t("allStatuses")}</SelectItem>
+            <SelectItem value="home">{t("atHome")}</SelectItem>
+            <SelectItem value="away">{t("away")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -279,9 +279,9 @@ export default function KeysPage() {
                 <IconKey className="size-12 text-muted-foreground/40" />
               </EmptyMedia>
               <EmptyHeader>
-                <EmptyTitle>Keine Schlüssel gefunden</EmptyTitle>
+                <EmptyTitle>{t("noKeysFound")}</EmptyTitle>
                 <EmptyDescription>
-                  {search ? "Passen Sie Ihre Suche an." : "Fügen Sie Ihren ersten Schlüssel hinzu."}
+                  {search ? t("adjustSearch") : t("addFirstKey")}
                 </EmptyDescription>
               </EmptyHeader>
             </Empty>
@@ -359,7 +359,7 @@ export default function KeysPage() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem className="gap-2">
-                              <IconEye className="size-4" /> Details
+                              <IconEye className="size-4" /> {tc("details")}
                             </DropdownMenuItem>
                             <DropdownMenuItem className="gap-2">
                               <IconEdit className="size-4" /> {tc("edit")}

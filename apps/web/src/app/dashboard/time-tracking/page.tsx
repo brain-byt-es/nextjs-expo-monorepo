@@ -431,7 +431,7 @@ function TimeTrackingPageContent() {
 
       return { name: label, stunden: Math.round(hours * 100) / 100 }
     })
-  }, [entries, now, getEntryMinutes])
+  }, [entries, now, getEntryMinutes, t])
 
   // ── Filtered entries ───────────────────────────────────────────────────────
   const filteredEntries = useMemo(() => {

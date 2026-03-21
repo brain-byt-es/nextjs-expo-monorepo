@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import {
   IconPlus,
   IconPackage,
@@ -90,18 +91,21 @@ function formatDate(d: string) {
   })
 }
 
-function priorityBadge(priority: string) {
-  switch (priority) {
-    case "urgent":
-      return <Badge className="bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300">Dringend</Badge>
-    case "high":
-      return <Badge className="bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300">Hoch</Badge>
-    case "normal":
-      return <Badge className="bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300">Normal</Badge>
-    case "low":
-      return <Badge className="bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-400">Niedrig</Badge>
-    default:
-      return <Badge variant="outline">{priority}</Badge>
+function usePriorityBadge() {
+  const t = useTranslations("requests")
+  return function PriorityBadge(priority: string) {
+    switch (priority) {
+      case "urgent":
+        return <Badge className="bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-300">{t("priorityUrgent")}</Badge>
+      case "high":
+        return <Badge className="bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300">{t("priorityHigh")}</Badge>
+      case "normal":
+        return <Badge className="bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300">{t("priorityNormal")}</Badge>
+      case "low":
+        return <Badge className="bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-400">{t("priorityLow")}</Badge>
+      default:
+        return <Badge variant="outline">{priority}</Badge>
+    }
   }
 }
 
@@ -118,20 +122,23 @@ function priorityIcon(priority: string) {
   }
 }
 
-function statusBadge(status: string) {
-  switch (status) {
-    case "pending":
-      return <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300">Ausstehend</Badge>
-    case "approved":
-      return <Badge className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300">Genehmigt</Badge>
-    case "rejected":
-      return <Badge variant="destructive">Abgelehnt</Badge>
-    case "ordered":
-      return <Badge className="bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300">Bestellt</Badge>
-    case "delivered":
-      return <Badge className="bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-400">Geliefert</Badge>
-    default:
-      return <Badge variant="outline">{status}</Badge>
+function useStatusBadge() {
+  const t = useTranslations("requests")
+  return function StatusBadge(status: string) {
+    switch (status) {
+      case "pending":
+        return <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300">{t("pending")}</Badge>
+      case "approved":
+        return <Badge className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-300">{t("approved")}</Badge>
+      case "rejected":
+        return <Badge variant="destructive">{t("rejected")}</Badge>
+      case "ordered":
+        return <Badge className="bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300">{t("ordered")}</Badge>
+      case "delivered":
+        return <Badge className="bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-400">{t("delivered")}</Badge>
+      default:
+        return <Badge variant="outline">{status}</Badge>
+    }
   }
 }
 
@@ -160,6 +167,8 @@ function CreateRequestDialog({
   prefillMaterialName?: string
   prefillUnit?: string
 }) {
+  const t = useTranslations("requests")
+  const tc = useTranslations("common")
   const [materialSearch, setMaterialSearch] = useState(prefillMaterialName || "")
   const [materialId, setMaterialId] = useState(prefillMaterialId || "")
   const [materialName, setMaterialName] = useState(prefillMaterialName || "")
@@ -170,7 +179,6 @@ function CreateRequestDialog({
   const [searchResults, setSearchResults] = useState<MaterialSearchResult[]>([])
   const [submitting, setSubmitting] = useState(false)
 
-  // Reset on open
   useEffect(() => {
     if (open) {
       setMaterialSearch(prefillMaterialName || "")
@@ -247,20 +255,19 @@ function CreateRequestDialog({
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Material anfragen</DialogTitle>
+          <DialogTitle>{t("dialogTitle")}</DialogTitle>
           <DialogDescription>
-            Bestehende Materialien suchen oder neuen Bedarf erfassen.
+            {t("dialogDescription")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-2">
-          {/* Material search */}
           <div className="space-y-2">
-            <Label>Material</Label>
+            <Label>{t("materialLabel")}</Label>
             <div className="relative">
               <IconSearch className="absolute left-2.5 top-2.5 size-4 text-muted-foreground pointer-events-none" />
               <Input
-                placeholder="Material suchen oder neuen Namen eingeben…"
+                placeholder={t("materialSearchPlaceholder")}
                 className="pl-8"
                 value={materialSearch}
                 onChange={(e) => {
@@ -273,7 +280,7 @@ function CreateRequestDialog({
             {materialId && (
               <p className="text-xs text-green-600 flex items-center gap-1">
                 <IconCheck className="size-3.5" />
-                Verknüpft mit vorhandenem Material
+                {t("linkedToExisting")}
               </p>
             )}
             {searchResults.length > 0 && !materialId && (
@@ -298,10 +305,9 @@ function CreateRequestDialog({
             )}
           </div>
 
-          {/* Quantity + Unit */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label>Menge</Label>
+              <Label>{t("quantity")}</Label>
               <Input
                 type="number"
                 min={1}
@@ -310,39 +316,37 @@ function CreateRequestDialog({
               />
             </div>
             <div className="space-y-2">
-              <Label>Einheit</Label>
+              <Label>{t("unit")}</Label>
               <Input
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
-                placeholder="Stk, kg, m…"
+                placeholder={t("unitPlaceholder")}
               />
             </div>
           </div>
 
-          {/* Priority */}
           <div className="space-y-2">
-            <Label>Priorität</Label>
+            <Label>{t("priority")}</Label>
             <Select value={priority} onValueChange={(v) => setPriority(v as Priority)}>
               <SelectTrigger className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="low">Niedrig</SelectItem>
-                <SelectItem value="normal">Normal</SelectItem>
-                <SelectItem value="high">Hoch</SelectItem>
-                <SelectItem value="urgent">Dringend</SelectItem>
+                <SelectItem value="low">{t("priorityLow")}</SelectItem>
+                <SelectItem value="normal">{t("priorityNormal")}</SelectItem>
+                <SelectItem value="high">{t("priorityHigh")}</SelectItem>
+                <SelectItem value="urgent">{t("priorityUrgent")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          {/* Reason */}
           <div className="space-y-2">
             <Label>
-              Begründung{" "}
-              <span className="font-normal text-muted-foreground">(optional)</span>
+              {t("reason")}{" "}
+              <span className="font-normal text-muted-foreground">{t("reasonOptional")}</span>
             </Label>
             <Textarea
-              placeholder="Warum wird das Material benötigt?"
+              placeholder={t("reasonPlaceholder")}
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               className="min-h-[72px]"
@@ -352,7 +356,7 @@ function CreateRequestDialog({
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose} disabled={submitting}>
-            Abbrechen
+            {tc("cancel")}
           </Button>
           <Button
             onClick={handleSubmit}
@@ -363,7 +367,7 @@ function CreateRequestDialog({
             }
           >
             <IconPlus className="size-4" />
-            {submitting ? "Wird gespeichert…" : "Anfrage stellen"}
+            {submitting ? t("submitting") : t("submitRequest")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -383,27 +387,22 @@ function RejectDialog({
   onClose: () => void
   onConfirm: (notes: string) => void
 }) {
+  const t = useTranslations("requests")
+  const tc = useTranslations("common")
   const [notes, setNotes] = useState("")
 
-  useEffect(() => {
-    async function reset() {
-      setNotes("")
-    }
-    if (open) reset()
-  }, [open])
-
   return (
-    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
+    <Dialog open={open} onOpenChange={(o) => { if (!o) { onClose(); setNotes("") } }}>
       <DialogContent className="max-w-sm">
         <DialogHeader>
-          <DialogTitle>Anfrage ablehnen</DialogTitle>
+          <DialogTitle>{t("rejectTitle")}</DialogTitle>
           <DialogDescription>
-            Optional eine Begründung angeben.
+            {t("rejectDescription")}
           </DialogDescription>
         </DialogHeader>
         <div className="py-2">
           <Textarea
-            placeholder="Begründung (optional)…"
+            placeholder={t("rejectPlaceholder")}
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             className="min-h-[80px]"
@@ -411,11 +410,11 @@ function RejectDialog({
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Abbrechen
+            {tc("cancel")}
           </Button>
           <Button variant="destructive" onClick={() => onConfirm(notes)}>
             <IconX className="size-4" />
-            Ablehnen
+            {t("reject")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -443,11 +442,16 @@ function RequestsTable({
   onDelete: (id: string) => void
   onCreateOrder: (req: MaterialRequestEntry) => void
 }) {
+  const t = useTranslations("requests")
+  const tc = useTranslations("common")
+  const priorityBadge = usePriorityBadge()
+  const statusBadge = useStatusBadge()
+
   if (requests.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16">
         <IconPackage className="size-10 text-muted-foreground/40 mb-3" />
-        <p className="text-sm text-muted-foreground">Keine Anfragen vorhanden</p>
+        <p className="text-sm text-muted-foreground">{t("noRequests")}</p>
       </div>
     )
   }
@@ -456,13 +460,13 @@ function RequestsTable({
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Material</TableHead>
-          {isAdmin && <TableHead>Angefragt von</TableHead>}
-          <TableHead>Menge</TableHead>
-          <TableHead>Priorität</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Datum</TableHead>
-          <TableHead className="text-right">Aktionen</TableHead>
+          <TableHead>{t("materialLabel")}</TableHead>
+          {isAdmin && <TableHead>{t("requestedBy")}</TableHead>}
+          <TableHead>{t("quantity")}</TableHead>
+          <TableHead>{t("priority")}</TableHead>
+          <TableHead>{tc("status")}</TableHead>
+          <TableHead>{tc("date")}</TableHead>
+          <TableHead className="text-right">{tc("actions")}</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -480,7 +484,7 @@ function RequestsTable({
                   )}
                   {req.notes && (
                     <p className="text-xs text-destructive truncate max-w-[180px]">
-                      Notiz: {req.notes}
+                      {t("note")} {req.notes}
                     </p>
                   )}
                 </div>
@@ -491,7 +495,7 @@ function RequestsTable({
                 <div className="flex items-center gap-1.5">
                   <IconUser className="size-3.5 text-muted-foreground" />
                   <span className="text-sm">
-                    {req.requesterName || req.requesterEmail || "Unbekannt"}
+                    {req.requesterName || req.requesterEmail || t("unknown")}
                   </span>
                 </div>
               </TableCell>
@@ -503,7 +507,6 @@ function RequestsTable({
             <TableCell>
               <div className="flex flex-col gap-1">
                 {statusBadge(req.status)}
-                {/* Progress dots */}
                 <div className="flex items-center gap-1 mt-0.5">
                   {STATUS_FLOW.map((s, i) => (
                     <div
@@ -532,7 +535,7 @@ function RequestsTable({
                       onClick={() => onApprove(req.id)}
                     >
                       <IconCheck className="size-3.5" />
-                      Genehmigen
+                      {t("approve")}
                     </Button>
                     <Button
                       size="sm"
@@ -541,7 +544,7 @@ function RequestsTable({
                       onClick={() => onReject(req.id)}
                     >
                       <IconX className="size-3.5" />
-                      Ablehnen
+                      {t("reject")}
                     </Button>
                   </>
                 )}
@@ -554,7 +557,7 @@ function RequestsTable({
                       onClick={() => onCreateOrder(req)}
                     >
                       <IconShoppingCart className="size-3.5" />
-                      Bestellung
+                      {t("createOrder")}
                     </Button>
                     <Button
                       size="sm"
@@ -562,7 +565,7 @@ function RequestsTable({
                       className="h-7 px-2 text-xs"
                       onClick={() => onStatusChange(req.id, "ordered")}
                     >
-                      Als bestellt markieren
+                      {t("markAsOrdered")}
                     </Button>
                   </>
                 )}
@@ -573,7 +576,7 @@ function RequestsTable({
                     className="h-7 px-2 text-xs"
                     onClick={() => onStatusChange(req.id, "delivered")}
                   >
-                    Als geliefert markieren
+                    {t("markAsDelivered")}
                   </Button>
                 )}
                 {!isAdmin && req.status === "pending" && (
@@ -583,7 +586,7 @@ function RequestsTable({
                     className="h-7 px-2 text-xs text-destructive hover:bg-destructive/10"
                     onClick={() => onDelete(req.id)}
                   >
-                    Löschen
+                    {tc("delete")}
                   </Button>
                 )}
               </div>
@@ -599,6 +602,7 @@ function RequestsTable({
 // Page
 // ---------------------------------------------------------------------------
 export default function RequestsPage() {
+  const t = useTranslations("requests")
   const router = useRouter()
   const [requests, setRequests] = useState<MaterialRequestEntry[]>([])
   const [loading, setLoading] = useState(true)
@@ -606,8 +610,6 @@ export default function RequestsPage() {
   const [showCreate, setShowCreate] = useState(false)
   const [rejectId, setRejectId] = useState<string | null>(null)
 
-  // We treat the user as admin based on whether they can see all requests.
-  // In a real app you'd get this from a session hook.
   const isAdmin = true // TODO: wire to actual session role
 
   const load = useCallback(async () => {
@@ -682,9 +684,9 @@ export default function RequestsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Materialanfragen</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Anfragen für Material-Nachbestellungen verwalten
+            {t("pageDescription")}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -693,7 +695,7 @@ export default function RequestsPage() {
           </Button>
           <Button size="sm" onClick={() => setShowCreate(true)}>
             <IconPlus className="size-4" />
-            Material anfragen
+            {t("newRequest")}
           </Button>
         </div>
       </div>
@@ -701,11 +703,11 @@ export default function RequestsPage() {
       {/* KPI row */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
         {[
-          { label: "Ausstehend", status: "pending", cls: "text-yellow-600" },
-          { label: "Genehmigt", status: "approved", cls: "text-green-600" },
-          { label: "Abgelehnt", status: "rejected", cls: "text-destructive" },
-          { label: "Bestellt", status: "ordered", cls: "text-blue-600" },
-          { label: "Geliefert", status: "delivered", cls: "text-gray-600" },
+          { label: t("pending"), status: "pending", cls: "text-yellow-600" },
+          { label: t("approved"), status: "approved", cls: "text-green-600" },
+          { label: t("rejected"), status: "rejected", cls: "text-destructive" },
+          { label: t("ordered"), status: "ordered", cls: "text-blue-600" },
+          { label: t("delivered"), status: "delivered", cls: "text-gray-600" },
         ].map(({ label, status, cls }) => (
           <Card key={status}>
             <CardContent className="p-4">
@@ -730,12 +732,12 @@ export default function RequestsPage() {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Alle Status</SelectItem>
-            <SelectItem value="pending">Ausstehend</SelectItem>
-            <SelectItem value="approved">Genehmigt</SelectItem>
-            <SelectItem value="rejected">Abgelehnt</SelectItem>
-            <SelectItem value="ordered">Bestellt</SelectItem>
-            <SelectItem value="delivered">Geliefert</SelectItem>
+            <SelectItem value="all">{t("allStatuses")}</SelectItem>
+            <SelectItem value="pending">{t("pending")}</SelectItem>
+            <SelectItem value="approved">{t("approved")}</SelectItem>
+            <SelectItem value="rejected">{t("rejected")}</SelectItem>
+            <SelectItem value="ordered">{t("ordered")}</SelectItem>
+            <SelectItem value="delivered">{t("delivered")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -745,7 +747,7 @@ export default function RequestsPage() {
         <TabsList>
           {isAdmin && (
             <TabsTrigger value="all">
-              Alle Anfragen
+              {t("allRequests")}
               {pendingCount > 0 && (
                 <span className="ml-1.5 flex size-4 items-center justify-center rounded-full bg-yellow-500 text-[10px] font-bold text-white">
                   {pendingCount}
@@ -753,7 +755,7 @@ export default function RequestsPage() {
               )}
             </TabsTrigger>
           )}
-          <TabsTrigger value="mine">Meine Anfragen</TabsTrigger>
+          <TabsTrigger value="mine">{t("myRequests")}</TabsTrigger>
         </TabsList>
 
         {isAdmin && (

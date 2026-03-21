@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState, useEffect, useCallback } from "react"
 import {
   IconPlus,
@@ -202,7 +204,7 @@ function CreateGeofenceDialog({
     <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>Neuen Geofence erstellen</DialogTitle>
+          <DialogTitle>{t("newGeofence")}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -293,6 +295,7 @@ function CreateGeofenceDialog({
 // ── Main Page ──────────────────────────────────────────────────────────
 
 export default function GeofencesPage() {
+  const t = useTranslations("geofences")
   const [geofencesList, setGeofencesList] = useState<GeofenceRow[]>([])
   const [events, setEvents] = useState<GeofenceEvent[]>([])
   const [locationsList, setLocationsList] = useState<Location[]>([])
@@ -394,7 +397,7 @@ export default function GeofencesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Geofencing</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
           <p className="text-muted-foreground text-sm">
             Standortbasierte automatische Aktionen verwalten
           </p>
@@ -410,7 +413,7 @@ export default function GeofencesPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Aktive Geofences
+              {t("activeGeofences")}
             </CardTitle>
             <IconRadar className="text-muted-foreground h-4 w-4" />
           </CardHeader>
@@ -425,7 +428,7 @@ export default function GeofencesPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Events heute
+              Events
             </CardTitle>
             <IconActivity className="text-muted-foreground h-4 w-4" />
           </CardHeader>
@@ -440,7 +443,7 @@ export default function GeofencesPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Automatische Aktionen
+              Auto-Actions
             </CardTitle>
             <IconBolt className="text-muted-foreground h-4 w-4" />
           </CardHeader>
@@ -456,7 +459,7 @@ export default function GeofencesPage() {
       {/* Geofences Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Geofences</CardTitle>
+          <CardTitle>{t("title")}</CardTitle>
         </CardHeader>
         <CardContent>
           {geofencesList.length === 0 ? (

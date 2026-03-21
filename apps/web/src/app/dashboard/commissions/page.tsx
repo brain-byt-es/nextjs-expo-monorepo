@@ -71,10 +71,10 @@ const MOCK_COMMISSIONS: Commission[] = [
   { id: "7", name: "Revision Elektroinstallation Lager", number: "K-2025-007", manualNumber: "REV-2025-1", targetLocation: "Lager A", customer: null, responsible: "Peter Keller", entryCount: 18, openCount: 12, status: "inProgress", createdAt: "2025-03-12" },
 ]
 
-const STATUS_CONFIG: Record<CommissionStatus, { label: string; color: string }> = {
-  open:       { label: "Offen",          color: "bg-muted text-muted-foreground" },
-  inProgress: { label: "In Bearbeitung", color: "bg-primary/10 text-primary" },
-  completed:  { label: "Abgeschlossen",  color: "bg-secondary/10 text-secondary" },
+const STATUS_COLORS: Record<CommissionStatus, string> = {
+  open:       "bg-muted text-muted-foreground",
+  inProgress: "bg-primary/10 text-primary",
+  completed:  "bg-secondary/10 text-secondary",
 }
 
 function formatDate(iso: string) {
@@ -192,7 +192,7 @@ export default function CommissionsPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">{t("title")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            {MOCK_COMMISSIONS.length} Kommissionen · {totalOpen} von {totalEntries} Einträgen offen
+            {MOCK_COMMISSIONS.length} {t("title")} · {t("entriesOpen", { open: totalOpen, total: totalEntries })}
           </p>
         </div>
         <Button className="gap-2">
@@ -205,7 +205,6 @@ export default function CommissionsPage() {
       <div className="grid grid-cols-3 gap-4">
         {(["open", "inProgress", "completed"] as CommissionStatus[]).map((s) => {
           const count = MOCK_COMMISSIONS.filter((c) => c.status === s).length
-          const cfg = STATUS_CONFIG[s]
           return (
             <Card
               key={s}
@@ -213,7 +212,7 @@ export default function CommissionsPage() {
               onClick={() => setStatusFilter(statusFilter === s ? "all" : s)}
             >
               <CardContent className="p-4">
-                <p className="text-xs text-muted-foreground">{cfg.label}</p>
+                <p className="text-xs text-muted-foreground">{t(`statuses.${s}`)}</p>
                 <p className="text-3xl font-bold text-foreground mt-1">{count}</p>
               </CardContent>
             </Card>
@@ -236,7 +235,7 @@ export default function CommissionsPage() {
         {selectedCount > 0 && (
           <Button variant="outline" onClick={handleBatchPrint} className="gap-2 whitespace-nowrap">
             <IconPrinter className="size-4" />
-            {selectedCount} Lieferschein{selectedCount !== 1 ? "e" : ""} drucken
+            {selectedCount === 1 ? t("printDeliveryNotes", { count: selectedCount }) : t("printDeliveryNotesPlural", { count: selectedCount })}
           </Button>
         )}
       </div>
@@ -254,9 +253,9 @@ export default function CommissionsPage() {
                 <IconClipboardList className="size-12 text-muted-foreground/40" />
               </EmptyMedia>
               <EmptyHeader>
-                <EmptyTitle>Keine Kommissionen gefunden</EmptyTitle>
+                <EmptyTitle>{t("noCommissionsFound")}</EmptyTitle>
                 <EmptyDescription>
-                  {search ? "Passen Sie Ihre Suche an." : "Erstellen Sie Ihre erste Kommission."}
+                  {search ? t("adjustSearch") : t("createFirst")}
                 </EmptyDescription>
               </EmptyHeader>
             </Empty>
@@ -268,22 +267,22 @@ export default function CommissionsPage() {
                     <Checkbox
                       checked={allSelected ? true : someSelected ? "indeterminate" : false}
                       onCheckedChange={toggleAll}
-                      aria-label="Alle auswählen"
+                      aria-label={t("selectAll")}
                     />
                   </TableHead>
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[120px]">{t("number")}</TableHead>
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("name")}</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[110px]">Status</TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[110px]">{tc("status")}</TableHead>
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[170px]">{t("targetLocation")}</TableHead>
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[140px]">{t("customer")}</TableHead>
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[140px]">{t("responsible")}</TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[150px]">Fortschritt</TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[150px]">{t("progress")}</TableHead>
                   <TableHead className="w-[50px]" />
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filtered.map((commission) => {
-                  const statusCfg = STATUS_CONFIG[commission.status]
+                  const statusColor = STATUS_COLORS[commission.status]
                   const isChecked = selected.has(commission.id)
                   return (
                     <TableRow
@@ -294,7 +293,7 @@ export default function CommissionsPage() {
                         <Checkbox
                           checked={isChecked}
                           onCheckedChange={() => toggleOne(commission.id)}
-                          aria-label={`${commission.number} auswählen`}
+                          aria-label={t("selectItem", { number: commission.number })}
                         />
                       </TableCell>
                       <TableCell>
@@ -315,8 +314,8 @@ export default function CommissionsPage() {
                         <p className="text-xs text-muted-foreground">{formatDate(commission.createdAt)}</p>
                       </TableCell>
                       <TableCell>
-                        <span className={`inline-flex items-center text-xs font-medium px-2 py-1 rounded-md ${statusCfg.color}`}>
-                          {statusCfg.label}
+                        <span className={`inline-flex items-center text-xs font-medium px-2 py-1 rounded-md ${statusColor}`}>
+                          {t(`statuses.${commission.status}`)}
                         </span>
                       </TableCell>
                       <TableCell>
@@ -348,7 +347,7 @@ export default function CommissionsPage() {
                             </DropdownMenuItem>
                             <DropdownMenuItem className="gap-2">
                               <IconPrinter className="size-4" />
-                              Lieferschein drucken
+                              {t("printDeliveryNote")}
                             </DropdownMenuItem>
                             <DropdownMenuItem className="gap-2"><IconEdit className="size-4" /> {tc("edit")}</DropdownMenuItem>
                             <DropdownMenuItem className="gap-2 text-destructive focus:text-destructive"><IconTrash className="size-4" /> {tc("delete")}</DropdownMenuItem>

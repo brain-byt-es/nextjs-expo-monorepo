@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useCallback, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -63,6 +65,7 @@ const ENTITY_OPTIONS = [
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export default function ImportPage() {
+  const t = useTranslations("importPage")
   const router = useRouter()
 
   // Wizard state
@@ -339,7 +342,7 @@ export default function ImportPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Datenimport</h1>
+          <h1 className="text-2xl font-bold">{t("title")}</h1>
           <p className="text-muted-foreground text-sm mt-1">
             CSV-Dateien importieren und Spalten zuordnen
           </p>
@@ -385,7 +388,7 @@ export default function ImportPage() {
         <div className="grid gap-6 lg:grid-cols-3">
           <Card className="lg:col-span-2">
             <CardHeader>
-              <CardTitle>Datei hochladen</CardTitle>
+              <CardTitle>{t("uploadFile")}</CardTitle>
               <CardDescription>
                 CSV-Datei per Drag & Drop oder Dateiauswahl hochladen
               </CardDescription>
@@ -487,7 +490,7 @@ export default function ImportPage() {
           {parsed && parsed.rows.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle className="text-base">Vorschau</CardTitle>
+                <CardTitle className="text-base">{t("previewTitle")}</CardTitle>
                 <CardDescription>
                   Erste {Math.min(5, parsed.rows.length)} Zeilen
                 </CardDescription>
@@ -535,7 +538,7 @@ export default function ImportPage() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>Spalten-Zuordnung</CardTitle>
+                <CardTitle>{t("columnMapping")}</CardTitle>
                 <CardDescription>
                   Ordnen Sie die CSV-Spalten den Feldern in LogistikApp zu
                 </CardDescription>
@@ -701,7 +704,7 @@ export default function ImportPage() {
           {/* Validation table */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Validierungsergebnis</CardTitle>
+              <CardTitle className="text-base">{t("validationResult")}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="overflow-auto max-h-96">

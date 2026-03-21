@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback, useMemo } from "react"
+import { useTranslations } from "next-intl"
 import {
   IconDownload,
   IconLoader2,
@@ -100,16 +101,10 @@ const PIE_COLORS = [
   "#f97316",
 ]
 
-const PRESET_RANGES = [
-  { label: "Letzte 7 Tage", days: 7 },
-  { label: "Letzte 30 Tage", days: 30 },
-  { label: "Letzte 90 Tage", days: 90 },
-]
-
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-function today() {
+function todayStr() {
   return new Date().toISOString().slice(0, 10)
 }
 
@@ -182,9 +177,12 @@ interface KpiCardProps {
   current: number
   previous: number
   loading: boolean
+  noPreviousLabel: string
+  vsPreviousLabel: string
+  noChangeLabel: string
 }
 
-function KpiCard({ title, icon: Icon, current, previous, loading }: KpiCardProps) {
+function KpiCard({ title, icon: Icon, current, previous, loading, noPreviousLabel, vsPreviousLabel, noChangeLabel }: KpiCardProps) {
   const change = pct(current, previous)
 
   return (
@@ -201,14 +199,14 @@ function KpiCard({ title, icon: Icon, current, previous, loading }: KpiCardProps
             <p className="text-3xl font-bold tabular-nums">{current.toLocaleString("de-CH")}</p>
             <div className="flex items-center gap-1 text-xs">
               {change === null ? (
-                <span className="text-muted-foreground">Kein Vorperiodenwert</span>
+                <span className="text-muted-foreground">{noPreviousLabel}</span>
               ) : change > 0 ? (
                 <>
                   <IconTrendingUp className="size-3 text-green-500" />
                   <span className="font-medium text-green-600 dark:text-green-400">
                     +{change}%
                   </span>
-                  <span className="text-muted-foreground">vs. Vorperiode</span>
+                  <span className="text-muted-foreground">{vsPreviousLabel}</span>
                 </>
               ) : change < 0 ? (
                 <>
@@ -216,12 +214,12 @@ function KpiCard({ title, icon: Icon, current, previous, loading }: KpiCardProps
                   <span className="font-medium text-red-600 dark:text-red-400">
                     {change}%
                   </span>
-                  <span className="text-muted-foreground">vs. Vorperiode</span>
+                  <span className="text-muted-foreground">{vsPreviousLabel}</span>
                 </>
               ) : (
                 <>
                   <IconMinus className="size-3 text-muted-foreground" />
-                  <span className="text-muted-foreground">Keine Änderung</span>
+                  <span className="text-muted-foreground">{noChangeLabel}</span>
                 </>
               )}
             </div>
@@ -258,13 +256,20 @@ function ChartTooltip({ active, payload, label }: {
 // Main Page
 // ---------------------------------------------------------------------------
 export default function AnalyticsPage() {
+  const t = useTranslations("analytics")
   const [preset, setPreset] = useState<string>("30")
   const [from, setFrom] = useState(daysAgo(30))
-  const [to, setTo] = useState(today())
+  const [to, setTo] = useState(todayStr())
   const [data, setData] = useState<AnalyticsData | null>(null)
   const [kpi, setKpi] = useState<KpiResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [kpiLoading, setKpiLoading] = useState(true)
+
+  const PRESET_RANGES = useMemo(() => [
+    { label: t("last7Days"), days: 7 },
+    { label: t("last30Days"), days: 30 },
+    { label: t("last90Days"), days: 90 },
+  ], [t])
 
   // Sync preset -> date range
   const handlePreset = (value: string) => {
@@ -272,11 +277,10 @@ export default function AnalyticsPage() {
     if (value !== "custom") {
       const days = parseInt(value, 10)
       setFrom(daysAgo(days))
-      setTo(today())
+      setTo(todayStr())
     }
   }
 
-  // Detect manual date change -> switch to custom
   const handleFromChange = (v: string) => {
     setFrom(v)
     setPreset("custom")
@@ -336,9 +340,9 @@ export default function AnalyticsPage() {
     downloadCsvBlob(
       "lagerbewegungen.csv",
       data.stockMovement.map((r) => ({
-        Datum: r.date,
-        Eingang: r.stockIn,
-        Ausgang: r.stockOut,
+        [t("columns.date" as Parameters<typeof t>[0]) || "Datum"]: r.date,
+        [t("inbound")]: r.stockIn,
+        [t("outbound")]: r.stockOut,
       }))
     )
   }
@@ -349,7 +353,7 @@ export default function AnalyticsPage() {
       "top-materialien.csv",
       data.topMaterials.map((r) => ({
         Material: r.name,
-        Bewegungen: r.changes,
+        [t("bookings")]: r.changes,
       }))
     )
   }
@@ -377,9 +381,9 @@ export default function AnalyticsPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Analytik</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Lagerstatistiken, Werkzeugauslastung und Materialverbrauch im Überblick.
+            {t("description")}
           </p>
         </div>
         <Button
@@ -390,7 +394,7 @@ export default function AnalyticsPage() {
           className="gap-2 self-start sm:self-auto"
         >
           <IconDownload className="size-4" />
-          Alle Daten exportieren
+          {t("exportAll")}
         </Button>
       </div>
 
@@ -398,7 +402,7 @@ export default function AnalyticsPage() {
       <Card>
         <CardContent className="flex flex-wrap items-end gap-4 pt-5">
           <div className="flex flex-col gap-1.5">
-            <Label className="text-xs">Zeitraum</Label>
+            <Label className="text-xs">{t("period")}</Label>
             <Select value={preset} onValueChange={handlePreset}>
               <SelectTrigger className="h-8 w-44 text-xs">
                 <SelectValue />
@@ -409,12 +413,12 @@ export default function AnalyticsPage() {
                     {p.label}
                   </SelectItem>
                 ))}
-                <SelectItem value="custom">Benutzerdefiniert</SelectItem>
+                <SelectItem value="custom">{t("custom")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="flex flex-col gap-1.5">
-            <Label className="text-xs">Von</Label>
+            <Label className="text-xs">{t("from")}</Label>
             <Input
               type="date"
               value={from}
@@ -423,7 +427,7 @@ export default function AnalyticsPage() {
             />
           </div>
           <div className="flex flex-col gap-1.5">
-            <Label className="text-xs">Bis</Label>
+            <Label className="text-xs">{t("to")}</Label>
             <Input
               type="date"
               value={to}
@@ -440,32 +444,44 @@ export default function AnalyticsPage() {
       {/* KPI Cards */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard
-          title="Eingänge"
+          title={t("stockIn")}
           icon={IconArrowsTransferDown}
           current={kpi?.current.stockInTotal ?? 0}
           previous={kpi?.previous.stockInTotal ?? 0}
           loading={kpiLoading}
+          noPreviousLabel={t("noPreviousPeriod")}
+          vsPreviousLabel={t("vsPrevious")}
+          noChangeLabel={t("noChange")}
         />
         <KpiCard
-          title="Ausgänge"
+          title={t("stockOut")}
           icon={IconArrowsTransferDown}
           current={kpi?.current.stockOutTotal ?? 0}
           previous={kpi?.previous.stockOutTotal ?? 0}
           loading={kpiLoading}
+          noPreviousLabel={t("noPreviousPeriod")}
+          vsPreviousLabel={t("vsPrevious")}
+          noChangeLabel={t("noChange")}
         />
         <KpiCard
-          title="Materialien bewegt"
+          title={t("materialsMoved")}
           icon={IconPackage}
           current={kpi?.current.uniqueMaterialsMoved ?? 0}
           previous={kpi?.previous.uniqueMaterialsMoved ?? 0}
           loading={kpiLoading}
+          noPreviousLabel={t("noPreviousPeriod")}
+          vsPreviousLabel={t("vsPrevious")}
+          noChangeLabel={t("noChange")}
         />
         <KpiCard
-          title="Werkzeug-Buchungen"
+          title={t("toolBookings")}
           icon={IconTool}
           current={kpi?.current.toolCheckouts ?? 0}
           previous={kpi?.previous.toolCheckouts ?? 0}
           loading={kpiLoading}
+          noPreviousLabel={t("noPreviousPeriod")}
+          vsPreviousLabel={t("vsPrevious")}
+          noChangeLabel={t("noChange")}
         />
       </div>
 
@@ -476,9 +492,9 @@ export default function AnalyticsPage() {
         <Card className="xl:col-span-2">
           <CardHeader className="flex flex-row items-start justify-between pb-2">
             <div>
-              <CardTitle className="text-base">Lagerbewegungen</CardTitle>
+              <CardTitle className="text-base">{t("stockMovements")}</CardTitle>
               <CardDescription className="text-xs">
-                Tägliche Ein- und Ausgänge im gewählten Zeitraum
+                {t("stockMovementsDesc")}
               </CardDescription>
             </div>
             <Button
@@ -497,7 +513,7 @@ export default function AnalyticsPage() {
               <ChartSkeleton height={280} />
             ) : !stockMovementFormatted.length ? (
               <div className="flex h-[280px] items-center justify-center text-sm text-muted-foreground">
-                Keine Lagerbewegungen im gewählten Zeitraum
+                {t("noStockMovements")}
               </div>
             ) : (
               <ResponsiveContainer width="100%" height={280}>
@@ -526,7 +542,7 @@ export default function AnalyticsPage() {
                   <Line
                     type="monotone"
                     dataKey="stockIn"
-                    name="Eingang"
+                    name={t("inbound")}
                     stroke="var(--chart-2, #22c55e)"
                     strokeWidth={2}
                     dot={false}
@@ -535,7 +551,7 @@ export default function AnalyticsPage() {
                   <Line
                     type="monotone"
                     dataKey="stockOut"
-                    name="Ausgang"
+                    name={t("outbound")}
                     stroke="var(--chart-1, #6366f1)"
                     strokeWidth={2}
                     dot={false}
@@ -550,9 +566,9 @@ export default function AnalyticsPage() {
         {/* ── Material Categories Pie Chart ──────────────────────── */}
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Materialien nach Gruppe</CardTitle>
+            <CardTitle className="text-base">{t("materialsByGroup")}</CardTitle>
             <CardDescription className="text-xs">
-              Verteilung aller aktiven Materialien
+              {t("materialsByGroupDesc")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -560,7 +576,7 @@ export default function AnalyticsPage() {
               <ChartSkeleton height={280} />
             ) : !data?.materialCategories?.length ? (
               <div className="flex h-[280px] items-center justify-center text-sm text-muted-foreground">
-                Keine Daten verfügbar
+                {t("noDataAvailable")}
               </div>
             ) : (
               <div className="flex flex-col gap-4">
@@ -616,9 +632,9 @@ export default function AnalyticsPage() {
         {/* ── Tool Utilization Bar Chart ─────────────────────────── */}
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Werkzeugauslastung</CardTitle>
+            <CardTitle className="text-base">{t("toolUtilization")}</CardTitle>
             <CardDescription className="text-xs">
-              Ausgecheckte vs. verfügbare Werkzeuge pro Gruppe
+              {t("toolUtilizationDesc")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -626,7 +642,7 @@ export default function AnalyticsPage() {
               <ChartSkeleton height={280} />
             ) : !data?.toolUtilization?.length ? (
               <div className="flex h-[280px] items-center justify-center text-sm text-muted-foreground">
-                Keine Werkzeugdaten verfügbar
+                {t("noToolData")}
               </div>
             ) : (
               <ResponsiveContainer width="100%" height={280}>
@@ -656,14 +672,14 @@ export default function AnalyticsPage() {
                   <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
                   <Bar
                     dataKey="available"
-                    name="Verfügbar"
+                    name={t("available")}
                     fill="var(--chart-2, #22c55e)"
                     radius={[0, 3, 3, 0]}
                     stackId="a"
                   />
                   <Bar
                     dataKey="checkedOut"
-                    name="Ausgecheckt"
+                    name={t("checkedOut")}
                     fill="var(--chart-1, #6366f1)"
                     radius={[0, 3, 3, 0]}
                     stackId="a"
@@ -678,9 +694,9 @@ export default function AnalyticsPage() {
         <Card className="xl:col-span-2">
           <CardHeader className="flex flex-row items-start justify-between pb-2">
             <div>
-              <CardTitle className="text-base">Top 10 Materialien</CardTitle>
+              <CardTitle className="text-base">{t("top10Materials")}</CardTitle>
               <CardDescription className="text-xs">
-                Meistbewegte Materialien im gewählten Zeitraum (Anzahl Buchungen)
+                {t("top10MaterialsDesc")}
               </CardDescription>
             </div>
             <div className="flex items-center gap-2">
@@ -702,7 +718,7 @@ export default function AnalyticsPage() {
               <ChartSkeleton height={300} />
             ) : !data?.topMaterials?.length ? (
               <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
-                Keine Bewegungen im gewählten Zeitraum
+                {t("noMovements")}
               </div>
             ) : (
               <ResponsiveContainer width="100%" height={300}>
@@ -727,18 +743,18 @@ export default function AnalyticsPage() {
                     axisLine={false}
                     width={150}
                     tickFormatter={(v: string) =>
-                      v.length > 22 ? v.slice(0, 21) + "…" : v
+                      v.length > 22 ? v.slice(0, 21) + "\u2026" : v
                     }
                   />
                   <Tooltip
                     formatter={(value) => [
                       Number(value ?? 0).toLocaleString("de-CH"),
-                      "Buchungen",
+                      t("bookings"),
                     ]}
                   />
                   <Bar
                     dataKey="changes"
-                    name="Buchungen"
+                    name={t("bookings")}
                     fill="var(--chart-3, #f59e0b)"
                     radius={[0, 4, 4, 0]}
                     label={{

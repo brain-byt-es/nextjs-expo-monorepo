@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import {
   IconClipboardList,
   IconGripVertical,
@@ -43,12 +44,15 @@ interface Commission {
 }
 
 // ── Column definitions ────────────────────────────────────────────────
-const COLUMNS: { id: CommissionStatus; label: string; color: string }[] = [
-  { id: "open", label: "Offen", color: "bg-muted/60" },
-  { id: "in_progress", label: "In Bearbeitung", color: "bg-blue-50 dark:bg-blue-950/30" },
-  { id: "ready", label: "Bereit", color: "bg-amber-50 dark:bg-amber-950/30" },
-  { id: "completed", label: "Abgeschlossen", color: "bg-green-50 dark:bg-green-950/30" },
-]
+function useColumns() {
+  const t = useTranslations("commissions")
+  return [
+    { id: "open" as CommissionStatus, label: t("open"), color: "bg-muted/60" },
+    { id: "in_progress" as CommissionStatus, label: t("inProgress"), color: "bg-blue-50 dark:bg-blue-950/30" },
+    { id: "ready" as CommissionStatus, label: t("ready"), color: "bg-amber-50 dark:bg-amber-950/30" },
+    { id: "completed" as CommissionStatus, label: t("completed"), color: "bg-green-50 dark:bg-green-950/30" },
+  ]
+}
 
 function ProgressBar({ total, done }: { total: number; done: number }) {
   const pct = total > 0 ? Math.round((done / total) * 100) : 0
@@ -72,6 +76,7 @@ function KanbanCard({
   commission: Commission
   onDragStart: (e: React.DragEvent, id: string) => void
 }) {
+  const t = useTranslations("commissions")
   const entryCount = Number(commission.entryCount ?? 0)
   // Rough progress: completed commissions = 100%, open = 0%, others = 50%
   const done =
@@ -128,7 +133,7 @@ function KanbanCard({
           <div className="space-y-1">
             <div className="flex items-center justify-between">
               <span className="text-[10px] text-muted-foreground">
-                {entryCount} {entryCount === 1 ? "Eintrag" : "Einträge"}
+                {entryCount} {entryCount === 1 ? t("entry") : t("entries")}
               </span>
             </div>
             {entryCount > 0 && <ProgressBar total={entryCount} done={done} />}
@@ -160,13 +165,14 @@ function KanbanColumn({
   dragOverColumn,
   setDragOverColumn,
 }: {
-  column: (typeof COLUMNS)[number]
+  column: { id: CommissionStatus; label: string; color: string }
   commissions: Commission[]
   onDragStart: (e: React.DragEvent, id: string) => void
   onDrop: (status: CommissionStatus) => void
   dragOverColumn: CommissionStatus | null
   setDragOverColumn: (v: CommissionStatus | null) => void
 }) {
+  const t = useTranslations("commissions")
   const isOver = dragOverColumn === column.id
 
   return (
@@ -201,7 +207,7 @@ function KanbanColumn({
       <div className="flex-1 overflow-y-auto px-2 pb-2 space-y-2 min-h-[200px]">
         {commissions.length === 0 && (
           <div className="flex items-center justify-center h-24 text-xs text-muted-foreground/60 border border-dashed border-border/40 rounded-lg">
-            Keine Kommissionen
+            {t("noCommissionsInColumn")}
           </div>
         )}
         {commissions.map((c) => (
@@ -214,6 +220,9 @@ function KanbanColumn({
 
 // ── Page ──────────────────────────────────────────────────────────────
 export default function CommissionsKanbanPage() {
+  const t = useTranslations("commissions")
+  const tc = useTranslations("common")
+  const columns = useColumns()
   const [commissions, setCommissions] = useState<Commission[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
@@ -315,17 +324,17 @@ export default function CommissionsKanbanPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-foreground flex items-center gap-2">
             <IconLayoutKanban className="size-6" />
-            Kommissionen Kanban
+            {t("kanbanTitle")}
           </h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            {commissions.length} Kommissionen · Drag & Drop zum Status ändern
+            {t("kanbanSubtitle", { count: commissions.length })}
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" asChild className="gap-2">
             <Link href="/dashboard/commissions">
               <IconTable className="size-4" />
-              Tabellenansicht
+              {t("tableView")}
             </Link>
           </Button>
         </div>
@@ -336,7 +345,7 @@ export default function CommissionsKanbanPage() {
         <div className="relative min-w-[200px]">
           <IconFilter className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input
-            placeholder="Suchen..."
+            placeholder={tc("search")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-9"
@@ -344,10 +353,10 @@ export default function CommissionsKanbanPage() {
         </div>
         <Select value={customerFilter} onValueChange={setCustomerFilter}>
           <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Kunde" />
+            <SelectValue placeholder={t("customer")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Alle Kunden</SelectItem>
+            <SelectItem value="all">{t("allCustomers")}</SelectItem>
             {customers.map((c) => (
               <SelectItem key={c.id} value={c.id}>
                 {c.name}
@@ -357,10 +366,10 @@ export default function CommissionsKanbanPage() {
         </Select>
         <Select value={responsibleFilter} onValueChange={setResponsibleFilter}>
           <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Verantwortlich" />
+            <SelectValue placeholder={t("responsible")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Alle Mitarbeiter</SelectItem>
+            <SelectItem value="all">{t("allEmployees")}</SelectItem>
             {responsibles.map((r) => (
               <SelectItem key={r.id} value={r.id}>
                 {r.name}
@@ -378,15 +387,15 @@ export default function CommissionsKanbanPage() {
       ) : commissions.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center gap-3 text-muted-foreground">
           <IconClipboardList className="size-16 text-muted-foreground/30" />
-          <p className="text-sm">Noch keine Kommissionen vorhanden.</p>
+          <p className="text-sm">{t("noCommissions")}</p>
           <Button variant="outline" asChild>
-            <Link href="/dashboard/commissions">Zur Tabellenansicht</Link>
+            <Link href="/dashboard/commissions">{t("goToTable")}</Link>
           </Button>
         </div>
       ) : (
         <div className="flex-1 overflow-x-auto">
           <div className="flex gap-4 min-h-0 h-full pb-4">
-            {COLUMNS.map((col) => (
+            {columns.map((col) => (
               <KanbanColumn
                 key={col.id}
                 column={col}

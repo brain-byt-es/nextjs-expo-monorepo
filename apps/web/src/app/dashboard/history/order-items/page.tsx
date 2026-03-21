@@ -75,6 +75,7 @@ function downloadCsv(headers: string[], rows: (string | number | null | undefine
 
 export default function HistoryOrderItemsPage() {
   const t = useTranslations("history")
+  const tc = useTranslations("common")
   const [search, setSearch] = useState("")
   const [supplierFilter, setSupplierFilter] = useState("all")
   const [dateFrom, setDateFrom] = useState("")
@@ -135,19 +136,19 @@ export default function HistoryOrderItemsPage() {
       <div className="flex flex-wrap gap-3">
         <div className="relative flex-1 max-w-sm">
           <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-          <Input placeholder="Suchen…" value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} className="pl-9" />
+          <Input placeholder={tc("search")} value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} className="pl-9" />
         </div>
         <Select value={supplierFilter} onValueChange={v => { setSupplierFilter(v); setPage(1) }}>
           <SelectTrigger className="w-48">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Alle Lieferanten</SelectItem>
+            <SelectItem value="all">{t("allSuppliers")}</SelectItem>
             {suppliers.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
           </SelectContent>
         </Select>
         <div className="flex items-center gap-2">
-          <label className="text-sm text-muted-foreground whitespace-nowrap">Von</label>
+          <label className="text-sm text-muted-foreground whitespace-nowrap">{t("dateFrom")}</label>
           <input
             type="date"
             value={dateFrom}
@@ -156,7 +157,7 @@ export default function HistoryOrderItemsPage() {
           />
         </div>
         <div className="flex items-center gap-2">
-          <label className="text-sm text-muted-foreground whitespace-nowrap">Bis</label>
+          <label className="text-sm text-muted-foreground whitespace-nowrap">{t("dateTo")}</label>
           <input
             type="date"
             value={dateTo}
@@ -195,7 +196,7 @@ export default function HistoryOrderItemsPage() {
                   <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[100px] text-right cursor-pointer select-none" onClick={() => toggleSort("price")}>
                     Preis/Stk<SortIcon sortKey={sortKey} sortDir={sortDir} col="price" />
                   </TableHead>
-                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[100px] text-right">Total</TableHead>
+                  <TableHead className="text-xs font-medium text-muted-foreground uppercase tracking-wider w-[100px] text-right">{t("total")}</TableHead>
                   <TableHead className="w-[60px] text-center">OK</TableHead>
                 </TableRow>
               </TableHeader>
@@ -241,8 +242,8 @@ export default function HistoryOrderItemsPage() {
       <div className="flex items-center justify-between text-sm text-muted-foreground">
         <span>
           {total === 0
-            ? "Keine Einträge"
-            : `Zeige ${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, total)} von ${total} Einträgen`}
+            ? t("noEntries")
+            : t("showingRange", { from: (page - 1) * PAGE_SIZE + 1, to: Math.min(page * PAGE_SIZE, total), total })}
         </span>
         <div className="flex items-center gap-1">
           <Button

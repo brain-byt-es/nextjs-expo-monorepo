@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback, useMemo } from "react"
+import { useTranslations } from "next-intl"
 import {
   IconLoader2,
   IconShoppingCart,
@@ -190,6 +191,7 @@ function PipelineStep({
 // Main Page
 // ---------------------------------------------------------------------------
 export default function SupplyChainPage() {
+  const t = useTranslations("supplyChain")
   const [data, setData] = useState<SupplyChainData | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -228,9 +230,9 @@ export default function SupplyChainPage() {
     <div className="flex flex-col gap-6 px-4 py-6 lg:px-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Lieferkette</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Gesamtansicht der Supply Chain: Lieferanten, Bestellungen, Lieferungen, Bestand und Verbrauch.
+          {t("description")}
         </p>
       </div>
 
@@ -247,12 +249,12 @@ export default function SupplyChainPage() {
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <IconShoppingCart className="size-4" />
-                  Bestellvolumen
+                  {t("orderVolume")}
                 </div>
                 <p className="text-3xl font-bold tabular-nums">
                   CHF {(data?.stats.totalVolume ?? 0).toLocaleString("de-CH")}
                 </p>
-                <p className="text-xs text-muted-foreground">Alle Bestellungen</p>
+                <p className="text-xs text-muted-foreground">{t("allOrders")}</p>
               </div>
             )}
           </CardContent>
@@ -269,12 +271,12 @@ export default function SupplyChainPage() {
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <IconAlertTriangle className="size-4" />
-                  Offene Bestellungen
+                  {t("openOrders")}
                 </div>
                 <p className="text-3xl font-bold tabular-nums">
                   {data?.stats.openOrders ?? 0}
                 </p>
-                <p className="text-xs text-muted-foreground">Entwurf, bestellt oder teilgeliefert</p>
+                <p className="text-xs text-muted-foreground">{t("openOrdersDesc")}</p>
               </div>
             )}
           </CardContent>
@@ -291,12 +293,12 @@ export default function SupplyChainPage() {
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <IconClock className="size-4" />
-                  Ø Lieferzeit
+                  {t("avgDeliveryTime")}
                 </div>
                 <p className="text-3xl font-bold tabular-nums">
-                  {data?.stats.avgDeliveryDays ?? 0} Tage
+                  {data?.stats.avgDeliveryDays ?? 0} {t("days")}
                 </p>
-                <p className="text-xs text-muted-foreground">Durchschnitt aller Lieferanten</p>
+                <p className="text-xs text-muted-foreground">{t("avgDeliveryTimeDesc")}</p>
               </div>
             )}
           </CardContent>
@@ -313,7 +315,7 @@ export default function SupplyChainPage() {
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <IconCheck className="size-4" />
-                  Pünktlichkeitsrate
+                  {t("onTimeRate")}
                 </div>
                 <p className="text-3xl font-bold tabular-nums">
                   {data?.stats.onTimeRate ?? 0}%
@@ -328,9 +330,9 @@ export default function SupplyChainPage() {
       {/* Pipeline Overview */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-base">Bestell-Pipeline</CardTitle>
+          <CardTitle className="text-base">{t("orderPipeline")}</CardTitle>
           <CardDescription className="text-xs">
-            Aktuelle Verteilung aller Bestellungen nach Status
+            {t("orderPipelineDesc")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -347,28 +349,28 @@ export default function SupplyChainPage() {
           ) : (
             <div className="flex flex-wrap items-start justify-center gap-2 py-4 sm:gap-4">
               <PipelineStep
-                label="Entwurf"
+                label={t("draft")}
                 count={data?.pipeline.draft ?? 0}
                 icon={IconShoppingCart}
                 colorClass="text-indigo-500"
                 bgClass="bg-indigo-500/10"
               />
               <PipelineStep
-                label="Bestellt"
+                label={t("ordered")}
                 count={data?.pipeline.ordered ?? 0}
                 icon={IconClock}
                 colorClass="text-amber-500"
                 bgClass="bg-amber-500/10"
               />
               <PipelineStep
-                label="Teilgeliefert"
+                label={t("partiallyDelivered")}
                 count={data?.pipeline.partial ?? 0}
                 icon={IconTruck}
                 colorClass="text-pink-500"
                 bgClass="bg-pink-500/10"
               />
               <PipelineStep
-                label="Geliefert"
+                label={t("delivered")}
                 count={data?.pipeline.received ?? 0}
                 icon={IconCheck}
                 colorClass="text-green-500"
@@ -385,9 +387,9 @@ export default function SupplyChainPage() {
         {/* Stock Flow Area Chart */}
         <Card className="xl:col-span-2">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Warenfluss</CardTitle>
+            <CardTitle className="text-base">{t("goodsFlow")}</CardTitle>
             <CardDescription className="text-xs">
-              Monatliche Ein- und Ausgänge der letzten 6 Monate
+              {t("goodsFlowDesc")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -395,7 +397,7 @@ export default function SupplyChainPage() {
               <ChartSkeleton height={280} />
             ) : !data?.stockFlow?.length ? (
               <div className="flex h-[280px] items-center justify-center text-sm text-muted-foreground">
-                Keine Daten verfügbar
+                {t("noDataAvailable")}
               </div>
             ) : (
               <ResponsiveContainer width="100%" height={280}>
@@ -431,7 +433,7 @@ export default function SupplyChainPage() {
                   <Area
                     type="monotone"
                     dataKey="inbound"
-                    name="Eingang"
+                    name={t("inbound")}
                     stroke="var(--chart-2, #22c55e)"
                     strokeWidth={2}
                     fill="url(#gradInbound)"
@@ -439,7 +441,7 @@ export default function SupplyChainPage() {
                   <Area
                     type="monotone"
                     dataKey="outbound"
-                    name="Ausgang"
+                    name={t("outbound")}
                     stroke="var(--chart-1, #6366f1)"
                     strokeWidth={2}
                     fill="url(#gradOutbound)"
@@ -456,9 +458,9 @@ export default function SupplyChainPage() {
             <div className="flex items-center gap-2">
               <IconChartBar className="size-4 text-muted-foreground" />
               <div>
-                <CardTitle className="text-base">Top Verbrauch</CardTitle>
+                <CardTitle className="text-base">{t("topConsumption")}</CardTitle>
                 <CardDescription className="text-xs">
-                  Meistverbrauchte Materialien (letzte 30 Tage)
+                  {t("topConsumptionDesc")}
                 </CardDescription>
               </div>
             </div>
@@ -468,7 +470,7 @@ export default function SupplyChainPage() {
               <ChartSkeleton height={280} />
             ) : !data?.topConsumed?.length ? (
               <div className="flex h-[280px] items-center justify-center text-sm text-muted-foreground">
-                Keine Verbrauchsdaten verfügbar
+                {t("noConsumptionData")}
               </div>
             ) : (
               <ResponsiveContainer width="100%" height={280}>
@@ -499,12 +501,12 @@ export default function SupplyChainPage() {
                   <Tooltip
                     formatter={(value) => [
                       Number(value ?? 0).toLocaleString("de-CH"),
-                      "Menge",
+                      t("quantity"),
                     ]}
                   />
                   <Bar
                     dataKey="quantity"
-                    name="Verbrauch"
+                    name={t("consumption")}
                     fill="var(--chart-3, #f59e0b)"
                     radius={[0, 4, 4, 0]}
                     label={{
@@ -522,9 +524,9 @@ export default function SupplyChainPage() {
         {/* Delivery Status Pie Chart */}
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Lieferstatus</CardTitle>
+            <CardTitle className="text-base">{t("deliveryStatus")}</CardTitle>
             <CardDescription className="text-xs">
-              Aktuelle Verteilung aller Lieferungen
+              {t("deliveryStatusDesc")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -532,7 +534,7 @@ export default function SupplyChainPage() {
               <ChartSkeleton height={280} />
             ) : !data?.deliveryStatus?.length ? (
               <div className="flex h-[280px] items-center justify-center text-sm text-muted-foreground">
-                Keine Lieferungen vorhanden
+                {t("noDeliveries")}
               </div>
             ) : (
               <div className="flex flex-col gap-4">
@@ -582,7 +584,7 @@ export default function SupplyChainPage() {
                   ))}
                   {totalDeliveries > 0 && (
                     <div className="flex items-center gap-1.5 text-xs">
-                      <span className="text-muted-foreground">Total:</span>
+                      <span className="text-muted-foreground">{t("total")}:</span>
                       <Badge variant="outline" className="h-4 px-1 text-[10px]">
                         {totalDeliveries}
                       </Badge>
@@ -598,9 +600,9 @@ export default function SupplyChainPage() {
       {/* Supplier Performance Table */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-base">Lieferantenperformance</CardTitle>
+          <CardTitle className="text-base">{t("supplierPerformance")}</CardTitle>
           <CardDescription className="text-xs">
-            Bestellvolumen, Lieferzeiten und Bewertungen der Top-Lieferanten
+            {t("supplierPerformanceDesc")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -612,18 +614,18 @@ export default function SupplyChainPage() {
             </div>
           ) : !data?.supplierPerformance?.length ? (
             <div className="flex h-40 items-center justify-center text-sm text-muted-foreground">
-              Keine Lieferantendaten vorhanden
+              {t("noSupplierData")}
             </div>
           ) : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Lieferant</TableHead>
-                    <TableHead className="text-right">Bestellungen</TableHead>
-                    <TableHead className="text-right">Ø Lieferzeit</TableHead>
-                    <TableHead className="text-right">Pünktlichkeit</TableHead>
-                    <TableHead>Bewertung</TableHead>
+                    <TableHead>{t("supplier")}</TableHead>
+                    <TableHead className="text-right">{t("orders")}</TableHead>
+                    <TableHead className="text-right">{t("avgDelivery")}</TableHead>
+                    <TableHead className="text-right">{t("punctuality")}</TableHead>
+                    <TableHead>{t("rating")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -632,7 +634,7 @@ export default function SupplyChainPage() {
                       <TableCell className="font-medium">{s.name}</TableCell>
                       <TableCell className="text-right tabular-nums">{s.orders}</TableCell>
                       <TableCell className="text-right tabular-nums">
-                        {s.avgDays !== null ? `${s.avgDays} Tage` : "--"}
+                        {s.avgDays !== null ? `${s.avgDays} ${t("days")}` : "--"}
                       </TableCell>
                       <TableCell className="text-right">
                         {s.onTimeRate !== null ? (

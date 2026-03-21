@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useEffect, useState, useCallback, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -49,6 +51,7 @@ import {
 // ---------------------------------------------------------------------------
 
 export default function RfidSettingsPage() {
+  const ts = useTranslations("settings")
   // ── Config State (lazy-initialized from localStorage) ────────────────────
   const [config, setConfig] = useState<RfidReaderConfig>(() => loadRfidConfig())
   const [host, setHost] = useState(() => {
@@ -201,7 +204,7 @@ export default function RfidSettingsPage() {
     <div className="space-y-8 px-4 py-4 md:px-6 md:py-6 lg:px-8 lg:py-8">
       {/* Page header */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">RFID Reader</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{ts("rfidTitle")}</h1>
         <p className="mt-2 text-muted-foreground">
           Konfigurieren Sie die Verbindung zu Ihrem UHF-RFID-Reader für
           automatische Tag-Erkennung und Bestandsverfolgung.

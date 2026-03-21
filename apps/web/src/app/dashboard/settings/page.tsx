@@ -39,7 +39,17 @@ import {
 } from "@/components/ui/select"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { useTranslations } from "next-intl"
-import { IconCamera, IconAlertTriangle, IconCheck, IconShieldLock } from "@tabler/icons-react"
+import {
+  IconCamera,
+  IconAlertTriangle,
+  IconCheck,
+  IconShieldLock,
+  IconDeviceDesktop,
+  IconShield,
+  IconPlugConnected,
+  IconAdjustments,
+  IconBuilding,
+} from "@tabler/icons-react"
 import { DsgvoExportCard } from "@/components/dsgvo-export-card"
 import { DsgvoDeleteCard } from "@/components/dsgvo-delete-card"
 import Link from "next/link"
@@ -122,6 +132,61 @@ function TwoFactorBadge() {
     </Badge>
   )
 }
+
+// ── Settings Categories ───────────────────────────────────────────────────────
+
+const SETTINGS_CATEGORIES = [
+  {
+    title: "Hardware & Geräte",
+    icon: IconDeviceDesktop,
+    links: [
+      { label: "Handscanner", href: "/dashboard/settings/scanner" },
+      { label: "Etikettendrucker", href: "/dashboard/settings/printer" },
+      { label: "RFID Reader", href: "/dashboard/settings/rfid" },
+      { label: "Schnelltasten", href: "/dashboard/settings/keypad" },
+    ],
+  },
+  {
+    title: "Sicherheit & Zugriff",
+    icon: IconShield,
+    links: [
+      { label: "Team", href: "/dashboard/settings/team" },
+      { label: "Rollen", href: "/dashboard/settings/roles" },
+      { label: "Sitzungen", href: "/dashboard/settings/sessions" },
+      { label: "IP-Zugriff", href: "/dashboard/settings/ip-allowlist" },
+      { label: "Zwei-Faktor-Auth", href: "/dashboard/settings/two-factor" },
+    ],
+  },
+  {
+    title: "Integrationen",
+    icon: IconPlugConnected,
+    links: [
+      { label: "Integrationen", href: "/dashboard/settings/integrations" },
+      { label: "Plugins", href: "/dashboard/settings/plugins" },
+      { label: "KI-Funktionen", href: "/dashboard/settings/ai" },
+      { label: "E-Mail Posteingang", href: "/dashboard/settings/email-inbox" },
+    ],
+  },
+  {
+    title: "Konfiguration",
+    icon: IconAdjustments,
+    links: [
+      { label: "Benachrichtigungen", href: "/dashboard/settings/alerts" },
+      { label: "Automatisierungen", href: "/dashboard/settings/automations" },
+      { label: "Benutzerdefinierte Felder", href: "/dashboard/settings/custom-fields" },
+      { label: "Wartungs-Checklisten", href: "/dashboard/settings/checklists" },
+      { label: "Geplante Berichte", href: "/dashboard/settings/scheduled-reports" },
+    ],
+  },
+  {
+    title: "Organisation",
+    icon: IconBuilding,
+    links: [
+      { label: "Branding", href: "/dashboard/settings/branding" },
+      { label: "Datenhaltung", href: "/dashboard/settings/data-retention" },
+    ],
+  },
+]
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
 
@@ -311,6 +376,36 @@ export default function SettingsPage() {
           {t("subtitle")}
         </p>
       </div>
+
+      {/* ── Settings Navigation Grid ── */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {SETTINGS_CATEGORIES.map((category) => (
+          <Card key={category.title}>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <category.icon className="size-5 text-muted-foreground" />
+                {category.title}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <ul className="space-y-1">
+                {category.links.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="inline-block text-sm text-muted-foreground transition-colors hover:text-foreground hover:underline"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Separator />
 
       {/* ── Profil ── */}
       <Card>

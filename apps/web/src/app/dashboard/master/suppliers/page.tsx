@@ -1,5 +1,7 @@
 "use client"
 
+import { useTranslations } from "next-intl"
+
 import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import {
@@ -52,6 +54,8 @@ interface SupplierWithRating extends Supplier {
 // ── Page ───────────────────────────────────────────────────────────────────────
 export default function SuppliersPage() {
   const router = useRouter()
+  const t = useTranslations("masterData")
+  const tc = useTranslations("common")
   const [search, setSearch] = useState("")
   const [items, setItems] = useState<SupplierWithRating[]>([])
   const [loading, setLoading] = useState(true)
@@ -138,7 +142,7 @@ export default function SuppliersPage() {
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("Lieferant wirklich löschen?")) return
+    if (!confirm(t("deleteSupplierConfirm"))) return
     try {
       await fetch(`/api/suppliers/${id}`, { method: "DELETE" })
       setItems((prev) => prev.filter((item) => item.id !== id))
@@ -151,23 +155,23 @@ export default function SuppliersPage() {
     <div className="flex flex-col gap-6 py-4 md:py-6">
       <div className="flex items-center justify-between px-4 lg:px-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Lieferanten</h1>
-          <p className="text-muted-foreground text-sm mt-1">Stammdaten verwalten</p>
+          <h1 className="text-2xl font-bold tracking-tight">{t("suppliers")}</h1>
+          <p className="text-muted-foreground text-sm mt-1">{t("manageMasterData")}</p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <IconPlus className="mr-2 size-4" />
-              Lieferant hinzufügen
+              {t("addSupplier")}
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Lieferant hinzufügen</DialogTitle>
+              <DialogTitle>{t("addSupplier")}</DialogTitle>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label>Name *</Label>
+                <Label>{t("name")} *</Label>
                 <Input
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -175,7 +179,7 @@ export default function SuppliersPage() {
                 />
               </div>
               <div className="grid gap-2">
-                <Label>Lieferantennummer</Label>
+                <Label>{t("supplierNumber")}</Label>
                 <Input
                   value={form.supplierNumber}
                   onChange={(e) => setForm({ ...form, supplierNumber: e.target.value })}
@@ -183,14 +187,14 @@ export default function SuppliersPage() {
                 />
               </div>
               <div className="grid gap-2">
-                <Label>Kontaktperson</Label>
+                <Label>{t("contactPerson")}</Label>
                 <Input
                   value={form.contactPerson}
                   onChange={(e) => setForm({ ...form, contactPerson: e.target.value })}
                 />
               </div>
               <div className="grid gap-2">
-                <Label>E-Mail</Label>
+                <Label>{t("email")}</Label>
                 <Input
                   type="email"
                   value={form.email}
@@ -198,7 +202,7 @@ export default function SuppliersPage() {
                 />
               </div>
               <div className="grid gap-2">
-                <Label>Telefon</Label>
+                <Label>{t("phone")}</Label>
                 <Input
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -207,10 +211,10 @@ export default function SuppliersPage() {
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setDialogOpen(false)} disabled={saving}>
-                Abbrechen
+                {tc("cancel")}
               </Button>
               <Button onClick={handleCreate} disabled={!form.name.trim() || saving}>
-                Erstellen
+                {tc("create")}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -225,7 +229,7 @@ export default function SuppliersPage() {
                 <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                 <Input
                   className="pl-9"
-                  placeholder="Lieferant suchen…"
+                  placeholder={t("searchSupplier")}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -241,19 +245,19 @@ export default function SuppliersPage() {
               </div>
             ) : filtered.length === 0 ? (
               <div className="flex items-center justify-center py-12 text-muted-foreground text-sm">
-                Keine Lieferanten gefunden
+                {t("noSuppliersFound")}
               </div>
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Nr.</TableHead>
-                    <TableHead>Kontaktperson</TableHead>
-                    <TableHead>E-Mail</TableHead>
-                    <TableHead>Telefon</TableHead>
-                    <TableHead>Bewertung</TableHead>
-                    <TableHead className="w-[120px]">Aktionen</TableHead>
+                    <TableHead>{t("name")}</TableHead>
+                    <TableHead>{t("numberShort")}</TableHead>
+                    <TableHead>{t("contactPerson")}</TableHead>
+                    <TableHead>{t("email")}</TableHead>
+                    <TableHead>{t("phone")}</TableHead>
+                    <TableHead>{t("rating")}</TableHead>
+                    <TableHead className="w-[120px]">{tc("actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 import { FeatureGate } from "@/components/upgrade-prompt"
 import {
   IconAdjustments,
@@ -64,14 +65,14 @@ interface AutoAdjustRow {
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
-function formatRelativeTime(iso: string | null): string {
-  if (!iso) return "Nie"
+function formatRelativeTime(iso: string | null, t: (key: string, values?: Record<string, unknown>) => string): string {
+  if (!iso) return t("never")
   const diff = (Date.now() - new Date(iso).getTime()) / 1000
-  if (diff < 60) return "Gerade eben"
-  if (diff < 3600) return `vor ${Math.floor(diff / 60)} Min.`
-  if (diff < 86400) return `vor ${Math.floor(diff / 3600)} Std.`
+  if (diff < 60) return t("justNow")
+  if (diff < 3600) return t("minutesAgo", { count: Math.floor(diff / 60) })
+  if (diff < 86400) return t("hoursAgo", { count: Math.floor(diff / 3600) })
   if (diff < 86400 * 7)
-    return `vor ${Math.floor(diff / 86400)} Tag${Math.floor(diff / 86400) !== 1 ? "en" : ""}`
+    return t("daysAgo", { count: Math.floor(diff / 86400) })
   return new Date(iso).toLocaleDateString("de-CH", {
     day: "2-digit",
     month: "2-digit",
@@ -133,6 +134,8 @@ export default function StockAutoAdjustPage() {
 }
 
 function StockAutoAdjustPageContent() {
+  const t = useTranslations("stockAdjust")
+  const tc = useTranslations("common")
   const [rows, setRows] = useState<AutoAdjustRow[]>([])
   const [loading, setLoading] = useState(true)
   const [calculating, setCalculating] = useState(false)
@@ -294,16 +297,16 @@ function StockAutoAdjustPageContent() {
             >
               <Link href="/dashboard">
                 <IconArrowLeft className="size-3.5" />
-                Dashboard
+                {t("dashboard")}
               </Link>
             </Button>
           </div>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
             <IconAdjustments className="size-6 text-primary" />
-            Min/Max Auto-Adjust
+            {t("title")}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Automatische Berechnung optimaler Mindest- und Maximalbestande basierend auf Verbrauchsdaten
+            {t("pageDescription")}
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
@@ -311,21 +314,20 @@ function StockAutoAdjustPageContent() {
             <DialogTrigger asChild>
               <Button variant="outline" size="sm" className="gap-1.5">
                 <IconSettings className="size-3.5" />
-                Konfiguration
+                {t("configuration")}
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Auto-Adjust Konfiguration</DialogTitle>
+                <DialogTitle>{t("configTitle")}</DialogTitle>
                 <DialogDescription>
-                  Einstellungen fur die automatische Berechnung. Gilt fur alle
-                  aktivierten Materialien.
+                  {t("configDescription")}
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium flex items-center gap-1.5">
-                    Betrachtungszeitraum (Tage)
+                    {t("lookbackDays")}
                     <InfoTooltip text={TOOLTIPS.stockLookbackDays} />
                   </label>
                   <Input
@@ -337,12 +339,12 @@ function StockAutoAdjustPageContent() {
                     placeholder="90"
                   />
                   <p className="text-xs text-muted-foreground">
-                    Anzahl Tage fur die Verbrauchsanalyse (7-365)
+                    {t("lookbackDaysDesc")}
                   </p>
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium flex items-center gap-1.5">
-                    Sicherheitsfaktor
+                    {t("safetyFactor")}
                     <InfoTooltip text={TOOLTIPS.stockSafetyFactor} />
                   </label>
                   <Input
@@ -355,15 +357,15 @@ function StockAutoAdjustPageContent() {
                     placeholder="1.5"
                   />
                   <p className="text-xs text-muted-foreground">
-                    Multiplikator fur den Sicherheitsbestand (1.0 = kein Puffer, 2.0 = doppelter Puffer)
+                    {t("safetyFactorDesc")}
                   </p>
                 </div>
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setConfigOpen(false)}>
-                  Abbrechen
+                  {tc("cancel")}
                 </Button>
-                <Button onClick={handleSaveConfig}>Speichern</Button>
+                <Button onClick={handleSaveConfig}>{tc("save")}</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -379,7 +381,7 @@ function StockAutoAdjustPageContent() {
             ) : (
               <IconRefresh className="size-3.5" />
             )}
-            Jetzt berechnen
+            {t("calculateNow")}
           </Button>
           <Button
             size="sm"
@@ -392,7 +394,7 @@ function StockAutoAdjustPageContent() {
             ) : (
               <IconCheck className="size-3.5" />
             )}
-            Alle ubernehmen
+            {t("applyAll")}
           </Button>
         </div>
       </div>
@@ -414,7 +416,7 @@ function StockAutoAdjustPageContent() {
                   </p>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Auto-Adjust aktiv
+                  {t("autoAdjustActive")}
                 </p>
               </div>
             </CardContent>
@@ -429,11 +431,11 @@ function StockAutoAdjustPageContent() {
                   <Skeleton className="h-7 w-20 mb-1" />
                 ) : (
                   <p className="text-lg font-semibold tabular-nums">
-                    {formatRelativeTime(lastCalcTime)}
+                    {formatRelativeTime(lastCalcTime, t)}
                   </p>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Letzte Berechnung
+                  {t("lastCalculation")}
                 </p>
               </div>
             </CardContent>
@@ -452,7 +454,7 @@ function StockAutoAdjustPageContent() {
                   </p>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Anpassungen empfohlen
+                  {t("adjustmentsRecommended")}
                 </p>
               </div>
             </CardContent>
@@ -464,22 +466,22 @@ function StockAutoAdjustPageContent() {
       <section className="px-4 lg:px-6">
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base">Materialien</CardTitle>
+            <CardTitle className="text-base">{t("materials")}</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="min-w-[200px]">Material</TableHead>
-                    <TableHead className="text-center">Einheit</TableHead>
-                    <TableHead className="text-right">Akt. Min</TableHead>
-                    <TableHead className="text-right">Akt. Max</TableHead>
-                    <TableHead className="text-right">Empf. Min</TableHead>
-                    <TableHead className="text-right">Empf. Max</TableHead>
-                    <TableHead className="text-center">Delta</TableHead>
-                    <TableHead className="text-center">Auto</TableHead>
-                    <TableHead className="text-right">Aktion</TableHead>
+                    <TableHead className="min-w-[200px]">{t("materials")}</TableHead>
+                    <TableHead className="text-center">{t("unit")}</TableHead>
+                    <TableHead className="text-right">{t("currentMin")}</TableHead>
+                    <TableHead className="text-right">{t("currentMax")}</TableHead>
+                    <TableHead className="text-right">{t("recommendedMin")}</TableHead>
+                    <TableHead className="text-right">{t("recommendedMax")}</TableHead>
+                    <TableHead className="text-center">{t("delta")}</TableHead>
+                    <TableHead className="text-center">{t("auto")}</TableHead>
+                    <TableHead className="text-right">{t("action")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -497,11 +499,10 @@ function StockAutoAdjustPageContent() {
                         <div className="flex flex-col items-center gap-2">
                           <IconAdjustments className="size-8 text-muted-foreground/50" />
                           <p className="text-sm text-muted-foreground">
-                            Keine Auto-Adjust Einstellungen vorhanden
+                            {t("noSettings")}
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            Aktiviere Auto-Adjust fur Materialien uber die
-                            Materialdetailseite.
+                            {t("noSettingsHint")}
                           </p>
                         </div>
                       </TableCell>
@@ -548,7 +549,7 @@ function StockAutoAdjustPageContent() {
                               checked={row.enabled}
                               disabled={togglingId === row.id}
                               onCheckedChange={() => handleToggle(row)}
-                              aria-label={`Auto-Adjust fur ${row.materialName} ${row.enabled ? "deaktivieren" : "aktivieren"}`}
+                              aria-label={`Auto-Adjust ${row.materialName} ${row.enabled ? "deaktivieren" : "aktivieren"}`}
                             />
                           </TableCell>
                           <TableCell className="text-right">
@@ -567,7 +568,7 @@ function StockAutoAdjustPageContent() {
                               ) : (
                                 <IconCheck className="size-3" />
                               )}
-                              Ubernehmen
+                              {t("apply")}
                             </Button>
                           </TableCell>
                         </TableRow>
@@ -586,24 +587,23 @@ function StockAutoAdjustPageContent() {
         <section className="px-4 lg:px-6">
           <Card className="bg-muted/40">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Berechnungsmethode</CardTitle>
+              <CardTitle className="text-sm">{t("calculationMethod")}</CardTitle>
             </CardHeader>
             <CardContent className="text-xs text-muted-foreground space-y-1">
               <p>
-                <span className="font-medium text-foreground/70">Mindestbestand:</span>{" "}
-                Durchschn. Tagesverbrauch x Lieferzeit x Sicherheitsfaktor
+                <span className="font-medium text-foreground/70">{t("minStock")}</span>{" "}
+                {t("minStockFormula")}
               </p>
               <p>
-                <span className="font-medium text-foreground/70">Maximalbestand:</span>{" "}
-                Mindestbestand x 2
+                <span className="font-medium text-foreground/70">{t("maxStock")}</span>{" "}
+                {t("maxStockFormula")}
               </p>
               <p>
-                <span className="font-medium text-foreground/70">Bestellpunkt:</span>{" "}
-                Mindestbestand + (Durchschn. Tagesverbrauch x Lieferzeit)
+                <span className="font-medium text-foreground/70">{t("reorderPoint")}</span>{" "}
+                {t("reorderPointFormula")}
               </p>
               <p className="pt-1">
-                Die Lieferzeit wird automatisch aus den Lieferantenpreisen ubernommen (Fallback: 7 Tage).
-                Der Verbrauch basiert auf Entnahmen (Typ &quot;out&quot;) im konfigurierten Betrachtungszeitraum.
+                {t("calculationNote")}
               </p>
             </CardContent>
           </Card>
