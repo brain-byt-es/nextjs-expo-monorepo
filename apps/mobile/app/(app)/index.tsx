@@ -272,7 +272,10 @@ function QuickActionCard({ action }: { action: QuickActionDef }) {
   const { isDarkColorScheme: isDark } = useColorScheme();
   return (
     <TouchableOpacity
-      style={[styles.qaCard]}
+      style={[styles.qaCard, {
+        backgroundColor: isDark ? "rgba(255,255,255,0.06)" : (Platform.OS === "ios" ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.04)"),
+        borderColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.08)",
+      }]}
       onPress={action.onPress}
       activeOpacity={0.72}
     >
