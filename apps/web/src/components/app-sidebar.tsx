@@ -550,20 +550,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               items={visibleNavSecondary}
               className="mt-auto"
             />
-            {/* Hilfe — triggers welcome tour */}
+            {/* Hilfe — links to docs */}
             <SidebarGroup className="pb-2">
               <SidebarGroupContent>
                 <SidebarMenu>
                   <SidebarMenuItem>
-                    <SidebarMenuButton
-                      asChild={false}
-                      onClick={() => {
-                        window.dispatchEvent(new Event("restart-welcome-tour"))
-                      }}
-                      className="flex items-center gap-2"
-                    >
-                      <IconHelp className="size-4 shrink-0" />
-                      <span>{t("help")}</span>
+                    <SidebarMenuButton asChild className="flex items-center gap-2">
+                      <a href="https://docs.logistikapp.ch" target="_blank" rel="noopener noreferrer">
+                        <IconHelp className="size-4 shrink-0" />
+                        <span>{t("help")}</span>
+                      </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>

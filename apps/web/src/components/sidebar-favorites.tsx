@@ -10,6 +10,7 @@ import {
   IconTool,
   IconMapPin,
   IconClipboardList,
+  IconFile,
 } from "@tabler/icons-react"
 import {
   SidebarGroup,
@@ -46,6 +47,8 @@ function EntityIcon({
       return <IconMapPin className={base} />
     case "commission":
       return <IconClipboardList className={base} />
+    case "page":
+      return <IconFile className={base} />
     default:
       return <IconStar className={base} />
   }
@@ -110,13 +113,18 @@ function FavoritesSection() {
     setItems(getFavorites())
   }, [])
 
-  // Re-sync on storage events (e.g. added from another tab or from FavoriteButton)
+  // Re-sync on storage events (cross-tab) and custom events (same-tab)
   React.useEffect(() => {
-    const handler = (e: StorageEvent) => {
+    const storageHandler = (e: StorageEvent) => {
       if (e.key === "favorites") setItems(getFavorites())
     }
-    window.addEventListener("storage", handler)
-    return () => window.removeEventListener("storage", handler)
+    const customHandler = () => setItems(getFavorites())
+    window.addEventListener("storage", storageHandler)
+    window.addEventListener("favorites-updated", customHandler)
+    return () => {
+      window.removeEventListener("storage", storageHandler)
+      window.removeEventListener("favorites-updated", customHandler)
+    }
   }, [])
 
   return (
@@ -158,11 +166,16 @@ function RecentItemsSection() {
   }, [])
 
   React.useEffect(() => {
-    const handler = (e: StorageEvent) => {
+    const storageHandler = (e: StorageEvent) => {
       if (e.key === "recentItems") setItems(getRecentItems())
     }
-    window.addEventListener("storage", handler)
-    return () => window.removeEventListener("storage", handler)
+    const customHandler = () => setItems(getRecentItems())
+    window.addEventListener("storage", storageHandler)
+    window.addEventListener("favorites-updated", customHandler)
+    return () => {
+      window.removeEventListener("storage", storageHandler)
+      window.removeEventListener("favorites-updated", customHandler)
+    }
   }, [])
 
   if (items.length === 0) return null

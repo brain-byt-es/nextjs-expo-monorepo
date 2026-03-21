@@ -55,6 +55,7 @@ export function addFavorite(item: FavoriteItem): void {
   const next = [item, ...current].slice(0, MAX_FAVORITES)
   try {
     localStorage.setItem(FAVORITES_KEY, JSON.stringify(next))
+    window.dispatchEvent(new CustomEvent("favorites-updated"))
   } catch {
     // storage full — ignore
   }
@@ -65,6 +66,7 @@ export function removeFavorite(id: string): void {
   const next = getFavorites().filter((f) => f.id !== id)
   try {
     localStorage.setItem(FAVORITES_KEY, JSON.stringify(next))
+    window.dispatchEvent(new CustomEvent("favorites-updated"))
   } catch {
     // ignore
   }
@@ -107,7 +109,65 @@ export function trackRecentItem(item: Omit<RecentItem, "visitedAt">): void {
   ].slice(0, MAX_RECENT)
   try {
     localStorage.setItem(RECENT_KEY, JSON.stringify(next))
+    // Notify same-tab listeners (StorageEvent only fires cross-tab)
+    window.dispatchEvent(new CustomEvent("favorites-updated"))
   } catch {
     // storage full — ignore
   }
+}
+
+// ── Page-level recent tracking ──────────────────────────────────────────────
+
+/** Map of dashboard paths → friendly labels and types */
+const PAGE_LABELS: Record<string, { name: string; type: string }> = {
+  "/dashboard": { name: "Dashboard", type: "page" },
+  "/dashboard/materials": { name: "Materialien", type: "page" },
+  "/dashboard/tools": { name: "Werkzeuge", type: "page" },
+  "/dashboard/keys": { name: "Schlüssel", type: "page" },
+  "/dashboard/locations": { name: "Standorte", type: "page" },
+  "/dashboard/tasks": { name: "Aufgaben", type: "page" },
+  "/dashboard/calendar": { name: "Kalender", type: "page" },
+  "/dashboard/reports": { name: "Berichte", type: "page" },
+  "/dashboard/map": { name: "Karte", type: "page" },
+  "/dashboard/commissions": { name: "Kommissionen", type: "page" },
+  "/dashboard/orders": { name: "Offene Bestellungen", type: "page" },
+  "/dashboard/deliveries": { name: "Lieferverfolgung", type: "page" },
+  "/dashboard/cart": { name: "Warenkorb", type: "page" },
+  "/dashboard/transfers": { name: "Umbuchungen", type: "page" },
+  "/dashboard/inventory": { name: "Inventur", type: "page" },
+  "/dashboard/reservations": { name: "Reservierungen", type: "page" },
+  "/dashboard/warranty-claims": { name: "Garantieansprüche", type: "page" },
+  "/dashboard/recurring-orders": { name: "Wiederkehrende Bestellungen", type: "page" },
+  "/dashboard/time-tracking": { name: "Zeiterfassung", type: "page" },
+  "/dashboard/kanban": { name: "Kanban", type: "page" },
+  "/dashboard/shift-handover": { name: "Schichtübergabe", type: "page" },
+  "/dashboard/utilization": { name: "Geräte-Auslastung", type: "page" },
+  "/dashboard/maintenance-ai": { name: "KI-Wartungsprognose", type: "page" },
+  "/dashboard/supply-chain": { name: "Lieferkette", type: "page" },
+  "/dashboard/stock-adjust": { name: "Bestandsoptimierung", type: "page" },
+  "/dashboard/budgets": { name: "Budgets", type: "page" },
+  "/dashboard/barcode-generator": { name: "Barcode-Generator", type: "page" },
+  "/dashboard/label-designer": { name: "Etiketten-Designer", type: "page" },
+  "/dashboard/batch-print": { name: "Massendruck", type: "page" },
+  "/dashboard/import": { name: "Datenimport", type: "page" },
+  "/dashboard/migration": { name: "Migration", type: "page" },
+  "/dashboard/settings": { name: "Einstellungen", type: "page" },
+  "/dashboard/portals": { name: "Externe Portale", type: "page" },
+  "/dashboard/settings/scanner": { name: "Handscanner", type: "page" },
+  "/dashboard/settings/printer": { name: "Etikettendrucker", type: "page" },
+  "/dashboard/settings/team": { name: "Team", type: "page" },
+  "/dashboard/settings/roles": { name: "Rollen", type: "page" },
+  "/dashboard/settings/plugins": { name: "Plugins", type: "page" },
+}
+
+/**
+ * Track a page visit by pathname. Only tracks known dashboard pages,
+ * skips "new" / "edit" sub-pages and the bare dashboard root (too noisy).
+ */
+export function trackPageVisit(pathname: string): void {
+  // Skip the dashboard root — it's always accessible, no need to track
+  if (pathname === "/dashboard") return
+  const info = PAGE_LABELS[pathname]
+  if (!info) return
+  trackRecentItem({ id: `page:${pathname}`, type: info.type, name: info.name, url: pathname })
 }

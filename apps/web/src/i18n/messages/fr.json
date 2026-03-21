@@ -47,7 +47,10 @@
     "showing": "Affichage",
     "selected": "sélectionné(s)",
     "total": "Total",
-    "sortBy": "Trier par"
+    "sortBy": "Trier par",
+    "exportFailed": "Échec de l'export",
+    "exportCsv": "Exporter en CSV",
+    "exportJson": "Exporter en JSON"
   },
   "auth": {
     "login": "Se connecter",
@@ -1412,7 +1415,33 @@
     "retentionDays": "Conservation (jours)",
     "lastAudit": "Dernier audit",
     "dpo": "Délégué à la protection des données",
-    "privacyPolicy": "Politique de confidentialité"
+    "privacyPolicy": "Politique de confidentialité",
+    "exportTitle": "Exporter les données",
+    "exportDescription": "Téléchargez une copie de toutes vos données stockées.",
+    "exportContents": "L'export comprend votre profil, matériaux, outils, réservations et autres données associées.",
+    "exporting": "Export en cours…",
+    "exportData": "Exporter les données",
+    "exportFailed": "Échec de l'export. Veuillez réessayer.",
+    "deleteTitle": "Supprimer le compte et les données",
+    "deleteDescription": "Demandez la suppression complète de votre compte et de toutes les données associées.",
+    "deleteGracePeriod": "Après la demande de suppression, vous disposez de <strong>30 jours</strong> pour l'annuler. Passé ce délai, toutes les données seront définitivement supprimées.",
+    "deleteDataProfile": "Données de profil et de compte",
+    "deleteDataStock": "Stocks de matériaux et données d'entrepôt",
+    "deleteDataToolBookings": "Réservations d'outils",
+    "deleteDataTimeEntries": "Entrées de temps",
+    "deleteDataComments": "Commentaires et notes",
+    "deleteDataCommissions": "Entrées de commissions",
+    "deleteRequest": "Demander la suppression",
+    "deleteConfirmTitle": "Vraiment supprimer le compte ?",
+    "deleteConfirmDescription": "Cette action ne peut pas être annulée après la période de grâce de 30 jours. Entrez votre mot de passe pour continuer.",
+    "deletePasswordLabel": "Confirmer le mot de passe",
+    "deletePasswordPlaceholder": "Votre mot de passe actuel",
+    "deletePasswordRequired": "Veuillez entrer votre mot de passe.",
+    "deleteFailed": "Échec de la suppression. Veuillez réessayer.",
+    "deleteSuccess": "Demande de suppression soumise avec succès. Vous avez 30 jours pour l'annuler.",
+    "deleteProcessing": "Traitement en cours…",
+    "deleteConfirmButton": "Supprimer définitivement",
+    "cancel": "Annuler"
   },
   "billing": {
     "title": "Facturation",
@@ -1770,7 +1799,101 @@
     "newLocation": "Nouvel emplacement"
   },
   "aiChat": {
-    "triggerTitle": "Assistant IA"
+    "triggerTitle": "Assistant IA",
+    "title": "Assistant IA",
+    "poweredBy": "Propulsé par OpenAI",
+    "newChat": "Nouveau chat",
+    "greeting": "Bonjour ! Comment puis-je vous aider ?",
+    "greetingDescription": "Posez-moi des questions sur vos stocks, outils, commandes ou laissez-moi effectuer des actions pour vous.",
+    "suggestedPrompt1": "Quels matériaux sont en dessous du seuil de réapprovisionnement ?",
+    "suggestedPrompt2": "Afficher tous les outils en retard",
+    "suggestedPrompt3": "Créer une commande pour le matériel manquant",
+    "suggestedPrompt4": "Quel est le niveau de stock actuel ?",
+    "thinking": "Réflexion en cours…",
+    "inputPlaceholder": "Saisissez un message…",
+    "disclaimer": "L'IA peut faire des erreurs. Vérifiez toujours les réponses.",
+    "close": "Fermer",
+    "errorStatus": "Erreur : le serveur a répondu avec le statut {status}",
+    "noStream": "Aucun flux reçu du serveur",
+    "noResponseGenerated": "Aucune réponse générée.",
+    "noResponseReceived": "Aucune réponse reçue.",
+    "genericError": "Une erreur inattendue s'est produite.",
+    "showDetails": "Afficher les détails",
+    "action": {
+      "createOrder": "Commande créée",
+      "bookStockChange": "Changement de stock enregistré",
+      "searchMaterials": "Matériaux recherchés",
+      "searchTools": "Outils recherchés",
+      "getStockLevel": "Niveau de stock interrogé",
+      "getLowStockItems": "Articles sous seuil interrogés",
+      "getOverdueTools": "Outils en retard interrogés"
+    }
+  },
+  "tour": {
+    "welcome": {
+      "title": "Bienvenue sur LogistikApp !",
+      "description": "Nous allons vous montrer les zones clés de l'application. La visite ne prend qu'une minute."
+    },
+    "navigation": {
+      "title": "Navigation",
+      "description": "Utilisez la barre latérale pour accéder à tous les domaines : matériaux, outils, rapports et plus encore."
+    },
+    "materials": {
+      "title": "Matériaux",
+      "description": "Gérez l'ensemble de vos stocks de matériaux avec emplacements, seuils de réapprovisionnement et dates d'expiration."
+    },
+    "tools": {
+      "title": "Outils",
+      "description": "Suivez tous les outils, qui les détient et quand ils doivent être retournés."
+    },
+    "timeTracking": {
+      "title": "Suivi du temps",
+      "description": "Enregistrez les heures de travail et attribuez-les à des projets ou commissions."
+    },
+    "deliveries": {
+      "title": "Suivi des livraisons",
+      "description": "Suivez les livraisons entrantes et comparez les quantités prévues et réelles."
+    },
+    "reports": {
+      "title": "Rapports",
+      "description": "Générez des rapports sur les niveaux de stock, l'utilisation des outils et la consommation de matériaux."
+    },
+    "settings": {
+      "title": "Paramètres",
+      "description": "Personnalisez votre profil d'entreprise, les membres de l'équipe et les intégrations."
+    },
+    "finish": {
+      "title": "C'est parti !",
+      "description": "Vous connaissez maintenant les zones clés. Explorez l'application et commencez à gérer votre inventaire."
+    },
+    "closeTour": "Fermer la visite",
+    "stepOf": "Étape {current} sur {total}",
+    "back": "Retour",
+    "next": "Suivant",
+    "getStarted": "Commencer"
+  },
+  "onlineUsers": {
+    "usersOnline": "{count, plural, one {# utilisateur} other {# utilisateurs}} en ligne",
+    "title": "Utilisateurs en ligne",
+    "pages": {
+      "overview": "Vue d'ensemble",
+      "materials": "Matériaux",
+      "tools": "Outils",
+      "keys": "Clés",
+      "tasks": "Tâches",
+      "calendar": "Calendrier",
+      "reports": "Rapports",
+      "settings": "Paramètres",
+      "locations": "Emplacements",
+      "suppliers": "Fournisseurs",
+      "orders": "Commandes",
+      "commissions": "Commissions",
+      "inventory": "Inventaire",
+      "kanban": "Kanban",
+      "timeTracking": "Suivi du temps",
+      "transfers": "Transferts",
+      "requests": "Demandes de matériaux"
+    }
   },
   "analytics": {
     "title": "Analytique",

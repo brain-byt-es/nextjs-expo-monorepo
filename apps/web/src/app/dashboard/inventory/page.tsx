@@ -285,18 +285,18 @@ export default function InventoryPage() {
                   </div>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
                     {count.locationName && (
-                      <span>Standort: {count.locationName}</span>
+                      <span>{t("location")}: {count.locationName}</span>
                     )}
                     <span>
-                      {count.countedCount} / {count.itemCount} gezählt
+                      {t("counted", { counted: count.countedCount, total: count.itemCount })}
                     </span>
                     {count.startedAt && (
-                      <span>Gestartet: {formatDate(count.startedAt)}</span>
+                      <span>{t("started")}: {formatDate(count.startedAt)}</span>
                     )}
                     {count.completedAt && (
-                      <span>Abgeschlossen: {formatDate(count.completedAt)}</span>
+                      <span>{t("completedAt")}: {formatDate(count.completedAt)}</span>
                     )}
-                    <span>Erstellt: {formatDate(count.createdAt)}</span>
+                    <span>{t("createdAt")}: {formatDate(count.createdAt)}</span>
                   </div>
                 </div>
 
@@ -308,7 +308,7 @@ export default function InventoryPage() {
                       onClick={() => handleStart(count.id)}
                     >
                       <IconPlayerPlay className="size-3.5" />
-                      Starten
+                      {t("start")}
                     </Button>
                   )}
                   {count.status === "in_progress" && (
@@ -317,7 +317,7 @@ export default function InventoryPage() {
                       onClick={() => router.push(`/dashboard/inventory/${count.id}`)}
                     >
                       <IconCheck className="size-3.5" />
-                      Fortfahren
+                      {t("continue")}
                     </Button>
                   )}
 
@@ -325,7 +325,7 @@ export default function InventoryPage() {
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                         <IconDotsVertical className="size-4" />
-                        <span className="sr-only">Aktionen</span>
+                        <span className="sr-only">{t("open")}</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
@@ -333,7 +333,7 @@ export default function InventoryPage() {
                         onClick={() => router.push(`/dashboard/inventory/${count.id}`)}
                       >
                         <IconChevronRight className="size-4" />
-                        Öffnen
+                        {t("open")}
                       </DropdownMenuItem>
                       {count.status === "draft" && (
                         <>
@@ -343,7 +343,7 @@ export default function InventoryPage() {
                             onClick={() => setDeleteTarget(count)}
                           >
                             <IconTrash className="size-4" />
-                            Löschen
+                            {t("deleteButton")}
                           </DropdownMenuItem>
                         </>
                       )}
@@ -370,19 +370,17 @@ export default function InventoryPage() {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Neue Inventur erstellen</DialogTitle>
+            <DialogTitle>{t("createTitle")}</DialogTitle>
             <DialogDescription>
-              Geben Sie der Inventur einen Namen und wählen Sie optional einen
-              Standort. Der aktuelle Bestand wird automatisch als Soll-Bestand
-              übernommen.
+              {t("createDesc")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2">
-              <Label htmlFor="inv-name">Name *</Label>
+              <Label htmlFor="inv-name">{t("nameLabel")}</Label>
               <Input
                 id="inv-name"
-                placeholder="z. B. Inventur Q1 2026"
+                placeholder={t("namePlaceholder")}
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
                 disabled={creating}
@@ -390,13 +388,13 @@ export default function InventoryPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="inv-location">Standort (optional)</Label>
+              <Label htmlFor="inv-location">{t("locationLabel")}</Label>
               <Select value={newLocationId} onValueChange={setNewLocationId} disabled={creating}>
                 <SelectTrigger id="inv-location">
                   <SelectValue placeholder="Alle Standorte" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">Alle Standorte</SelectItem>
+                  <SelectItem value="none">{t("allLocations")}</SelectItem>
                   {locations.map((l) => (
                     <SelectItem key={l.id} value={l.id}>
                       {l.name}
@@ -415,10 +413,10 @@ export default function InventoryPage() {
               onClick={() => setCreateOpen(false)}
               disabled={creating}
             >
-              Abbrechen
+              {t("cancel")}
             </Button>
             <Button onClick={handleCreate} disabled={creating}>
-              {creating ? "Wird erstellt..." : "Inventur erstellen"}
+              {creating ? t("creating") : t("createButton")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -431,10 +429,9 @@ export default function InventoryPage() {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Inventur löschen</DialogTitle>
+            <DialogTitle>{t("deleteTitle")}</DialogTitle>
             <DialogDescription>
-              Möchten Sie &laquo;{deleteTarget?.name}&raquo; wirklich löschen?
-              Diese Aktion kann nicht rückgängig gemacht werden.
+              {t("deleteConfirm", { name: deleteTarget?.name ?? "" })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -443,10 +440,10 @@ export default function InventoryPage() {
               onClick={() => setDeleteTarget(null)}
               disabled={deleting}
             >
-              Abbrechen
+              {t("cancel")}
             </Button>
             <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
-              {deleting ? "Wird gelöscht..." : "Löschen"}
+              {deleting ? t("deleting") : t("deleteButton")}
             </Button>
           </DialogFooter>
         </DialogContent>

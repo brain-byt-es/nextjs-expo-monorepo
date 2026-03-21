@@ -3,6 +3,7 @@
 import { useRouter, usePathname } from "next/navigation"
 import { useEffect, useRef } from "react"
 import { useSession } from "@/lib/auth-client"
+import { trackPageVisit } from "@/lib/favorites"
 import { AppSidebar } from "@/components/app-sidebar"
 import { CommandPalette } from "@/components/command-palette"
 import { SiteHeader } from "@/components/site-header"
@@ -61,6 +62,13 @@ export default function DashboardLayout({
 
     void checkOrgs()
   }, [session, isPending, pathname, router])
+
+  // ── Track recent page visits ─────────────────────────────────────────
+  useEffect(() => {
+    if (session && pathname) {
+      trackPageVisit(pathname)
+    }
+  }, [pathname, session])
 
   if (isPending) {
     return (

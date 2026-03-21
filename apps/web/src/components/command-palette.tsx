@@ -10,26 +10,77 @@ import { useKeyboardShortcuts } from "@/lib/shortcuts"
 import { useShortcutsDialog } from "@/components/shortcuts-dialog"
 import {
   IconSearch, IconPackage, IconTool, IconMapPin,
-  IconPlus, IconHistory, IconSettings, IconLayoutDashboard,
-  IconChevronRight, IconClock, IconStar,
+  IconPlus, IconSettings, IconLayoutDashboard,
+  IconChevronRight, IconClock, IconStar, IconKey, IconChecklist,
+  IconCalendar, IconReportAnalytics, IconClipboardList,
+  IconFileInvoice, IconTruck, IconShoppingCart, IconArrowsTransferDown,
+  IconClipboardCheck, IconCalendarEvent, IconShieldCheck, IconRepeat,
+  IconLayoutKanban, IconClipboardText, IconChartBar, IconBrain,
+  IconGitBranch, IconAdjustments, IconWallet, IconBarcode, IconRuler,
+  IconPrinter, IconUpload, IconTransfer, IconDeviceTv, IconLink,
+  IconUsers, IconShield, IconPuzzle, IconMap,
 } from "@tabler/icons-react"
 import { getRecentItems, getFavorites, type RecentItem, type FavoriteItem } from "@/lib/favorites"
 
 // Static navigation items
 const NAV_ITEMS = [
-  { id: "dashboard",    label: "Dashboard",       href: "/dashboard",                       icon: IconLayoutDashboard, group: "Navigation" },
-  { id: "materials",    label: "Materialien",      href: "/dashboard/materials",             icon: IconPackage,         group: "Navigation" },
-  { id: "tools",        label: "Werkzeuge",         href: "/dashboard/tools",                 icon: IconTool,            group: "Navigation" },
-  { id: "locations",    label: "Standorte",         href: "/dashboard/locations",             icon: IconMapPin,          group: "Navigation" },
-  { id: "history",      label: "Verlauf",           href: "/dashboard/history/stock-changes", icon: IconHistory,         group: "Navigation" },
-  { id: "settings",     label: "Einstellungen",     href: "/dashboard/settings",              icon: IconSettings,        group: "Navigation" },
-  { id: "new-material", label: "Neues Material",    href: "/dashboard/materials/new",         icon: IconPlus,            group: "Aktionen" },
-  { id: "new-tool",     label: "Neues Werkzeug",    href: "/dashboard/tools/new",             icon: IconPlus,            group: "Aktionen" },
-  { id: "new-location", label: "Neuer Standort",    href: "/dashboard/locations/new",         icon: IconPlus,            group: "Aktionen" },
+  // Navigation
+  { id: "dashboard", label: "Dashboard", href: "/dashboard", icon: IconLayoutDashboard, group: "Navigation" },
+  { id: "materials", label: "Materialien", href: "/dashboard/materials", icon: IconPackage, group: "Navigation" },
+  { id: "tools", label: "Werkzeuge", href: "/dashboard/tools", icon: IconTool, group: "Navigation" },
+  { id: "keys", label: "Schlüssel", href: "/dashboard/keys", icon: IconKey, group: "Navigation" },
+  { id: "locations", label: "Standorte", href: "/dashboard/locations", icon: IconMapPin, group: "Navigation" },
+  { id: "tasks", label: "Aufgaben", href: "/dashboard/tasks", icon: IconChecklist, group: "Navigation" },
+  { id: "calendar", label: "Kalender", href: "/dashboard/calendar", icon: IconCalendar, group: "Navigation" },
+  { id: "reports", label: "Berichte", href: "/dashboard/reports", icon: IconReportAnalytics, group: "Navigation" },
+  { id: "map", label: "Karte", href: "/dashboard/map", icon: IconMap, group: "Navigation" },
+
+  // Betrieb
+  { id: "commissions", label: "Kommissionen", href: "/dashboard/commissions", icon: IconClipboardList, group: "Betrieb" },
+  { id: "orders", label: "Offene Bestellungen", href: "/dashboard/orders", icon: IconFileInvoice, group: "Betrieb" },
+  { id: "deliveries", label: "Lieferverfolgung", href: "/dashboard/deliveries", icon: IconTruck, group: "Betrieb" },
+  { id: "cart", label: "Warenkorb", href: "/dashboard/cart", icon: IconShoppingCart, group: "Betrieb" },
+  { id: "transfers", label: "Umbuchungen", href: "/dashboard/transfers", icon: IconArrowsTransferDown, group: "Betrieb" },
+  { id: "inventory", label: "Inventur", href: "/dashboard/inventory", icon: IconClipboardCheck, group: "Betrieb" },
+  { id: "reservations", label: "Reservierungen", href: "/dashboard/reservations", icon: IconCalendarEvent, group: "Betrieb" },
+  { id: "warranties", label: "Garantieansprüche", href: "/dashboard/warranty-claims", icon: IconShieldCheck, group: "Betrieb" },
+  { id: "recurring", label: "Wiederkehrende Bestellungen", href: "/dashboard/recurring-orders", icon: IconRepeat, group: "Betrieb" },
+
+  // Planung & Analyse
+  { id: "time-tracking", label: "Zeiterfassung", href: "/dashboard/time-tracking", icon: IconClock, group: "Planung" },
+  { id: "kanban", label: "Kanban", href: "/dashboard/kanban", icon: IconLayoutKanban, group: "Planung" },
+  { id: "shift", label: "Schichtübergabe", href: "/dashboard/shift-handover", icon: IconClipboardText, group: "Planung" },
+  { id: "utilization", label: "Geräte-Auslastung", href: "/dashboard/utilization", icon: IconChartBar, group: "Planung" },
+  { id: "maintenance", label: "KI-Wartungsprognose", href: "/dashboard/maintenance-ai", icon: IconBrain, group: "Planung" },
+  { id: "supply-chain", label: "Lieferkette", href: "/dashboard/supply-chain", icon: IconGitBranch, group: "Planung" },
+  { id: "stock-adjust", label: "Bestandsoptimierung", href: "/dashboard/stock-adjust", icon: IconAdjustments, group: "Planung" },
+  { id: "budgets", label: "Budgets", href: "/dashboard/budgets", icon: IconWallet, group: "Planung" },
+
+  // Werkzeuge
+  { id: "barcode", label: "Barcode-Generator", href: "/dashboard/barcode-generator", icon: IconBarcode, group: "Werkzeuge" },
+  { id: "label-designer", label: "Etiketten-Designer", href: "/dashboard/label-designer", icon: IconRuler, group: "Werkzeuge" },
+  { id: "batch-print", label: "Massendruck", href: "/dashboard/batch-print", icon: IconPrinter, group: "Werkzeuge" },
+  { id: "import", label: "Datenimport", href: "/dashboard/import", icon: IconUpload, group: "Werkzeuge" },
+  { id: "migration", label: "Migration", href: "/dashboard/migration", icon: IconTransfer, group: "Werkzeuge" },
+  { id: "tv", label: "TV-Modus", href: "/tv", icon: IconDeviceTv, group: "Werkzeuge" },
+
+  // Einstellungen
+  { id: "settings", label: "Einstellungen", href: "/dashboard/settings", icon: IconSettings, group: "Einstellungen" },
+  { id: "portals", label: "Externe Portale", href: "/dashboard/portals", icon: IconLink, group: "Einstellungen" },
+  { id: "scanner", label: "Handscanner", href: "/dashboard/settings/scanner", icon: IconBarcode, group: "Einstellungen" },
+  { id: "printer", label: "Etikettendrucker", href: "/dashboard/settings/printer", icon: IconPrinter, group: "Einstellungen" },
+  { id: "team", label: "Team", href: "/dashboard/settings/team", icon: IconUsers, group: "Einstellungen" },
+  { id: "roles", label: "Rollen", href: "/dashboard/settings/roles", icon: IconShield, group: "Einstellungen" },
+  { id: "plugins", label: "Plugins", href: "/dashboard/settings/plugins", icon: IconPuzzle, group: "Einstellungen" },
+
+  // Aktionen
+  { id: "new-material", label: "Neues Material", href: "/dashboard/materials/new", icon: IconPlus, group: "Aktionen" },
+  { id: "new-tool", label: "Neues Werkzeug", href: "/dashboard/tools/new", icon: IconPlus, group: "Aktionen" },
+  { id: "new-location", label: "Neuer Standort", href: "/dashboard/locations/new", icon: IconPlus, group: "Aktionen" },
 ]
 
 // Group order — static groups first, dynamic groups appended at runtime
-const STATIC_GROUP_ORDER = ["Navigation", "Materialien", "Werkzeuge", "Standorte", "Aktionen"]
+const STATIC_GROUP_ORDER = ["Navigation", "Betrieb", "Planung", "Werkzeuge", "Einstellungen", "Aktionen"]
 const DYNAMIC_GROUPS = ["Zuletzt besucht", "Favoriten"]
 
 interface PaletteItem {

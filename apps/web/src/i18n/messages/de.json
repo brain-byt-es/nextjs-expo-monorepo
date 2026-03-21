@@ -47,7 +47,10 @@
     "showing": "Zeige",
     "selected": "ausgewählt",
     "total": "Total",
-    "sortBy": "Sortieren nach"
+    "sortBy": "Sortieren nach",
+    "exportFailed": "Export fehlgeschlagen",
+    "exportCsv": "Als CSV exportieren",
+    "exportJson": "Als JSON exportieren"
   },
   "auth": {
     "login": "Anmelden",
@@ -1412,7 +1415,33 @@
     "retentionDays": "Aufbewahrung (Tage)",
     "lastAudit": "Letzte Prüfung",
     "dpo": "Datenschutzbeauftragter",
-    "privacyPolicy": "Datenschutzerklärung"
+    "privacyPolicy": "Datenschutzerklärung",
+    "exportTitle": "Daten exportieren",
+    "exportDescription": "Laden Sie eine Kopie aller Ihrer gespeicherten Daten herunter.",
+    "exportContents": "Der Export enthält Ihr Profil, Materialien, Werkzeuge, Buchungen und weitere zugehörige Daten.",
+    "exporting": "Wird exportiert…",
+    "exportData": "Daten exportieren",
+    "exportFailed": "Export fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "deleteTitle": "Konto und Daten löschen",
+    "deleteDescription": "Beantragen Sie die vollständige Löschung Ihres Kontos und aller zugehörigen Daten.",
+    "deleteGracePeriod": "Nach der Löschanfrage haben Sie <strong>30 Tage</strong> Zeit, diese rückgängig zu machen. Danach werden alle Daten unwiderruflich gelöscht.",
+    "deleteDataProfile": "Profil- und Kontodaten",
+    "deleteDataStock": "Materialbestände und Lagerdaten",
+    "deleteDataToolBookings": "Werkzeugbuchungen",
+    "deleteDataTimeEntries": "Zeiteinträge",
+    "deleteDataComments": "Kommentare und Notizen",
+    "deleteDataCommissions": "Kommissionseinträge",
+    "deleteRequest": "Löschung beantragen",
+    "deleteConfirmTitle": "Konto wirklich löschen?",
+    "deleteConfirmDescription": "Diese Aktion kann nach Ablauf der 30-tägigen Frist nicht rückgängig gemacht werden. Geben Sie Ihr Passwort ein, um fortzufahren.",
+    "deletePasswordLabel": "Passwort bestätigen",
+    "deletePasswordPlaceholder": "Ihr aktuelles Passwort",
+    "deletePasswordRequired": "Bitte geben Sie Ihr Passwort ein.",
+    "deleteFailed": "Löschung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "deleteSuccess": "Löschanfrage wurde erfolgreich gestellt. Sie haben 30 Tage, um sie rückgängig zu machen.",
+    "deleteProcessing": "Wird verarbeitet…",
+    "deleteConfirmButton": "Endgültig löschen",
+    "cancel": "Abbrechen"
   },
   "billing": {
     "title": "Abrechnung",
@@ -1770,7 +1799,101 @@
     "newLocation": "Neuer Standort"
   },
   "aiChat": {
-    "triggerTitle": "KI-Assistent"
+    "triggerTitle": "KI-Assistent",
+    "title": "KI-Assistent",
+    "poweredBy": "Powered by OpenAI",
+    "newChat": "Neuer Chat",
+    "greeting": "Hallo! Wie kann ich helfen?",
+    "greetingDescription": "Fragen Sie mich zu Ihrem Lagerbestand, Werkzeugen, Bestellungen oder lassen Sie mich Aktionen für Sie ausführen.",
+    "suggestedPrompt1": "Welche Materialien sind unter dem Meldebestand?",
+    "suggestedPrompt2": "Zeige alle überfälligen Werkzeuge",
+    "suggestedPrompt3": "Erstelle eine Bestellung für fehlendes Material",
+    "suggestedPrompt4": "Wie ist der aktuelle Lagerbestand?",
+    "thinking": "Denkt nach…",
+    "inputPlaceholder": "Nachricht eingeben…",
+    "disclaimer": "KI kann Fehler machen. Antworten immer prüfen.",
+    "close": "Schliessen",
+    "errorStatus": "Fehler: Server antwortete mit Status {status}",
+    "noStream": "Kein Stream vom Server erhalten",
+    "noResponseGenerated": "Keine Antwort generiert.",
+    "noResponseReceived": "Keine Antwort erhalten.",
+    "genericError": "Ein unerwarteter Fehler ist aufgetreten.",
+    "showDetails": "Details anzeigen",
+    "action": {
+      "createOrder": "Bestellung erstellt",
+      "bookStockChange": "Bestandsänderung gebucht",
+      "searchMaterials": "Materialien durchsucht",
+      "searchTools": "Werkzeuge durchsucht",
+      "getStockLevel": "Bestand abgefragt",
+      "getLowStockItems": "Meldebestand-Artikel abgefragt",
+      "getOverdueTools": "Überfällige Werkzeuge abgefragt"
+    }
+  },
+  "tour": {
+    "welcome": {
+      "title": "Willkommen bei LogistikApp!",
+      "description": "Wir zeigen Ihnen die wichtigsten Bereiche der Anwendung. Die Tour dauert nur eine Minute."
+    },
+    "navigation": {
+      "title": "Navigation",
+      "description": "Über die Seitenleiste erreichen Sie alle Bereiche: Materialien, Werkzeuge, Berichte und mehr."
+    },
+    "materials": {
+      "title": "Materialien",
+      "description": "Verwalten Sie Ihren gesamten Materialbestand mit Lagerorten, Meldebeständen und Ablaufdaten."
+    },
+    "tools": {
+      "title": "Werkzeuge",
+      "description": "Behalten Sie den Überblick über alle Werkzeuge, wer sie hat und wann sie zurück erwartet werden."
+    },
+    "timeTracking": {
+      "title": "Zeiterfassung",
+      "description": "Erfassen Sie Arbeitszeiten und ordnen Sie diese Projekten oder Kommissionen zu."
+    },
+    "deliveries": {
+      "title": "Lieferverfolgung",
+      "description": "Verfolgen Sie eingehende Lieferungen und vergleichen Sie Soll- mit Ist-Mengen."
+    },
+    "reports": {
+      "title": "Berichte",
+      "description": "Erstellen Sie Auswertungen zu Lagerbeständen, Werkzeugauslastung und Materialverbrauch."
+    },
+    "settings": {
+      "title": "Einstellungen",
+      "description": "Passen Sie Ihr Unternehmensprofil, Team-Mitglieder und Integrationen an."
+    },
+    "finish": {
+      "title": "Los geht's!",
+      "description": "Sie kennen jetzt die wichtigsten Bereiche. Erkunden Sie die App und starten Sie mit Ihrem Inventar."
+    },
+    "closeTour": "Tour schliessen",
+    "stepOf": "Schritt {current} von {total}",
+    "back": "Zurück",
+    "next": "Weiter",
+    "getStarted": "Loslegen"
+  },
+  "onlineUsers": {
+    "usersOnline": "{count, plural, one {# Nutzer} other {# Nutzer}} online",
+    "title": "Online-Nutzer",
+    "pages": {
+      "overview": "Übersicht",
+      "materials": "Materialien",
+      "tools": "Werkzeuge",
+      "keys": "Schlüssel",
+      "tasks": "Aufgaben",
+      "calendar": "Kalender",
+      "reports": "Berichte",
+      "settings": "Einstellungen",
+      "locations": "Standorte",
+      "suppliers": "Lieferanten",
+      "orders": "Bestellungen",
+      "commissions": "Kommissionen",
+      "inventory": "Inventur",
+      "kanban": "Kanban",
+      "timeTracking": "Zeiterfassung",
+      "transfers": "Umbuchungen",
+      "requests": "Materialanfragen"
+    }
   },
   "analytics": {
     "title": "Analytik",

@@ -47,7 +47,10 @@
     "showing": "Visualizzazione",
     "selected": "selezionato/i",
     "total": "Totale",
-    "sortBy": "Ordina per"
+    "sortBy": "Ordina per",
+    "exportFailed": "Esportazione fallita",
+    "exportCsv": "Esporta come CSV",
+    "exportJson": "Esporta come JSON"
   },
   "auth": {
     "login": "Accedi",
@@ -1412,7 +1415,33 @@
     "retentionDays": "Conservazione (giorni)",
     "lastAudit": "Ultimo audit",
     "dpo": "Responsabile protezione dati",
-    "privacyPolicy": "Informativa sulla privacy"
+    "privacyPolicy": "Informativa sulla privacy",
+    "exportTitle": "Esporta dati",
+    "exportDescription": "Scarica una copia di tutti i tuoi dati memorizzati.",
+    "exportContents": "L'esportazione include il tuo profilo, materiali, attrezzi, prenotazioni e altri dati associati.",
+    "exporting": "Esportazione in corso…",
+    "exportData": "Esporta dati",
+    "exportFailed": "Esportazione fallita. Riprova.",
+    "deleteTitle": "Elimina account e dati",
+    "deleteDescription": "Richiedi l'eliminazione completa del tuo account e di tutti i dati associati.",
+    "deleteGracePeriod": "Dopo la richiesta di eliminazione hai <strong>30 giorni</strong> per annullarla. Successivamente tutti i dati verranno eliminati definitivamente.",
+    "deleteDataProfile": "Dati profilo e account",
+    "deleteDataStock": "Scorte materiali e dati magazzino",
+    "deleteDataToolBookings": "Prenotazioni attrezzi",
+    "deleteDataTimeEntries": "Registrazioni orarie",
+    "deleteDataComments": "Commenti e note",
+    "deleteDataCommissions": "Voci commissioni",
+    "deleteRequest": "Richiedi eliminazione",
+    "deleteConfirmTitle": "Eliminare davvero l'account?",
+    "deleteConfirmDescription": "Questa azione non può essere annullata dopo il periodo di grazia di 30 giorni. Inserisci la tua password per continuare.",
+    "deletePasswordLabel": "Conferma password",
+    "deletePasswordPlaceholder": "La tua password attuale",
+    "deletePasswordRequired": "Inserisci la tua password.",
+    "deleteFailed": "Eliminazione fallita. Riprova.",
+    "deleteSuccess": "Richiesta di eliminazione inviata con successo. Hai 30 giorni per annullarla.",
+    "deleteProcessing": "Elaborazione in corso…",
+    "deleteConfirmButton": "Elimina definitivamente",
+    "cancel": "Annulla"
   },
   "billing": {
     "title": "Fatturazione",
@@ -1770,7 +1799,101 @@
     "newLocation": "Nuova ubicazione"
   },
   "aiChat": {
-    "triggerTitle": "Assistente IA"
+    "triggerTitle": "Assistente IA",
+    "title": "Assistente IA",
+    "poweredBy": "Powered by OpenAI",
+    "newChat": "Nuova chat",
+    "greeting": "Ciao! Come posso aiutarti?",
+    "greetingDescription": "Chiedimi informazioni sulle scorte, attrezzi, ordini o lasciami eseguire azioni per te.",
+    "suggestedPrompt1": "Quali materiali sono sotto il livello di riordino?",
+    "suggestedPrompt2": "Mostra tutti gli attrezzi in ritardo",
+    "suggestedPrompt3": "Crea un ordine per il materiale mancante",
+    "suggestedPrompt4": "Qual è il livello attuale delle scorte?",
+    "thinking": "Sto pensando…",
+    "inputPlaceholder": "Scrivi un messaggio…",
+    "disclaimer": "L'IA può commettere errori. Verifica sempre le risposte.",
+    "close": "Chiudi",
+    "errorStatus": "Errore: il server ha risposto con stato {status}",
+    "noStream": "Nessuno stream ricevuto dal server",
+    "noResponseGenerated": "Nessuna risposta generata.",
+    "noResponseReceived": "Nessuna risposta ricevuta.",
+    "genericError": "Si è verificato un errore imprevisto.",
+    "showDetails": "Mostra dettagli",
+    "action": {
+      "createOrder": "Ordine creato",
+      "bookStockChange": "Variazione scorte registrata",
+      "searchMaterials": "Materiali cercati",
+      "searchTools": "Attrezzi cercati",
+      "getStockLevel": "Livello scorte interrogato",
+      "getLowStockItems": "Articoli sotto soglia interrogati",
+      "getOverdueTools": "Attrezzi in ritardo interrogati"
+    }
+  },
+  "tour": {
+    "welcome": {
+      "title": "Benvenuto su LogistikApp!",
+      "description": "Ti mostreremo le aree principali dell'applicazione. Il tour dura solo un minuto."
+    },
+    "navigation": {
+      "title": "Navigazione",
+      "description": "Usa la barra laterale per accedere a tutte le aree: materiali, attrezzi, report e altro."
+    },
+    "materials": {
+      "title": "Materiali",
+      "description": "Gestisci tutte le scorte di materiali con ubicazioni, livelli di riordino e date di scadenza."
+    },
+    "tools": {
+      "title": "Attrezzi",
+      "description": "Tieni traccia di tutti gli attrezzi, chi li ha e quando devono essere restituiti."
+    },
+    "timeTracking": {
+      "title": "Tracciamento ore",
+      "description": "Registra le ore di lavoro e assegnale a progetti o commissioni."
+    },
+    "deliveries": {
+      "title": "Tracciamento consegne",
+      "description": "Monitora le consegne in arrivo e confronta le quantità previste con quelle effettive."
+    },
+    "reports": {
+      "title": "Report",
+      "description": "Genera report su livelli di scorte, utilizzo attrezzi e consumo materiali."
+    },
+    "settings": {
+      "title": "Impostazioni",
+      "description": "Personalizza il profilo aziendale, i membri del team e le integrazioni."
+    },
+    "finish": {
+      "title": "Si parte!",
+      "description": "Ora conosci le aree principali. Esplora l'app e inizia a gestire il tuo inventario."
+    },
+    "closeTour": "Chiudi tour",
+    "stepOf": "Passo {current} di {total}",
+    "back": "Indietro",
+    "next": "Avanti",
+    "getStarted": "Inizia"
+  },
+  "onlineUsers": {
+    "usersOnline": "{count, plural, one {# utente} other {# utenti}} online",
+    "title": "Utenti online",
+    "pages": {
+      "overview": "Panoramica",
+      "materials": "Materiali",
+      "tools": "Attrezzi",
+      "keys": "Chiavi",
+      "tasks": "Attività",
+      "calendar": "Calendario",
+      "reports": "Report",
+      "settings": "Impostazioni",
+      "locations": "Ubicazioni",
+      "suppliers": "Fornitori",
+      "orders": "Ordini",
+      "commissions": "Commissioni",
+      "inventory": "Inventario",
+      "kanban": "Kanban",
+      "timeTracking": "Tracciamento ore",
+      "transfers": "Trasferimenti",
+      "requests": "Richieste materiali"
+    }
   },
   "analytics": {
     "title": "Analitica",

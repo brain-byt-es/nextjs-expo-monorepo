@@ -47,7 +47,10 @@
     "showing": "Showing",
     "selected": "selected",
     "total": "Total",
-    "sortBy": "Sort by"
+    "sortBy": "Sort by",
+    "exportFailed": "Export failed",
+    "exportCsv": "Export as CSV",
+    "exportJson": "Export as JSON"
   },
   "auth": {
     "login": "Sign in",
@@ -1412,7 +1415,33 @@
     "retentionDays": "Retention (Days)",
     "lastAudit": "Last Audit",
     "dpo": "Data Protection Officer",
-    "privacyPolicy": "Privacy Policy"
+    "privacyPolicy": "Privacy Policy",
+    "exportTitle": "Export Data",
+    "exportDescription": "Download a copy of all your stored data.",
+    "exportContents": "The export includes your profile, materials, tools, bookings and other associated data.",
+    "exporting": "Exporting…",
+    "exportData": "Export Data",
+    "exportFailed": "Export failed. Please try again.",
+    "deleteTitle": "Delete Account and Data",
+    "deleteDescription": "Request the complete deletion of your account and all associated data.",
+    "deleteGracePeriod": "After the deletion request you have <strong>30 days</strong> to undo it. After that all data will be permanently deleted.",
+    "deleteDataProfile": "Profile and account data",
+    "deleteDataStock": "Material stock and warehouse data",
+    "deleteDataToolBookings": "Tool bookings",
+    "deleteDataTimeEntries": "Time entries",
+    "deleteDataComments": "Comments and notes",
+    "deleteDataCommissions": "Commission entries",
+    "deleteRequest": "Request Deletion",
+    "deleteConfirmTitle": "Really delete account?",
+    "deleteConfirmDescription": "This action cannot be undone after the 30-day grace period. Enter your password to continue.",
+    "deletePasswordLabel": "Confirm password",
+    "deletePasswordPlaceholder": "Your current password",
+    "deletePasswordRequired": "Please enter your password.",
+    "deleteFailed": "Deletion failed. Please try again.",
+    "deleteSuccess": "Deletion request submitted successfully. You have 30 days to undo it.",
+    "deleteProcessing": "Processing…",
+    "deleteConfirmButton": "Delete permanently",
+    "cancel": "Cancel"
   },
   "billing": {
     "title": "Billing",
@@ -1770,7 +1799,101 @@
     "newLocation": "New location"
   },
   "aiChat": {
-    "triggerTitle": "AI Assistant"
+    "triggerTitle": "AI Assistant",
+    "title": "AI Assistant",
+    "poweredBy": "Powered by OpenAI",
+    "newChat": "New chat",
+    "greeting": "Hello! How can I help?",
+    "greetingDescription": "Ask me about your stock levels, tools, orders or let me perform actions for you.",
+    "suggestedPrompt1": "Which materials are below reorder level?",
+    "suggestedPrompt2": "Show all overdue tools",
+    "suggestedPrompt3": "Create an order for missing material",
+    "suggestedPrompt4": "What is the current stock level?",
+    "thinking": "Thinking…",
+    "inputPlaceholder": "Type a message…",
+    "disclaimer": "AI can make mistakes. Always verify responses.",
+    "close": "Close",
+    "errorStatus": "Error: Server responded with status {status}",
+    "noStream": "No stream received from server",
+    "noResponseGenerated": "No response generated.",
+    "noResponseReceived": "No response received.",
+    "genericError": "An unexpected error occurred.",
+    "showDetails": "Show details",
+    "action": {
+      "createOrder": "Order created",
+      "bookStockChange": "Stock change booked",
+      "searchMaterials": "Materials searched",
+      "searchTools": "Tools searched",
+      "getStockLevel": "Stock level queried",
+      "getLowStockItems": "Low stock items queried",
+      "getOverdueTools": "Overdue tools queried"
+    }
+  },
+  "tour": {
+    "welcome": {
+      "title": "Welcome to LogistikApp!",
+      "description": "We will show you the key areas of the application. The tour takes just a minute."
+    },
+    "navigation": {
+      "title": "Navigation",
+      "description": "Use the sidebar to access all areas: materials, tools, reports and more."
+    },
+    "materials": {
+      "title": "Materials",
+      "description": "Manage your entire material stock with storage locations, reorder levels and expiry dates."
+    },
+    "tools": {
+      "title": "Tools",
+      "description": "Keep track of all tools, who has them and when they are expected back."
+    },
+    "timeTracking": {
+      "title": "Time Tracking",
+      "description": "Record working hours and assign them to projects or commissions."
+    },
+    "deliveries": {
+      "title": "Delivery Tracking",
+      "description": "Track incoming deliveries and compare expected vs. actual quantities."
+    },
+    "reports": {
+      "title": "Reports",
+      "description": "Generate reports on stock levels, tool utilisation and material consumption."
+    },
+    "settings": {
+      "title": "Settings",
+      "description": "Customise your company profile, team members and integrations."
+    },
+    "finish": {
+      "title": "Let's go!",
+      "description": "You now know the key areas. Explore the app and start managing your inventory."
+    },
+    "closeTour": "Close tour",
+    "stepOf": "Step {current} of {total}",
+    "back": "Back",
+    "next": "Next",
+    "getStarted": "Get started"
+  },
+  "onlineUsers": {
+    "usersOnline": "{count, plural, one {# user} other {# users}} online",
+    "title": "Online Users",
+    "pages": {
+      "overview": "Overview",
+      "materials": "Materials",
+      "tools": "Tools",
+      "keys": "Keys",
+      "tasks": "Tasks",
+      "calendar": "Calendar",
+      "reports": "Reports",
+      "settings": "Settings",
+      "locations": "Locations",
+      "suppliers": "Suppliers",
+      "orders": "Orders",
+      "commissions": "Commissions",
+      "inventory": "Inventory",
+      "kanban": "Kanban",
+      "timeTracking": "Time Tracking",
+      "transfers": "Transfers",
+      "requests": "Material Requests"
+    }
   },
   "analytics": {
     "title": "Analytics",
