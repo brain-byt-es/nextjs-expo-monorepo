@@ -269,6 +269,7 @@ export default function HomeScreen() {
 // ── QuickActionCard ────────────────────────────────────────────────────
 
 function QuickActionCard({ action }: { action: QuickActionDef }) {
+  const { isDarkColorScheme: isDark } = useColorScheme();
   return (
     <TouchableOpacity
       style={[styles.qaCard]}
