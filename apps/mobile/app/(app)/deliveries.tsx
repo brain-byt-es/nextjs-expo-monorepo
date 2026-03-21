@@ -98,7 +98,7 @@ export default function DeliveriesScreen() {
       const res = await api.get<{ data: DeliveryTracking[] }>(
         "/api/deliveries?limit=50"
       );
-      setDeliveries(res.data);
+      setDeliveries(res?.data ?? []);
     } catch {
       // Keep last known data
     } finally {

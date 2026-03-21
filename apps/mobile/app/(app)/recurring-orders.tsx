@@ -89,7 +89,7 @@ export default function RecurringOrdersScreen() {
       const res = await api.get<{ data: RecurringOrder[] }>(
         "/api/recurring-orders"
       );
-      setOrders(res.data);
+      setOrders(res?.data ?? []);
     } catch {
       // Keep last known data
     } finally {

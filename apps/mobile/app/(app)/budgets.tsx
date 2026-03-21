@@ -67,7 +67,7 @@ export default function BudgetsScreen() {
   const fetchBudgets = useCallback(async () => {
     try {
       const res = await api.get<{ data: Budget[] }>("/api/budgets");
-      setBudgets(res.data);
+      setBudgets(res?.data ?? []);
     } catch {
       // Keep last known data
     } finally {

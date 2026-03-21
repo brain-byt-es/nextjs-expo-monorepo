@@ -75,7 +75,7 @@ export default function WarrantyClaimsScreen() {
   const fetchClaims = useCallback(async () => {
     try {
       const res = await api.get<{ data: WarrantyClaim[] }>("/api/warranty-claims");
-      setClaims(res.data);
+      setClaims(res?.data ?? []);
     } catch {
       // Keep last known data
     } finally {
