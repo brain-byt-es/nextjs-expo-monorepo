@@ -14,8 +14,8 @@ const config: DocsThemeConfig = {
       LogistikApp Docs
     </span>
   ),
-  project: { link: 'https://github.com/brainbytes-dev/lager-app' },
-  docsRepositoryBase: 'https://github.com/brainbytes-dev/lager-app/tree/main/apps/docs',
+  project: { link: '' },
+  docsRepositoryBase: '',
   head: (
     <>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -27,8 +27,8 @@ const config: DocsThemeConfig = {
   footer: { content: <span>© {new Date().getFullYear()} BrainBytes GmbH · LogistikApp</span> },
   sidebar: { defaultMenuCollapseLevel: 1, toggleButton: true },
   toc: { title: 'Auf dieser Seite' },
-  editLink: { content: 'Diese Seite bearbeiten →' },
-  feedback: { content: 'Frage? Feedback geben →', labels: 'feedback' },
+  editLink: { component: () => null },
+  feedback: { content: null },
   search: { placeholder: 'Dokumentation durchsuchen...' },
   navigation: { prev: true, next: true },
   color: { hue: 24, saturation: 95 },
