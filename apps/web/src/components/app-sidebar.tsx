@@ -105,6 +105,7 @@ function OrgSwitcher({
   orgName: string | null
   logo: string | null
 }) {
+  const t = useTranslations("nav")
   const [orgs, setOrgs] = React.useState<OrgEntry[]>([])
   const [loaded, setLoaded] = React.useState(false)
 
@@ -177,7 +178,7 @@ function OrgSwitcher({
               <DropdownMenuItem asChild>
                 <a href="/dashboard/consolidated" className="flex items-center gap-2">
                   <IconChartBar className="size-4 text-muted-foreground" />
-                  <span>Konsolidierter Bericht</span>
+                  <span>{t("consolidatedReport")}</span>
                 </a>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -222,12 +223,17 @@ function EditModeRow({
   title,
   hidden,
   onToggle,
+  showLabel,
+  hideLabel,
 }: {
   icon: React.ComponentType<{ className?: string }>
   title: string
   hidden: boolean
   onToggle: () => void
+  showLabel: string
+  hideLabel: string
 }) {
+  const ariaLabel = hidden ? showLabel : hideLabel
   return (
     <SidebarMenuItem>
       <div
@@ -242,8 +248,8 @@ function EditModeRow({
         </span>
         <button
           type="button"
-          aria-label={hidden ? `${title} einblenden` : `${title} ausblenden`}
-          title={hidden ? `${title} einblenden` : `${title} ausblenden`}
+          aria-label={ariaLabel}
+          title={ariaLabel}
           onClick={onToggle}
           className="ml-auto rounded p-0.5 text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
         >
@@ -335,7 +341,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         hideable: true,
       },
       {
-        title: "Anfragen",
+        title: t("requests"),
         url: "/dashboard/requests",
         icon: IconInbox,
         hideable: true,
@@ -356,42 +362,42 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     ],
     navClouds: [
       {
-        title: "Betrieb",
+        title: t("operations"),
         icon: IconClipboardList,
         items: [
           { title: t("commissions"), url: "/dashboard/commissions" },
-          { title: "Kommissionen Kanban", url: "/dashboard/commissions/kanban" },
-          { title: "Umbuchungen", url: "/dashboard/transfers" },
+          { title: t("commissionsKanban"), url: "/dashboard/commissions/kanban" },
+          { title: t("transfers"), url: "/dashboard/transfers" },
           { title: t("openOrders"), url: "/dashboard/orders" },
-          { title: "Wiederkehrende Bestellungen", url: "/dashboard/recurring-orders" },
-          { title: "Lieferverfolgung", url: "/dashboard/deliveries" },
+          { title: t("recurringOrders"), url: "/dashboard/recurring-orders" },
+          { title: t("deliveryTracking"), url: "/dashboard/deliveries" },
           { title: t("cart"), url: "/dashboard/cart" },
-          { title: "Inventur", url: "/dashboard/inventory" },
-          { title: "Reservierungen", url: "/dashboard/reservations" },
-          { title: "Garantieansprüche", url: "/dashboard/warranty-claims" },
+          { title: t("inventory"), url: "/dashboard/inventory" },
+          { title: t("reservations"), url: "/dashboard/reservations" },
+          { title: t("warrantyClaims"), url: "/dashboard/warranty-claims" },
         ],
       },
       {
-        title: "Standorte",
+        title: t("locationsGroup"),
         icon: IconMapPin,
         items: [
           { title: t("locations"), url: "/dashboard/locations" },
-          { title: "Karte", url: "/dashboard/map" },
+          { title: t("map"), url: "/dashboard/map" },
           { title: t("suppliers"), url: "/dashboard/suppliers" },
         ],
       },
       {
-        title: "Planung & Analyse",
+        title: t("planningAnalysis"),
         icon: IconChartBar,
         items: [
-          { title: "Zeiterfassung", url: "/dashboard/time-tracking" },
-          { title: "Kanban", url: "/dashboard/kanban" },
-          { title: "Schichtübergabe", url: "/dashboard/shift-handover" },
-          { title: "Geräte-Auslastung", url: "/dashboard/utilization" },
-          { title: "KI-Wartungsprognose", url: "/dashboard/maintenance-ai" },
-          { title: "Lieferkette", url: "/dashboard/supply-chain" },
-          { title: "Bestandsoptimierung", url: "/dashboard/stock-adjust" },
-          { title: "Budgets", url: "/dashboard/budgets" },
+          { title: t("timeTracking"), url: "/dashboard/time-tracking" },
+          { title: t("kanban"), url: "/dashboard/kanban" },
+          { title: t("shiftHandover"), url: "/dashboard/shift-handover" },
+          { title: t("utilization"), url: "/dashboard/utilization" },
+          { title: t("maintenanceAi"), url: "/dashboard/maintenance-ai" },
+          { title: t("supplyChain"), url: "/dashboard/supply-chain" },
+          { title: t("stockOptimization"), url: "/dashboard/stock-adjust" },
+          { title: t("budgets"), url: "/dashboard/budgets" },
         ],
       },
       {
@@ -416,19 +422,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           { title: t("historyToolBookings"), url: "/dashboard/history/tool-bookings" },
           { title: t("historyCommissions"), url: "/dashboard/history/commissions" },
           { title: t("historyChangelog"), url: "/dashboard/history/changelog" },
-          { title: "Aktivitätsprotokoll", url: "/dashboard/history/activity" },
+          { title: t("activityLog"), url: "/dashboard/history/activity" },
         ],
       },
       {
-        title: "Werkzeuge & Druck",
+        title: t("toolsPrint"),
         icon: IconPrinter,
         items: [
-          { title: "Barcode-Generator", url: "/dashboard/barcode-generator" },
-          { title: "Etiketten-Designer", url: "/dashboard/label-designer" },
-          { title: "Massendruck", url: "/dashboard/batch-print" },
-          { title: "Datenimport", url: "/dashboard/import" },
-          { title: "Migration", url: "/dashboard/migration" },
-          { title: "TV-Modus", url: "/tv", newTab: true },
+          { title: t("barcodeGenerator"), url: "/dashboard/barcode-generator" },
+          { title: t("labelDesigner"), url: "/dashboard/label-designer" },
+          { title: t("batchPrint"), url: "/dashboard/batch-print" },
+          { title: t("dataImport"), url: "/dashboard/import" },
+          { title: t("migration"), url: "/dashboard/migration" },
+          { title: t("tvMode"), url: "/tv", newTab: true },
         ],
       },
     ],
@@ -440,7 +446,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         hideable: false,
       },
       {
-        title: "Externe Portale",
+        title: t("externalPortals"),
         url: "/dashboard/portals",
         icon: IconLink,
         hideable: false,
@@ -480,6 +486,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       title={item.title}
                       hidden={hiddenItems.has(item.url)}
                       onToggle={() => toggleHidden(item.url)}
+                      showLabel={t("showItem", { title: item.title })}
+                      hideLabel={t("hideItem", { title: item.title })}
                     />
                   ) : (
                     // Non-hideable items show as locked/static
@@ -488,7 +496,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         <item.icon className="size-4 shrink-0 text-muted-foreground" />
                         <span className="flex-1">{item.title}</span>
                         <span className="ml-auto text-[10px] uppercase tracking-wider text-muted-foreground/60">
-                          Immer
+                          {t("always")}
                         </span>
                       </div>
                     </SidebarMenuItem>
@@ -528,6 +536,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       title={item.title}
                       hidden={hiddenItems.has(item.url)}
                       onToggle={() => toggleHidden(item.url)}
+                      showLabel={t("showItem", { title: item.title })}
+                      hideLabel={t("hideItem", { title: item.title })}
                     />
                   ) : (
                     <SidebarMenuItem key={item.url}>
@@ -535,7 +545,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         <item.icon className="size-4 shrink-0 text-muted-foreground" />
                         <span className="flex-1">{item.title}</span>
                         <span className="ml-auto text-[10px] uppercase tracking-wider text-muted-foreground/60">
-                          Immer
+                          {t("always")}
                         </span>
                       </div>
                     </SidebarMenuItem>
@@ -580,7 +590,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     className="w-full justify-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
                   >
                     <IconCheck className="size-4" />
-                    <span>Fertig</span>
+                    <span>{t("done")}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
@@ -600,20 +610,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <button
               type="button"
               onClick={() => setEditMode(true)}
-              title="Sidebar anpassen"
-              aria-label="Sidebar anpassen"
+              title={t("customizeSidebar")}
+              aria-label={t("customizeSidebar")}
               className="flex flex-1 items-center gap-1.5 rounded-md px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
             >
               <IconPencil className="size-3.5 shrink-0" aria-hidden />
-              <span>Bearbeiten</span>
+              <span>{t("editSidebar")}</span>
             </button>
 
             {/* ⌘K hint + Shortcuts dialog trigger */}
             <button
               type="button"
               onClick={() => openShortcuts(true)}
-              title="Tastaturkürzel anzeigen (?)"
-              aria-label="Tastaturkürzel anzeigen"
+              title={t("showShortcuts")}
+              aria-label={t("showShortcuts")}
               className="flex items-center rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
             >
               <IconKeyboard className="size-4" aria-hidden />

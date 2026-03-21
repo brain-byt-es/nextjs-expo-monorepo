@@ -26,7 +26,7 @@ export function SiteHeader() {
           orientation="vertical"
           className="mx-2 data-[orientation=vertical]:h-4"
         />
-        <h1 className="text-base font-medium">Dashboard</h1>
+        <h1 className="text-base font-medium">{t("dashboard")}</h1>
         {/* Search trigger — opens Cmd+K palette */}
         <button
           onClick={() => window.dispatchEvent(new Event("open-command-palette"))}
@@ -40,7 +40,7 @@ export function SiteHeader() {
           <NotificationBell />
           <ModeToggle />
           <Button variant="default" size="sm" onClick={handleUpgrade}>
-            Upgrade
+            {t("upgrade")}
           </Button>
         </div>
       </div>

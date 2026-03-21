@@ -8,6 +8,7 @@ import {
 } from "@tabler/icons-react"
 import { useRouter } from "next/navigation"
 
+import { useTranslations } from "next-intl"
 import { signOut, useSession } from "@/lib/auth-client"
 import {
   Avatar,
@@ -47,9 +48,10 @@ function getInitials(name?: string | null, email?: string | null): string {
 export function NavUser() {
   const { isMobile } = useSidebar()
   const router = useRouter()
+  const t = useTranslations("navUser")
   const { data: session } = useSession()
 
-  const name = session?.user?.name ?? "Nicht angemeldet"
+  const name = session?.user?.name ?? t("notLoggedIn")
   const email = session?.user?.email ?? ""
   // Better-Auth stores the avatar URL in session.user.image
   const avatar = (session?.user as { image?: string | null } | undefined)?.image ?? ""
@@ -101,11 +103,11 @@ export function NavUser() {
             <DropdownMenuGroup>
               <DropdownMenuItem onClick={() => router.push("/dashboard/settings")}>
                 <IconUserCircle />
-                Einstellungen
+                {t("settings")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => router.push("/dashboard/billing")}>
                 <IconCreditCard />
-                Abrechnung
+                {t("billing")}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
@@ -117,7 +119,7 @@ export function NavUser() {
               }
             >
               <IconLogout />
-              Abmelden
+              {t("signOut")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
