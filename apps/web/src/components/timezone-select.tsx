@@ -38,12 +38,12 @@ function getAllTimezones(): string[] {
 
 // Priority timezones shown first
 const PRIORITY_TIMEZONES = [
-  "Europe/Zurich",
-  "Europe/Berlin",
-  "Europe/Vienna",
-  "Europe/Paris",
-  "Europe/Rome",
-  "Europe/London",
+  "Europe/Zurich",      // CET/CEST — Schweiz, DACH
+  "Europe/London",      // GMT/BST
+  "America/New_York",   // EST/EDT
+  "America/Los_Angeles",// PST/PDT
+  "Asia/Tokyo",         // JST
+  "Asia/Dubai",         // GST
 ]
 
 function formatTimezoneLabel(tz: string): string {
