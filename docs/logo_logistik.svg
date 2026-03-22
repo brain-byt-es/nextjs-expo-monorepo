@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <!-- Top face: cyan to blue -->
+    <linearGradient id="top" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <!-- Left face: teal to dark teal -->
+    <linearGradient id="left" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#14b8a6"/>
+      <stop offset="100%" stop-color="#0d7377"/>
+    </linearGradient>
+    <!-- Right face: blue to green -->
+    <linearGradient id="right" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#84cc16"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Isometric 3D Cube -->
+
+  <!-- Top face -->
+  <polygon points="256,80 416,168 256,256 96,168" fill="url(#top)"/>
+
+  <!-- Left face -->
+  <polygon points="96,168 256,256 256,432 96,344" fill="url(#left)"/>
+
+  <!-- Right face -->
+  <polygon points="256,256 416,168 416,344 256,432" fill="url(#right)"/>
+
+  <!-- Edge highlights -->
+  <line x1="256" y1="256" x2="256" y2="432" stroke="#0a0a0a" stroke-width="3" opacity="0.3"/>
+  <line x1="96" y1="168" x2="256" y2="256" stroke="#0a0a0a" stroke-width="2" opacity="0.2"/>
+  <line x1="256" y1="256" x2="416" y2="168" stroke="#0a0a0a" stroke-width="2" opacity="0.2"/>
+
+  <!-- Top face inner highlight (glass effect) -->
+  <polygon points="256,100 390,176 256,248 122,176" fill="white" opacity="0.08"/>
+
+  <!-- Top edge shine -->
+  <line x1="256" y1="80" x2="416" y2="168" stroke="white" stroke-width="2" opacity="0.15"/>
+  <line x1="256" y1="80" x2="96" y2="168" stroke="white" stroke-width="2" opacity="0.1"/>
+</svg>
