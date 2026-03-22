@@ -732,59 +732,6 @@ export default function SettingsPage() {
         <DsgvoDeleteCard />
       </div>
 
-      <Separator />
-
-      {/* ── Gefahrenzone (immer ganz unten) ── */}
-      <Card className="border-destructive/30 bg-destructive/5" id="danger">
-        <CardHeader>
-          <CardTitle className="text-destructive">{ts("dangerZone")}</CardTitle>
-          <CardDescription>
-            {t("dangerZoneDesc")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="rounded-md border border-destructive/20 bg-destructive/5 p-4">
-            <p className="mb-1 text-sm font-medium">{ts("deleteAccount")}</p>
-            <p className="mb-4 text-sm text-muted-foreground">
-              {t("deleteAccountDesc")}
-            </p>
-
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="destructive" size="sm">
-                  {ts("deleteAccount")}
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle className="flex items-center gap-2 text-destructive">
-                    <IconAlertTriangle className="size-5 shrink-0" aria-hidden />
-                    {t("deleteAccountConfirmTitle")}
-                  </DialogTitle>
-                  <DialogDescription>
-                    {t("deleteAccountConfirmDesc")}
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
-                  {t("deleteAccountSupport")}
-                  <br />
-                  <a
-                    href="mailto:support@logistikapp.ch"
-                    className="font-medium underline underline-offset-2"
-                  >
-                    support@logistikapp.ch
-                  </a>
-                </div>
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline">{tc("cancel")}</Button>
-                  </DialogClose>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }
