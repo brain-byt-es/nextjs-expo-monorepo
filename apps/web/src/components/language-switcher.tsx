@@ -23,9 +23,9 @@ function setCookie(name: string, value: string) {
 }
 
 const LOCALES = [
-  { value: "de", label: "Deutsch", flag: "ch" },
-  { value: "fr", label: "Français", flag: "ch" },
-  { value: "it", label: "Italiano", flag: "ch" },
+  { value: "de", label: "Deutsch", flag: "de" },
+  { value: "fr", label: "Français", flag: "fr" },
+  { value: "it", label: "Italiano", flag: "it" },
   { value: "en", label: "English", flag: "gb" },
 ] as const
 
