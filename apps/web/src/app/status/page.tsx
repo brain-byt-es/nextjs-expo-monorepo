@@ -27,6 +27,22 @@ interface StatusResponse {
   incidents: { title: string; description: string; date: string; status: string }[];
 }
 
+interface DaySummary {
+  date: string;
+  checks: number;
+  operational: number;
+  degraded: number;
+  outage: number;
+  uptimePercent: number;
+  avgApiLatency: number | null;
+  avgDbLatency: number | null;
+}
+
+interface HistoryResponse {
+  days: DaySummary[];
+  overallUptime: number;
+}
+
 const SERVICE_META: Record<string, { label: string; icon: React.ElementType }> = {
   api: { label: "API", icon: Globe },
   database: { label: "Datenbank", icon: Database },
@@ -59,6 +75,13 @@ const STATUS_CONFIG = {
   },
 };
 
+const PERIOD_OPTIONS = [
+  { label: "7 Tage", days: 7 },
+  { label: "30 Tage", days: 30 },
+  { label: "90 Tage", days: 90 },
+  { label: "1 Jahr", days: 365 },
+] as const;
+
 function StatusDot({ status }: { status: "up" | "down" }) {
   return (
     <span
@@ -71,16 +94,108 @@ function StatusDot({ status }: { status: "up" | "down" }) {
   );
 }
 
-function UptimeBar() {
-  const days = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+function getBarColor(uptimePercent: number): string {
+  if (uptimePercent < 0) return "bg-gray-300 dark:bg-gray-600"; // no data
+  if (uptimePercent >= 100) return "bg-emerald-500/80 dark:bg-emerald-500/60";
+  if (uptimePercent >= 95) return "bg-amber-400/80 dark:bg-amber-400/60";
+  return "bg-red-500/80 dark:bg-red-500/60";
+}
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr + "T12:00:00");
+  return d.toLocaleDateString("de-CH", { day: "2-digit", month: "2-digit" });
+}
+
+function UptimeBar({ history }: { history: DaySummary[] }) {
+  const [tooltip, setTooltip] = useState<{ idx: number; x: number; y: number } | null>(null);
+
   return (
-    <div className="flex items-end gap-1.5">
-      {days.map((day) => (
-        <div key={day} className="flex flex-col items-center gap-1">
-          <div className="h-8 w-6 rounded-sm bg-emerald-500/80 dark:bg-emerald-500/60" />
-          <span className="text-[10px] text-muted-foreground">{day}</span>
+    <div className="relative">
+      <div className="flex items-end gap-[2px]">
+        {history.map((day, i) => (
+          <div
+            key={day.date}
+            className="group relative flex-1 min-w-0"
+            onMouseEnter={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              setTooltip({ idx: i, x: rect.left + rect.width / 2, y: rect.top });
+            }}
+            onMouseLeave={() => setTooltip(null)}
+          >
+            <div
+              className={`h-8 w-full rounded-[2px] cursor-pointer transition-opacity hover:opacity-80 ${getBarColor(day.uptimePercent)}`}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Date labels - show first, middle, last */}
+      <div className="mt-1.5 flex justify-between">
+        <span className="text-[10px] text-muted-foreground">
+          {history.length > 0 ? formatDate(history[0].date) : ""}
+        </span>
+        <span className="text-[10px] text-muted-foreground">
+          {history.length > 0 ? formatDate(history[history.length - 1].date) : ""}
+        </span>
+      </div>
+
+      {/* Tooltip */}
+      {tooltip !== null && history[tooltip.idx] && (
+        <div className="absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 pointer-events-none"
+          style={{
+            left: `${((tooltip.idx + 0.5) / history.length) * 100}%`,
+          }}
+        >
+          <div className="rounded-lg border border-border bg-popover px-3 py-2 text-xs shadow-lg whitespace-nowrap">
+            <p className="font-medium text-foreground">
+              {new Date(history[tooltip.idx].date + "T12:00:00").toLocaleDateString("de-CH", {
+                weekday: "short",
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              })}
+            </p>
+            {history[tooltip.idx].checks === 0 ? (
+              <p className="text-muted-foreground mt-0.5">Keine Daten</p>
+            ) : (
+              <>
+                <p className="text-muted-foreground mt-0.5">
+                  Verfügbarkeit: {history[tooltip.idx].uptimePercent.toFixed(1)}%
+                </p>
+                <p className="text-muted-foreground">
+                  Prüfungen: {history[tooltip.idx].checks}
+                </p>
+                {(history[tooltip.idx].degraded > 0 || history[tooltip.idx].outage > 0) && (
+                  <p className="text-muted-foreground">
+                    Störungen: {history[tooltip.idx].degraded + history[tooltip.idx].outage}
+                  </p>
+                )}
+                {history[tooltip.idx].avgApiLatency != null && (
+                  <p className="text-muted-foreground">
+                    Latenz: {history[tooltip.idx].avgApiLatency}ms
+                  </p>
+                )}
+              </>
+            )}
+          </div>
         </div>
-      ))}
+      )}
+
+      {/* Legend */}
+      <div className="mt-3 flex flex-wrap gap-3 text-[10px] text-muted-foreground">
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-2.5 w-2.5 rounded-sm bg-emerald-500/80" /> 100%
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-2.5 w-2.5 rounded-sm bg-amber-400/80" /> &gt;95%
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-2.5 w-2.5 rounded-sm bg-red-500/80" /> &lt;95%
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-2.5 w-2.5 rounded-sm bg-gray-300 dark:bg-gray-600" /> Keine Daten
+        </span>
+      </div>
     </div>
   );
 }
@@ -89,6 +204,9 @@ export default function StatusPage() {
   const [data, setData] = useState<StatusResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedPeriod, setSelectedPeriod] = useState(7);
+  const [history, setHistory] = useState<HistoryResponse | null>(null);
+  const [historyLoading, setHistoryLoading] = useState(true);
 
   const fetchStatus = useCallback(async (isManual = false) => {
     if (isManual) setRefreshing(true);
@@ -109,15 +227,45 @@ export default function StatusPage() {
     }
   }, []);
 
+  const fetchHistory = useCallback(async (days: number) => {
+    setHistoryLoading(true);
+    try {
+      const res = await fetch(`/api/status/history?days=${days}`, { cache: "no-store" });
+      const json: HistoryResponse = await res.json();
+      setHistory(json);
+    } catch {
+      setHistory(null);
+    } finally {
+      setHistoryLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchStatus();
     const interval = setInterval(() => fetchStatus(), 60_000);
     return () => clearInterval(interval);
   }, [fetchStatus]);
 
+  useEffect(() => {
+    fetchHistory(selectedPeriod);
+  }, [selectedPeriod, fetchHistory]);
+
   const overallStatus = data?.status ?? "outage";
   const config = STATUS_CONFIG[overallStatus];
   const StatusIcon = config.icon;
+
+  // Compute average latency from history
+  const avgLatency =
+    history && history.days.length > 0
+      ? (() => {
+          const latencies = history.days
+            .filter((d) => d.avgApiLatency != null)
+            .map((d) => d.avgApiLatency!);
+          return latencies.length > 0
+            ? Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length)
+            : null;
+        })()
+      : null;
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8 sm:py-16">
@@ -149,13 +297,20 @@ export default function StatusPage() {
       ) : (
         <div className={`mb-8 flex items-center gap-3 rounded-xl border p-5 ${config.bg} ${config.border}`}>
           <StatusIcon className={`h-7 w-7 ${config.color}`} />
-          <div>
+          <div className="flex-1">
             <p className={`text-lg font-semibold ${config.color}`}>{config.label}</p>
-            {data?.uptime && (
-              <p className="text-sm text-muted-foreground">
-                Verfügbarkeit: {data.uptime}
-              </p>
-            )}
+            <div className="flex flex-wrap gap-x-4 gap-y-0.5">
+              {history && history.overallUptime >= 0 && (
+                <p className="text-sm text-muted-foreground">
+                  {history.overallUptime.toFixed(1)}% Verfügbarkeit (letzte {selectedPeriod === 365 ? "365" : selectedPeriod} Tage)
+                </p>
+              )}
+              {avgLatency != null && (
+                <p className="text-sm text-muted-foreground">
+                  Ø {avgLatency}ms Antwortzeit
+                </p>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -198,11 +353,43 @@ export default function StatusPage() {
       {/* Uptime History */}
       {!loading && (
         <div className="mb-8 rounded-xl border border-border bg-card p-5">
-          <h2 className="mb-3 text-sm font-semibold text-foreground">
-            Verfügbarkeit der letzten 7 Tage
-          </h2>
-          <UptimeBar />
-          <p className="mt-2 text-xs text-muted-foreground">100% Verfügbarkeit</p>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-foreground">
+              Verfügbarkeits-Historie
+            </h2>
+            <div className="flex gap-1">
+              {PERIOD_OPTIONS.map((opt) => (
+                <button
+                  key={opt.days}
+                  onClick={() => setSelectedPeriod(opt.days)}
+                  className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
+                    selectedPeriod === opt.days
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {historyLoading ? (
+            <div className="flex h-12 items-center justify-center">
+              <RefreshCw className="h-4 w-4 animate-spin text-muted-foreground" />
+            </div>
+          ) : history && history.days.length > 0 ? (
+            <>
+              <UptimeBar history={history.days} />
+              {history.overallUptime >= 0 && (
+                <p className="mt-3 text-xs text-muted-foreground">
+                  Gesamtverfügbarkeit: {history.overallUptime.toFixed(2)}%
+                </p>
+              )}
+            </>
+          ) : (
+            <p className="text-xs text-muted-foreground">Noch keine Daten vorhanden</p>
+          )}
         </div>
       )}
 

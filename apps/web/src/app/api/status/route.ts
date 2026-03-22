@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getDb, sql } from "@repo/db";
+import { statusChecks } from "@repo/db";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -55,6 +56,24 @@ export async function GET() {
   // If both DB and auth are down, it's an outage
   if (checks.database.status === "down" && checks.auth.status === "down") {
     overallStatus = "outage";
+  }
+
+  // Fire-and-forget: save status check to DB
+  try {
+    const db = getDb();
+    db.insert(statusChecks)
+      .values({
+        status: overallStatus,
+        apiLatency: checks.api.latency ?? null,
+        dbLatency: checks.database.latency ?? null,
+        authStatus: checks.auth.status ?? null,
+      })
+      .execute()
+      .catch(() => {
+        // Silently ignore — status logging should never break the response
+      });
+  } catch {
+    // Ignore — DB might be down
   }
 
   return NextResponse.json(

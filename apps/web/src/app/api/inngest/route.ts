@@ -11,6 +11,7 @@ import { checkReorderFn } from "@/inngest/check-reorder";
 import { detectAnomaliesFn } from "@/inngest/detect-anomalies";
 import { sendShiftReportFn } from "@/inngest/send-shift-report";
 import { deleteUserDataFn } from "@/inngest/delete-user-data";
+import { statusCheckCronFn, statusCleanupCronFn } from "@/inngest/status-check-cron";
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
@@ -26,5 +27,7 @@ export const { GET, POST, PUT } = serve({
     detectAnomaliesFn,
     sendShiftReportFn,
     deleteUserDataFn,
+    statusCheckCronFn,
+    statusCleanupCronFn,
   ],
 });

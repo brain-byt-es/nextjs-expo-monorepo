@@ -2090,3 +2090,18 @@ export const recurringOrders = pgTable(
 
 export type RecurringOrder = typeof recurringOrders.$inferSelect;
 export type NewRecurringOrder = typeof recurringOrders.$inferInsert;
+
+// ─── Status Checks (System-Überwachung) ─────────────────────────────
+export const statusChecks = pgTable("status_checks", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  status: text("status").notNull(), // "operational", "degraded", "outage"
+  apiLatency: integer("api_latency"), // ms
+  dbLatency: integer("db_latency"), // ms
+  authStatus: text("auth_status"), // "up", "down"
+  checkedAt: timestamp("checked_at").defaultNow().notNull(),
+}, (table) => [
+  index("idx_status_checks_checked_at").on(table.checkedAt),
+]);
+
+export type StatusCheck = typeof statusChecks.$inferSelect;
+export type NewStatusCheck = typeof statusChecks.$inferInsert;
