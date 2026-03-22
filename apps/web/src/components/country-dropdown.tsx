@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useCallback, useState, forwardRef, useEffect } from "react"
+import React, { useCallback, useState, forwardRef } from "react"
 import {
   Command,
   CommandEmpty,
@@ -67,16 +67,10 @@ const CountryDropdownComponent = (
   ref: React.ForwardedRef<HTMLButtonElement>
 ) => {
   const [open, setOpen] = useState(false)
-  const [selected, setSelected] = useState<Country | null>(null)
-
-  // Initialize with defaultValue or value
-  useEffect(() => {
+  const [selected, setSelected] = useState<Country | null>(() => {
     const code = value || defaultValue
-    if (code && (!selected || selected.alpha2 !== code)) {
-      const country = allCountries.find((c) => c.alpha2 === code)
-      if (country) setSelected(country)
-    }
-  }, [value, defaultValue, selected])
+    return allCountries.find((c) => c.alpha2 === code) ?? null
+  })
 
   const handleSelect = useCallback(
     (country: Country) => {

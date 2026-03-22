@@ -1,8 +1,6 @@
 "use client"
 
-import { useTransition } from "react"
 import { useLocale, useTranslations } from "next-intl"
-import { useRouter } from "next/navigation"
 import { IconCheck, IconChevronDown } from "@tabler/icons-react"
 import { CircleFlag } from "react-circle-flags"
 import {
@@ -18,6 +16,11 @@ import {
 } from "@/components/ui/command"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
+
+function setCookie(name: string, value: string) {
+  const d = document
+  d.cookie = `${name}=${value}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`
+}
 
 const LOCALES = [
   { value: "de", label: "Deutsch", flag: "ch" },
@@ -35,19 +38,16 @@ interface LanguageSwitcherProps {
 export function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
   const locale = useLocale() as Locale
   const t = useTranslations("languageSwitcher")
-  const router = useRouter()
-  const [isPending, startTransition] = useTransition()
+  const isPending = false
   const [open, setOpen] = useState(false)
 
   const currentLocale = LOCALES.find((l) => l.value === locale) ?? LOCALES[0]
 
   function handleLocaleChange(next: string) {
     if (next === locale) return
-    document.cookie = `locale=${next}; path=/; max-age=${60 * 60 * 24 * 365}; SameSite=Lax`
+    setCookie("locale", next)
     setOpen(false)
-    startTransition(() => {
-      router.refresh()
-    })
+    window.location.reload()
   }
 
   return (
