@@ -1067,7 +1067,7 @@ export default function OnboardingPage() {
     } finally {
       setIsLoading(false)
     }
-  }, [orgData])
+  }, [orgData, t])
 
   // ── Template step: apply template ─────────────────────────────────────────
 
@@ -1095,7 +1095,7 @@ export default function OnboardingPage() {
     } finally {
       setIsLoading(false)
     }
-  }, [orgId, orgData.industry])
+  }, [orgId, orgData.industry, t])
 
   // ── Step 2: Create location ────────────────────────────────────────────────
 
@@ -1128,7 +1128,7 @@ export default function OnboardingPage() {
     } finally {
       setIsLoading(false)
     }
-  }, [orgId, locationData])
+  }, [orgId, locationData, t])
 
   // ── Step 3: Create materials ───────────────────────────────────────────────
 
@@ -1165,7 +1165,7 @@ export default function OnboardingPage() {
     } finally {
       setIsLoading(false)
     }
-  }, [orgId, materialRows])
+  }, [orgId, materialRows, t])
 
   // ── Step 4: Send invites ───────────────────────────────────────────────────
 
@@ -1199,7 +1199,7 @@ export default function OnboardingPage() {
     } finally {
       setIsLoading(false)
     }
-  }, [orgId, inviteRows])
+  }, [orgId, inviteRows, t])
 
   const firstName = session?.user?.name?.split(" ")[0] ?? ""
 

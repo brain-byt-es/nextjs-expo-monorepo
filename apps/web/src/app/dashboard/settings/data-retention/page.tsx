@@ -114,7 +114,7 @@ export default function DataRetentionPage() {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [ts])
 
   useEffect(() => {
     loadConfig()

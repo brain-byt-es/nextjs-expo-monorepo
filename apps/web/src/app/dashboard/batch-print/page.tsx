@@ -64,27 +64,27 @@ interface LabelTemplate {
   name: string
 }
 
-const ENTITY_OPTIONS: {
-  value: EntityType
-  label: string
-  icon: React.ComponentType<{ className?: string }>
-}[] = [
-  { value: "material", label: t("materials"), icon: IconPackage },
-  { value: "tool", label: t("tools"), icon: IconTool },
-  { value: "location", label: t("locations"), icon: IconMapPin },
-]
-
-const LABEL_SIZES: { value: LabelSize; label: string }[] = [
-  { value: "small", label: t("sizeSmall") },
-  { value: "large", label: t("sizeLarge") },
-]
-
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 export default function BatchPrintPage() {
   const t = useTranslations("batchPrint")
   const router = useRouter()
+
+  const ENTITY_OPTIONS: {
+    value: EntityType
+    label: string
+    icon: React.ComponentType<{ className?: string }>
+  }[] = [
+    { value: "material", label: t("materials"), icon: IconPackage },
+    { value: "tool", label: t("tools"), icon: IconTool },
+    { value: "location", label: t("locations"), icon: IconMapPin },
+  ]
+
+  const LABEL_SIZES: { value: LabelSize; label: string }[] = [
+    { value: "small", label: t("sizeSmall") },
+    { value: "large", label: t("sizeLarge") },
+  ]
 
   // Steps
   const [step, setStep] = useState(1)

@@ -89,7 +89,7 @@ export function ScaleWidget({
     } finally {
       setConnecting(false)
     }
-  }, [])
+  }, [t])
 
   // ── Disconnect ──────────────────────────────────────────────────────────
   const handleDisconnect = useCallback(() => {

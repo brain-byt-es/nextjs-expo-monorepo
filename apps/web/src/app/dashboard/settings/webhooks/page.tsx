@@ -262,13 +262,13 @@ function SubscriptionFormDialog({ initial, orgId, onSaved, trigger }: Subscripti
                 <div className="space-y-4 rounded-md border border-border p-3 max-h-64 overflow-y-auto">
                   {EVENT_GROUP_KEYS.map((group) => (
                     <div key={group.labelKey}>
-                      <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mb-2">{t(group.labelKey as any)}</p>
+                      <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest mb-2">{t(group.labelKey as never)}</p>
                       <div className="space-y-1.5">
                         {group.events.map((ev) => (
                           <div key={ev.id} className="flex items-center gap-2">
                             <Checkbox id={`ev-${ev.id}`} checked={selectedEvents.includes(ev.id)} onCheckedChange={() => toggleEvent(ev.id)} disabled={saving} />
                             <label htmlFor={`ev-${ev.id}`} className="text-sm cursor-pointer select-none">
-                              {t(ev.labelKey as any)}
+                              {t(ev.labelKey as never)}
                               <span className="ml-1.5 text-xs text-muted-foreground font-mono">{ev.id}</span>
                             </label>
                           </div>

@@ -84,7 +84,7 @@ export default function PrinterSettingsPage() {
       setTestStatus("error")
       setTestError(err instanceof Error ? err.message : ts("unknownError"))
     }
-  }, [settings])
+  }, [settings, ts])
 
   // ── ZPL Preview ─────────────────────────────────────────────────────────
   const previewZPL = generateZPL(

@@ -71,7 +71,7 @@ export default function IpAllowlistPage() {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [ts])
 
   // Detect current IP via external service
   useEffect(() => {

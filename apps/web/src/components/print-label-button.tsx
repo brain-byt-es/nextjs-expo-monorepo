@@ -107,7 +107,7 @@ export function PrintLabelButton({
       setStatus("error")
       setError(err instanceof Error ? err.message : t("printError"))
     }
-  }, [labelData, settings])
+  }, [labelData, settings, t])
 
   const typeLabels: Record<LabelData["type"], string> = {
     material: t("typeMaterial"),

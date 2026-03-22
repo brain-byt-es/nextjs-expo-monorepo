@@ -195,7 +195,7 @@ export default function EmailInboxPage() {
 
   const fieldName = (key: string): string => {
     const k = FIELD_NAME_KEYS[key]
-    return k ? t(k as any) : key
+    return k ? t(k as never) : key
   }
 
   return (

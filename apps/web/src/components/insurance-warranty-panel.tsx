@@ -89,6 +89,7 @@ function getExpiryStatus(endDate: string | null): ExpiryStatus {
 }
 
 function ExpiryBadge({ endDate }: { endDate: string | null }) {
+  const t = useTranslations("insuranceWarranty")
   const status = getExpiryStatus(endDate)
   if (status === "unknown" || !endDate) return null
 
@@ -155,6 +156,7 @@ function InsuranceDialog({
   initial?: InsuranceRecord | null
   onSave: (data: InsuranceFormState) => Promise<void>
 }) {
+  const t = useTranslations("insuranceWarranty")
   const [form, setForm] = useState<InsuranceFormState>(emptyInsuranceForm)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -343,6 +345,7 @@ function WarrantyDialog({
   initial?: WarrantyRecord | null
   onSave: (data: WarrantyFormState) => Promise<void>
 }) {
+  const t = useTranslations("insuranceWarranty")
   const [form, setForm] = useState<WarrantyFormState>(emptyWarrantyForm)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)

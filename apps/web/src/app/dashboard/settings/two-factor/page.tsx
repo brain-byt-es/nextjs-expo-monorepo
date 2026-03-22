@@ -208,7 +208,7 @@ export default function TwoFactorSettingsPage() {
                       <Label htmlFor="disable-password">{ts("password")}</Label>
                       <PasswordInput
                         id="disable-password"
-                        placeholder=ts("enterPassword")
+                        placeholder={ts("enterPassword")}
                         value={disablePassword}
                         onChange={(e) => {
                           setDisablePassword(e.target.value)

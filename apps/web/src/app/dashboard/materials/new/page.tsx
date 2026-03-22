@@ -133,7 +133,7 @@ export default function NewMaterialPage() {
     if (!form.name.trim()) errs.name = t("nameRequired")
     setErrors(errs)
     return Object.keys(errs).length === 0
-  }, [form])
+  }, [form, t])
 
   const handleSave = useCallback(async () => {
     if (!validate()) return

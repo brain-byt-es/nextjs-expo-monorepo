@@ -111,7 +111,7 @@ export default function CommissionDetailPage() {
     } finally {
       setLoading(false)
     }
-  }, [id])
+  }, [id, t])
 
   useEffect(() => {
     fetchAll()

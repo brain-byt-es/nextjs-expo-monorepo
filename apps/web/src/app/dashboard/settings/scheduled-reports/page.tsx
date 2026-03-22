@@ -58,11 +58,6 @@ interface ScheduledReport {
 // ---------------------------------------------------------------------------
 // Label helpers
 // ---------------------------------------------------------------------------
-// Labels moved to translations
-const REPORT_TYPE_LABELS: Record<string, string> = {}
-
-// Labels moved to translations
-const SCHEDULE_LABELS: Record<string, string> = {}
 
 const FORMAT_LABELS: Record<string, string> = {
   csv: "CSV",

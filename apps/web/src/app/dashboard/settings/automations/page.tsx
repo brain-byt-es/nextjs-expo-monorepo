@@ -185,7 +185,7 @@ function ConditionRow({
         <SelectContent>
           {fields.map((f) => (
             <SelectItem key={f} value={f} className="text-xs">
-              {t(CONDITION_FIELD_KEY_MAP[f] as any)}
+              {t(CONDITION_FIELD_KEY_MAP[f] as never)}
             </SelectItem>
           ))}
         </SelectContent>
@@ -203,7 +203,7 @@ function ConditionRow({
         <SelectContent>
           {operators.map((op) => (
             <SelectItem key={op} value={op} className="text-xs">
-              {t(OPERATOR_KEY_MAP[op] as any)}
+              {t(OPERATOR_KEY_MAP[op] as never)}
             </SelectItem>
           ))}
         </SelectContent>
@@ -266,7 +266,7 @@ function ActionRow({
           <SelectContent>
             {actionTypes.map((at) => (
               <SelectItem key={at} value={at} className="text-xs">
-                {t(ACTION_KEY_MAP[at] as any)}
+                {t(ACTION_KEY_MAP[at] as never)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -286,7 +286,7 @@ function ActionRow({
       {configFields.map((f) => (
         <div key={f.key} className="space-y-1">
           <Label className="text-[10px] text-muted-foreground uppercase tracking-widest">
-            {t(f.labelKey as any)}
+            {t(f.labelKey as never)}
           </Label>
           {f.key === "body" || f.key === "message" ? (
             <textarea
@@ -460,7 +460,7 @@ function RuleFormDialog({ orgId, initial, trigger, onSaved }: RuleFormDialogProp
               <SelectContent>
                 {triggerEvents.map((ev) => (
                   <SelectItem key={ev} value={ev}>
-                    <span className="text-sm">{t(TRIGGER_KEY_MAP[ev] as any)}</span>
+                    <span className="text-sm">{t(TRIGGER_KEY_MAP[ev] as never)}</span>
                     <span className="ml-2 text-xs text-muted-foreground font-mono">
                       {ev}
                     </span>
@@ -647,7 +647,7 @@ function TemplateCard({
             variant="outline"
             className={`text-[10px] px-1.5 ${triggerBadgeColor(template.triggerEvent)}`}
           >
-            {t(TRIGGER_KEY_MAP[template.triggerEvent] as any)}
+            {t(TRIGGER_KEY_MAP[template.triggerEvent] as never)}
           </Badge>
         </div>
         <CardTitle className="text-sm">{template.name}</CardTitle>
@@ -660,7 +660,7 @@ function TemplateCard({
               key={i}
               className="inline-flex items-center rounded-full border border-border px-2 py-0.5 text-[10px] font-mono text-muted-foreground"
             >
-              {t(ACTION_KEY_MAP[a.type] as any)}
+              {t(ACTION_KEY_MAP[a.type] as never)}
             </span>
           ))}
         </div>
@@ -809,7 +809,7 @@ function TestDialog({
                       key={i}
                       className="text-xs rounded-md border border-border px-3 py-2 mb-2"
                     >
-                      <span className="font-medium">{t(ACTION_KEY_MAP[a.type] as any)}</span>
+                      <span className="font-medium">{t(ACTION_KEY_MAP[a.type] as never)}</span>
                       {a.type === "send_email" && Boolean(a.config.to) && (
                         <span className="ml-2 text-muted-foreground">
                           an {String(a.config.to)}
@@ -1063,7 +1063,7 @@ export default function AutomationsPage() {
                         variant="outline"
                         className={`text-[10px] px-1.5 ${triggerBadgeColor(rule.triggerEvent)}`}
                       >
-                        {ts(TRIGGER_KEY_MAP[rule.triggerEvent] as any)}
+                        {ts(TRIGGER_KEY_MAP[rule.triggerEvent] as never)}
                       </Badge>
                       {rule.priority > 0 && (
                         <Badge
@@ -1146,7 +1146,7 @@ export default function AutomationsPage() {
                         key={i}
                         className="inline-flex items-center rounded-full border border-border px-2 py-0.5 text-[10px] font-mono text-muted-foreground"
                       >
-                        {ts(ACTION_KEY_MAP[a.type] as any)}
+                        {ts(ACTION_KEY_MAP[a.type] as never)}
                         {a.type === "send_email" && a.config.to
                           ? ` → ${String(a.config.to)}`
                           : ""}

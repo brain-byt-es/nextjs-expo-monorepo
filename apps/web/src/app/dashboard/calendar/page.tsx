@@ -520,7 +520,7 @@ export default function CalendarPage() {
       })
     })
     return map
-  }, [activeTypes, maintenance, t])
+  }, [activeTypes, maintenance, t, STATUS_CONFIG])
 
   const selectedEvents = selectedDay ? (eventsForDate.get(selectedDay) ?? []) : []
   const todayStr = today.toISOString().split("T")[0]!

@@ -126,7 +126,7 @@ export default function NewLocationPage() {
       errs.longitude = t("invalidLongitude")
     setErrors(errs)
     return Object.keys(errs).length === 0
-  }, [form])
+  }, [form, t])
 
   const handleSave = useCallback(async () => {
     if (!validate()) return

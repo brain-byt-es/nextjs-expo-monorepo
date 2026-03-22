@@ -269,7 +269,7 @@ export default function FloorPlanPage() {
         fetch("/api/floor-plans", { headers: { "x-organization-id": orgId } }),
         fetch("/api/locations", { headers: { "x-organization-id": orgId } }),
       ]);
-      if (!fpRes.ok) throw new Error("t("loadError")");
+      if (!fpRes.ok) throw new Error(t("loadError"));
       const fpJson = await fpRes.json();
       const locJson = locRes.ok ? await locRes.json() : { data: [] };
       setFloorPlans(fpJson.data ?? []);
@@ -284,7 +284,7 @@ export default function FloorPlanPage() {
     } finally {
       setLoading(false);
     }
-  }, [orgId]);
+  }, [orgId, t]);
 
   useEffect(() => {
     loadData();

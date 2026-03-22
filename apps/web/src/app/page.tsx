@@ -165,6 +165,7 @@ function CustomCursor() {
 
 /* ─── Scroll Progress + Back-to-top ─────────────────────────── */
 function ScrollUI() {
+  const t = useTranslations("landing")
   const barRef    = useRef<HTMLDivElement>(null)
   const ringRef2  = useRef<SVGCircleElement>(null)
   const btnRef    = useRef<HTMLButtonElement>(null)
@@ -426,7 +427,7 @@ function PricingSection() {
                   {t("priceSavedPerYear", { amount: savings })}
                 </p>
               )}
-              {yearly && yearlyTotal && (
+              {yearly && yearlyTotal != null && monthlyTotal != null && (
                 <p className="text-[10px] text-muted-foreground font-mono mb-6">
                   {t("priceYearlyBilling", { yearly: yearlyTotal, monthly: monthlyTotal })}
                 </p>

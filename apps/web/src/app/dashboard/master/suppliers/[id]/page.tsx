@@ -114,6 +114,7 @@ function AddRatingDialog({
   supplierId: string
   onAdded: () => void
 }) {
+  const t = useTranslations("supplier")
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
@@ -249,6 +250,7 @@ function AddRatingDialog({
 
 // ── Bewertung Tab ──────────────────────────────────────────────────────────────
 function BewertungTab({ supplierId }: { supplierId: string }) {
+  const t = useTranslations("supplier")
   const [data, setData] = useState<RatingsData | null>(null)
   const [loading, setLoading] = useState(true)
 

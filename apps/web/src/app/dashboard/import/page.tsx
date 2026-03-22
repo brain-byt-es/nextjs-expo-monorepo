@@ -55,18 +55,18 @@ interface ImportResult {
   errors: { row: number; error: string }[]
 }
 
-const ENTITY_OPTIONS = [
-  { value: "materials" as EntityType, label: t("materials"), icon: IconPackage },
-  { value: "tools" as EntityType, label: t("tools"), icon: IconTool },
-  { value: "suppliers" as EntityType, label: t("suppliers"), icon: IconTruck },
-  { value: "locations" as EntityType, label: t("locations"), icon: IconMapPin },
-]
-
 // ─── Component ──────────────────────────────────────────────────────────────
 
 export default function ImportPage() {
   const t = useTranslations("importPage")
   const router = useRouter()
+
+  const ENTITY_OPTIONS = [
+    { value: "materials" as EntityType, label: t("materials"), icon: IconPackage },
+    { value: "tools" as EntityType, label: t("tools"), icon: IconTool },
+    { value: "suppliers" as EntityType, label: t("suppliers"), icon: IconTruck },
+    { value: "locations" as EntityType, label: t("locations"), icon: IconMapPin },
+  ]
 
   // Wizard state
   const [step, setStep] = useState(1)
@@ -200,7 +200,7 @@ export default function ImportPage() {
     })
 
     setValidationRows(rows)
-  }, [parsed, mapping])
+  }, [parsed, mapping, t])
 
   // ── Import ────────────────────────────────────────────────────────────────
 

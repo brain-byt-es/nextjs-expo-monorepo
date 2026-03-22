@@ -22,9 +22,7 @@ import {
 } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
 import {
-  getFavorites,
   getRecentItems,
-  type FavoriteItem,
   type RecentItem,
 } from "@/lib/favorites"
 
@@ -100,58 +98,6 @@ function CollapsibleGroup({
         </SidebarGroupContent>
       )}
     </SidebarGroup>
-  )
-}
-
-// ── Favorites section ─────────────────────────────────────────────────────────
-
-function FavoritesSection() {
-  const pathname = usePathname()
-  const [items, setItems] = React.useState<FavoriteItem[]>([])
-
-  React.useEffect(() => {
-    setItems(getFavorites())
-  }, [])
-
-  // Re-sync on storage events (cross-tab) and custom events (same-tab)
-  React.useEffect(() => {
-    const storageHandler = (e: StorageEvent) => {
-      if (e.key === "favorites") setItems(getFavorites())
-    }
-    const customHandler = () => setItems(getFavorites())
-    window.addEventListener("storage", storageHandler)
-    window.addEventListener("favorites-updated", customHandler)
-    return () => {
-      window.removeEventListener("storage", storageHandler)
-      window.removeEventListener("favorites-updated", customHandler)
-    }
-  }, [])
-
-  return (
-    <CollapsibleGroup
-      label="Favoriten"
-      icon={IconStar}
-      defaultOpen={true}
-      empty={
-        <p className="px-2 py-1.5 text-xs text-muted-foreground/50">
-          Keine Favoriten
-        </p>
-      }
-    >
-      {items.map((item) => {
-        const isActive = pathname === item.url || pathname.startsWith(item.url + "/")
-        return (
-          <SidebarMenuItem key={item.id}>
-            <SidebarMenuButton asChild isActive={isActive} className="h-7 text-xs">
-              <a href={item.url} className="flex items-center gap-2">
-                <EntityIcon type={item.type} />
-                <span className="truncate">{item.name}</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        )
-      })}
-    </CollapsibleGroup>
   )
 }
 

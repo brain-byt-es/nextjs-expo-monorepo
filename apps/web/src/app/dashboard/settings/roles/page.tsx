@@ -126,7 +126,7 @@ function PermissionMatrix({ permMap, onChange, readonly = false }: { permMap: Pe
           <TableRow>
             <TableHead className="w-40 min-w-[140px]">{ts("resource")}</TableHead>
             {ACTIONS.map((a) => (
-              <TableHead key={a} className="w-24 text-center text-xs">{ts(ACTION_LABEL_KEYS[a] as any)}</TableHead>
+              <TableHead key={a} className="w-24 text-center text-xs">{ts(ACTION_LABEL_KEYS[a] as never)}</TableHead>
             ))}
           </TableRow>
         </TableHeader>
@@ -139,10 +139,10 @@ function PermissionMatrix({ permMap, onChange, readonly = false }: { permMap: Pe
                   className="flex items-center gap-1.5 hover:text-foreground text-muted-foreground transition-colors disabled:pointer-events-none"
                   onClick={() => toggleRow(resource)}
                   disabled={readonly}
-                  title={ts("roleToggleAll", { resource: ts(RESOURCE_LABEL_KEYS[resource] as any) })}
+                  title={ts("roleToggleAll", { resource: ts(RESOURCE_LABEL_KEYS[resource] as never) })}
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-current shrink-0" />
-                  {ts(RESOURCE_LABEL_KEYS[resource] as any)}
+                  {ts(RESOURCE_LABEL_KEYS[resource] as never)}
                 </button>
               </TableCell>
               {ACTIONS.map((action) => (
@@ -151,7 +151,7 @@ function PermissionMatrix({ permMap, onChange, readonly = false }: { permMap: Pe
                     checked={permMap[resource]?.[action] ?? false}
                     onCheckedChange={() => toggle(resource, action)}
                     disabled={readonly}
-                    aria-label={`${ts(RESOURCE_LABEL_KEYS[resource] as any)} ${ts(ACTION_LABEL_KEYS[action] as any)}`}
+                    aria-label={`${ts(RESOURCE_LABEL_KEYS[resource] as never)} ${ts(ACTION_LABEL_KEYS[action] as never)}`}
                     className="mx-auto"
                   />
                 </TableCell>

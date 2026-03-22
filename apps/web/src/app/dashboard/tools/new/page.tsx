@@ -131,7 +131,7 @@ export default function NewToolPage() {
     if (!form.name.trim()) errs.name = t("nameRequired")
     setErrors(errs)
     return Object.keys(errs).length === 0
-  }, [form])
+  }, [form, t])
 
   const handleSave = useCallback(async () => {
     if (!validate()) return
@@ -423,7 +423,7 @@ export default function NewToolPage() {
                       ? t("conditionDamaged")
                       : form.condition === "repair"
                         ? t("conditionRepair")
-                        : t("conditionDecommissioned")"}
+                        : t("conditionDecommissioned")}
                 </span>
               </div>
               {form.manufacturer && (

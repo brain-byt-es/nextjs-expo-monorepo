@@ -177,9 +177,9 @@ export default function IntegrationsPage() {
         <section key={cat.id}>
           <div className="mb-4">
             <h2 className="text-xs font-mono text-muted-foreground uppercase tracking-widest">
-              {t(cat.labelKey as any)}
+              {t(cat.labelKey as never)}
             </h2>
-            <p className="text-xs text-muted-foreground/60 font-mono mt-0.5">{t(cat.descKey as any)}</p>
+            <p className="text-xs text-muted-foreground/60 font-mono mt-0.5">{t(cat.descKey as never)}</p>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {cat.integrations.map(i => (

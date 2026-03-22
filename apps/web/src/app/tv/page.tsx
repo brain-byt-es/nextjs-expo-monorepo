@@ -366,7 +366,7 @@ function ActivityView({ items }: { items: ActivityItem[] | null }) {
               {item.userName ?? "—"}
             </span>
             <span className="text-lg text-white/30 shrink-0 w-32 text-right">
-              {formatRelativeTime(item.createdAt, t)}
+              {formatRelativeTime(item.createdAt, t as (key: string, values?: Record<string, unknown>) => string)}
             </span>
           </div>
         ))}

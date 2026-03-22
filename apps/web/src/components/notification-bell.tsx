@@ -65,7 +65,6 @@ function NotificationIcon({
 
 // ── Relative time ─────────────────────────────────────────────────────────────
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function relativeTime(dateStr: string, t: (key: string) => string): string {
   const now = Date.now()
   const then = new Date(dateStr).getTime()
