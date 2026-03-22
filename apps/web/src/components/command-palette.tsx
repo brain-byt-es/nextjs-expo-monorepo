@@ -28,6 +28,7 @@ interface PaletteItem {
   href: string
   icon: React.ComponentType<{ className?: string; strokeWidth?: number }>
   group: string
+  keywords?: string
 }
 
 export function CommandPalette() {
@@ -43,58 +44,100 @@ export function CommandPalette() {
   // Build translated navigation items
   const NAV_ITEMS: PaletteItem[] = useMemo(() => [
     // Navigation
-    { id: "dashboard", label: t("dashboard"), href: "/dashboard", icon: IconLayoutDashboard, group: t("navigation") },
-    { id: "materials", label: t("materials"), href: "/dashboard/materials", icon: IconPackage, group: t("navigation") },
-    { id: "tools", label: t("tools"), href: "/dashboard/tools", icon: IconTool, group: t("navigation") },
-    { id: "keys", label: t("keys"), href: "/dashboard/keys", icon: IconKey, group: t("navigation") },
-    { id: "locations", label: t("locations"), href: "/dashboard/locations", icon: IconMapPin, group: t("navigation") },
-    { id: "tasks", label: t("tasks"), href: "/dashboard/tasks", icon: IconChecklist, group: t("navigation") },
-    { id: "calendar", label: t("calendar"), href: "/dashboard/calendar", icon: IconCalendar, group: t("navigation") },
-    { id: "reports", label: t("reports"), href: "/dashboard/reports", icon: IconReportAnalytics, group: t("navigation") },
-    { id: "map", label: t("map"), href: "/dashboard/map", icon: IconMap, group: t("navigation") },
+    { id: "dashboard", label: t("dashboard"), href: "/dashboard", icon: IconLayoutDashboard, group: t("navigation"),
+      keywords: "startseite home uebersicht overview statistik stats kennzahlen kpi widgets" },
+    { id: "materials", label: t("materials"), href: "/dashboard/materials", icon: IconPackage, group: t("navigation"),
+      keywords: "material inventar bestand stock artikel items lager warehouse verbrauchsmaterial consumable rohstoff raw" },
+    { id: "tools", label: t("tools"), href: "/dashboard/tools", icon: IconTool, group: t("navigation"),
+      keywords: "werkzeug tool geraet device ausleihen checkout checkin wartung maintenance bohrmaschine akkuschrauber equipment" },
+    { id: "keys", label: t("keys"), href: "/dashboard/keys", icon: IconKey, group: t("navigation"),
+      keywords: "schluessel key zugang access badge ausweis transponder chip zutritt tresor safe schrank locker" },
+    { id: "locations", label: t("locations"), href: "/dashboard/locations", icon: IconMapPin, group: t("navigation"),
+      keywords: "standort location lager warehouse raum room gebaeude building etage floor regal shelf fach compartment baustelle site" },
+    { id: "tasks", label: t("tasks"), href: "/dashboard/tasks", icon: IconChecklist, group: t("navigation"),
+      keywords: "aufgabe task todo checkliste checklist erledigen pendenz offen open zuweisen assign" },
+    { id: "calendar", label: t("calendar"), href: "/dashboard/calendar", icon: IconCalendar, group: t("navigation"),
+      keywords: "kalender calendar termin appointment datum date woche week monat month planung schedule event" },
+    { id: "reports", label: t("reports"), href: "/dashboard/reports", icon: IconReportAnalytics, group: t("navigation"),
+      keywords: "bericht report auswertung analyse analysis export pdf excel csv statistik statistics diagramm chart" },
+    { id: "map", label: t("map"), href: "/dashboard/map", icon: IconMap, group: t("navigation"),
+      keywords: "karte map gps standort location tracking fahrzeug vehicle flotte fleet position geocoding" },
 
     // Operations
-    { id: "commissions", label: t("commissions"), href: "/dashboard/commissions", icon: IconClipboardList, group: t("operations") },
-    { id: "orders", label: t("openOrders"), href: "/dashboard/orders", icon: IconFileInvoice, group: t("operations") },
-    { id: "deliveries", label: t("deliveryTracking"), href: "/dashboard/deliveries", icon: IconTruck, group: t("operations") },
-    { id: "cart", label: t("cart"), href: "/dashboard/cart", icon: IconShoppingCart, group: t("operations") },
-    { id: "transfers", label: t("transfers"), href: "/dashboard/transfers", icon: IconArrowsTransferDown, group: t("operations") },
-    { id: "inventory", label: t("inventory"), href: "/dashboard/inventory", icon: IconClipboardCheck, group: t("operations") },
-    { id: "reservations", label: t("reservations"), href: "/dashboard/reservations", icon: IconCalendarEvent, group: t("operations") },
-    { id: "warranties", label: t("warrantyClaims"), href: "/dashboard/warranty-claims", icon: IconShieldCheck, group: t("operations") },
-    { id: "recurring", label: t("recurringOrders"), href: "/dashboard/recurring-orders", icon: IconRepeat, group: t("operations") },
+    { id: "commissions", label: t("commissions"), href: "/dashboard/commissions", icon: IconClipboardList, group: t("operations"),
+      keywords: "kommission commission auftrag order picken pick packen pack ruestliste zusammenstellung" },
+    { id: "orders", label: t("openOrders"), href: "/dashboard/orders", icon: IconFileInvoice, group: t("operations"),
+      keywords: "bestellung order auftrag offen open lieferant supplier einkauf purchase nachbestellung reorder" },
+    { id: "deliveries", label: t("deliveryTracking"), href: "/dashboard/deliveries", icon: IconTruck, group: t("operations"),
+      keywords: "lieferung delivery versand shipping tracking post dhl dpd planzer spediteur carrier paket parcel sendung wareneingang goods receipt lieferschein" },
+    { id: "cart", label: t("cart"), href: "/dashboard/cart", icon: IconShoppingCart, group: t("operations"),
+      keywords: "warenkorb cart bestellung order einkaufsliste shopping list anforderung request" },
+    { id: "transfers", label: t("transfers"), href: "/dashboard/transfers", icon: IconArrowsTransferDown, group: t("operations"),
+      keywords: "transfer umlagerung verschieben move standortwechsel relocation umbuchung zwischen between lager warehouse" },
+    { id: "inventory", label: t("inventory"), href: "/dashboard/inventory", icon: IconClipboardCheck, group: t("operations"),
+      keywords: "inventur inventory zaehlung count bestandsaufnahme stocktaking differenz abweichung deviation jahresinventur" },
+    { id: "reservations", label: t("reservations"), href: "/dashboard/reservations", icon: IconCalendarEvent, group: t("operations"),
+      keywords: "reservierung reservation buchung booking vormerken reserve verfuegbarkeit availability zeitraum period" },
+    { id: "warranties", label: t("warrantyClaims"), href: "/dashboard/warranty-claims", icon: IconShieldCheck, group: t("operations"),
+      keywords: "garantie warranty reklamation claim defekt defective rueckgabe return reparatur repair gewaehrleistung" },
+    { id: "recurring", label: t("recurringOrders"), href: "/dashboard/recurring-orders", icon: IconRepeat, group: t("operations"),
+      keywords: "wiederkehrend recurring abo subscription automatisch automatic nachbestellung reorder intervall interval regelmaessig regular" },
 
     // Planning
-    { id: "time-tracking", label: t("timeTracking"), href: "/dashboard/time-tracking", icon: IconClock, group: t("planning") },
-    { id: "kanban", label: t("kanban"), href: "/dashboard/kanban", icon: IconLayoutKanban, group: t("planning") },
-    { id: "shift", label: t("shiftHandover"), href: "/dashboard/shift-handover", icon: IconClipboardText, group: t("planning") },
-    { id: "utilization", label: t("utilization"), href: "/dashboard/utilization", icon: IconChartBar, group: t("planning") },
-    { id: "maintenance", label: t("maintenanceAi"), href: "/dashboard/maintenance-ai", icon: IconBrain, group: t("planning") },
-    { id: "supply-chain", label: t("supplyChain"), href: "/dashboard/supply-chain", icon: IconGitBranch, group: t("planning") },
-    { id: "stock-adjust", label: t("stockOptimization"), href: "/dashboard/stock-adjust", icon: IconAdjustments, group: t("planning") },
-    { id: "budgets", label: t("budgets"), href: "/dashboard/budgets", icon: IconWallet, group: t("planning") },
+    { id: "time-tracking", label: t("timeTracking"), href: "/dashboard/time-tracking", icon: IconClock, group: t("planning"),
+      keywords: "zeiterfassung timer stunden hours stoppuhr stopwatch arbeitszeit billable abrechenbar projekt project protokoll log" },
+    { id: "kanban", label: t("kanban"), href: "/dashboard/kanban", icon: IconLayoutKanban, group: t("planning"),
+      keywords: "kanban board tafel spalte column drag drop workflow status fortschritt progress agile" },
+    { id: "shift", label: t("shiftHandover"), href: "/dashboard/shift-handover", icon: IconClipboardText, group: t("planning"),
+      keywords: "schicht shift uebergabe handover protokoll log notiz note schichtwechsel rotation nachtschicht uebernahme" },
+    { id: "utilization", label: t("utilization"), href: "/dashboard/utilization", icon: IconChartBar, group: t("planning"),
+      keywords: "auslastung utilization nutzung usage kapazitaet capacity effizienz efficiency belegung occupancy auswertung" },
+    { id: "maintenance", label: t("maintenanceAi"), href: "/dashboard/maintenance-ai", icon: IconBrain, group: t("planning"),
+      keywords: "wartung maintenance ki ai vorhersage prediction instandhaltung service inspektion inspection praediktiv predictive reparatur repair" },
+    { id: "supply-chain", label: t("supplyChain"), href: "/dashboard/supply-chain", icon: IconGitBranch, group: t("planning"),
+      keywords: "lieferkette supply chain beschaffung procurement lieferant supplier logistik logistics engpass bottleneck nachschub replenishment" },
+    { id: "stock-adjust", label: t("stockOptimization"), href: "/dashboard/stock-adjust", icon: IconAdjustments, group: t("planning"),
+      keywords: "bestandsoptimierung stock optimization mindestbestand minimum sicherheitsbestand safety anpassen adjust meldebestand reorder point" },
+    { id: "budgets", label: t("budgets"), href: "/dashboard/budgets", icon: IconWallet, group: t("planning"),
+      keywords: "budget finanzen finances kosten costs ausgaben expenses limit grenze threshold kostenplanung abteilung department" },
 
     // Tools group
-    { id: "barcode", label: t("barcodeGenerator"), href: "/dashboard/barcode-generator", icon: IconBarcode, group: t("toolsGroup") },
-    { id: "label-designer", label: t("labelDesigner"), href: "/dashboard/label-designer", icon: IconRuler, group: t("toolsGroup") },
-    { id: "batch-print", label: t("batchPrint"), href: "/dashboard/batch-print", icon: IconPrinter, group: t("toolsGroup") },
-    { id: "import", label: t("dataImport"), href: "/dashboard/import", icon: IconUpload, group: t("toolsGroup") },
-    { id: "migration", label: t("migration"), href: "/dashboard/migration", icon: IconTransfer, group: t("toolsGroup") },
-    { id: "tv", label: t("tvMode"), href: "/tv", icon: IconDeviceTv, group: t("toolsGroup") },
+    { id: "barcode", label: t("barcodeGenerator"), href: "/dashboard/barcode-generator", icon: IconBarcode, group: t("toolsGroup"),
+      keywords: "barcode qr code generator erstellen create ean upc code128 strichcode scannen scan" },
+    { id: "label-designer", label: t("labelDesigner"), href: "/dashboard/label-designer", icon: IconRuler, group: t("toolsGroup"),
+      keywords: "etiketten label design gestalten vorlage template aufkleber sticker beschriftung zpl layout" },
+    { id: "batch-print", label: t("batchPrint"), href: "/dashboard/batch-print", icon: IconPrinter, group: t("toolsGroup"),
+      keywords: "stapeldruck batch print massendrucken bulk etiketten labels serie serial mehrfach multiple druckauftrag" },
+    { id: "import", label: t("dataImport"), href: "/dashboard/import", icon: IconUpload, group: t("toolsGroup"),
+      keywords: "import daten data csv excel xlsx hochladen upload einlesen parse migration uebertragen" },
+    { id: "migration", label: t("migration"), href: "/dashboard/migration", icon: IconTransfer, group: t("toolsGroup"),
+      keywords: "migration umzug wechsel switch altsystem legacy daten data uebertragen transfer konvertieren convert" },
+    { id: "tv", label: t("tvMode"), href: "/tv", icon: IconDeviceTv, group: t("toolsGroup"),
+      keywords: "tv fernseher monitor bildschirm screen anzeige display dashboard kiosk vollbild fullscreen praesentieren present" },
 
     // Settings
-    { id: "settings", label: t("settings"), href: "/dashboard/settings", icon: IconSettings, group: t("settingsGroup") },
-    { id: "portals", label: t("externalPortals"), href: "/dashboard/portals", icon: IconLink, group: t("settingsGroup") },
-    { id: "scanner", label: t("scanner"), href: "/dashboard/settings/scanner", icon: IconBarcode, group: t("settingsGroup") },
-    { id: "printer", label: t("printer"), href: "/dashboard/settings/printer", icon: IconPrinter, group: t("settingsGroup") },
-    { id: "team", label: t("team"), href: "/dashboard/settings/team", icon: IconUsers, group: t("settingsGroup") },
-    { id: "roles", label: t("roles"), href: "/dashboard/settings/roles", icon: IconShield, group: t("settingsGroup") },
-    { id: "plugins", label: t("plugins"), href: "/dashboard/settings/plugins", icon: IconPuzzle, group: t("settingsGroup") },
+    { id: "settings", label: t("settings"), href: "/dashboard/settings", icon: IconSettings, group: t("settingsGroup"),
+      keywords: "einstellungen profil passwort password email name avatar branding firma company konto account sicherheit security 2fa" },
+    { id: "portals", label: t("externalPortals"), href: "/dashboard/portals", icon: IconLink, group: t("settingsGroup"),
+      keywords: "portal extern external link zugang access kunde customer lieferant supplier freigabe share oeffentlich public" },
+    { id: "scanner", label: t("scanner"), href: "/dashboard/settings/scanner", icon: IconBarcode, group: t("settingsGroup"),
+      keywords: "scanner handscanner barcode zebra honeywell bluetooth usb keyboard wedge kamera camera konfiguration configuration" },
+    { id: "printer", label: t("printer"), href: "/dashboard/settings/printer", icon: IconPrinter, group: t("settingsGroup"),
+      keywords: "drucker printer etiketten label zebra zpl brother dymo netzwerk network usb bluetooth thermodrucker thermal" },
+    { id: "team", label: t("team"), href: "/dashboard/settings/team", icon: IconUsers, group: t("settingsGroup"),
+      keywords: "team mitarbeiter benutzer user einladen invite member kollege colleague verwalten manage personal staff" },
+    { id: "roles", label: t("roles"), href: "/dashboard/settings/roles", icon: IconShield, group: t("settingsGroup"),
+      keywords: "rollen roles berechtigung permission zugriff access admin recht right lesen schreiben read write sicherheit security" },
+    { id: "plugins", label: t("plugins"), href: "/dashboard/settings/plugins", icon: IconPuzzle, group: t("settingsGroup"),
+      keywords: "plugin erweiterung extension integration addon modul module api schnittstelle interface drittanbieter third-party" },
 
     // Actions
-    { id: "new-material", label: t("newMaterial"), href: "/dashboard/materials/new", icon: IconPlus, group: t("actions") },
-    { id: "new-tool", label: t("newTool"), href: "/dashboard/tools/new", icon: IconPlus, group: t("actions") },
-    { id: "new-location", label: t("newLocation"), href: "/dashboard/locations/new", icon: IconPlus, group: t("actions") },
+    { id: "new-material", label: t("newMaterial"), href: "/dashboard/materials/new", icon: IconPlus, group: t("actions"),
+      keywords: "neu new erstellen create hinzufuegen add material artikel item anlegen" },
+    { id: "new-tool", label: t("newTool"), href: "/dashboard/tools/new", icon: IconPlus, group: t("actions"),
+      keywords: "neu new erstellen create hinzufuegen add werkzeug tool geraet device anlegen" },
+    { id: "new-location", label: t("newLocation"), href: "/dashboard/locations/new", icon: IconPlus, group: t("actions"),
+      keywords: "neu new erstellen create hinzufuegen add standort location lager warehouse raum room anlegen" },
   ], [t])
 
   // Group order — static groups first, dynamic groups appended at runtime
@@ -167,13 +210,15 @@ export function CommandPalette() {
     })),
   ], [NAV_ITEMS, recentItems, favorites, t])
 
-  // Filter items
+  // Filter items (searches label, group, and keywords)
   const filtered = query.trim() === ""
     ? allItems
-    : allItems.filter(item =>
-        item.label.toLowerCase().includes(query.toLowerCase()) ||
-        item.group.toLowerCase().includes(query.toLowerCase())
-      )
+    : allItems.filter(item => {
+        const q = query.toLowerCase()
+        return item.label.toLowerCase().includes(q) ||
+               item.group.toLowerCase().includes(q) ||
+               (item.keywords && item.keywords.toLowerCase().includes(q))
+      })
 
   // Keyboard navigation
   useEffect(() => {
