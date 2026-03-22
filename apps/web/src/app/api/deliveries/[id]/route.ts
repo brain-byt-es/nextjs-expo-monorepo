@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getSessionAndOrg } from "@/app/api/_helpers/auth";
 import { deliveryTracking, orders, suppliers } from "@repo/db/schema";
 import { eq, and } from "drizzle-orm";
+import { sendPushToOrg } from "@/lib/push-notifications";
 
 export async function GET(
   request: Request,
@@ -61,7 +62,13 @@ export async function PATCH(
     const { db, orgId } = result;
 
     const [existing] = await db
-      .select({ id: deliveryTracking.id, status: deliveryTracking.status })
+      .select({
+        id: deliveryTracking.id,
+        status: deliveryTracking.status,
+        organizationId: deliveryTracking.organizationId,
+        trackingNumber: deliveryTracking.trackingNumber,
+        orderId: deliveryTracking.orderId,
+      })
       .from(deliveryTracking)
       .where(and(eq(deliveryTracking.id, id), eq(deliveryTracking.organizationId, orgId)))
       .limit(1);
@@ -89,6 +96,26 @@ export async function PATCH(
       })
       .where(eq(deliveryTracking.id, id))
       .returning();
+
+    // Push notification when delivery arrives (fire-and-forget)
+    if (statusChanged && status === "delivered") {
+      // Resolve order number for the push message
+      let orderLabel = existing.trackingNumber ?? id.slice(0, 8);
+      if (existing.orderId) {
+        const [order] = await db
+          .select({ orderNumber: orders.orderNumber })
+          .from(orders)
+          .where(eq(orders.id, existing.orderId))
+          .limit(1);
+        if (order?.orderNumber) orderLabel = order.orderNumber;
+      }
+      sendPushToOrg(
+        orgId,
+        "Lieferung eingetroffen",
+        `Bestellung ${orderLabel} wurde geliefert`,
+        { type: "delivery_arrived", deliveryId: id }
+      ).catch((err) => console.error("Push (delivery) failed:", err));
+    }
 
     return NextResponse.json(updated);
   } catch (error) {

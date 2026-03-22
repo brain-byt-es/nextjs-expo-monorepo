@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { getSessionAndOrg } from "@/app/api/_helpers/auth"
 import { warrantyClaims, warrantyRecords, tools, materials, users } from "@repo/db/schema"
 import { eq, and, inArray } from "drizzle-orm"
+import { sendPushToUser } from "@/lib/push-notifications"
 
 // ─── GET /api/warranty-claims/[id] ───────────────────────────────────────────
 
@@ -118,7 +119,12 @@ export async function PATCH(
 
     // Verify claim exists and belongs to org
     const [existing] = await db
-      .select({ id: warrantyClaims.id, status: warrantyClaims.status })
+      .select({
+        id: warrantyClaims.id,
+        status: warrantyClaims.status,
+        submittedById: warrantyClaims.submittedById,
+        claimNumber: warrantyClaims.claimNumber,
+      })
       .from(warrantyClaims)
       .where(
         and(
@@ -194,6 +200,20 @@ export async function PATCH(
         )
       )
       .returning()
+
+    // Push notification for approved/rejected claims (fire-and-forget)
+    if (status === "approved" || status === "rejected") {
+      const claimLabel = existing.claimNumber ?? id.slice(0, 8)
+      const statusText = status === "approved" ? "genehmigt" : "abgelehnt"
+      if (existing.submittedById) {
+        sendPushToUser(
+          existing.submittedById,
+          "Garantieanspruch aktualisiert",
+          `Ihr Anspruch ${claimLabel} wurde ${statusText}`,
+          { type: "warranty_claim_resolved", claimId: id, status }
+        ).catch((err) => console.error("Push (warranty claim) failed:", err))
+      }
+    }
 
     return NextResponse.json(updated)
   } catch (error) {

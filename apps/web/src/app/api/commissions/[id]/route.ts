@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getSessionAndOrg } from "@/app/api/_helpers/auth";
 import { commissions, commissionEntries, locations, customers, users } from "@repo/db/schema";
 import { eq, and, count } from "drizzle-orm";
+import { sendPushToOrg } from "@/lib/push-notifications";
 
 export async function GET(
   request: Request,
@@ -64,7 +65,7 @@ export async function PATCH(
     const { db, orgId } = result;
 
     const [existing] = await db
-      .select({ id: commissions.id, status: commissions.status })
+      .select({ id: commissions.id, status: commissions.status, name: commissions.name })
       .from(commissions)
       .where(and(eq(commissions.id, id), eq(commissions.organizationId, orgId)))
       .limit(1);
@@ -99,6 +100,17 @@ export async function PATCH(
       .set(updateData)
       .where(and(eq(commissions.id, id), eq(commissions.organizationId, orgId)))
       .returning();
+
+    // Push notification when commission is completed (fire-and-forget)
+    if (status === "completed" && existing.status !== "completed") {
+      const commissionLabel = existing.name ?? id.slice(0, 8);
+      sendPushToOrg(
+        orgId,
+        "Kommission abgeschlossen",
+        `Kommission ${commissionLabel} wurde abgeschlossen`,
+        { type: "commission_completed", commissionId: id }
+      ).catch((err) => console.error("Push (commission) failed:", err));
+    }
 
     return NextResponse.json(updated);
   } catch (error) {

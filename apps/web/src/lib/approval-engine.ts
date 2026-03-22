@@ -10,6 +10,7 @@ import {
   createNotificationForAdmins,
   createNotification,
 } from "@/lib/notifications-server";
+import { sendPushToUser } from "@/lib/push-notifications";
 
 // ─── Request types ────────────────────────────────────────────────────────────
 
@@ -116,6 +117,38 @@ export async function createApprovalAndNotify(
     entityId: approval.id,
   }).catch((err) => console.error("[approval-engine] in-app notification failed:", err));
 
+  // Push notification to all admin/owner members (fire-and-forget)
+  void (async () => {
+    try {
+      const adminMembers = await db
+        .select({ userId: organizationMembers.userId })
+        .from(organizationMembers)
+        .where(
+          and(
+            eq(organizationMembers.organizationId, orgId),
+            inArray(organizationMembers.role, ["admin", "owner"])
+          )
+        );
+      // Resolve requester name for push body
+      const [requester] = await db
+        .select({ name: users.name })
+        .from(users)
+        .where(eq(users.id, requesterId))
+        .limit(1);
+      const requesterName = requester?.name ?? "Ein Mitarbeiter";
+      await Promise.allSettled(
+        adminMembers.map((m) =>
+          sendPushToUser(m.userId, "Neue Genehmigungsanfrage", `${requesterName} bittet um Genehmigung`, {
+            type: "approval_request",
+            approvalId: approval.id,
+          })
+        )
+      );
+    } catch (err) {
+      console.error("[approval-engine] push notification failed:", err);
+    }
+  })();
+
   return approval;
 }
 
@@ -171,6 +204,14 @@ export async function resolveApproval(
     entityType: "approval",
     entityId: approvalId,
   }).catch((err) => console.error("[approval-engine] in-app notification failed:", err));
+
+  // Push notification to requester (fire-and-forget)
+  sendPushToUser(
+    updated.requesterId,
+    resolvedTitle,
+    notes ?? `Ihr Antrag wurde ${status === "approved" ? "genehmigt" : "abgelehnt"}`,
+    { type: "approval_resolved", approvalId, status }
+  ).catch((err) => console.error("[approval-engine] push notification failed:", err));
 
   return updated;
 }
