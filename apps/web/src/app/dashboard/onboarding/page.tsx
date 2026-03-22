@@ -41,6 +41,7 @@ import {
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { useSession } from "@/lib/auth-client"
+import { CountryDropdown } from "@/components/country-dropdown"
 import { INDUSTRY_TEMPLATES, getTemplateSummary } from "@/lib/industry-templates"
 import type { IndustryTemplate } from "@/lib/industry-templates"
 
@@ -269,20 +270,11 @@ function StepOrganisation({
 
             <div className="space-y-1.5">
               <Label htmlFor="org-country">{t("country")}</Label>
-              <Select
+              <CountryDropdown
                 value={data.country}
-                onValueChange={(v) => onChange({ country: v })}
-              >
-                <SelectTrigger id="org-country" className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="CH">{t("countryCH")}</SelectItem>
-                  <SelectItem value="DE">{t("countryDE")}</SelectItem>
-                  <SelectItem value="AT">{t("countryAT")}</SelectItem>
-                  <SelectItem value="LI">{t("countryLI")}</SelectItem>
-                </SelectContent>
-              </Select>
+                defaultValue="CH"
+                onChange={(country) => onChange({ country: country.alpha2 })}
+              />
             </div>
           </div>
 

@@ -33,6 +33,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
+import { CountryDropdown } from "@/components/country-dropdown"
 
 interface Customer {
   id: string
@@ -42,14 +43,15 @@ interface Customer {
   street: string
   zip: string
   city: string
+  country: string
 }
 
 const placeholderData: Customer[] = [
-  { id: "1", name: "Müller Bau AG", customerNumber: "KD-001", contactPerson: "Fritz Müller", street: "Hauptstrasse 12", zip: "8001", city: "Zürich" },
-  { id: "2", name: "Elektro Schmid GmbH", customerNumber: "KD-002", contactPerson: "Eva Schmid", street: "Industrieweg 5", zip: "3000", city: "Bern" },
-  { id: "3", name: "Sanitär Keller AG", customerNumber: "KD-003", contactPerson: "Robert Keller", street: "Bahnhofstrasse 88", zip: "4051", city: "Basel" },
-  { id: "4", name: "Holzbau Weber", customerNumber: "KD-004", contactPerson: "Ursula Weber", street: "Dorfstrasse 3", zip: "6003", city: "Luzern" },
-  { id: "5", name: "Metallbau Gerber", customerNumber: "KD-005", contactPerson: "Markus Gerber", street: "Werkstrasse 22", zip: "9000", city: "St. Gallen" },
+  { id: "1", name: "Müller Bau AG", customerNumber: "KD-001", contactPerson: "Fritz Müller", street: "Hauptstrasse 12", zip: "8001", city: "Zürich", country: "CH" },
+  { id: "2", name: "Elektro Schmid GmbH", customerNumber: "KD-002", contactPerson: "Eva Schmid", street: "Industrieweg 5", zip: "3000", city: "Bern", country: "CH" },
+  { id: "3", name: "Sanitär Keller AG", customerNumber: "KD-003", contactPerson: "Robert Keller", street: "Bahnhofstrasse 88", zip: "4051", city: "Basel", country: "CH" },
+  { id: "4", name: "Holzbau Weber", customerNumber: "KD-004", contactPerson: "Ursula Weber", street: "Dorfstrasse 3", zip: "6003", city: "Luzern", country: "CH" },
+  { id: "5", name: "Metallbau Gerber", customerNumber: "KD-005", contactPerson: "Markus Gerber", street: "Werkstrasse 22", zip: "9000", city: "St. Gallen", country: "CH" },
 ]
 
 export default function CustomersPage() {
@@ -59,7 +61,7 @@ export default function CustomersPage() {
   const [items, setItems] = useState<Customer[]>([])
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [form, setForm] = useState({ name: "", customerNumber: "", contactPerson: "", street: "", zip: "", city: "" })
+  const [form, setForm] = useState({ name: "", customerNumber: "", contactPerson: "", street: "", zip: "", city: "", country: "CH" })
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -80,7 +82,7 @@ export default function CustomersPage() {
       ...form,
     }
     setItems((prev) => [...prev, newItem])
-    setForm({ name: "", customerNumber: "", contactPerson: "", street: "", zip: "", city: "" })
+    setForm({ name: "", customerNumber: "", contactPerson: "", street: "", zip: "", city: "", country: "CH" })
     setDialogOpen(false)
   }
 
@@ -133,6 +135,14 @@ export default function CustomersPage() {
                   <Input value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
                 </div>
               </div>
+              <div className="grid gap-2">
+                <Label>{t("country") || "Land"}</Label>
+                <CountryDropdown
+                  value={form.country}
+                  defaultValue="CH"
+                  onChange={(country) => setForm({ ...form, country: country.alpha2 })}
+                />
+              </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setDialogOpen(false)}>{tc("cancel")}</Button>
@@ -178,6 +188,7 @@ export default function CustomersPage() {
                     <TableHead>{t("street")}</TableHead>
                     <TableHead>{t("zip")}</TableHead>
                     <TableHead>{t("city")}</TableHead>
+                    <TableHead>{t("country") || "Land"}</TableHead>
                     <TableHead className="w-[100px]">{tc("actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -190,6 +201,7 @@ export default function CustomersPage() {
                       <TableCell className="text-muted-foreground">{item.street}</TableCell>
                       <TableCell className="text-muted-foreground">{item.zip}</TableCell>
                       <TableCell className="text-muted-foreground">{item.city}</TableCell>
+                      <TableCell className="text-muted-foreground">{item.country || "CH"}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
                           <Button variant="ghost" size="icon" className="size-8">

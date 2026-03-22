@@ -35,6 +35,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
+import { CountryDropdown } from "@/components/country-dropdown"
 import { StarDisplay } from "@/components/star-rating"
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -67,6 +68,7 @@ export default function SuppliersPage() {
     contactPerson: "",
     email: "",
     phone: "",
+    country: "CH",
   })
 
   const loadSuppliers = useCallback(async () => {
@@ -127,12 +129,13 @@ export default function SuppliersPage() {
           contactPerson: form.contactPerson || null,
           email: form.email || null,
           phone: form.phone || null,
+          country: form.country || "CH",
         }),
       })
       if (!res.ok) return
       const created = await res.json() as Supplier
       setItems((prev) => [{ ...created, avgRating: null }, ...prev])
-      setForm({ name: "", supplierNumber: "", contactPerson: "", email: "", phone: "" })
+      setForm({ name: "", supplierNumber: "", contactPerson: "", email: "", phone: "", country: "CH" })
       setDialogOpen(false)
     } catch {
       // silent
@@ -206,6 +209,14 @@ export default function SuppliersPage() {
                 <Input
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label>{t("country") || "Land"}</Label>
+                <CountryDropdown
+                  value={form.country}
+                  defaultValue="CH"
+                  onChange={(country) => setForm({ ...form, country: country.alpha2 })}
                 />
               </div>
             </div>

@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { CountryDropdown } from "@/components/country-dropdown"
 import GpsPicker, { type GpsValue } from "@/components/gps-picker"
 
 // ---------------------------------------------------------------------------
@@ -75,6 +76,7 @@ interface FormState {
   type: string
   category: string
   address: string
+  country: string
   template: string
   latitude: string
   longitude: string
@@ -85,6 +87,7 @@ const initialForm: FormState = {
   type: "",
   category: "",
   address: "",
+  country: "CH",
   template: "none",
   latitude: "",
   longitude: "",
@@ -137,6 +140,7 @@ export default function NewLocationPage() {
         type: form.type,
         category: form.category.trim() || null,
         address: form.address.trim() || null,
+        country: form.country || "CH",
         template: form.template !== "none" ? form.template : null,
         latitude: form.latitude.trim() || null,
         longitude: form.longitude.trim() || null,
@@ -284,6 +288,16 @@ export default function NewLocationPage() {
                   placeholder="z.B. Bahnhofstrasse 10, 8001 Zürich"
                 />
               </div>
+
+              {/* Country */}
+              <div className="space-y-2">
+                <Label>{t("country") || "Land"}</Label>
+                <CountryDropdown
+                  value={form.country}
+                  defaultValue="CH"
+                  onChange={(country) => updateField("country", country.alpha2)}
+                />
+              </div>
             </CardContent>
           </Card>
 
@@ -375,6 +389,17 @@ export default function NewLocationPage() {
                       {t("address")}
                     </span>
                     <span className="text-right text-xs">{form.address}</span>
+                  </div>
+                </>
+              )}
+              {form.country && (
+                <>
+                  <Separator />
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">
+                      {t("country") || "Land"}
+                    </span>
+                    <span className="font-medium">{form.country}</span>
                   </div>
                 </>
               )}
