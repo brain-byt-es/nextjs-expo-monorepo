@@ -143,6 +143,7 @@ function useSettingsCategories() {
     {
       title: t("catHardware"),
       icon: IconDeviceDesktop,
+      anchor: "hardware",
       links: [
         { label: t("linkScanner"), href: "/dashboard/settings/scanner" },
         { label: t("linkPrinter"), href: "/dashboard/settings/printer" },
@@ -153,6 +154,7 @@ function useSettingsCategories() {
     {
       title: t("catSecurity"),
       icon: IconShield,
+      anchor: "security",
       links: [
         { label: t("linkTeam"), href: "/dashboard/settings/team" },
         { label: t("linkRoles"), href: "/dashboard/settings/roles" },
@@ -164,6 +166,7 @@ function useSettingsCategories() {
     {
       title: t("catIntegrations"),
       icon: IconPlugConnected,
+      anchor: "integrations",
       links: [
         { label: t("linkIntegrations"), href: "/dashboard/settings/integrations" },
         { label: t("linkPlugins"), href: "/dashboard/settings/plugins" },
@@ -174,6 +177,7 @@ function useSettingsCategories() {
     {
       title: t("catConfiguration"),
       icon: IconAdjustments,
+      anchor: "configuration",
       links: [
         { label: t("linkAlerts"), href: "/dashboard/settings/alerts" },
         { label: t("linkAutomations"), href: "/dashboard/settings/automations" },
@@ -185,6 +189,7 @@ function useSettingsCategories() {
     {
       title: t("catOrganization"),
       icon: IconBuilding,
+      anchor: "organization",
       links: [
         { label: t("linkBranding"), href: "/dashboard/settings/branding" },
         { label: t("linkDataRetention"), href: "/dashboard/settings/data-retention" },
@@ -234,6 +239,14 @@ export default function SettingsPage() {
   const currentAvatar = avatarPreview ?? user?.image ?? ""
   const initials = getInitials(user?.name, user?.email)
   const memberSince = formatMemberSince(user?.createdAt)
+
+  // ── Scroll to hash anchor on mount ──
+  useEffect(() => {
+    if (window.location.hash) {
+      const el = document.getElementById(window.location.hash.slice(1))
+      el?.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+  }, [])
 
   // ── Avatar upload handler ──
   const handleAvatarChange = useCallback(
@@ -387,7 +400,7 @@ export default function SettingsPage() {
       {/* ── Settings Navigation Grid ── */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {SETTINGS_CATEGORIES.map((category) => (
-          <Card key={category.title}>
+          <Card key={category.title} id={category.anchor}>
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
                 <category.icon className="size-5 text-muted-foreground" />
@@ -415,7 +428,7 @@ export default function SettingsPage() {
       <Separator />
 
       {/* ── Profil ── */}
-      <Card>
+      <Card id="profile">
         <CardHeader>
           <CardTitle>{tp("title")}</CardTitle>
           <CardDescription>
@@ -522,7 +535,7 @@ export default function SettingsPage() {
             </div>
 
             {/* Timezone */}
-            <div className="space-y-2">
+            <div id="timezone" className="space-y-2">
               <Label htmlFor="timezone">{t("timezone")}</Label>
               <TimezoneSelect disabled={isProfileLoading} />
             </div>
@@ -539,7 +552,7 @@ export default function SettingsPage() {
       <Separator />
 
       {/* ── Sprache ── */}
-      <Card>
+      <Card id="language">
         <CardHeader>
           <CardTitle>{t("language")}</CardTitle>
           <CardDescription>{t("languageDescription")}</CardDescription>
@@ -552,7 +565,7 @@ export default function SettingsPage() {
       <Separator />
 
       {/* ── Passwort ändern ── */}
-      <Card>
+      <Card id="password">
         <CardHeader>
           <CardTitle>{tp("changePassword")}</CardTitle>
           <CardDescription>
@@ -662,7 +675,7 @@ export default function SettingsPage() {
 
             <Separator />
 
-            <div className="flex items-center justify-between">
+            <div id="2fa" className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div>
                   <p className="font-medium">{ts("twoFactor")}</p>
@@ -740,17 +753,21 @@ export default function SettingsPage() {
       </Card>
 
       {/* ── DSGVO Datenexport ── */}
-      <DsgvoExportCard />
+      <div id="dsgvo-export">
+        <DsgvoExportCard />
+      </div>
 
       <Separator />
 
       {/* ── DSGVO Kontolöschung ── */}
-      <DsgvoDeleteCard />
+      <div id="dsgvo-delete">
+        <DsgvoDeleteCard />
+      </div>
 
       <Separator />
 
       {/* Tour restart */}
-      <Card>
+      <Card id="help">
         <CardHeader>
           <CardTitle>{t("help")}</CardTitle>
           <CardDescription>{t("helpDescription")}</CardDescription>

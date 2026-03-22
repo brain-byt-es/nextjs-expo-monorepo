@@ -19,6 +19,8 @@ import {
   IconGitBranch, IconAdjustments, IconWallet, IconBarcode, IconRuler,
   IconPrinter, IconUpload, IconTransfer, IconDeviceTv, IconLink,
   IconUsers, IconShield, IconPuzzle, IconMap,
+  IconUser, IconLanguage, IconShieldLock, IconDownload, IconTrash,
+  IconDeviceDesktop, IconPlugConnected, IconHelp, IconAlertTriangle,
 } from "@tabler/icons-react"
 import { getRecentItems, getFavorites, type RecentItem, type FavoriteItem } from "@/lib/favorites"
 
@@ -130,6 +132,34 @@ export function CommandPalette() {
       keywords: "rollen roles berechtigung permission zugriff access admin recht right lesen schreiben read write sicherheit security" },
     { id: "plugins", label: t("plugins"), href: "/dashboard/settings/plugins", icon: IconPuzzle, group: t("settingsGroup"),
       keywords: "plugin erweiterung extension integration addon modul module api schnittstelle interface drittanbieter third-party" },
+
+    // Settings deep links
+    { id: "password", label: "Passwort ändern", href: "/dashboard/settings#password", icon: IconKey, group: t("settingsGroup"),
+      keywords: "passwort password ändern change reset sicherheit security" },
+    { id: "profile-settings", label: "Profil bearbeiten", href: "/dashboard/settings#profile", icon: IconUser, group: t("settingsGroup"),
+      keywords: "profil profile name email avatar bild foto" },
+    { id: "language-settings", label: "Sprache", href: "/dashboard/settings#language", icon: IconLanguage, group: t("settingsGroup"),
+      keywords: "sprache language deutsch english français italiano" },
+    { id: "timezone-settings", label: "Zeitzone", href: "/dashboard/settings#timezone", icon: IconClock, group: t("settingsGroup"),
+      keywords: "zeitzone timezone uhr clock utc gmt" },
+    { id: "2fa-settings", label: "Zwei-Faktor-Authentifizierung", href: "/dashboard/settings/two-factor", icon: IconShieldLock, group: t("settingsGroup"),
+      keywords: "2fa mfa totp zweifaktor authenticator sicherheit" },
+    { id: "dsgvo-export", label: "Daten exportieren (DSGVO)", href: "/dashboard/settings#dsgvo-export", icon: IconDownload, group: t("settingsGroup"),
+      keywords: "dsgvo gdpr daten export download persönlich datenschutz" },
+    { id: "delete-account", label: "Konto löschen", href: "/dashboard/settings#dsgvo-delete", icon: IconTrash, group: t("settingsGroup"),
+      keywords: "konto löschen delete account entfernen dsgvo" },
+    { id: "hardware-settings", label: "Hardware & Geräte", href: "/dashboard/settings#hardware", icon: IconDeviceDesktop, group: t("settingsGroup"),
+      keywords: "hardware geräte scanner drucker rfid waage keypad" },
+    { id: "security-settings", label: "Sicherheit & Zugriff", href: "/dashboard/settings#security", icon: IconShield, group: t("settingsGroup"),
+      keywords: "sicherheit security zugriff team rollen sessions ip" },
+    { id: "integrations-settings", label: "Integrationen", href: "/dashboard/settings#integrations", icon: IconPlugConnected, group: t("settingsGroup"),
+      keywords: "integrationen plugins api webhooks bexio zapier" },
+    { id: "help-tour", label: "Hilfe / Tour starten", href: "/dashboard/settings#help", icon: IconHelp, group: t("settingsGroup"),
+      keywords: "hilfe help tour onboarding anleitung guide" },
+
+    // Dashboard deep links
+    { id: "alerts", label: "Warnungen & Meldungen", href: "/dashboard#alerts", icon: IconAlertTriangle, group: t("navigation"),
+      keywords: "warnung alert meldung meldebestand niedrig ablaufend überfällig" },
 
     // Actions
     { id: "new-material", label: t("newMaterial"), href: "/dashboard/materials/new", icon: IconPlus, group: t("actions"),

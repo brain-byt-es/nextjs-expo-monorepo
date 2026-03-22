@@ -525,6 +525,14 @@ export default function DashboardPage() {
   const firstName = session?.user?.name?.split(" ")[0] ?? ""
   const hasAlerts = stats && (stats.lowStockCount + stats.expiringCount + stats.overdueToolsCount) > 0
 
+  // ── Scroll to hash anchor on mount ──
+  useEffect(() => {
+    if (window.location.hash) {
+      const el = document.getElementById(window.location.hash.slice(1))
+      el?.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+  }, [])
+
   // ── Page header (shared) ────────────────────────────────────────────────────
   const pageHeader = (
     <div className="flex items-start justify-between gap-4 px-4 lg:px-6">
@@ -603,7 +611,7 @@ export default function DashboardPage() {
       {pageHeader}
 
       {/* ── KPI Cards ────────────────────────────────────────────────── */}
-      <section aria-label={t("kpiSection")} className="px-4 lg:px-6">
+      <section id="kpi" aria-label={t("kpiSection")} className="px-4 lg:px-6">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
           {loading ? (
             [...Array(4)].map((_, i) => (
@@ -665,7 +673,7 @@ export default function DashboardPage() {
 
       {/* ── Alert Cards ──────────────────────────────────────────────── */}
       {(loading || hasAlerts !== false) && (
-        <section aria-label={t("alertsSection")} className="px-4 lg:px-6">
+        <section id="alerts" aria-label={t("alertsSection")} className="px-4 lg:px-6">
           {!loading && hasAlerts && (
             <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               {t("actionRequired")}
@@ -730,7 +738,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 gap-6 px-4 lg:px-6 @3xl/main:grid-cols-3">
 
         {/* Activity Feed */}
-        <Card className="@3xl/main:col-span-2">
+        <Card id="activity" className="@3xl/main:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <div>
               <CardTitle>{t("recentActivity")}</CardTitle>
