@@ -515,12 +515,21 @@ export function AiChatPanel({
             <IconAlertCircle className="size-4 shrink-0 mt-0.5" />
             <div>
               <p>{error}</p>
-              <button
-                onClick={() => setError(null)}
-                className="mt-1 underline hover:no-underline"
-              >
-                {t("close")}
-              </button>
+              {error.toLowerCase().includes("api") || error.toLowerCase().includes("schlüssel") || error.toLowerCase().includes("key") ? (
+                <a
+                  href="/dashboard/settings/ai"
+                  className="mt-1 inline-block font-medium underline hover:no-underline"
+                >
+                  → Einstellungen → KI-Funktionen
+                </a>
+              ) : (
+                <button
+                  onClick={() => setError(null)}
+                  className="mt-1 underline hover:no-underline"
+                >
+                  {t("close")}
+                </button>
+              )}
             </div>
           </div>
         )}
