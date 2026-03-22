@@ -1,5 +1,5 @@
 // ─── Plan Configuration ─────────────────────────────────────────────────────
-// Defines subscription tiers and feature gating for LogistikApp.
+// Defines subscription tiers and feature gating for Zentory.
 
 export type PlanId = "starter" | "professional" | "enterprise"
 

@@ -297,7 +297,7 @@ function printShiftReport(report: ShiftReport) {
   <h2>Lieferscheine</h2>
   ${commissionSection}
 
-  <div class="report-footer">Schicht-Übergabe-Bericht &mdash; LogistikApp &mdash; ${fmtDateStr}</div>
+  <div class="report-footer">Schicht-Übergabe-Bericht &mdash; Zentory &mdash; ${fmtDateStr}</div>
   <script>window.onload = function() { window.print(); }<\/script>
 </body>
 </html>`

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { Wordmark } from "@/components/logo"
 import {
   IconBrain,
   IconEye,
@@ -159,7 +160,7 @@ export default function AiSettingsPage() {
           KI-Funktionen
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Konfiguriere den OpenAI API-Key für KI-gestützte Funktionen in LogistikApp.
+          Konfiguriere den OpenAI API-Key für KI-gestützte Funktionen in <Wordmark className="inline" />.
         </p>
       </div>
 
@@ -259,7 +260,7 @@ export default function AiSettingsPage() {
         <CardHeader>
           <CardTitle className="text-base">OpenAI API-Key eingeben</CardTitle>
           <CardDescription>
-            LogistikApp nutzt KI für Foto-Erkennung, Import-Mapping und Nachfrageprognose.
+            <Wordmark className="inline" /> nutzt KI für Foto-Erkennung, Import-Mapping und Nachfrageprognose.
             Geben Sie Ihren eigenen OpenAI API-Key ein um diese Funktionen zu aktivieren.
           </CardDescription>
         </CardHeader>
@@ -358,7 +359,7 @@ export default function AiSettingsPage() {
       <p className="text-xs text-muted-foreground">
         Ihr API-Key wird verschlüsselt in der Datenbank Ihrer Organisation gespeichert und
         ausschliesslich für KI-Anfragen innerhalb Ihrer Organisation verwendet.
-        LogistikApp speichert keine Antworten von OpenAI.
+        <Wordmark className="inline" /> speichert keine Antworten von OpenAI.
       </p>
     </div>
   )

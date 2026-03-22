@@ -98,10 +98,10 @@ export async function POST(
         .returning();
 
       // Send a notification email
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://app.logistikapp.ch";
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://app.zentory.ch";
       await sendTeamInviteEmail(
         inviter?.name ?? session.user.email ?? "Jemand",
-        org?.name ?? "LogistikApp",
+        org?.name ?? "Zentory",
         email,
         `${appUrl}/dashboard`,
       ).catch((err) => {
@@ -117,11 +117,11 @@ export async function POST(
     }
 
     // User does not exist — send a signup invite email
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://app.logistikapp.ch";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://app.zentory.ch";
     const signupUrl = `${appUrl}/signup?email=${encodeURIComponent(email)}`;
     await sendTeamInviteEmail(
       inviter?.name ?? session.user.email ?? "Jemand",
-      org?.name ?? "LogistikApp",
+      org?.name ?? "Zentory",
       email,
       signupUrl,
     ).catch((err) => {

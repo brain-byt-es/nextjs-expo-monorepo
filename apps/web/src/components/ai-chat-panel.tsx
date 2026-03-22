@@ -49,7 +49,7 @@ interface FunctionResult {
 // Constants
 // ---------------------------------------------------------------------------
 
-const STORAGE_KEY_PREFIX = "logistikapp-ai-chat-"
+const STORAGE_KEY_PREFIX = "zentory-ai-chat-"
 const MAX_STORED_MESSAGES = 50
 
 const SUGGESTED_PROMPT_KEYS = [

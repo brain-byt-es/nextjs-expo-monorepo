@@ -9,7 +9,7 @@ import {
 import { eq, and } from "drizzle-orm";
 import { runAnomalyDetection } from "@/lib/anomaly-detection";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.logistikapp.ch";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.zentory.ch";
 
 function escapeHtml(str: string): string {
   return str
@@ -96,12 +96,12 @@ export const detectAnomaliesFn = inngest.createFunction(
           const resend = new Resend(process.env.RESEND_API_KEY);
 
           await resend.emails.send({
-            from: process.env.RESEND_FROM_EMAIL ?? "noreply@logistikapp.ch",
+            from: process.env.RESEND_FROM_EMAIL ?? "noreply@zentory.ch",
             to: owner.email,
             subject: `Anomalie-Alarm: ${highCount} kritische Bewegung${highCount !== 1 ? "en" : ""} erkannt — ${escapeHtml(org.orgName)}`,
             html: `
               <div style="font-family:system-ui,sans-serif;max-width:600px;margin:0 auto;">
-                <h2 style="color:#dc2626;">Anomalie-Alarm von LogistikApp</h2>
+                <h2 style="color:#dc2626;">Anomalie-Alarm von Zentory</h2>
                 <p>Hallo ${escapeHtml(owner.name ?? "Team")},</p>
                 <p>
                   Die automatische Anomalieerkennung hat <strong>${highCount} kritische

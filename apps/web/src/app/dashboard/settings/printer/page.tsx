@@ -70,10 +70,10 @@ export default function PrinterSettingsPage() {
       await printLabel(
         {
           type: "barcode",
-          name: "LogistikApp Testdruck",
+          name: "Zentory Testdruck",
           number: "TEST-001",
           barcode: "1234567890128",
-          orgName: "LogistikApp",
+          orgName: "Zentory",
           date: new Date().toLocaleDateString("de-CH"),
         },
         settings

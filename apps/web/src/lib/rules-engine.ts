@@ -201,12 +201,12 @@ async function executeAction(
         const resend = new Resend(process.env.RESEND_API_KEY);
         const interpolated = interpolate(body ?? "", context);
         await resend.emails.send({
-          from: process.env.RESEND_FROM_EMAIL ?? "noreply@logistikapp.ch",
+          from: process.env.RESEND_FROM_EMAIL ?? "noreply@zentory.ch",
           to,
-          subject: subject ? interpolate(subject, context) : "LogistikApp Automatisierung",
+          subject: subject ? interpolate(subject, context) : "Zentory Automatisierung",
           html: `<p>${interpolated.replace(/\n/g, "<br>")}</p>
 <p style="color:#999;font-size:11px;margin-top:24px;">
-  Diese E-Mail wurde durch eine automatische Regel in LogistikApp ausgelöst.
+  Diese E-Mail wurde durch eine automatische Regel in Zentory ausgelöst.
 </p>`,
         });
       } catch (err) {
@@ -293,7 +293,7 @@ async function executeAction(
 
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
-        "User-Agent": "LogistikApp-RulesEngine/1.0",
+        "User-Agent": "Zentory-RulesEngine/1.0",
       };
 
       if (secret) {

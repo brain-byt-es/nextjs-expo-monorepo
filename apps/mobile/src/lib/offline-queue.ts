@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useEffect } from "react";
 import { isOnline, onConnectivityChange } from "./connectivity";
 
-const QUEUE_KEY = "@logistikapp/offline_queue";
+const QUEUE_KEY = "@zentory/offline_queue";
 
 export interface QueuedAction {
   id: string;

@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { stripePlanIdToPlanId, getPlanDisplayName, type PlanId } from "@/lib/plans";
 
 // Demo account email — always returns "enterprise" plan (show all features in demos)
-const DEMO_EMAIL = "demo@logistikapp.ch";
+const DEMO_EMAIL = "demo@zentory.ch";
 
 // ─── GET /api/subscription/status ────────────────────────────────────────────
 // Returns the current plan + enabled features for the authenticated user's org.

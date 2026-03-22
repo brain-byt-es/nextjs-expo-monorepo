@@ -159,7 +159,7 @@ async function abacusPost<T>(
   return res.json() as Promise<T>;
 }
 
-// ─── Import: Abacus → LogistikApp ─────────────────────────────────────────────
+// ─── Import: Abacus → Zentory ─────────────────────────────────────────────
 
 export async function syncArticlesFromAbacus(orgId: string): Promise<SyncResult> {
   const start = Date.now();
@@ -253,7 +253,7 @@ export async function syncArticlesFromAbacus(orgId: string): Promise<SyncResult>
   return result;
 }
 
-// ─── Export: LogistikApp → Abacus ─────────────────────────────────────────────
+// ─── Export: Zentory → Abacus ─────────────────────────────────────────────
 
 export async function syncArticlesToAbacus(orgId: string): Promise<SyncResult> {
   const start = Date.now();

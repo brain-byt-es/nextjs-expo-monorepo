@@ -11,8 +11,8 @@ import {
 } from "@repo/db/schema"
 import { eq, and } from "drizzle-orm"
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.logistikapp.ch"
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? "noreply@logistikapp.ch"
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.zentory.ch"
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? "noreply@zentory.ch"
 
 // ── Schedule → cron ─────────────────────────────────────────────────────────
 // We store human-readable schedules and translate here instead of storing

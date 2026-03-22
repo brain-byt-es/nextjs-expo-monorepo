@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
+import { BRAND } from '@/lib/colors';
 
 import { OnboardingScreen } from '@/components/layout/OnboardingScreen';
 
@@ -10,7 +11,7 @@ export default function WelcomeStep1Screen() {
   return (
     <OnboardingScreen
       title="Inventar im Chaos? Nie wieder."
-      description="Materialien liegen verstreut in Excel-Listen, WhatsApp-Gruppen und Papierzetteln. LogistikApp bringt Ordnung rein."
+      description="Materialien liegen verstreut in Excel-Listen, WhatsApp-Gruppen und Papierzetteln. Zentory bringt Ordnung rein."
       icon={
         <View
           style={{
@@ -22,7 +23,7 @@ export default function WelcomeStep1Screen() {
             justifyContent: 'center',
           }}
         >
-          <Ionicons name="file-tray-stacked" size={80} color="#F97316" />
+          <Ionicons name="file-tray-stacked" size={80} color={BRAND.primary} />
         </View>
       }
       buttonText="Weiter"

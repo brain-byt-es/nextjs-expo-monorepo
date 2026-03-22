@@ -53,7 +53,7 @@ export function BarcodeCamera({ onScanned, isActive = true }: BarcodeCameraProps
       <View style={styles.centered} className="gap-4 px-8">
         <Text variant="heading" className="text-center">Kamerazugriff erforderlich</Text>
         <Text className="text-muted-foreground text-center text-sm">
-          LogistikApp benötigt Zugriff auf die Kamera um Barcodes zu scannen.
+          Zentory benötigt Zugriff auf die Kamera um Barcodes zu scannen.
         </Text>
         {permission.canAskAgain ? (
           <Button onPress={requestPermission}>

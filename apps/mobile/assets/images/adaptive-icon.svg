@@ -1,9 +1,0 @@
-<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Centered in safe zone (inset ~25% = 256px each side) -->
-  <!-- Warehouse grid -->
-  <rect x="272" y="272" width="176" height="176" rx="32" fill="white" fill-opacity="0.30"/>
-  <rect x="576" y="272" width="176" height="176" rx="32" fill="white" fill-opacity="0.90"/>
-  <rect x="272" y="528" width="480" height="96" rx="32" fill="white" fill-opacity="0.65"/>
-  <rect x="272" y="704" width="288" height="48" rx="24" fill="white" fill-opacity="0.90"/>
-  <circle cx="720" cy="720" r="56" fill="#2C9FA6"/>
-</svg>

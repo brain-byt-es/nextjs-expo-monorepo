@@ -158,7 +158,7 @@ export function NfcScanView({ onRead, isActive, onCancel }: NfcScanViewProps) {
   );
 }
 
-/** Extract bare barcode / code from a self-service URL like https://app.logistikapp.ch/s/{code} */
+/** Extract bare barcode / code from a self-service URL like https://app.zentory.ch/s/{code} */
 function extractCode(value: string): string {
   try {
     const url = new URL(value);

@@ -1,4 +1,4 @@
-// ─── Plugin SDK — TypeScript interfaces for the LogistikApp Plugin System ────
+// ─── Plugin SDK — TypeScript interfaces for the Zentory Plugin System ────
 
 /** Describes a single configuration field a plugin exposes to users. */
 export interface PluginConfigField {

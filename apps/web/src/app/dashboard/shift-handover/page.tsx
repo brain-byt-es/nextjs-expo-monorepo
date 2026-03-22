@@ -302,7 +302,7 @@ function printHandover(data: HandoverData, notes: string, t: ReturnType<typeof u
   <h2>${t("printNotes")}</h2>
   ${notesHtml}
 
-  <div class="report-footer">${t("printTitle")} — LogistikApp — ${fmtDateStr} — ${shiftLabel}</div>
+  <div class="report-footer">${t("printTitle")} — Zentory — ${fmtDateStr} — ${shiftLabel}</div>
   <script>window.onload = function() { window.print(); }<\/script>
 </body>
 </html>`

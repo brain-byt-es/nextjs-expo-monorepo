@@ -1,7 +1,7 @@
 /**
  * Siri Shortcuts Bridge Layer
  *
- * Registers Siri Shortcut activities so users can trigger LogistikApp
+ * Registers Siri Shortcut activities so users can trigger Zentory
  * actions via Siri voice commands on iOS.
  *
  * Since Expo doesn't ship a first-party Siri Shortcuts module we use
@@ -39,7 +39,7 @@ export interface SiriShortcut {
 
 export const SHORTCUTS: SiriShortcut[] = [
   {
-    id: "com.logistikapp.stockIn",
+    id: "ch.zentory.stockIn",
     title: "Material einbuchen",
     invocationPhrase: "Material einbuchen",
     suggestedPhrases: [
@@ -49,11 +49,11 @@ export const SHORTCUTS: SiriShortcut[] = [
     ],
     description:
       "Öffnet die Einbuchungs-Ansicht um Materialien zum Lager hinzuzufügen.",
-    deepLink: "logistikapp://stock-in",
+    deepLink: "zentory://stock-in",
     iconName: "plus.circle.fill",
   },
   {
-    id: "com.logistikapp.stockOut",
+    id: "ch.zentory.stockOut",
     title: "Material ausbuchen",
     invocationPhrase: "Material ausbuchen",
     suggestedPhrases: [
@@ -63,11 +63,11 @@ export const SHORTCUTS: SiriShortcut[] = [
     ],
     description:
       "Öffnet die Ausbuchungs-Ansicht um Material aus dem Lager zu entnehmen.",
-    deepLink: "logistikapp://stock-out",
+    deepLink: "zentory://stock-out",
     iconName: "minus.circle.fill",
   },
   {
-    id: "com.logistikapp.toolCheckout",
+    id: "ch.zentory.toolCheckout",
     title: "Werkzeug ausleihen",
     invocationPhrase: "Werkzeug ausleihen",
     suggestedPhrases: [
@@ -76,11 +76,11 @@ export const SHORTCUTS: SiriShortcut[] = [
       "Tool ausleihen",
     ],
     description: "Öffnet die Werkzeugausleihe um ein Gerät zu reservieren.",
-    deepLink: "logistikapp://tool-checkout",
+    deepLink: "zentory://tool-checkout",
     iconName: "wrench.fill",
   },
   {
-    id: "com.logistikapp.queryStock",
+    id: "ch.zentory.queryStock",
     title: "Bestand abfragen",
     invocationPhrase: "Bestand abfragen",
     suggestedPhrases: [
@@ -90,7 +90,7 @@ export const SHORTCUTS: SiriShortcut[] = [
     ],
     description:
       "Fragt den aktuellen Lagerbestand ab und liest das Ergebnis vor.",
-    deepLink: "logistikapp://query-stock",
+    deepLink: "zentory://query-stock",
     iconName: "magnifyingglass.circle.fill",
   },
 ];
@@ -200,13 +200,13 @@ export function handleShortcutDeepLink(
   if (!match) return null;
 
   switch (match.id) {
-    case "com.logistikapp.stockIn":
+    case "ch.zentory.stockIn":
       return { screen: "/(app)/scanner", params: { mode: "stock-in" } };
-    case "com.logistikapp.stockOut":
+    case "ch.zentory.stockOut":
       return { screen: "/(app)/scanner", params: { mode: "stock-out" } };
-    case "com.logistikapp.toolCheckout":
+    case "ch.zentory.toolCheckout":
       return { screen: "/(app)/scanner", params: { mode: "tool-checkout" } };
-    case "com.logistikapp.queryStock":
+    case "ch.zentory.queryStock":
       return { screen: "/(app)/scanner", params: { mode: "query" } };
     default:
       return null;

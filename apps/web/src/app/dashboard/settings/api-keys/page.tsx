@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { Wordmark } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -427,7 +428,7 @@ export default function ApiKeysPage() {
             Noch keine API-Schlüssel erstellt
           </p>
           <p className="text-xs text-muted-foreground font-mono mb-4">
-            Erstelle einen Schlüssel, um die LogistikApp API zu nutzen.
+            Erstelle einen Schlüssel, um die <Wordmark className="inline" /> API zu nutzen.
           </p>
           {orgId && <CreateKeyDialog orgId={orgId} onCreated={loadKeys} />}
         </div>

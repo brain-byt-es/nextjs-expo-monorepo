@@ -40,7 +40,7 @@ export async function POST(request: Request) {
 
     // Send confirmation email to user
     try {
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.logistikapp.ch";
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.zentory.ch";
       const { Resend } = await import("resend");
       const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
       });
 
       await resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL || "noreply@logistikapp.ch",
+        from: process.env.RESEND_FROM_EMAIL || "noreply@zentory.ch",
         to: session.user.email,
         subject: "Ihre Löschanfrage wurde registriert",
         html: `
@@ -74,8 +74,8 @@ export async function POST(request: Request) {
 
       // Send notification email to admin
       await resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL || "noreply@logistikapp.ch",
-        to: "support@logistikapp.ch",
+        from: process.env.RESEND_FROM_EMAIL || "noreply@zentory.ch",
+        to: "support@zentory.ch",
         subject: `Kontolöschung beantragt: ${session.user.email}`,
         html: `
           <h2>Kontolöschung beantragt</h2>

@@ -29,28 +29,28 @@ interface OrgBranding {
 }
 
 // ---------------------------------------------------------------------------
-// Preset colours — LogistikApp defaults + common alternatives
+// Preset colours — Zentory defaults + common alternatives
 // ---------------------------------------------------------------------------
 const PRIMARY_PRESETS = [
-  { label: "LogistikApp Orange", value: "#F97316" },
+  { label: "Zentory Green", value: "#236B56" },
   { label: "Blau", value: "#2563eb" },
-  { label: "Grün", value: "#16a34a" },
+  { label: "Orange", value: "#F97316" },
   { label: "Violett", value: "#7c3aed" },
   { label: "Rot", value: "#dc2626" },
   { label: "Grau", value: "#4b5563" },
 ]
 
 const ACCENT_PRESETS = [
-  { label: "LogistikApp Cyan", value: "#06b6d4" },
-  { label: "Gelb", value: "#ca8a04" },
+  { label: "Zentory Amber", value: "#D97706" },
+  { label: "Cyan", value: "#06b6d4" },
   { label: "Pink", value: "#db2777" },
   { label: "Teal", value: "#0d9488" },
   { label: "Indigo", value: "#4338ca" },
   { label: "Grau", value: "#6b7280" },
 ]
 
-const DEFAULT_PRIMARY = "#F97316"
-const DEFAULT_ACCENT = "#06b6d4"
+const DEFAULT_PRIMARY = "#236B56"
+const DEFAULT_ACCENT = "#D97706"
 
 // ---------------------------------------------------------------------------
 // Color picker row

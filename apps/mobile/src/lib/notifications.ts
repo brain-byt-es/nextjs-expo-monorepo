@@ -1,5 +1,5 @@
 /**
- * Push Notifications module for LogistikApp mobile.
+ * Push Notifications module for Zentory mobile.
  *
  * Handles permission requests, Expo push token registration / deregistration,
  * and syncing the token with the web API.  All operations are best-effort and
@@ -55,7 +55,7 @@ export async function registerForPushNotifications(): Promise<string | null> {
   // Android requires an explicit notification channel.
   if (Platform.OS === "android") {
     await Notifications.setNotificationChannelAsync("default", {
-      name: "LogistikApp",
+      name: "Zentory",
       importance: Notifications.AndroidImportance.HIGH,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: "#2563eb",

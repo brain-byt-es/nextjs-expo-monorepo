@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Wordmark } from "@/components/logo"
 import {
   IconBrush,
   IconCheck,
@@ -51,7 +52,7 @@ interface Branding {
   primaryColor: string | null
   accentColor: string | null
   customDomain: string | null
-  hideLogistikAppBranding: boolean
+  hideZentoryBranding: boolean
   customFooterText: string | null
   createdAt: string
   updatedAt: string
@@ -71,7 +72,7 @@ const DEFAULT_FORM = {
   primaryColor: "#3b82f6",
   accentColor: "#10b981",
   customDomain: "",
-  hideLogistikAppBranding: false,
+  hideZentoryBranding: false,
   customFooterText: "",
 }
 
@@ -127,7 +128,7 @@ export default function ResellerPage() {
       primaryColor: branding.primaryColor ?? "#3b82f6",
       accentColor: branding.accentColor ?? "#10b981",
       customDomain: branding.customDomain ?? "",
-      hideLogistikAppBranding: branding.hideLogistikAppBranding,
+      hideZentoryBranding: branding.hideZentoryBranding,
       customFooterText: branding.customFooterText ?? "",
     })
     setDialogOpen(true)
@@ -167,7 +168,7 @@ export default function ResellerPage() {
       primaryColor: branding.primaryColor ?? "#3b82f6",
       accentColor: branding.accentColor ?? "#10b981",
       customDomain: branding.customDomain ?? "",
-      hideLogistikAppBranding: branding.hideLogistikAppBranding,
+      hideZentoryBranding: branding.hideZentoryBranding,
       customFooterText: branding.customFooterText ?? "",
     })
     setPreviewOpen(true)
@@ -236,7 +237,7 @@ export default function ResellerPage() {
                         {branding.appName}
                       </span>
                     ) : (
-                      <span className="text-muted-foreground">LogistikApp</span>
+                      <Wordmark className="inline text-muted-foreground" />
                     )}
                   </TableCell>
                   <TableCell>
@@ -250,7 +251,7 @@ export default function ResellerPage() {
                     )}
                   </TableCell>
                   <TableCell>
-                    {branding.hideLogistikAppBranding ? (
+                    {branding.hideZentoryBranding ? (
                       <Badge variant="default">White-Label</Badge>
                     ) : (
                       <Badge variant="secondary">Co-Branded</Badge>
@@ -409,17 +410,17 @@ export default function ResellerPage() {
             <div className="flex items-center justify-between rounded-lg border p-3">
               <div>
                 <Label htmlFor="hideBranding" className="text-sm font-medium">
-                  LogistikApp-Branding ausblenden
+                  <Wordmark className="inline" />-Branding ausblenden
                 </Label>
                 <p className="text-xs text-muted-foreground">
-                  Vollständiges White-Label ohne Hinweis auf LogistikApp
+                  Vollständiges White-Label ohne Hinweis auf <Wordmark className="inline" />
                 </p>
               </div>
               <Switch
                 id="hideBranding"
-                checked={form.hideLogistikAppBranding}
+                checked={form.hideZentoryBranding}
                 onCheckedChange={(v) =>
-                  setForm((f) => ({ ...f, hideLogistikAppBranding: v }))
+                  setForm((f) => ({ ...f, hideZentoryBranding: v }))
                 }
               />
             </div>
@@ -475,7 +476,7 @@ export default function ResellerPage() {
                     </div>
                   )}
                   <CardTitle className="text-white text-lg">
-                    {previewBranding.appName || "LogistikApp"}
+                    {previewBranding.appName || <Wordmark className="inline" />}
                   </CardTitle>
                 </div>
               </CardHeader>
@@ -503,9 +504,9 @@ export default function ResellerPage() {
                 <Separator />
                 <p className="text-xs text-muted-foreground text-center">
                   {previewBranding.customFooterText ||
-                    (previewBranding.hideLogistikAppBranding
+                    (previewBranding.hideZentoryBranding
                       ? previewBranding.appName || "White-Label"
-                      : `Powered by LogistikApp`)}
+                      : `Powered by Zentory`)}
                 </p>
               </CardContent>
             </Card>

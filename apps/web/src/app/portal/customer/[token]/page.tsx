@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Wordmark } from "@/components/logo"
 
 interface CommissionEntry { id: string; quantity: number | null; pickedQuantity: number | null; status: string | null; materialName: string | null; materialNumber: string | null; toolName: string | null; toolNumber: string | null }
 interface CommissionComment { id: string; body: string; createdAt: string }
@@ -175,7 +176,7 @@ export default function CustomerPortalPage() {
       </div>
 
       <div className="text-center py-6 border-t border-border">
-        <p className="text-xs text-muted-foreground">Bereitgestellt von <span className="font-semibold">Logistik<span className="text-primary" style={primaryColor ? { color: primaryColor } : undefined}>App</span></span></p>
+        <p className="text-xs text-muted-foreground">Bereitgestellt von <Wordmark className="inline" /></p>
       </div>
     </div>
   )

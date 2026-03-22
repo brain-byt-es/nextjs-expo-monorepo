@@ -110,7 +110,7 @@ function buildMockLieferschein(c: Commission): LieferscheinData {
     signedAt: null,
     signedBy: null,
     org: {
-      name: "LogistikApp",
+      name: "Zentory",
       address: null,
       zip: null,
       city: null,

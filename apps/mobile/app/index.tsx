@@ -4,7 +4,7 @@ import { View, ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSession } from "@/lib/session-store";
 
-const ONBOARDING_KEY = "@logistikapp/onboarding-complete";
+const ONBOARDING_KEY = "@zentory/onboarding-complete";
 
 export default function Index() {
   const { data, isPending } = useSession();

@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Logo } from "@/components/logo"
+import { Logo, Wordmark } from "@/components/logo"
 import { LoginForm } from "@/components/login-form"
 
 export default function LoginPage() {
@@ -55,7 +55,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
-          © {new Date().getFullYear()} LogistikApp · Schweizer Datenschutz
+          © {new Date().getFullYear()} <Wordmark className="inline" /> · Schweizer Datenschutz
         </p>
       </div>
 

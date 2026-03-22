@@ -4,6 +4,7 @@ import * as React from "react";
 import { Platform, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { BRAND } from "@/lib/colors";
 
 import { Button } from "@/components/nativewindui/Button";
 import { Text } from "@/components/nativewindui/Text";
@@ -38,7 +39,7 @@ export default function AuthIndexScreen() {
         <View className="items-center pb-4">
           <Logo size={56} showText={false} className="mb-4" />
           <Text className="text-center text-2xl font-bold tracking-tight text-foreground">
-            LogistikApp
+            Zentory
           </Text>
           <Text className="text-center text-sm text-muted-foreground pt-2">
             Dein Lager. Immer im Griff.
@@ -62,7 +63,7 @@ export default function AuthIndexScreen() {
                 borderColor: "#FED7AA",
               }}
             >
-              <Ionicons name={f.icon} size={15} color="#F97316" />
+              <Ionicons name={f.icon} size={15} color={BRAND.primary} />
               <Text style={{ fontSize: 13, color: "#0F172A", fontWeight: "500" }}>
                 {f.label}
               </Text>

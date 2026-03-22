@@ -46,7 +46,7 @@ describe("dsgvo-csv (toCsv)", () => {
 
   it("includes export date header", () => {
     const csv = toCsv(makeMinimalData())
-    expect(csv).toContain("# LogistikApp Datenexport")
+    expect(csv).toContain("# Zentory Datenexport")
   })
 
   it("handles empty data arrays gracefully", () => {

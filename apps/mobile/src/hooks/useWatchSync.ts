@@ -30,7 +30,7 @@ import {
 export interface WatchSyncState {
   /** Whether an Apple Watch is paired with this device. */
   isPaired: boolean;
-  /** Whether the LogistikApp watch app is installed. */
+  /** Whether the Zentory watch app is installed. */
   isInstalled: boolean;
   /** Whether the watch is currently reachable (in range & awake). */
   isReachable: boolean;

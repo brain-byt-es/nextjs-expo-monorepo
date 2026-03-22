@@ -115,7 +115,7 @@ export function TwoFactorSetup({ onComplete }: TwoFactorSetupProps) {
   // ── Download recovery codes ──
   const handleDownloadRecoveryCodes = () => {
     const text = [
-      "LogistikApp — Wiederherstellungscodes",
+      "Zentory — Wiederherstellungscodes",
       "Erstellt: " + new Date().toLocaleDateString("de-CH"),
       "",
       "WICHTIG: Bewahren Sie diese Codes sicher auf.",
@@ -128,7 +128,7 @@ export function TwoFactorSetup({ onComplete }: TwoFactorSetupProps) {
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
     a.href = url
-    a.download = "logistikapp-recovery-codes.txt"
+    a.download = "zentory-recovery-codes.txt"
     a.click()
     URL.revokeObjectURL(url)
   }

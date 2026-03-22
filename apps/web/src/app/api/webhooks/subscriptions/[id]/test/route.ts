@@ -43,7 +43,7 @@ export async function POST(
 
     await dispatchWebhookAsync(orgId, testEvent, {
       test: true,
-      message: "Dies ist eine Test-Zustellung von LogistikApp.",
+      message: "Dies ist eine Test-Zustellung von Zentory.",
       subscriptionId: id,
     });
 

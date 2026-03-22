@@ -46,7 +46,7 @@ export function DsgvoExportCard() {
       const filenameMatch = disposition.match(/filename="(.+?)"/)
       const filename =
         filenameMatch?.[1] ??
-        `logistikapp-daten-export.${format === "csv" ? "csv" : "json"}`
+        `zentory-daten-export.${format === "csv" ? "csv" : "json"}`
 
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")

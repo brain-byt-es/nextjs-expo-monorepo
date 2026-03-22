@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Logo } from "@/components/logo"
+import { Logo, Wordmark } from "@/components/logo"
 import { SignupForm } from "@/components/signup-form"
 
 export default function SignupPage() {
@@ -66,7 +66,7 @@ export default function SignupPage() {
         </div>
 
         <p className="text-center font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
-          © {new Date().getFullYear()} LogistikApp · Keine Kreditkarte nötig
+          © {new Date().getFullYear()} <Wordmark className="inline" /> · Keine Kreditkarte nötig
         </p>
       </div>
 

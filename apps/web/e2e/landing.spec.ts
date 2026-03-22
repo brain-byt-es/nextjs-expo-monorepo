@@ -12,12 +12,12 @@ test.describe("Landing Page", () => {
     await page.waitForSelector("main, section, footer", { state: "visible" })
   })
 
-  test("page title contains LogistikApp", async ({ page }) => {
-    await expect(page).toHaveTitle(/LogistikApp/i)
+  test("page title contains Zentory", async ({ page }) => {
+    await expect(page).toHaveTitle(/Zentory/i)
   })
 
-  test("LogistikApp brand text is visible on the page", async ({ page }) => {
-    await expect(page.locator("text=LogistikApp").first()).toBeVisible({ timeout: 10_000 })
+  test("Zentory brand text is visible on the page", async ({ page }) => {
+    await expect(page.locator("text=Zentory").first()).toBeVisible({ timeout: 10_000 })
   })
 
   test("pricing section is present on the page", async ({ page }) => {

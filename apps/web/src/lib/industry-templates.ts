@@ -98,7 +98,7 @@ const handwerkTemplate: IndustryTemplate = {
   toolGroups: [
     { name: "Elektrowerkzeug", color: "#ef4444" },
     { name: "Handwerkzeug", color: "#8b5cf6" },
-    { name: "Messgerät", color: "#06b6d4" },
+    { name: "Messgerät", color: "#0d9488" },
   ],
   materials: [
     // Befestigung (groupIndex 2)
@@ -289,7 +289,7 @@ const spitalTemplate: IndustryTemplate = {
   toolGroups: [
     { name: "Medizingeräte", color: "#10b981" },
     { name: "OP-Instrumente", color: "#ef4444" },
-    { name: "Pflegehilfsmittel", color: "#06b6d4" },
+    { name: "Pflegehilfsmittel", color: "#0d9488" },
   ],
   materials: [
     // Medikamente (groupIndex 0)

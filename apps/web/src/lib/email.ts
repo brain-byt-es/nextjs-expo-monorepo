@@ -94,7 +94,7 @@ export async function sendTeamInviteEmail(
       html: `
         <h1>Du wurdest eingeladen!</h1>
         <p>Hallo,</p>
-        <p><strong>${escapedInviter}</strong> hat dich eingeladen, dem Team <strong>${escapedOrg}</strong> auf LogistikApp beizutreten.</p>
+        <p><strong>${escapedInviter}</strong> hat dich eingeladen, dem Team <strong>${escapedOrg}</strong> auf Zentory beizutreten.</p>
         <p>
           <a
             href="${signupUrl}"
@@ -121,7 +121,7 @@ export async function sendAlertSummaryEmail(
   orgName: string,
   expiryCount = 0
 ) {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.logistikapp.ch';
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.zentory.ch';
   const parts: string[] = [];
   if (lowStockCount > 0) {
     parts.push(`<li>${lowStockCount} Material${lowStockCount !== 1 ? 'ien' : ''} unter Meldebestand</li>`);
@@ -139,7 +139,7 @@ export async function sendAlertSummaryEmail(
       to: recipientEmail,
       subject: `Logistik-Alarm: ${orgName} — Handlungsbedarf`,
       html: `
-        <h2>Logistik-Alarm von LogistikApp</h2>
+        <h2>Logistik-Alarm von Zentory</h2>
         <p>Hallo ${escapeHtml(recipientName)},</p>
         <p>Es gibt Handlungsbedarf in deiner Organisation <strong>${escapeHtml(orgName)}</strong>:</p>
         <ul>${parts.join('')}</ul>
@@ -170,7 +170,7 @@ export async function sendMentionNotification(
   entityId: string,
   commentBody: string
 ) {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.logistikapp.ch';
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.zentory.ch';
   const entityPath = entityType === 'material'
     ? `materials/${entityId}`
     : entityType === 'tool'
@@ -223,7 +223,7 @@ export async function sendApprovalRequestEmail(
   entityId: string,
   approvalId: string // eslint-disable-line @typescript-eslint/no-unused-vars
 ) {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.logistikapp.ch';
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.zentory.ch';
   const approvalsUrl = `${appUrl}/dashboard/approvals`;
   const requestTypeLabel = requestType === 'tool_checkout'
     ? 'Werkzeug-Ausleihe'
@@ -269,7 +269,7 @@ export async function sendApprovalDecisionEmail(
   requestType: string,
   status: 'approved' | 'rejected'
 ) {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.logistikapp.ch';
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.zentory.ch';
   const requestTypeLabel = requestType === 'tool_checkout'
     ? 'Werkzeug-Ausleihe'
     : requestType === 'order'
@@ -321,7 +321,7 @@ export async function sendShiftReportEmail({
   totalToolBookings: number
   totalCommissions: number
 }) {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.logistikapp.ch';
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.zentory.ch';
   const fmtDate = new Date(date).toLocaleDateString('de-CH', {
     day: '2-digit',
     month: '2-digit',
@@ -359,7 +359,7 @@ export async function sendShiftReportEmail({
         </p>
         <p style="color:#999;font-size:12px;margin-top:24px;">
           Dieser Bericht wird täglich um 17:00 Uhr CET automatisch versandt.<br>
-          LogistikApp &mdash; ${escapeHtml(orgName)}
+          Zentory &mdash; ${escapeHtml(orgName)}
         </p>
       `,
     });

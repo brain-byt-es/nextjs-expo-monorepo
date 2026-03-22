@@ -24,8 +24,8 @@ export interface ConflictStoreState {
 
 // ── Storage ───────────────────────────────────────────────────────────────────
 
-const CONFLICTS_KEY = "@logistikapp/conflicts";
-const LAST_SYNC_KEY = "@logistikapp/last_sync_at";
+const CONFLICTS_KEY = "@zentory/conflicts";
+const LAST_SYNC_KEY = "@zentory/last_sync_at";
 
 let conflicts: Conflict[] = [];
 let lastSyncAt: number | null = null;

@@ -403,7 +403,7 @@ function getConnectionStatus(
     return {
       icon: "download-outline",
       title: "App nicht installiert",
-      subtitle: "Installiere die LogistikApp auf deiner Apple Watch.",
+      subtitle: "Installiere die Zentory App auf deiner Apple Watch.",
       color: "#f97316",
       bg: "#fff7ed",
     };

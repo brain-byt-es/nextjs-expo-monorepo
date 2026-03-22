@@ -254,7 +254,7 @@ export default async function ScanLocationPage({
 
         {/* Footer branding */}
         <p className="mt-8 text-center text-xs text-muted-foreground/50 tracking-wider uppercase">
-          logistikapp.ch
+          zentory.ch
         </p>
       </main>
     </div>

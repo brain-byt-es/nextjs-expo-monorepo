@@ -15,7 +15,7 @@ import { eq, and, lte, isNotNull, sql } from "drizzle-orm";
 import { sendWhatsAppAlert } from "@/lib/whatsapp";
 import { createNotificationForAllMembers } from "@/lib/notifications-server";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.logistikapp.ch";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.zentory.ch";
 
 // ── Cron: daily at 07:00 CET (= 06:00 UTC) ──────────────────────────
 export const checkLowStockFn = inngest.createFunction(
@@ -159,7 +159,7 @@ export const checkLowStockFn = inngest.createFunction(
         parts.push(`${expiryCount} Versicherung${expiryCount !== 1 ? "en" : ""}/Garantie${expiryCount !== 1 ? "n" : ""} laufen demnächst ab`);
       }
       const summaryText = parts.join(", ");
-      const whatsappMessage = `Logistik-Alarm von LogistikApp: ${summaryText}. Details: ${APP_URL}/dashboard`;
+      const whatsappMessage = `Logistik-Alarm von Zentory: ${summaryText}. Details: ${APP_URL}/dashboard`;
 
       let whatsappSent = false;
       let emailSent = false;

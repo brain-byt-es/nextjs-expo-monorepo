@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
         primaryColor: resellerBranding.primaryColor,
         accentColor: resellerBranding.accentColor,
         customDomain: resellerBranding.customDomain,
-        hideLogistikAppBranding: resellerBranding.hideLogistikAppBranding,
+        hideZentoryBranding: resellerBranding.hideZentoryBranding,
         customFooterText: resellerBranding.customFooterText,
         createdAt: resellerBranding.createdAt,
         updatedAt: resellerBranding.updatedAt,
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
       primaryColor,
       accentColor,
       customDomain,
-      hideLogistikAppBranding,
+      hideZentoryBranding,
       customFooterText,
     } = body;
 
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
       primaryColor: primaryColor ?? null,
       accentColor: accentColor ?? null,
       customDomain: customDomain ?? null,
-      hideLogistikAppBranding: hideLogistikAppBranding ?? false,
+      hideZentoryBranding: hideZentoryBranding ?? false,
       customFooterText: customFooterText ?? null,
       updatedAt: new Date(),
     };

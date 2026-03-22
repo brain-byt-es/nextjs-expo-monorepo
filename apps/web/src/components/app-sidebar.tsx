@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { usePathname } from "next/navigation"
-import { LogoMark } from "@/components/logo"
+import { LogoMark, Wordmark } from "@/components/logo"
 import { useBrand } from "@/components/brand-provider"
 import {
   IconBuilding,
@@ -150,11 +150,7 @@ function OrgSwitcher({
                     <LogoMark size={20} />
                   )}
                   <span className="flex-1 truncate text-base font-semibold">
-                    {orgName || (
-                      <>
-                        Logistik<span className="text-primary">App</span>
-                      </>
-                    )}
+                    {orgName || <Wordmark className="inline" />}
                   </span>
                   <IconChevronDown className="ml-auto size-3.5 text-muted-foreground" />
                 </div>
@@ -201,11 +197,7 @@ function OrgSwitcher({
                 <LogoMark size={20} />
               )}
               <span className="text-base font-semibold">
-                {orgName || (
-                  <>
-                    Logistik<span className="text-primary">App</span>
-                  </>
-                )}
+                {orgName || <Wordmark className="inline" />}
               </span>
             </a>
           </SidebarMenuButton>
@@ -566,7 +558,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild className="flex items-center gap-2">
-                      <a href="https://docs.logistikapp.ch" target="_blank" rel="noopener noreferrer">
+                      <a href="https://docs.zentory.ch" target="_blank" rel="noopener noreferrer">
                         <IconHelp className="size-4 shrink-0" />
                         <span>{t("help")}</span>
                       </a>

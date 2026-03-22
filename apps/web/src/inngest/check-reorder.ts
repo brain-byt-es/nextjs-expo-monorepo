@@ -4,7 +4,7 @@ import { alertSettings, organizations, organizationMembers, users } from "@repo/
 import { eq, and } from "drizzle-orm";
 import { checkAndCreateReorders } from "@/lib/auto-reorder";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.logistikapp.ch";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.zentory.ch";
 
 // ── Cron: daily at 06:00 UTC (= 08:00 CET) ───────────────────────────
 export const checkReorderFn = inngest.createFunction(
@@ -79,7 +79,7 @@ export const checkReorderFn = inngest.createFunction(
                 : "";
 
             await resend.emails.send({
-              from: "LogistikApp <no-reply@logistikapp.ch>",
+              from: "Zentory <no-reply@zentory.ch>",
               to: owner.email,
               subject: `Auto-Nachbestellung: ${result.ordersCreated} Bestellung${result.ordersCreated !== 1 ? "en" : ""} erstellt`,
               text: [
@@ -93,7 +93,7 @@ export const checkReorderFn = inngest.createFunction(
                 "",
                 `Bestellungen anzeigen: ${APP_URL}/dashboard/orders`,
                 "",
-                "-- LogistikApp Auto-Reorder",
+                "-- Zentory Auto-Reorder",
               ].join("\n"),
             });
           } catch (err) {

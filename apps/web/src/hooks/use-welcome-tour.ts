@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react"
 
-const STORAGE_KEY = "logistikapp-tour-completed"
+const STORAGE_KEY = "zentory-tour-completed"
 
 function readCompleted(): boolean {
   try {

@@ -175,7 +175,7 @@ async function findBexioArticleByCode(
   return results?.[0] ?? null;
 }
 
-// ─── Import: bexio → LogistikApp ─────────────────────────────────────────────
+// ─── Import: bexio → Zentory ─────────────────────────────────────────────
 
 export async function syncArticlesFromBexio(orgId: string): Promise<SyncResult> {
   const start = Date.now();
@@ -267,7 +267,7 @@ export async function syncArticlesFromBexio(orgId: string): Promise<SyncResult> 
   return result;
 }
 
-// ─── Export: LogistikApp → bexio ─────────────────────────────────────────────
+// ─── Export: Zentory → bexio ─────────────────────────────────────────────
 
 export async function syncArticlesToBexio(orgId: string): Promise<SyncResult> {
   const start = Date.now();

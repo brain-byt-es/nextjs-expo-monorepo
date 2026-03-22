@@ -52,7 +52,7 @@ setInterval(() => {
 // ---------------------------------------------------------------------------
 
 function buildSystemPrompt(orgName: string, context?: string): string {
-  let prompt = `Du bist der LogistikApp KI-Assistent für die Organisation "${orgName}". Du hilfst bei Lagerverwaltung, Werkzeug-Tracking und Bestellwesen.
+  let prompt = `Du bist der Zentory KI-Assistent für die Organisation "${orgName}". Du hilfst bei Lagerverwaltung, Werkzeug-Tracking und Bestellwesen.
 
 Deine Fähigkeiten:
 - Materialien und Werkzeuge suchen und Informationen anzeigen

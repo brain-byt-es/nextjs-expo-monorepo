@@ -118,7 +118,7 @@ function createDefaultElement(type: LabelElementType, width: number): LabelEleme
     case "barcode":
       return { ...base, height: 12, content: "1234567890", barcodeFormat: "code128", dataBinding: "material_barcode" }
     case "qrcode":
-      return { ...base, width: 20, height: 20, content: "https://logistikapp.ch", dataBinding: "material_barcode" }
+      return { ...base, width: 20, height: 20, content: "https://zentory.ch", dataBinding: "material_barcode" }
     case "image":
       return { ...base, width: 15, height: 15, imageUrl: "" }
     case "line":

@@ -4,7 +4,7 @@ title: API-Authentifizierung
 
 # API-Authentifizierung
 
-Die LogistikApp-API verwendet Bearer-Tokens für die Authentifizierung.
+Die Zentory-API verwendet Bearer-Tokens für die Authentifizierung.
 
 ## API-Token erstellen
 
@@ -29,14 +29,14 @@ Die LogistikApp-API verwendet Bearer-Tokens für die Authentifizierung.
 Fügen Sie das Token in jeden API-Request als Bearer-Token im Authorization-Header ein:
 
 ```bash
-curl https://app.logistikapp.ch/api/v1/materials \
+curl https://app.zentory.ch/api/v1/materials \
   -H "Authorization: Bearer IHR_TOKEN_HIER" \
   -H "Content-Type: application/json"
 ```
 
 ```javascript
 // JavaScript / Node.js
-const response = await fetch('https://app.logistikapp.ch/api/v1/materials', {
+const response = await fetch('https://app.zentory.ch/api/v1/materials', {
   headers: {
     'Authorization': `Bearer ${process.env.LOGISTIKAPP_TOKEN}`,
     'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ headers = {
     'Authorization': f'Bearer {os.environ["LOGISTIKAPP_TOKEN"]}',
     'Content-Type': 'application/json',
 }
-response = requests.get('https://app.logistikapp.ch/api/v1/materials', headers=headers)
+response = requests.get('https://app.zentory.ch/api/v1/materials', headers=headers)
 ```
 
 ## Sicherheitshinweise

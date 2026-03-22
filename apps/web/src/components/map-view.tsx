@@ -27,7 +27,7 @@ const TYPE_COLORS: Record<string, string> = {
   site: "#22c55e",       // green
   station: "#ef4444",    // red
   practice: "#8b5cf6",   // purple
-  operating_room: "#06b6d4", // cyan
+  operating_room: "#0d9488", // teal
   user: "#6b7280",       // gray
 }
 

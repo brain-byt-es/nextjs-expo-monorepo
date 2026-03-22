@@ -42,19 +42,19 @@ function buildIcal(orgName: string, events: Array<{
   const lines: string[] = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    `PRODID:-//LogistikApp//Wartungskalender//DE`,
+    `PRODID:-//Zentory//Wartungskalender//DE`,
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     `X-WR-CALNAME:${icalEscape(orgName)} – Wartungen`,
     "X-WR-TIMEZONE:Europe/Zurich",
-    "X-WR-CALDESC:Wartungskalender aus LogistikApp",
+    "X-WR-CALDESC:Wartungskalender aus Zentory",
   ];
 
   for (const ev of events) {
     // Parse as local date (YYYY-MM-DD)
     const dueDateStr = ev.nextMaintenanceDate.replace(/-/g, ""); // YYYYMMDD
 
-    const uid = `maint-${ev.id}-${ev.nextMaintenanceDate}@logistikapp`;
+    const uid = `maint-${ev.id}-${ev.nextMaintenanceDate}@zentory`;
     const summary = `Wartung: ${ev.name}${ev.number ? ` (${ev.number})` : ""}`;
     const descParts: string[] = [];
     if (ev.assignedUserName) descParts.push(`Zugewiesen: ${ev.assignedUserName}`);
@@ -230,7 +230,7 @@ export async function POST(request: Request) {
     const appUrl =
       process.env.BETTER_AUTH_URL ??
       process.env.NEXTAUTH_URL ??
-      "https://app.logistikapp.ch";
+      "https://app.zentory.ch";
 
     const feedUrl = `${appUrl}/api/maintenance/ical?token=${token}`;
 

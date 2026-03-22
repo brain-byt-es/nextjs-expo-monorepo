@@ -120,7 +120,7 @@ export default function EmailInboxPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [successMsg, setSuccessMsg] = useState<string | null>(null)
 
-  const inboxAddress = "inbox-{org-slug}@logistikapp.ch"
+  const inboxAddress = "inbox-{org-slug}@zentory.ch"
 
   const typeLabel = useCallback((type: string): string => {
     switch (type) {

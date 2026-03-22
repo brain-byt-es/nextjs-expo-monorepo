@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Impressum",
-  description: "Impressum und rechtliche Angaben zu LogistikApp von BrainBytes GmbH.",
+  description: "Impressum und rechtliche Angaben zu Zentory von BrainBytes GmbH.",
 }
 
 export default function ImpressumPage() {
@@ -56,19 +56,19 @@ export default function ImpressumPage() {
         <div className="rounded-lg border border-border bg-muted/30 p-6 font-mono text-sm space-y-3">
           <div>
             <div className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground mb-1">E-Mail allgemein</div>
-            <a href="mailto:info@logistikapp.ch" className="text-primary hover:underline">info@logistikapp.ch</a>
+            <a href="mailto:info@zentory.ch" className="text-primary hover:underline">info@zentory.ch</a>
           </div>
           <div>
             <div className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground mb-1">E-Mail Datenschutz</div>
-            <a href="mailto:datenschutz@logistikapp.ch" className="text-primary hover:underline">datenschutz@logistikapp.ch</a>
+            <a href="mailto:datenschutz@zentory.ch" className="text-primary hover:underline">datenschutz@zentory.ch</a>
           </div>
           <div>
             <div className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground mb-1">Support</div>
-            <a href="mailto:support@logistikapp.ch" className="text-primary hover:underline">support@logistikapp.ch</a>
+            <a href="mailto:support@zentory.ch" className="text-primary hover:underline">support@zentory.ch</a>
           </div>
           <div>
             <div className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground mb-1">Website</div>
-            <a href="https://logistikapp.ch" className="text-primary hover:underline">logistikapp.ch</a>
+            <a href="https://zentory.ch" className="text-primary hover:underline">zentory.ch</a>
           </div>
         </div>
       </section>

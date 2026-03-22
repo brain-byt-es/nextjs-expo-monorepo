@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test"
 
 /**
- * Playwright E2E configuration for LogistikApp web app.
+ * Playwright E2E configuration for Zentory web app.
  * Tests run against http://localhost:3003 (Next.js dev server).
  *
  * Run:  pnpm test:e2e

@@ -2,11 +2,11 @@ import type { Page } from "@playwright/test"
 import { expect } from "@playwright/test"
 
 /**
- * Demo credentials — the test account that ships with LogistikApp.
+ * Demo credentials — the test account that ships with Zentory.
  * The demo sign-in path accepts any credentials in demo mode,
  * or uses the real Better-Auth endpoint when a database is configured.
  */
-export const DEMO_EMAIL = "demo@logistikapp.ch"
+export const DEMO_EMAIL = "demo@zentory.ch"
 export const DEMO_PASSWORD = "demo1234"
 
 /**

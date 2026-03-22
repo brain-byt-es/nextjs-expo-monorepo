@@ -17,11 +17,11 @@ interface BrandContextValue extends BrandConfig {
 }
 
 // ---------------------------------------------------------------------------
-// Defaults (match LogistikApp design tokens)
+// Defaults (match Zentory design tokens)
 // ---------------------------------------------------------------------------
 const DEFAULT_BRAND: BrandConfig = {
-  primaryColor: "#F97316",
-  accentColor: "#06b6d4",
+  primaryColor: "#236B56",
+  accentColor: "#D97706",
   logo: null,
   orgName: "",
 }

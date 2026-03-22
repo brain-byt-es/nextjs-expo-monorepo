@@ -166,7 +166,7 @@ export const mobilePayments = pgTable(
 );
 
 // ═════════════════════════════════════════════════════════════════════
-// LogistikApp Business Domain Tables
+// Zentory Business Domain Tables
 // ═════════════════════════════════════════════════════════════════════
 
 // ─── Organizations (Multi-Tenancy) ──────────────────────────────────
@@ -806,7 +806,7 @@ export type NewMobileSubscription = typeof mobileSubscriptions.$inferInsert;
 export type MobilePayment = typeof mobilePayments.$inferSelect;
 export type NewMobilePayment = typeof mobilePayments.$inferInsert;
 
-// LogistikApp Domain Types
+// Zentory Domain Types
 export type Organization = typeof organizations.$inferSelect;
 export type NewOrganization = typeof organizations.$inferInsert;
 export type OrganizationMember = typeof organizationMembers.$inferSelect;
@@ -2025,13 +2025,13 @@ export type NewOrgSetting = typeof orgSettings.$inferInsert;
 export const resellerBranding = pgTable("reseller_branding", {
   id: uuid("id").primaryKey().defaultRandom(),
   organizationId: uuid("organization_id").notNull().references(() => organizations.id, { onDelete: "cascade" }).unique(),
-  appName: text("app_name"), // e.g. "BauLager Pro" instead of "LogistikApp"
+  appName: text("app_name"), // e.g. "BauLager Pro" instead of "Zentory"
   logoUrl: text("logo_url"),
   faviconUrl: text("favicon_url"),
   primaryColor: text("primary_color"),
   accentColor: text("accent_color"),
   customDomain: text("custom_domain"), // e.g. "lager.meinfirma.ch"
-  hideLogistikAppBranding: boolean("hide_logistikapp_branding").default(false),
+  hideZentoryBranding: boolean("hide_zentory_branding").default(false),
   customFooterText: text("custom_footer_text"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),

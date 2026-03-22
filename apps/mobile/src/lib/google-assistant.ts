@@ -3,7 +3,7 @@
  *
  * Defines App Actions for Google Assistant on Android.
  * These map voice commands to deep-link intents that open specific
- * screens in the LogistikApp mobile app.
+ * screens in the Zentory mobile app.
  *
  * The actual actions.xml is generated/maintained in the Android manifest.
  * This module provides the TypeScript definitions and intent handling logic.
@@ -42,54 +42,54 @@ export const APP_ACTIONS: AppAction[] = [
     id: "stock_in",
     title: "Material einbuchen",
     queryPatterns: [
-      "Material einbuchen in LogistikApp",
+      "Material einbuchen in Zentory",
       "Ware einbuchen",
       "Bestand auffüllen",
     ],
     description:
       "Öffnet die Einbuchungs-Ansicht um Materialien zum Lager hinzuzufügen.",
-    intentAction: "com.logistikapp.ACTION_STOCK_IN",
-    deepLink: "logistikapp://stock-in",
+    intentAction: "ch.zentory.ACTION_STOCK_IN",
+    deepLink: "zentory://stock-in",
     iconName: "add-circle",
   },
   {
     id: "stock_out",
     title: "Material ausbuchen",
     queryPatterns: [
-      "Material ausbuchen in LogistikApp",
+      "Material ausbuchen in Zentory",
       "Ware entnehmen",
       "Material entnehmen",
     ],
     description:
       "Öffnet die Ausbuchungs-Ansicht um Material aus dem Lager zu entnehmen.",
-    intentAction: "com.logistikapp.ACTION_STOCK_OUT",
-    deepLink: "logistikapp://stock-out",
+    intentAction: "ch.zentory.ACTION_STOCK_OUT",
+    deepLink: "zentory://stock-out",
     iconName: "remove-circle",
   },
   {
     id: "tool_checkout",
     title: "Werkzeug ausleihen",
     queryPatterns: [
-      "Werkzeug ausleihen in LogistikApp",
+      "Werkzeug ausleihen in Zentory",
       "Gerät ausleihen",
       "Tool ausleihen",
     ],
     description: "Öffnet die Werkzeugausleihe um ein Gerät zu reservieren.",
-    intentAction: "com.logistikapp.ACTION_TOOL_CHECKOUT",
-    deepLink: "logistikapp://tool-checkout",
+    intentAction: "ch.zentory.ACTION_TOOL_CHECKOUT",
+    deepLink: "zentory://tool-checkout",
     iconName: "build",
   },
   {
     id: "query_stock",
     title: "Bestand abfragen",
     queryPatterns: [
-      "Bestand abfragen in LogistikApp",
+      "Bestand abfragen in Zentory",
       "Lagerbestand prüfen",
       "Wie viel haben wir",
     ],
     description: "Fragt den aktuellen Lagerbestand ab und zeigt das Ergebnis.",
-    intentAction: "com.logistikapp.ACTION_QUERY_STOCK",
-    deepLink: "logistikapp://query-stock",
+    intentAction: "ch.zentory.ACTION_QUERY_STOCK",
+    deepLink: "zentory://query-stock",
     iconName: "search",
   },
 ];

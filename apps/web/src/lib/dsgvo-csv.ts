@@ -52,7 +52,7 @@ export function toCsv(data: DsgvoData): string {
 
   // Header
   sections.push(
-    `# LogistikApp Datenexport — ${formatDate(data.exportedAt)}`
+    `# Zentory Datenexport — ${formatDate(data.exportedAt)}`
   );
   sections.push("");
 

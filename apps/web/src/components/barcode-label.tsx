@@ -59,7 +59,7 @@ export const SIZE_CONFIG: Record<
 
 const PADDING = 10
 
-const SELF_SERVICE_BASE = "https://app.logistikapp.ch"
+const SELF_SERVICE_BASE = "https://app.zentory.ch"
 
 function itemUrl(data: BarcodeLabelData): string {
   const base = typeof window !== "undefined" ? window.location.origin : SELF_SERVICE_BASE
@@ -188,7 +188,7 @@ export function BarcodeLabelView({
         className="absolute bottom-1 right-1.5 font-mono text-muted-foreground/40 uppercase tracking-widest"
         style={{ fontSize: 5 }}
       >
-        logistikapp
+        zentory
       </span>
     </div>
   )
@@ -244,7 +244,7 @@ html,body{width:${widthPx}px;height:${heightPx}px;background:white}
     ${data.location ? `<p class="loc">${data.location}</p>` : ""}
   </div>
   ${barcodeSvg ? `<div class="bc"><img src="data:image/svg+xml;charset=utf-8,${encodeURIComponent(barcodeSvg)}" style="display:block;max-width:${availWidth}px;height:${barcodeHeight}px" alt="Barcode"/><span class="bcv">${data.barcode}</span></div>` : ""}
-  <span class="brand">logistikapp</span>
+  <span class="brand">zentory</span>
 </div>
 </body>
 </html>`

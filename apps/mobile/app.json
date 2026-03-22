@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "LogistikApp",
-    "slug": "lagerapp",
+    "name": "Zentory",
+    "slug": "zentory",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "logistikapp",
+    "scheme": "zentory",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": false,
     "splash": {
@@ -19,17 +19,17 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "ch.logistikapp.mobile",
+      "bundleIdentifier": "ch.zentory.app",
       "icon": "./assets/images/icon.png",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
-      "package": "ch.logistikapp.mobile",
+      "package": "ch.zentory.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#F97316"
+        "backgroundColor": "#236B56"
       },
       "permissions": [
         "android.permission.CAMERA",
@@ -46,14 +46,14 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "LogistikApp benötigt Kamerazugriff zum Scannen von Barcodes.",
+          "cameraPermission": "Zentory benötigt Kamerazugriff zum Scannen von Barcodes.",
           "microphonePermission": false
         }
       ],
       [
         "expo-notifications",
         {
-          "color": "#F97316",
+          "color": "#236B56",
           "defaultChannel": "default",
           "androidMode": "default",
           "androidCollapsedTitle": "#{unread_notifications} neue Mitteilungen"

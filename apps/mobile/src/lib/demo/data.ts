@@ -17,7 +17,7 @@ import type {
 export const DEMO_SESSION: Session = {
   user: {
     id: "demo-user-123",
-    email: "demo@logistikapp.ch",
+    email: "demo@zentory.ch",
     name: "Max Muster",
     role: "user",
     image: null,

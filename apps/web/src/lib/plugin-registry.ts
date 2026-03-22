@@ -9,7 +9,7 @@ export const BUILTIN_PLUGINS: PluginManifest[] = [
     description:
       "Erweiterte CSV/Excel-Importe mit Spalten-Mapping, Duplikat-Erkennung und Vorschau. Ideal für Erstbefüllung und periodische Bestandsabgleiche.",
     version: "1.0.0",
-    author: "LogistikApp",
+    author: "Zentory",
     icon: "IconFileImport",
     category: "import",
     events: [
@@ -28,7 +28,7 @@ export const BUILTIN_PLUGINS: PluginManifest[] = [
     description:
       "Visueller Editor für Barcode- und QR-Code-Etiketten. Unterstützt Code128, EAN-13, DataMatrix und individuelle Layouts.",
     version: "1.0.0",
-    author: "LogistikApp",
+    author: "Zentory",
     icon: "IconBarcode",
     category: "utility",
     events: [
@@ -52,7 +52,7 @@ export const BUILTIN_PLUGINS: PluginManifest[] = [
     description:
       "Sende automatische Meldungen an einen Slack-Kanal, wenn Bestände sich ändern oder Kommissionen abgeschlossen werden.",
     version: "1.0.0",
-    author: "LogistikApp",
+    author: "Zentory",
     icon: "IconBrandSlack",
     category: "integration",
     events: [

@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const CACHE_PREFIX = "@logistikapp/cache_";
+const CACHE_PREFIX = "@zentory/cache_";
 
 interface CacheEntry<T> {
   data: T;

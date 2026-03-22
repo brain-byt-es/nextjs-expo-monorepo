@@ -1,8 +1,8 @@
-# LogistikApp — Brand Brief
+# Zentory — Brand Brief
 
 ## Produkt
 
-**LogistikApp** ist eine Schweizer SaaS-Plattform für Inventar- und Lagerverwaltung, konzipiert für kleine und mittlere Unternehmen (KMU) im DACH-Raum. Die Plattform umfasst eine Web-App, eine Mobile App (iOS & Android) und eine umfangreiche Dokumentation.
+**Zentory** ist eine Schweizer SaaS-Plattform für Inventar- und Lagerverwaltung, konzipiert für kleine und mittlere Unternehmen (KMU) im DACH-Raum. Die Plattform umfasst eine Web-App, eine Mobile App (iOS & Android) und eine umfangreiche Dokumentation.
 
 ## Zielgruppe
 
@@ -16,12 +16,12 @@
 
 ## Aktueller Stand
 
-- **Name**: LogistikApp (Arbeitstitel — Rebrand erwünscht)
-- **Domain**: logistikapp.ch (noch nicht aktiv)
-- **Primärfarbe**: Orange `#F97316` (oklch-basiert in Tailwind CSS)
-- **Akzentfarbe**: Cyan `#06b6d4`
+- **Name**: Zentory (Arbeitstitel — Rebrand erwünscht)
+- **Domain**: zentory.ch (noch nicht aktiv)
+- **Primärfarbe**: Forest Green `#236B56` (oklch-basiert in Tailwind CSS)
+- **Akzentfarbe**: Amber `#D97706`
 - **Schriften**: Geist Sans + Geist Mono (Google Fonts)
-- **Logo**: Einfaches Package-Icon (IconBuildingWarehouse) + "LogistikApp" Text
+- **Logo**: Einfaches Package-Icon (IconBuildingWarehouse) + "Zentory" Text
 - **Dark Mode**: Vollständig implementiert (Light + Dark)
 
 ## Wettbewerber
@@ -37,7 +37,7 @@
 
 **"Zu gross für Excel, zu klein für SAP."**
 
-LogistikApp schliesst die Lücke zwischen Excel-Tabellen und Enterprise-ERP-Systemen. Premium-Features zum KMU-Preis.
+Zentory schliesst die Lücke zwischen Excel-Tabellen und Enterprise-ERP-Systemen. Premium-Features zum KMU-Preis.
 
 ## Pricing
 

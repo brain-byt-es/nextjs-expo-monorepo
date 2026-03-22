@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
       avgDbLatency: number | null;
     }>();
 
-    for (const row of rows.rows as Array<Record<string, unknown>>) {
+    for (const row of (rows as unknown as { rows: Array<Record<string, unknown>> }).rows) {
       const dateStr = String(row.day).slice(0, 10); // YYYY-MM-DD
       dataMap.set(dateStr, {
         checks: (row.total_checks as number) || 0,

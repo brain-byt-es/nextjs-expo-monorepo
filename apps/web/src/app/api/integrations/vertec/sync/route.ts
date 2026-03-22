@@ -1,4 +1,4 @@
-// Syncs recent LogistikApp stock changes to Vertec as expense entries.
+// Syncs recent Zentory stock changes to Vertec as expense entries.
 //
 // GET  — lightweight connection check: 200 {connected: true} if vertec_config
 //         cookie exists, 401 otherwise.

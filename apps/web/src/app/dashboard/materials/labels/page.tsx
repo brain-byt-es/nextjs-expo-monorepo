@@ -78,7 +78,7 @@ async function buildBatchPrintHtml(
     ${item.location ? `<p class="loc">${item.location}</p>` : ""}
   </div>
   ${barcodeSvg ? `<div class="bc"><img src="data:image/svg+xml;charset=utf-8,${encodeURIComponent(barcodeSvg)}" style="display:block;max-width:${availWidth}px;height:${barcodeHeight}px" alt="Barcode"/><span class="bcv">${item.barcode}</span></div>` : ""}
-  <span class="brand">logistikapp</span>
+  <span class="brand">zentory</span>
 </div>`
   })
 

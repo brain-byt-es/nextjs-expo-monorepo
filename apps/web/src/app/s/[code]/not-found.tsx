@@ -1,3 +1,5 @@
+import { Wordmark } from "@/components/logo"
+
 export default function SelfServiceNotFound() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
@@ -10,7 +12,7 @@ export default function SelfServiceNotFound() {
           Der gescannte QR-Code gehört zu keinem bekannten Werkzeug oder Material.
           Bitte wende dich an dein Team.
         </p>
-        <p className="text-xs text-gray-400 pt-2">LogistikApp</p>
+        <p className="text-xs text-gray-400 pt-2"><Wordmark className="inline" /></p>
       </div>
     </div>
   )

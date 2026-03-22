@@ -1,11 +1,11 @@
-# App Store Listings — LogistikApp
+# App Store Listings — Zentory
 
 > **Version:** 1.0
 > **Language:** German (DACH)
 > **Last updated:** 2026-03-18
-> **Privacy Policy:** https://logistikapp.ch/datenschutz
-> **Support URL:** https://logistikapp.ch/support
-> **Marketing URL:** https://logistikapp.ch
+> **Privacy Policy:** https://zentory.ch/datenschutz
+> **Support URL:** https://zentory.ch/support
+> **Marketing URL:** https://zentory.ch
 
 ---
 
@@ -14,7 +14,7 @@
 ### App Name (max 30 chars)
 
 ```
-LogistikApp - Lagerverwaltung
+Zentory - Lagerverwaltung
 ```
 (29 characters)
 
@@ -42,7 +42,7 @@ Lagerverwaltung,Inventar,Werkzeug,Barcode,Lieferschein,Baustelle,Lager,Material,
 ### What's New (v1.0)
 
 ```
-Willkommen bei LogistikApp!
+Willkommen bei Zentory!
 
 - Barcode-Scanner: Material in Sekunden finden
 - Materialverwaltung: Ein-/Ausbuchungen direkt vom Smartphone
@@ -53,7 +53,7 @@ Willkommen bei LogistikApp!
 - Push-Benachrichtigungen: Meldebestand unterschritten? Sofort informiert.
 - Dark Mode
 
-Fragen oder Feedback? support@logistikapp.ch
+Fragen oder Feedback? support@zentory.ch
 ```
 
 ### Description (max 4000 chars)
@@ -61,7 +61,7 @@ Fragen oder Feedback? support@logistikapp.ch
 ```
 Dein Lager. Immer im Griff.
 
-LogistikApp ist die mobile Lagerverwaltung für Schweizer KMU in Handwerk, Bau und Logistik. Kein Zettelchaos mehr, keine Excel-Listen, keine verlorenen Werkzeuge. Alles in einer App — auch ohne Internet.
+Zentory ist die mobile Lagerverwaltung für Schweizer KMU in Handwerk, Bau und Logistik. Kein Zettelchaos mehr, keine Excel-Listen, keine verlorenen Werkzeuge. Alles in einer App — auch ohne Internet.
 
 DAS PROBLEM KENNEN SIE
 
@@ -80,7 +80,7 @@ MATERIALVERWALTUNG
 Material rein, Material raus — in 3 Taps gebucht. Jede Bewegung wird protokolliert. Sie sehen jederzeit, was an welchem Standort verfügbar ist.
 
 WERKZEUG-TRACKING
-Welcher Mitarbeiter hat welches Werkzeug? Seit wann? Auf welcher Baustelle? LogistikApp macht Schluss mit "Das war nicht ich" und "Das muss noch irgendwo sein."
+Welcher Mitarbeiter hat welches Werkzeug? Seit wann? Auf welcher Baustelle? Zentory macht Schluss mit "Das war nicht ich" und "Das muss noch irgendwo sein."
 
 DIGITALE LIEFERSCHEINE
 Lieferscheine direkt in der App erstellen. Material auswählen, Menge eintragen, unterschreiben lassen — digital, nachvollziehbar, papierlos.
@@ -89,13 +89,13 @@ MEHRERE STANDORTE
 Hauptlager, Aussenlager, Baustelle, Firmenfahrzeug — verwalten Sie alle Standorte zentral. Sehen Sie auf einen Blick, wo Ihr Material verteilt ist.
 
 OFFLINE-MODUS
-Auf der Baustelle hat nicht jeder WLAN. LogistikApp funktioniert komplett offline. Buchungen, Scans und Lieferscheine werden lokal gespeichert und automatisch synchronisiert, sobald wieder eine Verbindung besteht.
+Auf der Baustelle hat nicht jeder WLAN. Zentory funktioniert komplett offline. Buchungen, Scans und Lieferscheine werden lokal gespeichert und automatisch synchronisiert, sobald wieder eine Verbindung besteht.
 
 PUSH-BENACHRICHTIGUNGEN
-Meldebestand unterschritten? Werkzeug überfällig? LogistikApp informiert Sie sofort — bevor aus einem kleinen Problem ein teurer Stillstand wird.
+Meldebestand unterschritten? Werkzeug überfällig? Zentory informiert Sie sofort — bevor aus einem kleinen Problem ein teurer Stillstand wird.
 
 WEB-DASHBOARD INKLUSIVE
-Die App ist der mobile Begleiter zu Ihrem LogistikApp Web-Dashboard. Dort haben Sie die volle Übersicht: Auswertungen, Nutzerrechte, Import/Export und mehr. Perfekt für Lagerleiter und Geschäftsführung.
+Die App ist der mobile Begleiter zu Ihrem Zentory Web-Dashboard. Dort haben Sie die volle Übersicht: Auswertungen, Nutzerrechte, Import/Export und mehr. Perfekt für Lagerleiter und Geschäftsführung.
 
 FÜR WEN IST LOGISTIKAPP?
 
@@ -115,10 +115,10 @@ WARUM LOGISTIKAPP?
 
 PREISE
 
-LogistikApp ist kostenlos nutzbar mit Grundfunktionen. Für Teams und erweiterte Features gibt es LogistikApp Pro — als Monats- oder Jahresabo direkt in der App.
+Zentory ist kostenlos nutzbar mit Grundfunktionen. Für Teams und erweiterte Features gibt es Zentory Pro — als Monats- oder Jahresabo direkt in der App.
 
 Entwickelt von BrainBytes GmbH in der Schweiz.
-Fragen? support@logistikapp.ch
+Fragen? support@zentory.ch
 ```
 (2.555 characters)
 
@@ -134,7 +134,7 @@ Fragen? support@logistikapp.ch
 ### Title (max 30 chars)
 
 ```
-LogistikApp - Lagerverwaltung
+Zentory - Lagerverwaltung
 ```
 (29 characters)
 
@@ -150,7 +150,7 @@ Mobile Lagerverwaltung für KMU: Barcode-Scanner, Werkzeug-Tracking & Offline.
 ```
 Dein Lager. Immer im Griff.
 
-LogistikApp ist die mobile Lagerverwaltung für KMU in Handwerk, Bau und Logistik. Kein Zettelchaos. Keine Excel-Listen. Keine verlorenen Werkzeuge. Alles in einer App — auch ohne Internet.
+Zentory ist die mobile Lagerverwaltung für KMU in Handwerk, Bau und Logistik. Kein Zettelchaos. Keine Excel-Listen. Keine verlorenen Werkzeuge. Alles in einer App — auch ohne Internet.
 
 <b>DAS PROBLEM</b>
 
@@ -176,13 +176,13 @@ Lieferscheine direkt in der App erstellen. Material auswählen, Menge eintragen,
 Hauptlager, Aussenlager, Baustelle, Firmenfahrzeug — alle Standorte zentral verwalten. Auf einen Blick sehen, wo Ihr Material verteilt ist.
 
 <b>OFFLINE-MODUS</b>
-Auf der Baustelle hat nicht jeder WLAN. LogistikApp funktioniert komplett offline. Buchungen, Scans und Lieferscheine werden lokal gespeichert und automatisch synchronisiert, sobald wieder eine Verbindung besteht.
+Auf der Baustelle hat nicht jeder WLAN. Zentory funktioniert komplett offline. Buchungen, Scans und Lieferscheine werden lokal gespeichert und automatisch synchronisiert, sobald wieder eine Verbindung besteht.
 
 <b>PUSH-BENACHRICHTIGUNGEN</b>
 Meldebestand unterschritten? Werkzeug überfällig? Sie werden sofort informiert — bevor aus einem kleinen Problem ein teurer Stillstand wird.
 
 <b>WEB-DASHBOARD</b>
-Die App ist der mobile Begleiter zu Ihrem LogistikApp Web-Dashboard mit voller Übersicht: Auswertungen, Nutzerrechte, Import/Export und mehr.
+Die App ist der mobile Begleiter zu Ihrem Zentory Web-Dashboard mit voller Übersicht: Auswertungen, Nutzerrechte, Import/Export und mehr.
 
 <b>FÜR WEN?</b>
 
@@ -202,10 +202,10 @@ Die App ist der mobile Begleiter zu Ihrem LogistikApp Web-Dashboard mit voller �
 
 <b>PREISE</b>
 
-Kostenlos nutzbar mit Grundfunktionen. LogistikApp Pro als Monats- oder Jahresabo für Teams und erweiterte Features.
+Kostenlos nutzbar mit Grundfunktionen. Zentory Pro als Monats- oder Jahresabo für Teams und erweiterte Features.
 
 Entwickelt von BrainBytes GmbH in der Schweiz.
-Fragen? support@logistikapp.ch
+Fragen? support@zentory.ch
 ```
 (2.390 characters)
 
@@ -226,7 +226,7 @@ The keyword strategy targets three search intent clusters:
 2. **Industry-specific:** Baustelle, Handwerk, KMU, Werkzeug
 3. **Feature-specific:** Barcode Scanner, Lieferschein, Materialverwaltung
 
-Primary competitors ranking for these terms in DACH: Lager im Griff, Timly, Sortly. LogistikApp differentiates on offline capability, Swiss data hosting, and the construction/trade vertical focus.
+Primary competitors ranking for these terms in DACH: Lager im Griff, Timly, Sortly. Zentory differentiates on offline capability, Swiss data hosting, and the construction/trade vertical focus.
 
 ### Screenshot Suggestions (in order)
 

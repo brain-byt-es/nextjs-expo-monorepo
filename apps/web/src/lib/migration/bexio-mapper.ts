@@ -1,6 +1,6 @@
 /**
  * bexio API data mappers.
- * Maps bexio entities to LogistikApp schema.
+ * Maps bexio entities to Zentory schema.
  */
 
 // ─── bexio types (partial, based on bexio API v2/v4) ────────────────────────
@@ -50,7 +50,7 @@ export interface BexioOrder {
   [key: string]: unknown
 }
 
-// ─── Mapped LogistikApp shapes ──────────────────────────────────────────────
+// ─── Mapped Zentory shapes ──────────────────────────────────────────────
 
 export interface MappedMaterial {
   name: string

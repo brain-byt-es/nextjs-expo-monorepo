@@ -6,11 +6,11 @@ import { Callout } from 'nextra/components'
 
 # RFID-Reader
 
-LogistikApp unterstützt UHF-RFID-Reader für die berührungslose Massenerfassung von Artikeln. RFID eignet sich besonders für Inventuren und Warenein-/ausgänge mit hohem Durchsatz.
+Zentory unterstützt UHF-RFID-Reader für die berührungslose Massenerfassung von Artikeln. RFID eignet sich besonders für Inventuren und Warenein-/ausgänge mit hohem Durchsatz.
 
 ## Funktionsprinzip
 
-UHF-RFID-Tags (EPC Gen2 / ISO 18000-63) können auf Distanzen von bis zu 10 Metern gelesen werden. Jeder Tag enthält eine eindeutige **EPC-96-Nummer** (96 Bit), die in LogistikApp einem Artikel zugeordnet wird.
+UHF-RFID-Tags (EPC Gen2 / ISO 18000-63) können auf Distanzen von bis zu 10 Metern gelesen werden. Jeder Tag enthält eine eindeutige **EPC-96-Nummer** (96 Bit), die in Zentory einem Artikel zugeordnet wird.
 
 ## Unterstützte Betriebsarten
 
@@ -24,7 +24,7 @@ Der Reader gibt gelesene EPC-Nummern als Tastatureingabe aus — gleich wie ein 
 
 ### Netzwerk (TCP/IP)
 
-Der Reader ist im lokalen Netzwerk erreichbar. LogistikApp kommuniziert direkt über die LLRP-Schnittstelle.
+Der Reader ist im lokalen Netzwerk erreichbar. Zentory kommuniziert direkt über die LLRP-Schnittstelle.
 
 - **Vorteil**: Massenerfassung (hunderte Tags pro Sekunde)
 - **Nachteil**: Erfordert Netzwerkkonfiguration
@@ -44,7 +44,7 @@ Der Reader ist im lokalen Netzwerk erreichbar. LogistikApp kommuniziert direkt �
 
 1. Schliessen Sie den Reader per USB an.
 2. Konfigurieren Sie den Reader auf **Keyboard-Wedge-Modus** (Herstellersoftware).
-3. In LogistikApp wird der Reader automatisch erkannt — Barcodes und RFID-Tags werden gleich behandelt.
+3. In Zentory wird der Reader automatisch erkannt — Barcodes und RFID-Tags werden gleich behandelt.
 
 ### Netzwerk-Modus
 
@@ -65,7 +65,7 @@ Jeder RFID-Tag muss einmalig einem Artikel zugeordnet werden:
 4. Bestätigen Sie die Zuordnung.
 
 <Callout type="info">
-Bei der Inventur können Sie auch unbekannte Tags erfassen. LogistikApp zeigt diese als «Nicht zugeordnet» an, damit Sie sie nachträglich verknüpfen können.
+Bei der Inventur können Sie auch unbekannte Tags erfassen. Zentory zeigt diese als «Nicht zugeordnet» an, damit Sie sie nachträglich verknüpfen können.
 </Callout>
 
 ## Massen-Inventur mit RFID

@@ -3,7 +3,7 @@
 import * as React from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { LogoMark } from "@/components/logo"
+import { LogoMark, Wordmark } from "@/components/logo"
 import {
   IconArrowLeft,
   IconBrush,
@@ -43,9 +43,7 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
             <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:p-1.5!">
               <Link href="/admin">
                 <LogoMark size={20} />
-                <span className="text-base font-semibold">
-                  Logistik<span className="text-primary">App</span>
-                </span>
+                <Wordmark className="text-base" />
                 <span className="ml-auto rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
                   Admin
                 </span>

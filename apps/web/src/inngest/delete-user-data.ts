@@ -117,7 +117,7 @@ export const deleteUserDataFn = inngest.createFunction(
         const resend = new Resend(process.env.RESEND_API_KEY);
 
         await resend.emails.send({
-          from: process.env.RESEND_FROM_EMAIL || "noreply@logistikapp.ch",
+          from: process.env.RESEND_FROM_EMAIL || "noreply@zentory.ch",
           to: email,
           subject: "Ihr Konto wurde geloescht",
           html: `
@@ -125,18 +125,18 @@ export const deleteUserDataFn = inngest.createFunction(
             <p>Hallo ${name || ""},</p>
             <p>Ihr Konto und alle zugehörigen Daten wurden gemäss Ihrer Anfrage dauerhaft gelöscht.</p>
             <p>Diese Aktion kann nicht rückgängig gemacht werden.</p>
-            <p>Falls Sie LogistikApp in Zukunft wieder nutzen möchten, können Sie sich jederzeit neu registrieren.</p>
+            <p>Falls Sie Zentory in Zukunft wieder nutzen möchten, können Sie sich jederzeit neu registrieren.</p>
             <p style="color:#999;font-size:12px;">
               Diese E-Mail wurde automatisch versendet. Bei Fragen kontaktieren Sie uns unter
-              <a href="mailto:support@logistikapp.ch">support@logistikapp.ch</a>.
+              <a href="mailto:support@zentory.ch">support@zentory.ch</a>.
             </p>
           `,
         });
 
         // Notify admin
         await resend.emails.send({
-          from: process.env.RESEND_FROM_EMAIL || "noreply@logistikapp.ch",
-          to: "support@logistikapp.ch",
+          from: process.env.RESEND_FROM_EMAIL || "noreply@zentory.ch",
+          to: "support@zentory.ch",
           subject: `Konto geloescht: ${email}`,
           html: `
             <h2>Kontolöschung durchgeführt</h2>

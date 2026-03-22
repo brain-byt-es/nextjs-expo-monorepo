@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Allgemeine Geschäftsbedingungen",
-  description: "AGB von LogistikApp — SaaS-Inventarverwaltung für Schweizer KMU.",
+  description: "AGB von Zentory — SaaS-Inventarverwaltung für Schweizer KMU.",
 }
 
 export default function AGBPage() {
@@ -17,7 +17,7 @@ export default function AGBPage() {
           Allgemeine Geschäftsbedingungen
         </h1>
         <p className="font-mono text-xs text-muted-foreground">
-          Stand: März 2026 · BrainBytes GmbH, Zürich · Anwendbar auf alle LogistikApp-Abonnements
+          Stand: März 2026 · BrainBytes GmbH, Zürich · Anwendbar auf alle Zentory-Abonnements
         </p>
       </header>
 
@@ -29,7 +29,7 @@ export default function AGBPage() {
         <p className="text-sm text-muted-foreground leading-relaxed">
           Diese Allgemeinen Geschäftsbedingungen (nachfolgend «AGB») regeln das Vertragsverhältnis zwischen
           der BrainBytes GmbH (nachfolgend «Anbieter») und dem Kunden (nachfolgend «Kunde») bezüglich der
-          Nutzung der SaaS-Plattform LogistikApp unter <a href="https://logistikapp.ch" className="text-primary hover:underline">logistikapp.ch</a> und
+          Nutzung der SaaS-Plattform Zentory unter <a href="https://zentory.ch" className="text-primary hover:underline">zentory.ch</a> und
           der zugehörigen mobilen Applikation.
         </p>
         <p className="text-sm text-muted-foreground leading-relaxed">
@@ -44,7 +44,7 @@ export default function AGBPage() {
           2. Leistungsbeschreibung
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          LogistikApp ist eine cloudbasierte Software-as-a-Service-Lösung für die Inventar- und
+          Zentory ist eine cloudbasierte Software-as-a-Service-Lösung für die Inventar- und
           Werkzeugverwaltung von kleinen und mittleren Unternehmen (KMU). Der Dienst umfasst:
         </p>
         <ul className="space-y-2 text-sm text-muted-foreground leading-relaxed list-none">
@@ -90,8 +90,8 @@ export default function AGBPage() {
         <div>
           <h3 className="text-sm font-semibold mb-2">4.1 Abonnementmodell</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            LogistikApp wird als monatliches oder jährliches Abonnement angeboten. Die aktuellen Preise
-            sind auf der Webseite unter <a href="https://logistikapp.ch/#pricing" className="text-primary hover:underline">logistikapp.ch/#pricing</a> einsehbar.
+            Zentory wird als monatliches oder jährliches Abonnement angeboten. Die aktuellen Preise
+            sind auf der Webseite unter <a href="https://zentory.ch/#pricing" className="text-primary hover:underline">zentory.ch/#pricing</a> einsehbar.
             Alle Preise sind in CHF und exklusive Mehrwertsteuer angegeben.
           </p>
         </div>
@@ -153,7 +153,7 @@ export default function AGBPage() {
           6. Dateneigentum und Datenverarbeitung
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Alle vom Kunden in LogistikApp eingegebenen Daten (Inventardaten, Buchungshistorien,
+          Alle vom Kunden in Zentory eingegebenen Daten (Inventardaten, Buchungshistorien,
           Organisationsdaten) bleiben zu 100 % Eigentum des Kunden. Der Anbieter verarbeitet
           diese Daten ausschliesslich zur Erbringung der vertraglich vereinbarten Leistungen.
         </p>
@@ -229,7 +229,7 @@ export default function AGBPage() {
             Monatliche Abonnements können jederzeit zum Ende des laufenden Abrechnungszeitraums
             gekündigt werden. Jährliche Abonnements können mit einer Frist von 30 Tagen vor
             Ablauf des Vertragsjahres gekündigt werden. Die Kündigung erfolgt über die
-            Kontoeinstellungen oder per E-Mail an <a href="mailto:info@logistikapp.ch" className="text-primary hover:underline">info@logistikapp.ch</a>.
+            Kontoeinstellungen oder per E-Mail an <a href="mailto:info@zentory.ch" className="text-primary hover:underline">info@zentory.ch</a>.
           </p>
         </div>
 
@@ -258,7 +258,7 @@ export default function AGBPage() {
           10. Geistiges Eigentum
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          LogistikApp und alle zugehörigen Marken, Logos, Software, Quellcodes und Inhalte sind
+          Zentory und alle zugehörigen Marken, Logos, Software, Quellcodes und Inhalte sind
           ausschliessliches Eigentum der BrainBytes GmbH und urheberrechtlich geschützt.
           Das Abonnement gewährt dem Kunden ein nicht-exklusives, nicht-übertragbares Nutzungsrecht
           für die Dauer des Abonnements. Reverse Engineering, Dekompilierung oder Versuche, den
@@ -309,7 +309,7 @@ export default function AGBPage() {
         </p>
         <p className="text-sm text-muted-foreground leading-relaxed">
           Für Fragen zu diesen AGB wenden Sie sich an:{" "}
-          <a href="mailto:info@logistikapp.ch" className="text-primary hover:underline">info@logistikapp.ch</a>
+          <a href="mailto:info@zentory.ch" className="text-primary hover:underline">info@zentory.ch</a>
         </p>
       </section>
     </article>

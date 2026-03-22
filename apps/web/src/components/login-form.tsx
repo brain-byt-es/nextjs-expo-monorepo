@@ -62,7 +62,7 @@ export function LoginForm({
   const handleDemoLogin = async () => {
     setDemoLoading(true)
     await signIn.email(
-      { email: "demo@logistikapp.ch", password: "demo1234" },
+      { email: "demo@zentory.ch", password: "demo1234" },
       {
         onSuccess: () => {
           router.push("/dashboard")

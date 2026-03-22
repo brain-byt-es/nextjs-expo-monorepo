@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { LogoMark } from "@/components/logo";
+import { LogoMark, Wordmark } from "@/components/logo";
 import {
   CheckCircle2,
   AlertTriangle,
@@ -274,7 +274,7 @@ export default function StatusPage() {
         <div className="flex items-center gap-2.5">
           <LogoMark size={28} />
           <span className="text-base font-semibold tracking-tight text-foreground">
-            Logistik<span className="text-primary">App</span>
+            <Wordmark className="inline" />
             <span className="ml-2 text-sm font-normal text-muted-foreground">Systemstatus</span>
           </span>
         </div>
@@ -425,7 +425,7 @@ export default function StatusPage() {
 
       {/* Footer */}
       <footer className="border-t border-border pt-6 text-center text-xs text-muted-foreground">
-        LogistikApp · status.logistikapp.ch
+        <Wordmark className="inline" /> · status.zentory.ch
       </footer>
     </div>
   );

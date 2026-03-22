@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
+import { BRAND } from '@/lib/colors';
 
 import { OnboardingScreen } from '@/components/layout/OnboardingScreen';
 
@@ -22,7 +23,7 @@ export default function WelcomeStep2Screen() {
             justifyContent: 'center',
           }}
         >
-          <Ionicons name="layers" size={80} color="#F97316" />
+          <Ionicons name="layers" size={80} color={BRAND.primary} />
         </View>
       }
       buttonText="Weiter"

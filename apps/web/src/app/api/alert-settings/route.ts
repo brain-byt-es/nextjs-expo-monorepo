@@ -101,7 +101,7 @@ export async function POST(request: Request) {
     // Respect saved whatsapp_alerts toggle — but for a test we always send
     const sendResult = await sendWhatsAppAlert(
       phone,
-      "Testnachricht von LogistikApp: Deine WhatsApp-Benachrichtigungen sind aktiv."
+      "Testnachricht von Zentory: Deine WhatsApp-Benachrichtigungen sind aktiv."
     );
 
     if (!sendResult.success) {

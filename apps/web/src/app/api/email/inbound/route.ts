@@ -141,7 +141,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Extract org slug from "to" address: inbox-{orgSlug}@logistikapp.ch
+    // Extract org slug from "to" address: inbox-{orgSlug}@zentory.ch
     const toMatch = to?.match(/inbox-([a-z0-9-]+)@/i);
     const orgId = toMatch?.[1] ?? "default";
 

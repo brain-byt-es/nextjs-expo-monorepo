@@ -7,7 +7,7 @@ import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 import { api } from "./api";
 
-const GEOFENCING_TASK = "LOGISTIKAPP_GEOFENCING";
+const GEOFENCING_TASK = "ZENTORY_GEOFENCING";
 
 // ── Types ──────────────────────────────────────────────────────────────
 

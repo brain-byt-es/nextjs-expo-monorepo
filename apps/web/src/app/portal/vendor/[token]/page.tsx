@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Wordmark } from "@/components/logo"
 
 interface OrderItem { id: string; materialName: string; materialNumber: string | null; quantity: number; receivedQuantity: number | null; unitPrice: number | null; currency: string | null }
 interface Order { id: string; orderNumber: string | null; ownOrderNumber: string | null; status: string | null; orderDate: string | null; totalAmount: number | null; currency: string | null; notes: string | null; items: OrderItem[] }
@@ -158,7 +159,7 @@ export default function VendorPortalPage() {
       </div>
 
       <div className="text-center py-6 border-t border-border">
-        <p className="text-xs text-muted-foreground">Bereitgestellt von <span className="font-semibold">Logistik<span className="text-primary" style={primaryColor ? { color: primaryColor } : undefined}>App</span></span></p>
+        <p className="text-xs text-muted-foreground">Bereitgestellt von <Wordmark className="inline" /></p>
       </div>
     </div>
   )

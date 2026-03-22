@@ -4,7 +4,7 @@ import { Fragment, useEffect, useRef, useState } from "react"
 import { useTranslations } from "next-intl"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Logo } from "@/components/logo"
+import { Logo, Wordmark } from "@/components/logo"
 import { ModeToggle } from "@/components/theme/theme-toggle"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import {
@@ -264,7 +264,7 @@ const PLANS = [
     monthly: -1, yearly: -1,
     desc: "priceEnterpriseDesc",
     features: Array.from({length: 17}, (_, i) => `priceFeat_ent_${i}`),
-    cta: "priceEnterpriseCta", href: "mailto:sales@logistikapp.ch", highlight: false,
+    cta: "priceEnterpriseCta", href: "mailto:sales@zentory.ch", highlight: false,
   },
 ]
 
@@ -398,7 +398,7 @@ function PricingSection() {
             className={`px-5 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${yearly ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
           >
             {t("priceYearly")}
-            <span className="text-[9px] font-bold bg-primary text-white rounded-full px-2 py-0.5">{t("priceDiscount")}</span>
+            <span className="text-[9px] font-bold bg-secondary text-secondary-foreground rounded-full px-2 py-0.5">{t("priceDiscount")}</span>
           </button>
         </div>
       </div>
@@ -417,7 +417,7 @@ function PricingSection() {
               key={plan.name}
               className={`bg-background p-8 flex flex-col relative ${plan.highlight ? "outline outline-1 outline-primary z-10" : ""}`}
             >
-              {plan.highlight && <div className="absolute top-0 left-0 right-0 h-[2px] bg-primary" />}
+              {plan.highlight && <div className="absolute top-0 left-0 right-0 h-[2px] bg-secondary" />}
               <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-4">{plan.name}</div>
               <div className="mb-1 font-mono">
                 <span className="text-4xl font-bold">{price}</span>
@@ -444,7 +444,7 @@ function PricingSection() {
                 ))}
               </ul>
               <Link href={plan.href}>
-                <Button className="w-full font-mono text-[11px] tracking-widest uppercase" variant={plan.highlight ? "default" : "outline"}>
+                <Button className={`w-full font-mono text-[11px] tracking-widest uppercase ${plan.highlight ? "bg-secondary hover:bg-secondary/90 text-secondary-foreground" : ""}`} variant={plan.highlight ? "default" : "outline"}>
                   {t(plan.cta)}
                 </Button>
               </Link>
@@ -697,30 +697,28 @@ export default function LandingPage() {
       <CustomCursor />
       <ScrollUI />
 
-      <div className="flex min-h-screen flex-col bg-background text-foreground overflow-x-hidden">
+      <div className="flex min-h-screen flex-col bg-background text-foreground">
 
         {/* ══ NAV ══════════════════════════════════════════ */}
-        <header className={`sticky top-[2px] z-50 transition-all duration-300 ${navSolid ? "bg-background/95 backdrop-blur-md border-b border-border" : "bg-transparent"}`}>
+        <header className={`sticky top-0 z-50 transition-all duration-300 ${navSolid ? "bg-background/95 backdrop-blur-md border-b border-border shadow-sm" : "bg-transparent"}`}>
           <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
             <Logo />
-            <nav className="hidden md:flex items-center gap-8 font-mono text-[11px] tracking-[0.15em] uppercase text-muted-foreground">
+            <nav className="hidden lg:flex items-center gap-5 text-sm font-medium text-muted-foreground">
               <a href="#features"      className="hover:text-foreground transition-colors">{t("navFeatures")}</a>
-              <a href="#scan"         className="hover:text-foreground transition-colors">{t("navScan")}</a>
-              <a href="#integrations" className="hover:text-foreground transition-colors">{t("navIntegrations")}</a>
-              <a href="#pricing"      className="hover:text-foreground transition-colors">{t("navPricing")}</a>
-              <a href="#peripherals"  className="hover:text-foreground transition-colors">{t("navHardware")}</a>
-              <a href="#comparison"   className="hover:text-foreground transition-colors">{t("navComparison")}</a>
-              <a href="#trust"        className="hover:text-foreground transition-colors">{t("navSecurity")}</a>
-              <a href="#migration"    className="hover:text-foreground transition-colors">{t("navMigration")}</a>
+              <a href="#scan"          className="hover:text-foreground transition-colors">{t("navScan")}</a>
+              <a href="#integrations"  className="hover:text-foreground transition-colors">{t("navIntegrations")}</a>
+              <a href="#trust"         className="hover:text-foreground transition-colors">{t("navSecurity")}</a>
+              <a href="#peripherals"   className="hover:text-foreground transition-colors">{t("navHardware")}</a>
+              <a href="#pricing"       className="hover:text-foreground transition-colors">{t("navPricing")}</a>
             </nav>
             <div className="flex items-center gap-1.5">
               <LanguageSwitcher compact />
               <ModeToggle />
               <Link href="/login">
-                <Button variant="ghost" size="sm" className="font-mono text-[11px] tracking-widest uppercase">{t("navLogin")}</Button>
+                <Button variant="ghost" size="sm" className="text-sm">{t("navLogin")}</Button>
               </Link>
               <Link href="/signup">
-                <Button size="sm" className="font-mono text-[11px] tracking-widest uppercase gap-1.5">
+                <Button size="sm" className="text-sm gap-1.5 bg-secondary hover:bg-secondary/90 text-secondary-foreground">
                   {t("navStart")} <IconArrowUpRight className="size-3.5" />
                 </Button>
               </Link>
@@ -818,7 +816,7 @@ export default function LandingPage() {
 
                 <div className="hero-sub-3 flex flex-wrap gap-3 mb-4">
                   <Link href="/signup">
-                    <Button size="lg" className="font-mono text-xs tracking-widest uppercase gap-2 px-7 h-12">
+                    <Button size="lg" className="font-mono text-xs tracking-widest uppercase gap-2 px-7 h-12 bg-secondary hover:bg-secondary/90 text-secondary-foreground">
                       {t("heroCta")} <IconArrowUpRight className="size-4" />
                     </Button>
                   </Link>
@@ -1029,18 +1027,18 @@ export default function LandingPage() {
           <div
             className="absolute left-0 right-0 h-[2px] pointer-events-none z-10"
             style={{
-              background: `linear-gradient(90deg, transparent, #F97316, transparent)`,
+              background: `linear-gradient(90deg, transparent, var(--brand-primary, hsl(var(--primary))), transparent)`,
               animation: "scanline 6s linear infinite",
-              boxShadow: "0 0 20px 4px rgba(249,115,22,0.3)",
+              boxShadow: "0 0 20px 4px hsl(var(--accent) / 0.3)",
             }}
           />
 
           <div className="relative z-10 mx-auto max-w-7xl px-6">
             {/* Section header */}
             <div className="mb-16 text-center">
-              <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10">
-                <IconScan className="size-3.5 text-primary" />
-                <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-primary">{t("scanBadge")}</span>
+              <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full border border-secondary/30 bg-secondary/10">
+                <IconScan className="size-3.5 text-secondary" />
+                <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-secondary">{t("scanBadge")}</span>
               </div>
               <h2 className="text-4xl lg:text-6xl font-bold mb-6 leading-[0.95] tracking-tight">
                 {t("scanHeading1")}<br />
@@ -1100,7 +1098,7 @@ export default function LandingPage() {
                 ].map((s, i) => (
                   <div key={s.step} className="flex items-center">
                     <div className="text-center px-6">
-                      <div className="size-10 rounded-full border border-primary/40 bg-primary/10 flex items-center justify-center font-mono text-sm font-bold text-primary mx-auto mb-2">
+                      <div className="size-10 rounded-full border border-secondary/40 bg-secondary/10 flex items-center justify-center font-mono text-sm font-bold text-secondary mx-auto mb-2">
                         {s.step}
                       </div>
                       <div className="text-xs font-semibold text-foreground/80 mb-0.5">{s.label}</div>
@@ -1117,7 +1115,7 @@ export default function LandingPage() {
             {/* CTA */}
             <div className="text-center">
               <Link href="/signup">
-                <Button size="lg" className="font-mono text-[11px] tracking-widest uppercase gap-2 px-10 h-12 bg-primary hover:bg-primary/90 text-white border-0">
+                <Button size="lg" className="font-mono text-[11px] tracking-widest uppercase gap-2 px-10 h-12 bg-secondary hover:bg-secondary/90 text-secondary-foreground border-0">
                   {t("scanCta")} <IconArrowUpRight className="size-4" />
                 </Button>
               </Link>
@@ -1156,7 +1154,7 @@ export default function LandingPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {LIVE_INTEGRATIONS.map(integration => (
                   <div key={integration.name} className="relative border border-border rounded-lg p-5 bg-background group hover:border-primary/50 transition-colors duration-200">
-                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-primary rounded-t-lg" />
+                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-secondary rounded-t-lg" />
                     <div className="flex items-start gap-3 mb-3">
                       <BrandLogo name={integration.name} fallbackColor={integration.color} fallbackShort={integration.short} size={36} />
                       <div>
@@ -1275,7 +1273,7 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <Logo iconSize={20} />
               <p className="font-mono text-[10px] tracking-widest text-muted-foreground">
-                © {new Date().getFullYear()} BrainBytes GmbH · LogistikApp
+                © {new Date().getFullYear()} BrainBytes GmbH · <Wordmark className="inline" />
               </p>
               <div className="flex gap-6 font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
                 <a href="#migration" className="hover:text-foreground transition-colors">{t("footerMigration")}</a>

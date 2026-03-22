@@ -36,6 +36,6 @@ export const statusCleanupCronFn = inngest.createFunction(
     const result = await db
       .delete(statusChecks)
       .where(lt(statusChecks.checkedAt, cutoff));
-    return { deleted: result.rowCount ?? 0 };
+    return { deleted: (result as unknown as { rowCount?: number }).rowCount ?? 0 };
   }
 );

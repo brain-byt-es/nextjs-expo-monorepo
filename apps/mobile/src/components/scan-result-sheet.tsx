@@ -30,7 +30,7 @@ interface MaterialAlternative {
   unit: string | null;
 }
 
-const APP_BASE_URL = "https://app.logistikapp.ch";
+const APP_BASE_URL = "https://app.zentory.ch";
 
 interface ScanResultSheetProps {
   result: ScanResult | null;

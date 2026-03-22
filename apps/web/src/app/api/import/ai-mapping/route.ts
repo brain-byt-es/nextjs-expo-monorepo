@@ -57,7 +57,7 @@ export async function POST(request: Request) {
       return `Zeile ${i + 1}: ${columns.map((col, j) => `${col}="${row[j] || ""}"`).join(", ")}`;
     }).join("\n");
 
-    const systemPrompt = `Du bist ein Daten-Mapping-Assistent für LogistikApp, eine Schweizer Inventar-Software.
+    const systemPrompt = `Du bist ein Daten-Mapping-Assistent für Zentory, eine Schweizer Inventar-Software.
 Deine Aufgabe: Ordne CSV-Spalten den Zielfeldern zu.
 
 Zielfelder für "${entityType}":

@@ -166,7 +166,7 @@ export function printReport<T>(
     <thead><tr>${headerCells}</tr></thead>
     <tbody>${bodyRows}</tbody>
   </table>
-  <div class="report-footer">${escapeHtml(title)} &mdash; LogistikApp &mdash; ${escapeHtml(now)}</div>
+  <div class="report-footer">${escapeHtml(title)} &mdash; Zentory &mdash; ${escapeHtml(now)}</div>
   <script>window.onload = function() { window.print(); }<\/script>
 </body>
 </html>`

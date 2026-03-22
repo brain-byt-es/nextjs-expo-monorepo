@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Systemstatus | LogistikApp",
-  description: "Aktueller Systemstatus und Betriebsinformationen von LogistikApp.",
+  title: "Systemstatus | Zentory",
+  description: "Aktueller Systemstatus und Betriebsinformationen von Zentory.",
 };
 
 export default function StatusLayout({

@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     lastExportMap.set(userId, Date.now());
 
     const dateStr = new Date().toISOString().slice(0, 10);
-    const filename = `logistikapp-daten-export-${dateStr}.${format === "csv" ? "csv" : "json"}`;
+    const filename = `zentory-daten-export-${dateStr}.${format === "csv" ? "csv" : "json"}`;
 
     if (format === "csv") {
       const csv = toCsv(data);

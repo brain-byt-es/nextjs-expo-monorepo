@@ -437,7 +437,7 @@ export async function POST() {
     const secret = base32Encode(secretBuffer);
 
     // Build otpauth URI
-    const issuer = "LogistikApp";
+    const issuer = "Zentory";
     const accountName = session.user.email;
     const otpauthUri = `otpauth://totp/${encodeURIComponent(issuer)}:${encodeURIComponent(accountName)}?secret=${secret}&issuer=${encodeURIComponent(issuer)}&algorithm=SHA1&digits=6&period=30`;
 

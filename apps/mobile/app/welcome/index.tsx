@@ -4,12 +4,13 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BRAND } from '@/lib/colors';
 
 import { Button } from '@/components/nativewindui/Button';
 import { Text } from '@/components/nativewindui/Text';
 import { Logo } from '@/components/Logo';
 
-const ONBOARDING_KEY = '@logistikapp/onboarding-complete';
+const ONBOARDING_KEY = '@zentory/onboarding-complete';
 
 const FEATURES = [
   {
@@ -47,7 +48,7 @@ export default function WelcomeIndexScreen() {
         {/* Logo */}
         <View style={styles.logoArea}>
           <Logo size={48} />
-          <Text style={styles.tagline}>LogistikApp hilft dir, dein Lager effizient zu verwalten.</Text>
+          <Text style={styles.tagline}>Zentory hilft dir, dein Lager effizient zu verwalten.</Text>
         </View>
 
         {/* Feature list */}
@@ -55,7 +56,7 @@ export default function WelcomeIndexScreen() {
           {FEATURES.map((f) => (
             <View key={f.label} style={styles.featureRow}>
               <View style={styles.featureIconWrap}>
-                <Ionicons name={f.icon} size={22} color="#F97316" />
+                <Ionicons name={f.icon} size={22} color={BRAND.primary} />
               </View>
               <View style={styles.featureText}>
                 <Text style={styles.featureLabel}>{f.label}</Text>

@@ -64,7 +64,7 @@ async function deliverWebhook(
         "X-Webhook-Signature": `sha256=${signature}`,
         "X-Webhook-Event": payload.event,
         "X-Webhook-Timestamp": payload.timestamp,
-        "User-Agent": "LogistikApp-Webhooks/1.0",
+        "User-Agent": "Zentory-Webhooks/1.0",
       },
       body,
       signal: controller.signal,

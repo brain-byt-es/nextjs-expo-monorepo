@@ -40,21 +40,21 @@ export async function POST(request: Request) {
       const resend = new Resend(process.env.RESEND_API_KEY);
 
       await resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL || "noreply@logistikapp.ch",
+        from: process.env.RESEND_FROM_EMAIL || "noreply@zentory.ch",
         to: session.user.email,
         subject: "Ihre Löschanfrage wurde widerrufen",
         html: `
           <h2>Löschanfrage widerrufen</h2>
           <p>Hallo ${session.user.name || ""},</p>
           <p>Ihre Anfrage zur Kontolöschung wurde erfolgreich widerrufen. Ihr Konto und alle Daten bleiben bestehen.</p>
-          <p>Falls Sie Fragen haben, kontaktieren Sie uns unter <a href="mailto:support@logistikapp.ch">support@logistikapp.ch</a>.</p>
+          <p>Falls Sie Fragen haben, kontaktieren Sie uns unter <a href="mailto:support@zentory.ch">support@zentory.ch</a>.</p>
         `,
       });
 
       // Notify admin
       await resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL || "noreply@logistikapp.ch",
-        to: "support@logistikapp.ch",
+        from: process.env.RESEND_FROM_EMAIL || "noreply@zentory.ch",
+        to: "support@zentory.ch",
         subject: `Kontolöschung widerrufen: ${session.user.email}`,
         html: `
           <h2>Kontolöschung widerrufen</h2>

@@ -7,7 +7,7 @@ import { Text } from "@/components/nativewindui/Text";
 export default function AboutScreen() {
   return (
     <>
-      <Stack.Screen options={{ title: "Über LogistikApp" }} />
+      <Stack.Screen options={{ title: "Über Zentory" }} />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         contentContainerClassName="p-5"
@@ -18,11 +18,11 @@ export default function AboutScreen() {
 
         <View className="gap-4">
           <Text variant="title2" className="mb-1">
-            LogistikApp
+            Zentory
           </Text>
 
           <Text variant="body">
-            LogistikApp ist die Inventar-Management Lösung für Schweizer KMU.
+            Zentory ist die Inventar-Management Lösung für Schweizer KMU.
             Verwalte Materialien, Werkzeuge und Schlüssel — zentral, digital
             und effizient.
           </Text>
@@ -39,7 +39,7 @@ export default function AboutScreen() {
           <Text variant="title3" className="mt-4 mb-1">
             Kontakt
           </Text>
-          <Text variant="body">support@logistikapp.ch</Text>
+          <Text variant="body">support@zentory.ch</Text>
 
           <Text
             variant="footnote"

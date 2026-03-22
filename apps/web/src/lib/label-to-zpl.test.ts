@@ -100,7 +100,7 @@ describe("labelToZpl", () => {
   it("generates ZPL for QR code", () => {
     const el = makeElement({
       type: "qrcode",
-      content: "https://logistikapp.ch/item/123",
+      content: "https://zentory.ch/item/123",
     })
     const zpl = labelToZpl(makeTemplate([el]))
 

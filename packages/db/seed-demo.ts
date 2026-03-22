@@ -1,5 +1,5 @@
 /**
- * seed-demo.ts — LogistikApp Demo Account Seed Script
+ * seed-demo.ts — Zentory Demo Account Seed Script
  *
  * Creates a complete demo environment for "Muster Bau AG" with realistic
  * Swiss construction/logistics data. Idempotent: deletes and recreates if
@@ -87,7 +87,7 @@ function section(title: string) {
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 console.log("\n╔══════════════════════════════════════════════════════════╗");
-console.log("║     LogistikApp — Demo Account Seed Script              ║");
+console.log("║     Zentory — Demo Account Seed Script                   ║");
 console.log("╚══════════════════════════════════════════════════════════╝");
 console.log(`\nConnecting to: ${DATABASE_URL!.replace(/:([^:@]+)@/, ":***@")}`);
 
@@ -133,7 +133,7 @@ if (existingOrg.length > 0) {
   log("Existing org and all related data deleted.");
 }
 
-const existingUser = await sql`SELECT id FROM users WHERE email = 'demo@logistikapp.ch' LIMIT 1`;
+const existingUser = await sql`SELECT id FROM users WHERE email = 'demo@zentory.ch' LIMIT 1`;
 if (existingUser.length > 0) {
   const userId = existingUser[0].id;
   await sql`DELETE FROM sessions WHERE user_id = ${userId}`;
@@ -154,7 +154,7 @@ await sql`
   INSERT INTO users (id, email, email_verified, name, role, created_at, updated_at)
   VALUES (
     ${userId},
-    'demo@logistikapp.ch',
+    'demo@zentory.ch',
     true,
     'Max Muster',
     'admin',
@@ -162,7 +162,7 @@ await sql`
     NOW()
   )
 `;
-log(`User created: demo@logistikapp.ch (id=${userId})`);
+log(`User created: demo@zentory.ch (id=${userId})`);
 
 // Better-Auth account record (credential provider)
 await sql`
@@ -311,7 +311,7 @@ section("5 · Material Groups (5)");
 const matGroupMap: Record<string, string> = {};
 const matGroupsData = [
   { name: "Elektro", color: "#3B82F6" },
-  { name: "Sanitär", color: "#06B6D4" },
+  { name: "Sanitär", color: "#D97706" },
   { name: "Befestigung", color: "#8B5CF6" },
   { name: "Werkstoff", color: "#F59E0B" },
   { name: "Verbrauchsmaterial", color: "#10B981" },
@@ -1357,7 +1357,7 @@ const calibrationRecordsData: CalibrationRecordDef[] = [
     calibratedDaysAgo: 14,
     nextCalibrationDate: daysFromNow(351).toISOString().slice(0, 10),
     result: "pass",
-    certificateUrl: "https://storage.logistikapp.ch/demo/cert-fluke117-2026.pdf",
+    certificateUrl: "https://storage.zentory.ch/demo/cert-fluke117-2026.pdf",
     notes: "DAkkS-Kalibrierung bestätigt. Abweichung <0.1% über gesamten Messbereich. Zertifikat Nr. DAK-2026-0341.",
   },
   {
@@ -1365,7 +1365,7 @@ const calibrationRecordsData: CalibrationRecordDef[] = [
     calibratedDaysAgo: 3,
     nextCalibrationDate: daysFromNow(362).toISOString().slice(0, 10),
     result: "pass",
-    certificateUrl: "https://storage.logistikapp.ch/demo/cert-fluke1664-2026.pdf",
+    certificateUrl: "https://storage.zentory.ch/demo/cert-fluke1664-2026.pdf",
     notes: "DGUV V3 Kalibrierung: Isolationswiderstand, Erdungsmessung, RCD-Auslösezeit — alle Werte im Normbereich.",
   },
   {
@@ -1380,7 +1380,7 @@ const calibrationRecordsData: CalibrationRecordDef[] = [
     calibratedDaysAgo: 55,
     nextCalibrationDate: daysFromNow(3).toISOString().slice(0, 10),
     result: "pass",
-    certificateUrl: "https://storage.logistikapp.ch/demo/cert-hilti-te70-2025.pdf",
+    certificateUrl: "https://storage.zentory.ch/demo/cert-hilti-te70-2025.pdf",
     notes: "Hilti Fleet Management Kalibrierung: Schlagenergie und Drehmoment im Soll. Nächste Kalibrierung fällig.",
   },
   {
@@ -1546,7 +1546,7 @@ await sql`
       {
         type: "send_email",
         config: {
-          to: ["demo@logistikapp.ch"],
+          to: ["demo@zentory.ch"],
           subject: "Meldebestand unterschritten: {{material.name}}",
           body: "Das Material '{{material.name}}' hat den Meldebestand von {{material.reorder_level}} {{material.unit}} unterschritten. Aktueller Bestand: {{stock.quantity}} {{material.unit}}.",
         },
@@ -1577,7 +1577,7 @@ await sql`
       {
         type: "send_email",
         config: {
-          to: ["demo@logistikapp.ch"],
+          to: ["demo@zentory.ch"],
           subject: "Werkzeug überfällig: {{tool.name}}",
           body: "Das Werkzeug '{{tool.name}}' ist seit {{booking.days_overdue}} Tagen überfällig. Zuletzt ausgebucht von: {{user.name}} am {{booking.checked_out_at}}.",
         },
@@ -1597,7 +1597,7 @@ console.log("\n╔════════════════════�
 console.log("║  SEED COMPLETE — Demo account ready                     ║");
 console.log("╚══════════════════════════════════════════════════════════╝");
 console.log("\n  Login credentials:");
-console.log("  Email:    demo@logistikapp.ch");
+console.log("  Email:    demo@zentory.ch");
 console.log("  Password: demo1234");
 console.log(`  Org:      Muster Bau AG (slug: muster-bau-ag)`);
 console.log("\n  Data summary:");

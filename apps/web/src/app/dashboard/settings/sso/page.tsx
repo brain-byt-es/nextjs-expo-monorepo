@@ -481,8 +481,8 @@ export default function SsoSettingsPage() {
             <li>Client Secrets werden serverseitig verschlüsselt gespeichert.</li>
             <li>
               Bei Problemen wenden Sie sich an{" "}
-              <a href="mailto:support@logistikapp.ch" className="underline underline-offset-2">
-                support@logistikapp.ch
+              <a href="mailto:support@zentory.ch" className="underline underline-offset-2">
+                support@zentory.ch
               </a>
             </li>
           </ul>

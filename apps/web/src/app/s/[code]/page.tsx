@@ -4,6 +4,7 @@ import { getDb } from "@repo/db"
 import { tools, materials, materialStocks, locations } from "@repo/db/schema"
 import { eq, or } from "drizzle-orm"
 import { SelfServiceActions } from "./self-service-actions"
+import { Wordmark } from "@/components/logo"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -180,9 +181,7 @@ export default async function SelfServicePage({
     <div className="min-h-screen bg-gray-50">
       {/* Top bar */}
       <div className="bg-white border-b px-4 py-3 flex items-center justify-between">
-        <span className="text-sm font-semibold tracking-tight text-gray-900">
-          LogistikApp
-        </span>
+        <Wordmark className="text-sm text-gray-900" />
         <span className="text-xs text-gray-400">Self-Service</span>
       </div>
 
@@ -259,7 +258,7 @@ export default async function SelfServicePage({
 
         {/* Footer */}
         <p className="text-center text-xs text-gray-400 pb-4">
-          LogistikApp · Self-Service-Portal
+          <Wordmark className="inline" /> · Self-Service-Portal
         </p>
       </div>
     </div>
@@ -270,5 +269,5 @@ export default async function SelfServicePage({
 // Not found page
 // ---------------------------------------------------------------------------
 export function generateMetadata() {
-  return { title: "Self-Service | LogistikApp" }
+  return { title: "Self-Service | Zentory" }
 }

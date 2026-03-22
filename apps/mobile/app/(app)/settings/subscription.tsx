@@ -1,12 +1,13 @@
 import { Stack } from "expo-router";
 import { Linking, Platform, ScrollView, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { BRAND } from "@/lib/colors";
 
 import { Button } from "@/components/nativewindui/Button";
 import { Card } from "@/components/nativewindui/Card";
 import { Text } from "@/components/nativewindui/Text";
 
-const APP_URL = process.env.EXPO_PUBLIC_APP_URL || "https://logistikapp.ch";
+const APP_URL = process.env.EXPO_PUBLIC_APP_URL || "https://zentory.ch";
 
 export default function SubscriptionScreen() {
   return (
@@ -34,7 +35,7 @@ export default function SubscriptionScreen() {
 
         <Card className="p-5 gap-3">
           <View className="flex-row items-center gap-3">
-            <Ionicons name="card-outline" size={24} color="#F97316" />
+            <Ionicons name="card-outline" size={24} color={BRAND.primary} />
             <Text variant="heading">Abrechnung & Rechnungen</Text>
           </View>
           <Text className="text-muted-foreground text-sm">
@@ -53,7 +54,7 @@ export default function SubscriptionScreen() {
 
         <Card className="p-5 gap-3">
           <View className="flex-row items-center gap-3">
-            <Ionicons name="pricetags-outline" size={24} color="#F97316" />
+            <Ionicons name="pricetags-outline" size={24} color={BRAND.primary} />
             <Text variant="heading">Pläne & Preise</Text>
           </View>
           <Text className="text-muted-foreground text-sm">

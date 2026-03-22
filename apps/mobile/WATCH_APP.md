@@ -1,8 +1,8 @@
-# Apple Watch Companion App — LogistikApp
+# Apple Watch Companion App — Zentory
 
 ## Übersicht
 
-Die Apple Watch-App erweitert LogistikApp um schnelle Lager- und Werkzeug-Aktionen direkt am Handgelenk. Die native watchOS-App kommuniziert über das WatchConnectivity-Framework mit der iPhone-App.
+Die Apple Watch-App erweitert Zentory um schnelle Lager- und Werkzeug-Aktionen direkt am Handgelenk. Die native watchOS-App kommuniziert über das WatchConnectivity-Framework mit der iPhone-App.
 
 ## Architektur
 

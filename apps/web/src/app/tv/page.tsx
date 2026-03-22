@@ -16,6 +16,7 @@ import {
   IconTools,
   IconChevronRight,
 } from "@tabler/icons-react"
+import { Wordmark } from "@/components/logo"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -626,9 +627,7 @@ export default function TvPage() {
       <header className="flex items-center justify-between px-4 lg:px-10 py-3 lg:py-5 bg-black/40 border-b border-white/10 shrink-0">
         {/* Logo / org name */}
         <div className="flex items-center gap-3">
-          <div className="text-2xl font-black tracking-tight">
-            Logistik<span className="text-primary">App</span>
-          </div>
+          <Wordmark className="text-2xl" />
           {orgName && (
             <>
               <span className="text-white/30 text-2xl">/</span>

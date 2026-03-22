@@ -39,8 +39,8 @@ export function generateZpl(data: LabelData, size: LabelSize = "small"): string 
       extra ? `^FO240,130^A0N,18,18^FD${extra.substring(0, 30)}^FS` : "",
       // Separator line
       "^FO240,165^GB570,2,2^FS",
-      // LogistikApp branding
-      "^FO240,175^A0N,16,16^FDlogistikapp.ch^FS",
+      // Zentory branding
+      "^FO240,175^A0N,16,16^FDzentory.ch^FS",
       "^XZ",
     ].filter(Boolean).join("\n")
   }
@@ -61,7 +61,7 @@ export function generateZpl(data: LabelData, size: LabelSize = "small"): string 
     location ? `^FO130,68^A0N,16,16^FD${location.substring(0, 16)}^FS` : "",
     // Separator + branding
     "^FO130,98^GB276,2,2^FS",
-    "^FO130,108^A0N,14,14^FDlogistikapp.ch^FS",
+    "^FO130,108^A0N,14,14^FDzentory.ch^FS",
     "^XZ",
   ].filter(Boolean).join("\n")
 }

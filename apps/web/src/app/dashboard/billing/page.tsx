@@ -312,7 +312,7 @@ export default function BillingPage() {
                     variant="outline"
                     asChild
                   >
-                    <a href="mailto:sales@logistikapp.ch">{t("contactSales")}</a>
+                    <a href="mailto:sales@zentory.ch">{t("contactSales")}</a>
                   </Button>
                 ) : (
                   <Button

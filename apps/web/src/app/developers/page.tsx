@@ -4,13 +4,14 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import Link from "next/link";
+import { Wordmark } from "@/components/logo";
 
 // ─── Static code examples ─────────────────────────────────────────────────────
 
-const CURL_EXAMPLE = `curl -X GET "https://app.logistikapp.ch/api/v1/materials?limit=20" \\
+const CURL_EXAMPLE = `curl -X GET "https://app.zentory.ch/api/v1/materials?limit=20" \\
   -H "Authorization: Bearer lapp_live_<dein-schluessel>"`;
 
-const JS_EXAMPLE = `const res = await fetch("https://app.logistikapp.ch/api/v1/materials", {
+const JS_EXAMPLE = `const res = await fetch("https://app.zentory.ch/api/v1/materials", {
   headers: {
     Authorization: "Bearer lapp_live_<dein-schluessel>",
   },
@@ -23,12 +24,12 @@ const PYTHON_EXAMPLE = `import requests
 
 headers = {"Authorization": "Bearer lapp_live_<dein-schluessel>"}
 res = requests.get(
-    "https://app.logistikapp.ch/api/v1/materials",
+    "https://app.zentory.ch/api/v1/materials",
     headers=headers,
 )
 print(res.json())`;
 
-const TOOLS_EXAMPLE = `curl -X GET "https://app.logistikapp.ch/api/v1/tools?limit=50&search=bosch" \\
+const TOOLS_EXAMPLE = `curl -X GET "https://app.zentory.ch/api/v1/tools?limit=50&search=bosch" \\
   -H "Authorization: Bearer lapp_live_<dein-schluessel>"`;
 
 // ─── Components ───────────────────────────────────────────────────────────────
@@ -115,7 +116,7 @@ export default function DevelopersPage() {
               href="/"
               className="text-sm font-semibold tracking-tight hover:opacity-80 transition-opacity"
             >
-              LogistikApp
+              <Wordmark className="inline" />
             </Link>
             <span className="text-muted-foreground/40">/</span>
             <span className="text-sm text-muted-foreground">Entwickler-Dokumentation</span>
@@ -166,15 +167,15 @@ export default function DevelopersPage() {
                 Entwickler-Dokumentation
               </h1>
               <p className="text-muted-foreground mt-3 max-w-2xl leading-relaxed">
-                Die LogistikApp REST API ermöglicht den programmatischen Zugriff auf
-                deine Inventardaten. Integriere LogistikApp mit Zapier, Make, eigenen
+                Die <Wordmark className="inline" /> REST API ermöglicht den programmatischen Zugriff auf
+                deine Inventardaten. Integriere <Wordmark className="inline" /> mit Zapier, Make, eigenen
                 Skripten oder deiner ERP-Software.
               </p>
             </div>
 
             <div className="grid sm:grid-cols-3 gap-4 mt-8">
               {[
-                { label: "Basis-URL", value: "https://app.logistikapp.ch/api/v1" },
+                { label: "Basis-URL", value: "https://app.zentory.ch/api/v1" },
                 { label: "Authentifizierung", value: "Bearer Token (API-Key)" },
                 { label: "Antwortformat", value: "JSON (UTF-8)" },
               ].map((item) => (

@@ -189,7 +189,7 @@ export default function BatchPrintPage() {
         qrValue:
           typeof window !== "undefined"
             ? `${window.location.origin}/s/${encodeURIComponent(item.barcode ?? item.id)}`
-            : `https://logistikapp.ch/s/${encodeURIComponent(item.barcode ?? item.id)}`,
+            : `https://zentory.ch/s/${encodeURIComponent(item.barcode ?? item.id)}`,
         location: item.location,
       })),
     [selectedItems]

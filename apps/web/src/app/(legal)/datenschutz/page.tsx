@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Datenschutzerklärung",
-  description: "Datenschutzerklärung von LogistikApp gemäss nDSG (Schweiz).",
+  description: "Datenschutzerklärung von Zentory gemäss nDSG (Schweiz).",
 }
 
 export default function DatenschutzPage() {
@@ -15,7 +15,7 @@ export default function DatenschutzPage() {
         </div>
         <h1 className="text-3xl font-bold leading-tight mb-4">Datenschutzerklärung</h1>
         <p className="font-mono text-xs text-muted-foreground">
-          Stand: März 2026 · Gültig für logistikapp.ch und alle zugehörigen Dienste
+          Stand: März 2026 · Gültig für zentory.ch und alle zugehörigen Dienste
         </p>
       </header>
 
@@ -31,8 +31,8 @@ export default function DatenschutzPage() {
         <div className="rounded-lg border border-border bg-muted/30 p-5 font-mono text-sm space-y-1">
           <div className="font-bold text-foreground">BrainBytes GmbH</div>
           <div className="text-muted-foreground">Zürich, Schweiz</div>
-          <div className="text-muted-foreground">E-Mail: <a href="mailto:datenschutz@logistikapp.ch" className="text-primary hover:underline">datenschutz@logistikapp.ch</a></div>
-          <div className="text-muted-foreground">Web: <a href="https://logistikapp.ch" className="text-primary hover:underline">logistikapp.ch</a></div>
+          <div className="text-muted-foreground">E-Mail: <a href="mailto:datenschutz@zentory.ch" className="text-primary hover:underline">datenschutz@zentory.ch</a></div>
+          <div className="text-muted-foreground">Web: <a href="https://zentory.ch" className="text-primary hover:underline">zentory.ch</a></div>
         </div>
       </section>
 
@@ -104,7 +104,7 @@ export default function DatenschutzPage() {
           Wir stützen die Bearbeitung Ihrer Personendaten auf folgende Rechtsgrundlagen:
         </p>
         <ul className="space-y-2 text-sm text-muted-foreground leading-relaxed list-none">
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Vertragserfüllung</strong>: Betrieb des Dienstes LogistikApp gemäss den AGB</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Vertragserfüllung</strong>: Betrieb des Dienstes Zentory gemäss den AGB</li>
           <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Berechtigte Interessen</strong>: Sicherheit, Missbrauchsverhinderung, Produktverbesserung</li>
           <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Gesetzliche Pflicht</strong>: Buchführung und Steuerpflichten</li>
           <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Einwilligung</strong>: Für Marketing-E-Mails (jederzeit widerrufbar)</li>
@@ -164,7 +164,7 @@ export default function DatenschutzPage() {
           5. Cookies und ähnliche Technologien
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          LogistikApp verwendet folgende Arten von Cookies:
+          Zentory verwendet folgende Arten von Cookies:
         </p>
         <ul className="space-y-2 text-sm text-muted-foreground leading-relaxed list-none">
           <li className="flex gap-2">
@@ -220,8 +220,8 @@ export default function DatenschutzPage() {
           <p className="text-foreground font-medium mb-1">Anfrage stellen</p>
           <p className="text-muted-foreground">
             Senden Sie Ihre Datenschutzanfrage an{" "}
-            <a href="mailto:datenschutz@logistikapp.ch" className="text-primary hover:underline font-medium">
-              datenschutz@logistikapp.ch
+            <a href="mailto:datenschutz@zentory.ch" className="text-primary hover:underline font-medium">
+              datenschutz@zentory.ch
             </a>
             . Wir antworten innerhalb von 30 Tagen.
           </p>
@@ -252,7 +252,7 @@ export default function DatenschutzPage() {
           9. Dateneigentum
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Alle Inventardaten, die Sie in LogistikApp erfassen — Artikel, Werkzeuge, Fahrzeuge, Buchungshistorien —
+          Alle Inventardaten, die Sie in Zentory erfassen — Artikel, Werkzeuge, Fahrzeuge, Buchungshistorien —
           verbleiben zu 100 % in Ihrem Eigentum. BrainBytes GmbH nimmt keine Eigentumsrechte daran in Anspruch
           und nutzt diese Daten nicht für eigene Zwecke. Sie können Ihre Daten jederzeit exportieren und
           bei Kündigung innerhalb von 30 Tagen vollständig löschen lassen.
@@ -281,7 +281,7 @@ export default function DatenschutzPage() {
         </p>
         <div className="rounded-lg border border-border bg-muted/30 p-5 font-mono text-sm space-y-1">
           <div className="font-bold text-foreground">BrainBytes GmbH — Datenschutz</div>
-          <div className="text-muted-foreground">E-Mail: <a href="mailto:datenschutz@logistikapp.ch" className="text-primary hover:underline">datenschutz@logistikapp.ch</a></div>
+          <div className="text-muted-foreground">E-Mail: <a href="mailto:datenschutz@zentory.ch" className="text-primary hover:underline">datenschutz@zentory.ch</a></div>
           <div className="text-muted-foreground">Aufsichtsbehörde: <a href="https://www.edoeb.admin.ch" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">EDÖB (edoeb.admin.ch)</a></div>
         </div>
       </section>

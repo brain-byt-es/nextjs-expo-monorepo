@@ -1,4 +1,4 @@
-# LogistikApp — Social Media Campaign
+# Zentory — Social Media Campaign
 ## "Was kostet dich dein Chaos?"
 
 Target: Schweizer Handwerker, Schreiner, Elektriker, Sanitär, Feuerwehr, Rettungsdienste
@@ -26,8 +26,8 @@ Brand: Industrial precision, Swiss quality, orange accent.
 **Content (2–20s):**
 - Screen-Recording: Material-Seite öffnen → QR scannen → Standort bestätigen
 - Stoppuhr läuft mit
-- Split-Screen: Links WhatsApp-Gruppe chaos "wer hat den Winkelschleifer?", Rechts: LogistikApp zeigt "Fahrzeug VW T6 · Thomas Müller"
-**CTA:** "14 Tage gratis testen → logistikapp.ch"
+- Split-Screen: Links WhatsApp-Gruppe chaos "wer hat den Winkelschleifer?", Rechts: Zentory zeigt "Fahrzeug VW T6 · Thomas Müller"
+**CTA:** "14 Tage gratis testen → zentory.ch"
 **Tags:** #Inventarverwaltung #Werkzeugmanagement #Effizienz #DigitalesHandwerk
 
 ---
@@ -48,7 +48,7 @@ Brand: Industrial precision, Swiss quality, orange accent.
 **Content:**
 - Kiste öffnen: 200 Kabelbinder. Zweite Kiste: nochmal 200. Dritte Kiste...
 - Voice-Over: "Weil wir nie wussten was noch da ist."
-- Cut auf Bestandsliste in LogistikApp: "Kabelbinder 200mm — 847 Stück"
+- Cut auf Bestandsliste in Zentory: "Kabelbinder 200mm — 847 Stück"
 - Kommentartext: "Hätte geholfen."
 **Tags:** #Lager #Handwerk #Humor #Organisation #KMU #Swiss
 
@@ -74,9 +74,9 @@ Dazu kommen:
 
 Die gute Nachricht: Das ist lösbar.
 
-LogistikApp ist eine Schweizer Inventar-Software, gebaut für genau diese Betriebe.
+Zentory ist eine Schweizer Inventar-Software, gebaut für genau diese Betriebe.
 
-Kostenlos testen → logistikapp.ch
+Kostenlos testen → zentory.ch
 
 #DigitalTransformation #KMU #Handwerk #Schweiz #Effizienz #Lagerhaltung
 
@@ -98,9 +98,9 @@ Die häufigste Antwort auf "Wie verwaltet ihr euer Lager?":
 
 Hans ist seit letztem Jahr in Rente.
 
-LogistikApp gibt eurem Betrieb ein System, das nicht in einer Person steckt.
+Zentory gibt eurem Betrieb ein System, das nicht in einer Person steckt.
 
-→ Kostenlose Demo buchen: logistikapp.ch
+→ Kostenlose Demo buchen: zentory.ch
 
 #Handwerk #KMU #Digitalisierung #Lagerverwaltung #Schweiz #Effizienz
 
@@ -117,7 +117,7 @@ Quellen: McKinsey, Fraunhofer-Institut, BFS 2023.
 
 Der Markt bewegt sich. Die Frage ist nicht ob, sondern wann dein Betrieb umsteigt.
 
-→ Jetzt kostenlos starten: logistikapp.ch
+→ Jetzt kostenlos starten: zentory.ch
 
 #Statistik #KMU #Handwerk #Lagerverwaltung #Innovation #Schweiz
 
@@ -135,21 +135,21 @@ Schweizer Server. nDSG-konform. 14 Tage kostenlos.
 .
 .
 .
-#LogistikApp #Lagerverwaltung #Werkzeugmanagement #Inventar #KMU #Handwerk #Schweiz #DigitalesHandwerk #Schreiner #Elektriker #Sanitär #Baugewerbe #Swiss #SME #Effizienz
+#Zentory #Lagerverwaltung #Werkzeugmanagement #Inventar #KMU #Handwerk #Schweiz #DigitalesHandwerk #Schreiner #Elektriker #Sanitär #Baugewerbe #Swiss #SME #Effizienz
 
 ---
 
 ### Caption 2: Trust/Swiss angle
 Deine Daten gehören dir.
 
-Während US-Software auf amerikanischen Servern liegt und EU-Datenschutz umgeht — speichert LogistikApp ausnahmslos auf Servern in der Schweiz.
+Während US-Software auf amerikanischen Servern liegt und EU-Datenschutz umgeht — speichert Zentory ausnahmslos auf Servern in der Schweiz.
 
 Vollständig konform mit dem revidierten Datenschutzgesetz (nDSG).
 Keine Daten in US-Clouds. Kein verstecktes Tracking.
 
 Für Betriebe, die das nicht dem Zufall überlassen.
 
-→ logistikapp.ch
+→ zentory.ch
 .
 .
 .
@@ -160,7 +160,7 @@ Für Betriebe, die das nicht dem Zufall überlassen.
 ## Hashtag Sets
 
 ### Primär (immer verwenden):
-#LogistikApp #Lagerverwaltung #KMU #Handwerk #Schweiz
+#Zentory #Lagerverwaltung #KMU #Handwerk #Schweiz
 
 ### Handwerk-Nischen:
 #Schreiner #Elektriker #Sanitär #Feuerwehr #Rettungsdienst #Metallbau #Haustechnik #Tiefbau #Holzbau #Maurer #Maler
@@ -189,13 +189,13 @@ Für Betriebe, die das nicht dem Zufall überlassen.
 
 ## Influencer Outreach Template
 
-**Betreff:** LogistikApp — Kostenlos testen + kleine Zusammenarbeit?
+**Betreff:** Zentory — Kostenlos testen + kleine Zusammenarbeit?
 
 Hallo [Name],
 
-ich bin [Name] von LogistikApp — einer Schweizer Software für Werkzeug- und Materialverwaltung für Handwerksbetriebe.
+ich bin [Name] von Zentory — einer Schweizer Software für Werkzeug- und Materialverwaltung für Handwerksbetriebe.
 
-Dein Content rund um [Schreinerei/Elektro/Sanitär] gefällt mir sehr — besonders [spezifischer Post]. Du sprichst genau die Betriebe an, die wir mit LogistikApp unterstützen.
+Dein Content rund um [Schreinerei/Elektro/Sanitär] gefällt mir sehr — besonders [spezifischer Post]. Du sprichst genau die Betriebe an, die wir mit Zentory unterstützen.
 
 Idee: Wir geben dir kostenlos einen Pro-Account (dauerhaft). Im Gegenzug ein ehrlicher, kurzer Post/Reel wenn du das Tool tatsächlich nützlich findest — kein Script, kein Marketing-Sprech.
 
@@ -203,7 +203,7 @@ Interesse? Kurze Antwort genügt.
 
 Gruss,
 [Name]
-logistikapp.ch
+zentory.ch
 
 ---
 

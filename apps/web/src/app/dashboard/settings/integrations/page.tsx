@@ -196,10 +196,10 @@ export default function IntegrationsPage() {
           {t("intMissingToolDesc")}
         </p>
         <a
-          href="mailto:integrations@logistikapp.ch?subject=Integration%20Anfrage"
+          href="mailto:integrations@zentory.ch?subject=Integration%20Anfrage"
           className="inline-flex items-center gap-2 text-xs font-mono text-primary hover:underline"
         >
-          integrations@logistikapp.ch →
+          integrations@zentory.ch →
         </a>
       </section>
     </div>

@@ -236,8 +236,8 @@ export default function VoiceAssistantScreen() {
               }}
             >
               {isIOS
-                ? "Steuere LogistikApp mit Siri-Sprachbefehlen. Sage z.B. \"Hey Siri, Material einbuchen\"."
-                : "Steuere LogistikApp mit Google Assistant. Sage z.B. \"Hey Google, Material einbuchen\"."}
+                ? "Steuere Zentory mit Siri-Sprachbefehlen. Sage z.B. \"Hey Siri, Material einbuchen\"."
+                : "Steuere Zentory mit Google Assistant. Sage z.B. \"Hey Google, Material einbuchen\"."}
             </Text>
           </View>
 
@@ -410,7 +410,7 @@ export default function VoiceAssistantScreen() {
                 />
                 <InstructionStep
                   number={3}
-                  text='Unter "Vorschläge" findest du die LogistikApp-Befehle.'
+                  text='Unter "Vorschläge" findest du die Zentory-Befehle.'
                   colors={colors}
                 />
                 <InstructionStep
@@ -456,7 +456,7 @@ export default function VoiceAssistantScreen() {
                 />
                 <InstructionStep
                   number={2}
-                  text='Sage "Hey Google, öffne LogistikApp" um zu starten.'
+                  text='Sage "Hey Google, öffne Zentory" um zu starten.'
                   colors={colors}
                 />
                 <InstructionStep
@@ -466,7 +466,7 @@ export default function VoiceAssistantScreen() {
                 />
                 <InstructionStep
                   number={4}
-                  text='Sage z.B. "Hey Google, Material einbuchen in LogistikApp".'
+                  text='Sage z.B. "Hey Google, Material einbuchen in Zentory".'
                   colors={colors}
                   isLast
                 />
@@ -474,7 +474,7 @@ export default function VoiceAssistantScreen() {
                   variant="plain"
                   onPress={() =>
                     Linking.openURL(
-                      "https://assistant.google.com/services/a/uid/logistikapp"
+                      "https://assistant.google.com/services/a/uid/zentory"
                     )
                   }
                   style={{ marginTop: 12, alignSelf: "flex-start" }}
@@ -515,7 +515,7 @@ export default function VoiceAssistantScreen() {
             }}
           >
             Sprachbefehle werden von {isIOS ? "Apple" : "Google"} verarbeitet.
-            LogistikApp empfängt nur die erkannte Aktion, nicht die
+            Zentory empfängt nur die erkannte Aktion, nicht die
             Audioaufnahme.
           </Text>
         </ScrollView>

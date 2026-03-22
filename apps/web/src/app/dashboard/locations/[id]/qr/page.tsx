@@ -27,7 +27,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 // ---------------------------------------------------------------------------
 // Constants
 // ---------------------------------------------------------------------------
-const BASE_URL = "https://logistikapp.ch"
+const BASE_URL = "https://zentory.ch"
 
 const LOCATION_TYPE_CONFIG: Record<
   string,
@@ -199,7 +199,7 @@ export default function LocationQrPage() {
 
           {/* Branding */}
           <p className="text-xs text-muted-foreground/50 tracking-wider uppercase">
-            logistikapp.ch
+            zentory.ch
           </p>
         </div>
 

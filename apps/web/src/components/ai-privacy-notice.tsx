@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl"
 import { IconShieldLock, IconChevronDown, IconChevronUp, IconX } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 
-const DISMISSED_KEY = "logistikapp-ai-privacy-dismissed"
+const DISMISSED_KEY = "zentory-ai-privacy-dismissed"
 
 export function AiPrivacyNotice() {
   const t = useTranslations("aiPrivacy")

@@ -136,7 +136,7 @@ export default function CommissionDetailPage() {
       signedBy: commission.signedBy,
       org: {
         // Fall back to generic branding — replace with real org data when available
-        name: "LogistikApp",
+        name: "Zentory",
         address: null,
         zip: null,
         city: null,

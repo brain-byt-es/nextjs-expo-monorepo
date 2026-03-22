@@ -409,7 +409,7 @@ export async function printLabel(
 // ---------------------------------------------------------------------------
 // Settings persistence (localStorage)
 // ---------------------------------------------------------------------------
-const PRINTER_SETTINGS_KEY = "logistikapp_printer_settings";
+const PRINTER_SETTINGS_KEY = "zentory_printer_settings";
 
 export function loadPrinterSettings(): PrinterSettings {
   if (typeof window === "undefined") {

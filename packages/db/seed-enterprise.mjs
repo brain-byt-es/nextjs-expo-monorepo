@@ -25,9 +25,9 @@ async function main() {
   const existingPlugins = await sql`SELECT count(*) as c FROM plugins`;
   if (Number(existingPlugins[0].c) === 0) {
     await sql`INSERT INTO plugins (slug, name, description, version, author, icon, category, events, is_builtin, is_published) VALUES
-      ('csv-import-pro', 'CSV Import Pro', 'Erweiterte CSV/Excel Import-Funktionen mit Vorlagen und Validierung', '1.2.0', 'LogistikApp', 'IconUpload', 'import', '["material.created"]', true, true),
-      ('barcode-label-designer', 'Barcode-Etiketten Designer', 'Drag-Drop Editor für Barcode- und QR-Code-Etiketten', '1.0.0', 'LogistikApp', 'IconBarcode', 'utility', '["material.created", "tool.booked"]', true, true),
-      ('slack-notifications', 'Slack Benachrichtigungen', 'Automatische Benachrichtigungen in Slack bei Bestandsänderungen und Kommissionen', '1.1.0', 'LogistikApp', 'IconBrandSlack', 'integration', '["stock.changed", "commission.completed"]', true, true)`;
+      ('csv-import-pro', 'CSV Import Pro', 'Erweiterte CSV/Excel Import-Funktionen mit Vorlagen und Validierung', '1.2.0', 'Zentory', 'IconUpload', 'import', '["material.created"]', true, true),
+      ('barcode-label-designer', 'Barcode-Etiketten Designer', 'Drag-Drop Editor für Barcode- und QR-Code-Etiketten', '1.0.0', 'Zentory', 'IconBarcode', 'utility', '["material.created", "tool.booked"]', true, true),
+      ('slack-notifications', 'Slack Benachrichtigungen', 'Automatische Benachrichtigungen in Slack bei Bestandsänderungen und Kommissionen', '1.1.0', 'Zentory', 'IconBrandSlack', 'integration', '["stock.changed", "commission.completed"]', true, true)`;
 
     // Install 2 plugins for demo org
     const pluginRows = await sql`SELECT id, slug FROM plugins`;
