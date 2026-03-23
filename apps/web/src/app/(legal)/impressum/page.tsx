@@ -22,30 +22,25 @@ export default function ImpressumPage() {
         <h2 className="text-xl font-bold border-b border-border pb-3">
           Kontaktadresse
         </h2>
-        <div className="rounded-lg border border-border bg-muted/30 p-6 text-sm space-y-3 leading-relaxed">
-          <p className="font-bold text-foreground text-base">
-            HR Online Consulting LLC (DBA Zentory)
-          </p>
-          <p className="text-muted-foreground">
-            Incorporated under the laws of the Catawba Indian Nation of the Carolinas,<br />
+        <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
+          <p>
+            <span className="font-bold text-foreground">HR Online Consulting LLC</span> (DBA Zentory)<br />
+            Incorporated under the laws of the Catawba Indian Nation of the Carolinas,
             Catawba Digital Economic Zone<br />
-            550 Kings Mountain<br />
-            Kings Mountain, NC 28086, USA
+            550 Kings Mountain, Kings Mountain, NC 28086, USA
           </p>
-          <p className="text-muted-foreground">
-            Geschäftsführer: Henrik Rühe, Managing Member
-          </p>
-          <p className="text-muted-foreground">
+          <p>
+            Geschäftsführer: Henrik Rühe, Managing Member<br />
             EIN (Tax ID): 61-2199060
           </p>
-          <div className="pt-2 space-y-1 text-muted-foreground">
-            <p>Telefonnummer: +41 (0)76 123456</p>
-            <p>E-Mail Adresse: <a href="mailto:legal@zentory.ch" className="text-primary hover:underline">legal@zentory.ch</a></p>
-          </div>
-          <p className="text-muted-foreground pt-2 text-xs">
+          <p>
+            Telefonnummer: +41 (0)76 123456<br />
+            E-Mail Adresse: <a href="mailto:legal@zentory.ch" className="text-primary hover:underline">legal@zentory.ch</a>
+          </p>
+          <p>
             Mehrwertsteuerbefreit gemäss Art. 10 Abs. 2a Bundesgesetz über die Mehrwertsteuer (MWSTG) vom 12. Juni 2009
           </p>
-          <p className="text-muted-foreground text-xs">
+          <p>
             Online-Plattform der Europäischen Kommission zur Streitbeilegung (OS) für Verbraucher:{" "}
             <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
               https://ec.europa.eu/consumers/odr/
