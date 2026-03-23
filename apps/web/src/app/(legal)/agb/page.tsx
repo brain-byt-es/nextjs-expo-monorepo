@@ -247,15 +247,13 @@ export default async function AGBPage() {
         <h2 className="text-xl font-bold border-b border-border pb-3">
           {t("s12Title")}
         </h2>
-        <div className="rounded-lg border border-primary/20 bg-primary/5 p-5 text-sm space-y-2">
-          <p className="text-foreground font-medium">{t("s12P1")}</p>
-          <p className="text-muted-foreground">
+        <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
+          <p>{t("s12P1")}</p>
+          <p>
             {t("s12P2")}
             <strong className="text-foreground"> {t("s12P2Jurisdiction")}</strong> {t("s12P2End")}
           </p>
-          <p className="text-muted-foreground">
-            {t("s12P3")}
-          </p>
+          <p>{t("s12P3")}</p>
         </div>
       </section>
 
