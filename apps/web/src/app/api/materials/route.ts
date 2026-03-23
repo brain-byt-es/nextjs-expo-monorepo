@@ -93,6 +93,14 @@ export const GET = withPermission("materials", "read")(async (request, { db, org
             ORDER BY sp.unit_price ASC
             LIMIT 1
           )`.as("cheapest_supplier_name"),
+          cheapestSupplierId: sql<string | null>`(
+            SELECT sp.supplier_id
+            FROM supplier_prices sp
+            WHERE sp.material_id = ${materials.id}
+              AND sp.organization_id = ${orgId}
+            ORDER BY sp.unit_price ASC
+            LIMIT 1
+          )`.as("cheapest_supplier_id"),
         })
         .from(materials)
         .leftJoin(materialGroups, eq(materials.groupId, materialGroups.id))

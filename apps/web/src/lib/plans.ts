@@ -28,6 +28,7 @@ export const PLAN_FEATURES: PlanFeature[] = [
   { id: "portals", name: "Externe Portale", description: "Kunden- & Lieferanten-Portal", plans: ["professional", "enterprise"] },
   { id: "budgets", name: "Budgetverwaltung", description: "Monats-/Quartalsbudgets", plans: ["professional", "enterprise"] },
   { id: "transfers", name: "Umbuchungen", description: "Material-Transfers zwischen Standorten", plans: ["professional", "enterprise"] },
+  { id: "delivery_scan", name: "KI-Lieferschein-Scan", description: "Lieferscheine per Foto scannen und Positionen extrahieren", plans: ["professional", "enterprise"] },
   { id: "reports", name: "Erweiterte Berichte", description: "PDF-Lieferscheine, Schichtberichte", plans: ["professional", "enterprise"] },
   { id: "calendar", name: "Wartungskalender", description: "Kalender + iCal Export", plans: ["professional", "enterprise"] },
   { id: "locations_unlimited", name: "Unbegrenzte Standorte", description: "Beliebig viele Standorte", plans: ["professional", "enterprise"] },

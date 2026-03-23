@@ -35,6 +35,8 @@ import {
   IconTruck,
   IconLoader2,
   IconCar,
+  IconPackageImport,
+  IconPackageExport,
 } from "@tabler/icons-react"
 import { toast } from "sonner"
 import { BookToVehicleDialog } from "@/components/book-to-vehicle-dialog"
@@ -78,6 +80,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { Textarea } from "@/components/ui/textarea"
 import { BulkActionBar } from "@/components/bulk-action-bar"
 import { addToCart } from "@/lib/cart"
 
@@ -110,6 +113,7 @@ interface MaterialRow {
   unit: string
   cheapestPrice: number | null
   cheapestSupplierName: string | null
+  cheapestSupplierId: string | null
 }
 
 interface MaterialsResponse {
@@ -250,9 +254,21 @@ export default function MaterialsPage() {
   const [reorderQty, setReorderQty] = useState(1)
   const [reorderCreating, setReorderCreating] = useState(false)
 
+  // Refresh trigger (incremented to force refetch)
+  const [refreshKey, setRefreshKey] = useState(0)
+
   // Bulk selection
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [bulkLoading, setBulkLoading] = useState(false)
+
+  // Stock in/out dialog
+  const [stockDialogType, setStockDialogType] = useState<"in" | "out" | null>(null)
+  const [stockMaterialId, setStockMaterialId] = useState("")
+  const [stockLocationId, setStockLocationId] = useState("")
+  const [stockQuantity, setStockQuantity] = useState(1)
+  const [stockReason, setStockReason] = useState("")
+  const [stockSubmitting, setStockSubmitting] = useState(false)
+  const [stockMaterialSearch, setStockMaterialSearch] = useState("")
 
   // Debounce search input
   useEffect(() => {
@@ -319,7 +335,7 @@ export default function MaterialsPage() {
       }
     }
     fetchMaterials()
-  }, [page, debouncedSearch, groupFilter, locationFilter, expiringOnly])
+  }, [page, debouncedSearch, groupFilter, locationFilter, expiringOnly, refreshKey])
 
   // Delete handler (single)
   const handleDelete = useCallback(async () => {
@@ -514,6 +530,70 @@ export default function MaterialsPage() {
       setReorderCreating(false)
     }
   }, [reorderTarget, reorderData, reorderQty, t, router])
+
+  // Stock in/out: open dialog
+  const handleOpenStockDialog = useCallback((type: "in" | "out") => {
+    setStockDialogType(type)
+    setStockMaterialId("")
+    setStockLocationId("")
+    setStockQuantity(1)
+    setStockReason("")
+    setStockMaterialSearch("")
+  }, [])
+
+  // Stock in/out: submit
+  const handleStockSubmit = useCallback(async () => {
+    if (!stockMaterialId || !stockLocationId || stockQuantity < 1) return
+    setStockSubmitting(true)
+    try {
+      const res = await fetch("/api/stock-changes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          materialId: stockMaterialId,
+          locationId: stockLocationId,
+          changeType: stockDialogType,
+          quantity: stockQuantity,
+          notes: stockReason.trim() || null,
+        }),
+      })
+      if (res.ok) {
+        toast.success(
+          stockDialogType === "in" ? t("stockIn.success") : t("stockOut.success")
+        )
+        setStockDialogType(null)
+        // Refetch materials list
+        setRefreshKey((k) => k + 1)
+      } else {
+        const err = await res.json().catch(() => ({}))
+        toast.error(err.error ?? "Fehler")
+      }
+    } catch {
+      toast.error("Fehler")
+    } finally {
+      setStockSubmitting(false)
+    }
+  }, [stockMaterialId, stockLocationId, stockQuantity, stockDialogType, stockReason, t])
+
+  // Materials for stock dialog dropdown — fetched separately to search across ALL materials
+  const [stockDialogMaterials, setStockDialogMaterials] = useState<MaterialRow[]>([])
+  useEffect(() => {
+    if (!stockDialogType) return
+    const timer = setTimeout(async () => {
+      try {
+        const params = new URLSearchParams({ page: "1", limit: "30" })
+        if (stockMaterialSearch.trim()) params.set("search", stockMaterialSearch.trim())
+        const res = await fetch(`/api/materials?${params}`)
+        if (res.ok) {
+          const json = await res.json()
+          setStockDialogMaterials(json.data ?? [])
+        }
+      } catch {
+        // silent
+      }
+    }, stockMaterialSearch ? 300 : 0)
+    return () => clearTimeout(timer)
+  }, [stockDialogType, stockMaterialSearch])
 
   // CSV export: fetch all pages then download
   const handleExport = useCallback(async () => {
@@ -853,7 +933,7 @@ export default function MaterialsPage() {
                       number: row.original.number ?? "",
                       materialName: row.original.name,
                       supplierName: row.original.cheapestSupplierName ?? "",
-                      supplierId: "",
+                      supplierId: row.original.cheapestSupplierId ?? "",
                       articleNumber: row.original.number ?? "",
                       purchasePrice: row.original.cheapestPrice ?? 0,
                       orderUnit: row.original.unit ?? "Stk",
@@ -956,6 +1036,24 @@ export default function MaterialsPage() {
           >
             <IconTag className="size-4" />
             {t("labels")}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5 border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-800 dark:border-green-800 dark:bg-green-950 dark:text-green-400 dark:hover:bg-green-900"
+            onClick={() => handleOpenStockDialog("in")}
+          >
+            <IconPackageImport className="size-4" />
+            {t("stockIn.button")}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5 border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 hover:text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-400 dark:hover:bg-amber-900"
+            onClick={() => handleOpenStockDialog("out")}
+          >
+            <IconPackageExport className="size-4" />
+            {t("stockOut.button")}
           </Button>
           <Button onClick={() => router.push("/dashboard/materials/new")}>
             <IconPlus className="size-4" />
@@ -1360,6 +1458,145 @@ export default function MaterialsPage() {
         onOpenChange={(open) => { if (!open) setVehicleBookTarget(null) }}
         onSuccess={() => window.location.reload()}
       />
+
+      {/* Wareneingang / Warenausgang dialog */}
+      <Dialog
+        open={!!stockDialogType}
+        onOpenChange={(open: boolean) => {
+          if (!open) setStockDialogType(null)
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              {stockDialogType === "in" ? (
+                <IconPackageImport className="size-5 text-green-600" />
+              ) : (
+                <IconPackageExport className="size-5 text-amber-600" />
+              )}
+              {stockDialogType === "in" ? t("stockIn.title") : t("stockOut.title")}
+            </DialogTitle>
+            <DialogDescription>
+              {stockDialogType === "in" ? t("stockIn.description") : t("stockOut.description")}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            {/* Material select with search */}
+            <div className="space-y-2">
+              <Label>{t("name")} <span className="text-destructive">*</span></Label>
+              <Select
+                value={stockMaterialId}
+                onValueChange={setStockMaterialId}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={t("stockIn.selectMaterial")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <div className="px-2 pb-2">
+                    <Input
+                      placeholder={`${tc("search")}...`}
+                      value={stockMaterialSearch}
+                      onChange={(e) => setStockMaterialSearch(e.target.value)}
+                      className="h-8"
+                      onClick={(e) => e.stopPropagation()}
+                      onKeyDown={(e) => e.stopPropagation()}
+                    />
+                  </div>
+                  {stockDialogMaterials.map((m) => (
+                    <SelectItem key={m.id} value={m.id}>
+                      {m.number ? `${m.number} — ` : ""}{m.name}
+                    </SelectItem>
+                  ))}
+                  {stockDialogMaterials.length === 0 && (
+                    <div className="py-3 text-center text-sm text-muted-foreground">
+                      {t("tryDifferentSearch")}
+                    </div>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Location select */}
+            <div className="space-y-2">
+              <Label>{t("mainLocation")} <span className="text-destructive">*</span></Label>
+              <Select
+                value={stockLocationId}
+                onValueChange={setStockLocationId}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder={t("stockIn.selectLocation")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {locations.map((loc) => (
+                    <SelectItem key={loc.id} value={loc.id}>
+                      {loc.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Quantity */}
+            <div className="space-y-2">
+              <Label>{t("stockIn.quantity")} <span className="text-destructive">*</span></Label>
+              <Input
+                type="number"
+                min={1}
+                value={stockQuantity}
+                onChange={(e) => setStockQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+              />
+            </div>
+
+            {/* Reason / notes */}
+            <div className="space-y-2">
+              <Label>{t("stockIn.reason")}</Label>
+              <Textarea
+                value={stockReason}
+                onChange={(e) => setStockReason(e.target.value)}
+                placeholder={t("stockIn.reasonPlaceholder")}
+                rows={2}
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setStockDialogType(null)}
+              disabled={stockSubmitting}
+            >
+              {tc("cancel")}
+            </Button>
+            <Button
+              onClick={handleStockSubmit}
+              disabled={stockSubmitting || !stockMaterialId || !stockLocationId || stockQuantity < 1}
+              className={
+                stockDialogType === "in"
+                  ? "bg-green-600 hover:bg-green-700 text-white"
+                  : "bg-amber-500 hover:bg-amber-600 text-white"
+              }
+            >
+              {stockSubmitting ? (
+                <>
+                  <IconLoader2 className="size-4 animate-spin" />
+                  {tc("loading")}
+                </>
+              ) : stockDialogType === "in" ? (
+                <>
+                  <IconPackageImport className="size-4" />
+                  {t("stockIn.confirm")}
+                </>
+              ) : (
+                <>
+                  <IconPackageExport className="size-4" />
+                  {t("stockOut.confirm")}
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

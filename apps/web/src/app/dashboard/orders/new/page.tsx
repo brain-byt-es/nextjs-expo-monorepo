@@ -50,7 +50,7 @@ export default function NewOrderPage() {
   const searchParams = useSearchParams()
 
   const [form, setForm] = useState<FormState>({
-    supplierId: "",
+    supplierId: searchParams.get("supplierId") || "",
     materialName: searchParams.get("materialName") || "",
     materialId: searchParams.get("materialId") || "",
     quantity: parseInt(searchParams.get("quantity") || "1") || 1,
@@ -78,6 +78,28 @@ export default function NewOrderPage() {
     }
     loadSuppliers()
   }, [])
+
+  // Auto-fill supplier from reorder suggestion when materialId is set but no supplierId
+  useEffect(() => {
+    const materialId = searchParams.get("materialId")
+    const supplierId = searchParams.get("supplierId")
+    if (materialId && !supplierId) {
+      async function fetchSupplierSuggestion() {
+        try {
+          const res = await fetch(`/api/materials/${materialId}/reorder`)
+          if (res.ok) {
+            const data = await res.json()
+            if (data.supplier?.id) {
+              setForm((f) => f.supplierId ? f : { ...f, supplierId: data.supplier.id })
+            }
+          }
+        } catch {
+          // silent — supplier will remain empty
+        }
+      }
+      fetchSupplierSuggestion()
+    }
+  }, [searchParams])
 
   const updateField = useCallback(
     <K extends keyof FormState>(key: K, value: FormState[K]) => {

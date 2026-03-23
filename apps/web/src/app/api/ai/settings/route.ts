@@ -4,12 +4,17 @@ import { organizations } from "@repo/db/schema";
 import { eq } from "drizzle-orm";
 
 // Shape stored in the aiSettings jsonb column
-interface AiSettings {
+export interface AiSettings {
   openaiApiKey?: string;
+  anthropicApiKey?: string;
+  geminiApiKey?: string;
+  preferredAiProvider?: "openai" | "anthropic" | "gemini";
 }
 
+type AiProvider = "openai" | "anthropic" | "gemini";
+
 // ---------------------------------------------------------------------------
-// GET — return current AI settings (key is masked)
+// GET — return current AI settings (keys are masked)
 // ---------------------------------------------------------------------------
 export async function GET(request: Request) {
   try {
@@ -24,14 +29,30 @@ export async function GET(request: Request) {
       .limit(1);
 
     const settings = (org?.aiSettings ?? {}) as AiSettings;
-    const hasKey = Boolean(settings.openaiApiKey);
+
+    const maskKey = (key?: string) =>
+      key ? `...${key.slice(-4)}` : null;
 
     return NextResponse.json({
-      hasKey,
-      // Return only last 4 chars so the user can confirm which key is stored
-      keyPreview: hasKey
-        ? `...${settings.openaiApiKey!.slice(-4)}`
-        : null,
+      // Legacy field for backward compat
+      hasKey: Boolean(settings.openaiApiKey),
+      keyPreview: maskKey(settings.openaiApiKey),
+      // Multi-provider fields
+      providers: {
+        openai: {
+          hasKey: Boolean(settings.openaiApiKey),
+          keyPreview: maskKey(settings.openaiApiKey),
+        },
+        anthropic: {
+          hasKey: Boolean(settings.anthropicApiKey),
+          keyPreview: maskKey(settings.anthropicApiKey),
+        },
+        gemini: {
+          hasKey: Boolean(settings.geminiApiKey),
+          keyPreview: maskKey(settings.geminiApiKey),
+        },
+      },
+      preferredAiProvider: settings.preferredAiProvider ?? "openai",
     });
   } catch (error) {
     console.error("GET /api/ai/settings error:", error);
@@ -43,7 +64,7 @@ export async function GET(request: Request) {
 }
 
 // ---------------------------------------------------------------------------
-// POST — save or clear the org's OpenAI API key
+// POST — save or clear the org's AI provider keys + preferred provider
 // ---------------------------------------------------------------------------
 export async function POST(request: Request) {
   try {
@@ -58,7 +79,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const body: { openaiApiKey?: string | null } = await request.json();
+    const body: {
+      openaiApiKey?: string | null;
+      anthropicApiKey?: string | null;
+      geminiApiKey?: string | null;
+      preferredAiProvider?: AiProvider | null;
+    } = await request.json();
 
     const [org] = await db
       .select({ aiSettings: organizations.aiSettings })
@@ -67,14 +93,28 @@ export async function POST(request: Request) {
       .limit(1);
 
     const existing = (org?.aiSettings ?? {}) as AiSettings;
-    const updated: AiSettings = {
-      ...existing,
-      openaiApiKey: body.openaiApiKey ?? undefined,
-    };
+    const updated: AiSettings = { ...existing };
 
-    // If key is explicitly null, remove it
-    if (body.openaiApiKey === null || body.openaiApiKey === "") {
-      delete updated.openaiApiKey;
+    // Update each key if provided in the request body
+    const keyFields = ["openaiApiKey", "anthropicApiKey", "geminiApiKey"] as const;
+    for (const field of keyFields) {
+      if (field in body) {
+        const value = body[field];
+        if (value === null || value === "") {
+          delete updated[field];
+        } else {
+          updated[field] = value;
+        }
+      }
+    }
+
+    // Update preferred provider
+    if ("preferredAiProvider" in body) {
+      if (body.preferredAiProvider) {
+        updated.preferredAiProvider = body.preferredAiProvider;
+      } else {
+        delete updated.preferredAiProvider;
+      }
     }
 
     await db
@@ -100,8 +140,28 @@ export async function PUT(request: Request) {
     const result = await getSessionAndOrg(request);
     if (result.error) return result.error;
 
-    const body: { openaiApiKey: string } = await request.json();
-    const keyToTest = body.openaiApiKey?.trim();
+    const body: {
+      openaiApiKey?: string;
+      anthropicApiKey?: string;
+      geminiApiKey?: string;
+      provider?: AiProvider;
+    } = await request.json();
+
+    // Determine which provider to test
+    const provider: AiProvider = body.provider ?? "openai";
+    let keyToTest = "";
+
+    switch (provider) {
+      case "openai":
+        keyToTest = (body.openaiApiKey ?? "").trim();
+        break;
+      case "anthropic":
+        keyToTest = (body.anthropicApiKey ?? "").trim();
+        break;
+      case "gemini":
+        keyToTest = (body.geminiApiKey ?? "").trim();
+        break;
+    }
 
     if (!keyToTest) {
       return NextResponse.json(
@@ -110,13 +170,45 @@ export async function PUT(request: Request) {
       );
     }
 
-    // Minimal, cheap API call: list models (no tokens consumed)
-    const response = await fetch("https://api.openai.com/v1/models", {
-      headers: { Authorization: `Bearer ${keyToTest}` },
-      signal: AbortSignal.timeout(10_000),
-    });
+    let response: Response;
 
-    if (response.status === 401) {
+    switch (provider) {
+      case "openai":
+        // Minimal, cheap API call: list models (no tokens consumed)
+        response = await fetch("https://api.openai.com/v1/models", {
+          headers: { Authorization: `Bearer ${keyToTest}` },
+          signal: AbortSignal.timeout(10_000),
+        });
+        break;
+
+      case "anthropic":
+        // Send a tiny message to validate the key
+        response = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: {
+            "x-api-key": keyToTest,
+            "anthropic-version": "2023-06-01",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "claude-sonnet-4-20250514",
+            max_tokens: 1,
+            messages: [{ role: "user", content: "hi" }],
+          }),
+          signal: AbortSignal.timeout(10_000),
+        });
+        break;
+
+      case "gemini":
+        // List models to validate the key
+        response = await fetch(
+          `https://generativelanguage.googleapis.com/v1/models?key=${keyToTest}`,
+          { signal: AbortSignal.timeout(10_000) }
+        );
+        break;
+    }
+
+    if (response.status === 401 || response.status === 403) {
       return NextResponse.json(
         { valid: false, error: "Ungültiger API-Key" },
         { status: 200 }
@@ -125,7 +217,7 @@ export async function PUT(request: Request) {
 
     if (!response.ok) {
       return NextResponse.json(
-        { valid: false, error: `OpenAI API Fehler: ${response.status}` },
+        { valid: false, error: `API Fehler: ${response.status}` },
         { status: 200 }
       );
     }

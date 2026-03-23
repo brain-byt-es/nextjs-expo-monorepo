@@ -19,6 +19,7 @@ import {
   IconTrash,
   IconEye,
   IconArrowRight,
+  IconCamera,
 } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -65,6 +66,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
 import { InfoTooltip } from "@/components/info-tooltip"
 import { TOOLTIPS } from "@/lib/tooltip-texts"
+import { DeliveryScanDialog } from "@/components/delivery-scan-dialog"
 
 // ── Types ──────────────────────────────────────────────────────────────
 type DeliveryStatus = "ordered" | "confirmed" | "shipped" | "in_transit" | "delivered"
@@ -386,6 +388,7 @@ function DeliveriesPageContent() {
   const [selectedDelivery, setSelectedDelivery] = useState<Delivery | null>(null)
   const [detailOpen, setDetailOpen] = useState(false)
   const [createOpen, setCreateOpen] = useState(false)
+  const [scanOpen, setScanOpen] = useState(false)
   const [dragOverCol, setDragOverCol] = useState<DeliveryStatus | null>(null)
   const [dragId, setDragId] = useState<string | null>(null)
 
@@ -473,6 +476,7 @@ function DeliveriesPageContent() {
               <IconTable className="size-3.5" />Tabelle
             </button>
           </div>
+          <Button variant="outline" className="gap-1.5" onClick={() => setScanOpen(true)}><IconCamera className="size-4" />{t("scanDeliveryNote")}</Button>
           <Button className="gap-1.5" onClick={() => setCreateOpen(true)}><IconPlus className="size-4" />{t("newDelivery")}</Button>
         </div>
       </div>
@@ -593,6 +597,7 @@ function DeliveriesPageContent() {
 
       <DeliveryDetailSheet delivery={selectedDelivery} open={detailOpen} onClose={() => { setDetailOpen(false); setSelectedDelivery(null) }} onStatusChange={(id, status) => { updateStatus(id, status); setSelectedDelivery((prev) => prev && prev.id === id ? { ...prev, status } : prev) }} />
       <CreateDeliveryDialog open={createOpen} onClose={() => setCreateOpen(false)} onCreated={fetchDeliveries} orders={availableOrders} suppliers={availableSuppliers} />
+      <DeliveryScanDialog open={scanOpen} onOpenChange={setScanOpen} />
     </div>
   )
 }
