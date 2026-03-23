@@ -1491,6 +1491,8 @@ export default function LandingPage() {
               <Link href="/agb" target="_blank" className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase hover:text-foreground transition-colors">{t("footerTerms")}</Link>
               <span className="text-border font-mono text-[10px]">·</span>
               <Link href="/impressum" target="_blank" className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase hover:text-foreground transition-colors">{t("footerImprint")}</Link>
+              <span className="text-border font-mono text-[10px]">·</span>
+              <button onClick={() => window.dispatchEvent(new Event("open-cookie-settings"))} className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase hover:text-foreground transition-colors">{t("footerCookies")}</button>
             </div>
           </div>
         </footer>

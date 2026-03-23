@@ -3956,6 +3956,7 @@
     "footerPrivacy": "Confidentialité",
     "footerTerms": "CGV",
     "footerImprint": "Mentions légales",
+    "footerCookies": "Paramètres des cookies",
     "scrollToTop": "Retour en haut"
   },
   "onboarding": {
@@ -5087,5 +5088,21 @@
     "s11P1": "Pour toute question relative à la protection des données, veuillez contacter :",
     "s11Privacy": "HR Online Consulting LLC (DBA Zentory) — Protection des données",
     "s11Authority": "Autorité de surveillance :"
+  },
+  "cookies": {
+    "bannerText": "Nous utilisons des cookies pour vous offrir la meilleure expérience possible.",
+    "privacyLink": "En savoir plus dans notre politique de confidentialité",
+    "acceptAll": "Tout accepter",
+    "necessaryOnly": "Nécessaires uniquement",
+    "settings": "Paramètres",
+    "settingsTitle": "Paramètres des cookies",
+    "settingsDescription": "Choisissez les cookies que vous souhaitez autoriser. Les cookies nécessaires sont indispensables au fonctionnement du site et ne peuvent pas être désactivés.",
+    "categoryNecessary": "Cookies nécessaires",
+    "categoryNecessaryDesc": "Session, langue, thème — indispensables au fonctionnement du site.",
+    "categoryAnalytics": "Cookies analytiques",
+    "categoryAnalyticsDesc": "PostHog — statistiques d'utilisation anonymisées pour améliorer notre service.",
+    "categoryMarketing": "Cookies marketing",
+    "categoryMarketingDesc": "Aucun cookie marketing n'est actuellement utilisé.",
+    "saveSelection": "Enregistrer la sélection"
   }
 }
