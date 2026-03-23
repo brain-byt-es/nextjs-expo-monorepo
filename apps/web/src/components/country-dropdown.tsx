@@ -1,6 +1,7 @@
 "use client"
 
-import React, { useCallback, useState, forwardRef } from "react"
+import React, { useCallback, useState, useMemo, forwardRef } from "react"
+import { useLocale } from "next-intl"
 import {
   Command,
   CommandEmpty,
@@ -47,13 +48,26 @@ const allCountries: Country[] = countries.all.filter(
   (c: Country) => c.emoji && c.status !== "deleted" && c.ioc !== "PRK" && c.name
 )
 
-// Sort: priority countries first, then alphabetical
-const sortedCountries = [
-  ...allCountries.filter((c) => PRIORITY_COUNTRIES.includes(c.alpha2)),
-  ...allCountries
-    .filter((c) => !PRIORITY_COUNTRIES.includes(c.alpha2))
-    .sort((a, b) => a.name.localeCompare(b.name)),
-]
+// Sorting is done inside the component with localized names
+
+/** Resolve country name in user's locale via Intl.DisplayNames */
+function useLocalizedCountryName() {
+  const locale = useLocale()
+  const displayNames = useMemo(
+    () => new Intl.DisplayNames([locale], { type: "region" }),
+    [locale]
+  )
+  return useCallback(
+    (alpha2: string) => {
+      try {
+        return displayNames.of(alpha2) ?? alpha2
+      } catch {
+        return alpha2
+      }
+    },
+    [displayNames]
+  )
+}
 
 const CountryDropdownComponent = (
   {
@@ -67,6 +81,17 @@ const CountryDropdownComponent = (
   ref: React.ForwardedRef<HTMLButtonElement>
 ) => {
   const [open, setOpen] = useState(false)
+  const getCountryName = useLocalizedCountryName()
+  const locale = useLocale()
+
+  // Sort: priority countries first, then alphabetical by localized name
+  const sortedCountries = useMemo(() => [
+    ...allCountries.filter((c) => PRIORITY_COUNTRIES.includes(c.alpha2)),
+    ...allCountries
+      .filter((c) => !PRIORITY_COUNTRIES.includes(c.alpha2))
+      .sort((a, b) => getCountryName(a.alpha2).localeCompare(getCountryName(b.alpha2), locale)),
+  ], [getCountryName, locale])
+
   const [selected, setSelected] = useState<Country | null>(() => {
     const code = value || defaultValue
     return allCountries.find((c) => c.alpha2 === code) ?? null
@@ -100,7 +125,7 @@ const CountryDropdownComponent = (
               />
             </div>
             <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-              {selected.name}
+              {getCountryName(selected.alpha2)}
             </span>
           </div>
         ) : (
@@ -137,7 +162,7 @@ const CountryDropdownComponent = (
                       />
                     </div>
                     <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-                      {option.name}
+                      {getCountryName(option.alpha2)}
                     </span>
                   </div>
                   <IconCheck
