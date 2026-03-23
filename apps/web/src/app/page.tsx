@@ -129,7 +129,7 @@ const STYLES = `
     transform: translateY(-6px) rotate(-45deg);
   }
   .mobile-overlay {
-    position: fixed; inset: 0; z-index: 40;
+    position: fixed; inset: 0; z-index: 45;
     background: oklch(0.13 0.01 170 / 0.96);
     backdrop-filter: blur(24px) saturate(1.4);
     opacity: 0; pointer-events: none;
@@ -853,7 +853,7 @@ export default function LandingPage() {
                   </Button>
                 </Link>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between text-white [&_button]:text-white [&_button]:hover:text-white/80 [&_button]:hover:bg-white/10">
                 <div className="flex items-center gap-3">
                   <LanguageSwitcher compact />
                   <ModeToggle />
