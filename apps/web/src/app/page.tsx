@@ -763,9 +763,72 @@ export default function LandingPage() {
     return () => { document.body.style.overflow = ""; window.removeEventListener("keydown", onEsc) }
   }, [mobileMenuOpen])
 
+  const softwareAppJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Zentory",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web, iOS, Android",
+    "description": "Inventar- und Werkzeugverwaltung für Schweizer KMU",
+    "url": "https://zentory.ch",
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Starter",
+        "price": "59",
+        "priceCurrency": "CHF",
+        "priceValidUntil": "2027-12-31",
+        "url": "https://zentory.ch/#pricing"
+      },
+      {
+        "@type": "Offer",
+        "name": "Professional",
+        "price": "199",
+        "priceCurrency": "CHF",
+        "priceValidUntil": "2027-12-31",
+        "url": "https://zentory.ch/#pricing"
+      }
+    ],
+    "publisher": {
+      "@type": "Organization",
+      "name": "HR Online Consulting LLC",
+      "url": "https://zentory.ch",
+      "logo": "https://zentory.ch/zentory-logo.svg"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "ratingCount": "1"
+    }
+  }
+
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Zentory",
+    "legalName": "HR Online Consulting LLC",
+    "url": "https://zentory.ch",
+    "logo": "https://zentory.ch/zentory-logo.svg",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "support@zentory.ch",
+      "contactType": "customer support"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "550 Kings Mountain",
+      "addressLocality": "Kings Mountain",
+      "addressRegion": "NC",
+      "postalCode": "28086",
+      "addressCountry": "US"
+    }
+  }
+
   return (
     <>
       <style>{STYLES}</style>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
       <CustomCursor />
       <ScrollUI />
 

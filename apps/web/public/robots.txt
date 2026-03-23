@@ -1,2 +1,4 @@
+# TODO: Remove Disallow when ready for launch
 User-agent: *
 Disallow: /
+Sitemap: https://zentory.ch/sitemap.xml

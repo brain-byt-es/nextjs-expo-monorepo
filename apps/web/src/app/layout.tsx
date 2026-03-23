@@ -21,6 +21,16 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://zentory.ch"),
+  alternates: {
+    canonical: "/",
+    languages: {
+      "de": "https://zentory.ch",
+      "en": "https://zentory.ch",
+      "fr": "https://zentory.ch",
+      "it": "https://zentory.ch",
+    },
+  },
   robots: { index: false, follow: false },
   title: {
     default: "Zentory",
