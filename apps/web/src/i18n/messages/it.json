@@ -170,6 +170,7 @@
     "warrantyClaims": "Reclami garanzia",
     "locationsGroup": "Ubicazioni",
     "map": "Mappa",
+    "vehicles": "Veicoli",
     "planningAnalysis": "Pianificazione & Analisi",
     "timeTracking": "Rilevamento ore",
     "kanban": "Kanban",
@@ -323,7 +324,27 @@
     "expiryHint": "Importante per i materiali medici",
     "notesPlaceholder": "Note aggiuntive...",
     "overview": "Panoramica",
-    "nameRequired": "Il nome e obbligatorio"
+    "nameRequired": "Il nome e obbligatorio",
+    "reorder": {
+      "button": "Riordinare",
+      "buttonSufficient": "Scorta sufficiente",
+      "title": "Riordinare materiale",
+      "bestSupplier": "Miglior fornitore",
+      "suggestedQty": "Quantità suggerita",
+      "leadTime": "Tempo di consegna",
+      "leadTimeDays": "{days} giorni",
+      "totalCost": "Costo stimato",
+      "unitPrice": "Prezzo unitario",
+      "confirm": "Effettua ordine",
+      "success": "Ordine {orderNumber} creato",
+      "successLink": "Vai all'ordine",
+      "noSupplier": "Nessun fornitore configurato",
+      "noSupplierDesc": "Aggiungi prima un fornitore con un prezzo.",
+      "quantity": "Quantità ordine",
+      "loading": "Caricamento...",
+      "creating": "Creazione ordine...",
+      "belowReorder": "Sotto soglia di riordino"
+    }
   },
   "tools": {
     "title": "Attrezzi",
@@ -2633,7 +2654,12 @@
     "noGpsTitle": "Nessuna coordinata GPS",
     "noGpsDescription": "Inserisci latitudine e longitudine delle tue ubicazioni per visualizzarle sulla mappa.",
     "goToLocations": "Vai alle ubicazioni",
-    "showOnMap": "Mostra sulla mappa"
+    "showOnMap": "Mostra sulla mappa",
+    "types": {
+      "warehouse": "Magazzino",
+      "vehicle": "Veicolo",
+      "site": "Cantiere"
+    }
   },
   "floorPlan": {
     "title": "Vista planimetria",
@@ -4766,5 +4792,34 @@
     "contactTitle": "Contatto",
     "contactDescription": "Contattaci direttamente via e-mail.",
     "contactResponseTime": "Di solito rispondiamo entro 24 ore."
+  },
+  "vehicles": {
+    "title": "Veicoli",
+    "addVehicle": "Nuovo veicolo",
+    "addVehicleDescription": "Registra un nuovo veicolo con targa, marca e modello.",
+    "licensePlate": "Targa",
+    "make": "Marca",
+    "model": "Modello",
+    "year": "Anno",
+    "nextMfk": "Prossimo collaudo",
+    "mileage": "Chilometraggio",
+    "driver": "Conducente",
+    "notes": "Note",
+    "notesPlaceholder": "Note sul veicolo...",
+    "selectMake": "Seleziona marca...",
+    "selectModel": "Seleziona modello...",
+    "selectMakeFirst": "Seleziona prima la marca",
+    "selectDriver": "Seleziona conducente...",
+    "noDriver": "Nessun conducente",
+    "noMakeFound": "Nessuna marca trovata",
+    "noModelFound": "Nessun modello trovato",
+    "searchPlaceholder": "Cerca targa, marca, modello...",
+    "vehiclesCount": "{count, plural, one {veicolo} other {veicoli}}",
+    "noVehicles": "Nessun veicolo",
+    "createFirstDescription": "Registra il tuo primo veicolo per gestire il parco veicoli.",
+    "tryDifferentSearch": "Prova una ricerca diversa.",
+    "noFilterMatch": "Nessun veicolo corrisponde a questo filtro.",
+    "deleteVehicle": "Elimina veicolo",
+    "deleteConfirmMessage": "Vuoi davvero eliminare il veicolo \"{name}\"? Questa azione non può essere annullata."
   }
 }

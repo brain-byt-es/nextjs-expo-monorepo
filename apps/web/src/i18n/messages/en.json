@@ -170,6 +170,7 @@
     "warrantyClaims": "Warranty Claims",
     "locationsGroup": "Locations",
     "map": "Map",
+    "vehicles": "Vehicles",
     "planningAnalysis": "Planning & Analysis",
     "timeTracking": "Time Tracking",
     "kanban": "Kanban",
@@ -323,7 +324,27 @@
     "expiryHint": "Important for medical materials",
     "notesPlaceholder": "Additional notes...",
     "overview": "Overview",
-    "nameRequired": "Name is required"
+    "nameRequired": "Name is required",
+    "reorder": {
+      "button": "Reorder",
+      "buttonSufficient": "Stock sufficient",
+      "title": "Reorder material",
+      "bestSupplier": "Best supplier",
+      "suggestedQty": "Suggested quantity",
+      "leadTime": "Lead time",
+      "leadTimeDays": "{days} days",
+      "totalCost": "Estimated cost",
+      "unitPrice": "Unit price",
+      "confirm": "Place order",
+      "success": "Order {orderNumber} created",
+      "successLink": "Go to order",
+      "noSupplier": "No supplier configured",
+      "noSupplierDesc": "Add a supplier with pricing first.",
+      "quantity": "Order quantity",
+      "loading": "Loading...",
+      "creating": "Creating order...",
+      "belowReorder": "Below reorder level"
+    }
   },
   "tools": {
     "title": "Tools",
@@ -2633,7 +2654,12 @@
     "noGpsTitle": "No GPS coordinates",
     "noGpsDescription": "Enter latitude and longitude for your locations to display them on the map.",
     "goToLocations": "Go to locations",
-    "showOnMap": "Show on map"
+    "showOnMap": "Show on map",
+    "types": {
+      "warehouse": "Warehouse",
+      "vehicle": "Vehicle",
+      "site": "Site"
+    }
   },
   "floorPlan": {
     "title": "Floor Plan View",
@@ -4766,5 +4792,34 @@
     "contactTitle": "Contact",
     "contactDescription": "Reach us directly via email.",
     "contactResponseTime": "We typically respond within 24 hours."
+  },
+  "vehicles": {
+    "title": "Vehicles",
+    "addVehicle": "New Vehicle",
+    "addVehicleDescription": "Register a new vehicle with license plate, make and model.",
+    "licensePlate": "License Plate",
+    "make": "Make",
+    "model": "Model",
+    "year": "Year",
+    "nextMfk": "Next Inspection",
+    "mileage": "Mileage",
+    "driver": "Driver",
+    "notes": "Notes",
+    "notesPlaceholder": "Notes about the vehicle...",
+    "selectMake": "Select make...",
+    "selectModel": "Select model...",
+    "selectMakeFirst": "Select make first",
+    "selectDriver": "Select driver...",
+    "noDriver": "No driver",
+    "noMakeFound": "No make found",
+    "noModelFound": "No model found",
+    "searchPlaceholder": "Search license plate, make, model...",
+    "vehiclesCount": "{count, plural, one {vehicle} other {vehicles}}",
+    "noVehicles": "No vehicles yet",
+    "createFirstDescription": "Register your first vehicle to manage your fleet.",
+    "tryDifferentSearch": "Try a different search query.",
+    "noFilterMatch": "No vehicles match this filter.",
+    "deleteVehicle": "Delete Vehicle",
+    "deleteConfirmMessage": "Are you sure you want to delete the vehicle \"{name}\"? This action cannot be undone."
   }
 }

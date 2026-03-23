@@ -170,6 +170,7 @@
     "warrantyClaims": "Réclamations garantie",
     "locationsGroup": "Emplacements",
     "map": "Carte",
+    "vehicles": "Véhicules",
     "planningAnalysis": "Planification & Analyse",
     "timeTracking": "Suivi du temps",
     "kanban": "Kanban",
@@ -323,7 +324,27 @@
     "expiryHint": "Important pour les materiaux medicaux",
     "notesPlaceholder": "Remarques supplementaires...",
     "overview": "Apercu",
-    "nameRequired": "Le nom est requis"
+    "nameRequired": "Le nom est requis",
+    "reorder": {
+      "button": "Recommander",
+      "buttonSufficient": "Stock suffisant",
+      "title": "Recommander le matériau",
+      "bestSupplier": "Meilleur fournisseur",
+      "suggestedQty": "Quantité suggérée",
+      "leadTime": "Délai de livraison",
+      "leadTimeDays": "{days} jours",
+      "totalCost": "Coût estimé",
+      "unitPrice": "Prix unitaire",
+      "confirm": "Passer la commande",
+      "success": "Commande {orderNumber} créée",
+      "successLink": "Voir la commande",
+      "noSupplier": "Aucun fournisseur configuré",
+      "noSupplierDesc": "Ajoutez d'abord un fournisseur avec un prix.",
+      "quantity": "Quantité de commande",
+      "loading": "Chargement...",
+      "creating": "Création de la commande...",
+      "belowReorder": "Sous le seuil de commande"
+    }
   },
   "tools": {
     "title": "Outils",
@@ -2633,7 +2654,12 @@
     "noGpsTitle": "Pas de coordonnées GPS",
     "noGpsDescription": "Saisissez la latitude et la longitude de vos emplacements pour les afficher sur la carte.",
     "goToLocations": "Vers les emplacements",
-    "showOnMap": "Afficher sur la carte"
+    "showOnMap": "Afficher sur la carte",
+    "types": {
+      "warehouse": "Entrepôt",
+      "vehicle": "Véhicule",
+      "site": "Chantier"
+    }
   },
   "floorPlan": {
     "title": "Vue du plan",
@@ -4766,5 +4792,34 @@
     "contactTitle": "Contact",
     "contactDescription": "Contactez-nous directement par e-mail.",
     "contactResponseTime": "Nous répondons généralement dans les 24 heures."
+  },
+  "vehicles": {
+    "title": "Véhicules",
+    "addVehicle": "Nouveau véhicule",
+    "addVehicleDescription": "Enregistrez un nouveau véhicule avec plaque, marque et modèle.",
+    "licensePlate": "Plaque d'immatriculation",
+    "make": "Marque",
+    "model": "Modèle",
+    "year": "Année",
+    "nextMfk": "Prochain contrôle",
+    "mileage": "Kilométrage",
+    "driver": "Conducteur",
+    "notes": "Notes",
+    "notesPlaceholder": "Remarques sur le véhicule...",
+    "selectMake": "Choisir la marque...",
+    "selectModel": "Choisir le modèle...",
+    "selectMakeFirst": "Choisir d'abord la marque",
+    "selectDriver": "Choisir le conducteur...",
+    "noDriver": "Aucun conducteur",
+    "noMakeFound": "Aucune marque trouvée",
+    "noModelFound": "Aucun modèle trouvé",
+    "searchPlaceholder": "Rechercher plaque, marque, modèle...",
+    "vehiclesCount": "{count, plural, one {véhicule} other {véhicules}}",
+    "noVehicles": "Aucun véhicule",
+    "createFirstDescription": "Enregistrez votre premier véhicule pour gérer votre flotte.",
+    "tryDifferentSearch": "Essayez une autre recherche.",
+    "noFilterMatch": "Aucun véhicule ne correspond à ce filtre.",
+    "deleteVehicle": "Supprimer le véhicule",
+    "deleteConfirmMessage": "Voulez-vous vraiment supprimer le véhicule « {name} » ? Cette action est irréversible."
   }
 }

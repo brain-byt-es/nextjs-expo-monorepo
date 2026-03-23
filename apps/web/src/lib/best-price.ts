@@ -21,7 +21,8 @@ export interface BestPriceResult {
 export async function findBestPrice(
   materialId: string,
   orgId: string,
-  quantity: number
+  quantity: number,
+  preferredSupplierId?: string
 ): Promise<BestPriceResult | null> {
   const db = getDb();
   const now = new Date();
@@ -44,7 +45,11 @@ export async function findBestPrice(
         // Filter: minOrderQuantity <= requested quantity
         lte(supplierPrices.minOrderQuantity, quantity),
         // Filter: price is currently valid
-        or(isNull(supplierPrices.validTo), gte(supplierPrices.validTo, now))
+        or(isNull(supplierPrices.validTo), gte(supplierPrices.validTo, now)),
+        // Optionally filter by specific supplier
+        preferredSupplierId
+          ? eq(supplierPrices.supplierId, preferredSupplierId)
+          : undefined
       )
     )
     .orderBy(supplierPrices.unitPrice);

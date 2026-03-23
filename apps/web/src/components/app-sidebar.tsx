@@ -379,6 +379,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         items: [
           { title: t("locations"), url: "/dashboard/locations" },
           { title: t("map"), url: "/dashboard/map" },
+          { title: t("vehicles"), url: "/dashboard/vehicles" },
         ],
       },
       {

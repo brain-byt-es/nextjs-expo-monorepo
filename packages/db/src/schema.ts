@@ -233,6 +233,7 @@ export const locations = pgTable(
     address: text("address"),
     latitude: text("latitude"),
     longitude: text("longitude"),
+    metadata: jsonb("metadata"), // Vehicle-specific data, custom fields, etc.
     isActive: boolean("is_active").default(true),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),

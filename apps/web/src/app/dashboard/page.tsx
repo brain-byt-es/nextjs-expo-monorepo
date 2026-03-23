@@ -364,7 +364,6 @@ function CustomWidgetGrid({ widgets }: { widgets: WidgetLayoutItem[] }) {
       rowHeight={80}
       margin={[12, 12]}
       containerPadding={[0, 0]}
-      compactor={noCompactor}
       dragConfig={{ enabled: false }}
       resizeConfig={{ enabled: false }}
     >
@@ -576,41 +575,7 @@ export default function DashboardPage() {
     </div>
   )
 
-  // ── Show skeleton while checking for saved widgets ─────────────────────────
-  if (widgetsLoading) {
-    return (
-      <div className="flex flex-col gap-6 py-4 md:py-6">
-        {pageHeader}
-        <div className="px-4 lg:px-6 grid grid-cols-1 gap-3 sm:grid-cols-2 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-          {[...Array(4)].map((_, i) => (
-            <Card key={i}>
-              <CardContent className="flex items-center gap-4 pt-6 pb-5">
-                <Skeleton className="size-12 rounded-xl" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-8 w-16" />
-                  <Skeleton className="h-4 w-24" />
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    )
-  }
-
-  // ── Custom widget grid mode ────────────────────────────────────────────────
-  if (customWidgets && customWidgets.length > 0) {
-    return (
-      <div className="flex flex-col gap-6 py-4 md:py-6">
-        {pageHeader}
-        <div className="px-4 lg:px-6">
-          <CustomWidgetGrid widgets={customWidgets} />
-        </div>
-      </div>
-    )
-  }
-
-  // ── Default static dashboard ───────────────────────────────────────────────
+  // ── Default static dashboard (custom grid available via /dashboard/customize) ──
   return (
     <div className="flex flex-col gap-6 py-4 md:py-6">
 

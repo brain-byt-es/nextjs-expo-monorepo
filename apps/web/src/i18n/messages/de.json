@@ -170,6 +170,7 @@
     "warrantyClaims": "Garantieansprüche",
     "locationsGroup": "Standorte",
     "map": "Karte",
+    "vehicles": "Fahrzeuge",
     "planningAnalysis": "Planung & Analyse",
     "timeTracking": "Zeiterfassung",
     "kanban": "Kanban",
@@ -323,7 +324,27 @@
     "expiryHint": "Wichtig fuer medizinische Materialien",
     "notesPlaceholder": "Zusaetzliche Hinweise...",
     "overview": "Uebersicht",
-    "nameRequired": "Name ist erforderlich"
+    "nameRequired": "Name ist erforderlich",
+    "reorder": {
+      "button": "Nachbestellen",
+      "buttonSufficient": "Bestand ausreichend",
+      "title": "Material nachbestellen",
+      "bestSupplier": "Bester Lieferant",
+      "suggestedQty": "Vorgeschlagene Menge",
+      "leadTime": "Lieferzeit",
+      "leadTimeDays": "{days} Tage",
+      "totalCost": "Geschätzte Kosten",
+      "unitPrice": "Stückpreis",
+      "confirm": "Bestellung aufgeben",
+      "success": "Bestellung {orderNumber} erstellt",
+      "successLink": "Zur Bestellung",
+      "noSupplier": "Kein Lieferant hinterlegt",
+      "noSupplierDesc": "Fügen Sie zuerst einen Lieferanten mit Preis hinzu.",
+      "quantity": "Bestellmenge",
+      "loading": "Wird geladen...",
+      "creating": "Bestellung wird erstellt...",
+      "belowReorder": "Unter Meldebestand"
+    }
   },
   "tools": {
     "title": "Werkzeuge",
@@ -2633,7 +2654,12 @@
     "noGpsTitle": "Keine GPS-Koordinaten",
     "noGpsDescription": "Tragen Sie Breitengrad und Längengrad bei Ihren Standorten ein, um diese auf der Karte anzuzeigen.",
     "goToLocations": "Zu den Standorten",
-    "showOnMap": "Auf Karte anzeigen"
+    "showOnMap": "Auf Karte anzeigen",
+    "types": {
+      "warehouse": "Lager",
+      "vehicle": "Fahrzeug",
+      "site": "Baustelle"
+    }
   },
   "floorPlan": {
     "title": "Grundriss-Ansicht",
@@ -4766,5 +4792,34 @@
     "contactTitle": "Kontakt",
     "contactDescription": "Erreichen Sie uns direkt per E-Mail.",
     "contactResponseTime": "Wir antworten in der Regel innerhalb von 24 Stunden."
+  },
+  "vehicles": {
+    "title": "Fahrzeuge",
+    "addVehicle": "Neues Fahrzeug",
+    "addVehicleDescription": "Erfassen Sie ein neues Fahrzeug mit Kennzeichen, Marke und Modell.",
+    "licensePlate": "Kennzeichen",
+    "make": "Marke",
+    "model": "Modell",
+    "year": "Baujahr",
+    "nextMfk": "Nächste MFK",
+    "mileage": "Kilometerstand",
+    "driver": "Fahrer",
+    "notes": "Notizen",
+    "notesPlaceholder": "Bemerkungen zum Fahrzeug...",
+    "selectMake": "Marke wählen...",
+    "selectModel": "Modell wählen...",
+    "selectMakeFirst": "Zuerst Marke wählen",
+    "selectDriver": "Fahrer wählen...",
+    "noDriver": "Kein Fahrer",
+    "noMakeFound": "Keine Marke gefunden",
+    "noModelFound": "Kein Modell gefunden",
+    "searchPlaceholder": "Kennzeichen, Marke, Modell suchen...",
+    "vehiclesCount": "{count, plural, one {Fahrzeug} other {Fahrzeuge}}",
+    "noVehicles": "Keine Fahrzeuge vorhanden",
+    "createFirstDescription": "Erfassen Sie Ihr erstes Fahrzeug, um den Fuhrpark zu verwalten.",
+    "tryDifferentSearch": "Versuchen Sie eine andere Suchanfrage.",
+    "noFilterMatch": "Keine Fahrzeuge mit diesem Filter gefunden.",
+    "deleteVehicle": "Fahrzeug löschen",
+    "deleteConfirmMessage": "Möchten Sie das Fahrzeug «{name}» wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
   }
 }

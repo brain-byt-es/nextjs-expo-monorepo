@@ -17,7 +17,11 @@ import {
   IconTag,
   IconRoute2,
   IconCalendar,
+  IconShoppingCart,
+  IconTruck,
+  IconLoader2,
 } from "@tabler/icons-react"
+import { toast } from "sonner"
 import { QrCodeDisplay } from "@/components/qr-code"
 import { ZebraLabelButton } from "@/components/zebra-label-button"
 import { BarcodeLabel } from "@/components/barcode-label"
@@ -213,6 +217,27 @@ export default function MaterialDetailPage() {
   const [showRequestDialog, setShowRequestDialog] = useState(false)
   const [deleting, setDeleting] = useState(false)
 
+  // Reorder dialog
+  const [showReorderDialog, setShowReorderDialog] = useState(false)
+  const [reorderLoading, setReorderLoading] = useState(false)
+  const [reorderData, setReorderData] = useState<{
+    materialName: string
+    unit: string
+    totalStock: number
+    reorderLevel: number
+    suggestedQuantity: number
+    supplier: {
+      id: string
+      name: string
+      unitPrice: number
+      totalPrice: number
+      leadTimeDays: number | null
+      minOrderQuantity: number
+    } | null
+  } | null>(null)
+  const [reorderQty, setReorderQty] = useState(1)
+  const [reorderCreating, setReorderCreating] = useState(false)
+
   // Fetch everything
   useEffect(() => {
     async function load() {
@@ -312,6 +337,58 @@ export default function MaterialDetailPage() {
       setDeleting(false)
     }
   }, [materialId, router])
+
+  // Reorder: fetch suggestion
+  const handleOpenReorder = useCallback(async () => {
+    setReorderLoading(true)
+    setShowReorderDialog(true)
+    try {
+      const res = await fetch(`/api/materials/${materialId}/reorder`)
+      if (res.ok) {
+        const data = await res.json()
+        setReorderData(data)
+        setReorderQty(data.suggestedQuantity ?? 1)
+      }
+    } catch {
+      toast.error(t("reorder.noSupplier"))
+    } finally {
+      setReorderLoading(false)
+    }
+  }, [materialId, t])
+
+  // Reorder: confirm and create order
+  const handleConfirmReorder = useCallback(async () => {
+    if (!reorderData?.supplier) return
+    setReorderCreating(true)
+    try {
+      const res = await fetch(`/api/materials/${materialId}/reorder`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          quantity: reorderQty,
+          supplierId: reorderData.supplier.id,
+        }),
+      })
+      if (res.ok) {
+        const order = await res.json()
+        setShowReorderDialog(false)
+        setReorderData(null)
+        toast.success(t("reorder.success", { orderNumber: order.orderNumber }), {
+          action: {
+            label: t("reorder.successLink"),
+            onClick: () => router.push(`/dashboard/orders/${order.orderId}`),
+          },
+        })
+      } else {
+        const err = await res.json().catch(() => ({}))
+        toast.error(err.error ?? "Fehler")
+      }
+    } catch {
+      toast.error("Fehler bei der Bestellung")
+    } finally {
+      setReorderCreating(false)
+    }
+  }, [materialId, reorderData, reorderQty, t, router])
 
   // Stock booking handler
   const handleBooking = useCallback(async () => {
@@ -472,6 +549,21 @@ export default function MaterialDetailPage() {
           >
             <IconTag className="size-4" />
             Etiketten
+          </Button>
+          <Button
+            variant={material.reorderLevel > 0 && totalStock < material.reorderLevel ? "default" : "outline"}
+            size="sm"
+            onClick={handleOpenReorder}
+            className={
+              material.reorderLevel > 0 && totalStock < material.reorderLevel
+                ? "bg-amber-500 hover:bg-amber-600 text-white"
+                : ""
+            }
+          >
+            <IconShoppingCart className="size-4" />
+            {material.reorderLevel > 0 && totalStock < material.reorderLevel
+              ? t("reorder.button")
+              : t("reorder.button")}
           </Button>
           <Button
             variant="outline"
@@ -1222,6 +1314,114 @@ export default function MaterialDetailPage() {
         materialName={material?.name}
         materialUnit={material?.unit}
       />
+      {/* ─── Reorder Dialog ────────────────────────────────────────── */}
+      <Dialog open={showReorderDialog} onOpenChange={setShowReorderDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <IconShoppingCart className="size-5 text-amber-500" />
+              {t("reorder.title")}
+            </DialogTitle>
+            <DialogDescription>
+              {material.name}
+            </DialogDescription>
+          </DialogHeader>
+
+          {reorderLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <IconLoader2 className="size-6 animate-spin text-muted-foreground" />
+              <span className="ml-2 text-sm text-muted-foreground">{t("reorder.loading")}</span>
+            </div>
+          ) : reorderData?.supplier ? (
+            <div className="space-y-4">
+              <div className="rounded-lg border bg-muted/50 p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">{t("reorder.bestSupplier")}</span>
+                  <span className="font-medium flex items-center gap-1.5">
+                    <IconTruck className="size-4 text-muted-foreground" />
+                    {reorderData.supplier.name}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">{t("reorder.unitPrice")}</span>
+                  <span className="font-medium">
+                    CHF {(reorderData.supplier.unitPrice / 100).toFixed(2)}
+                  </span>
+                </div>
+                {reorderData.supplier.leadTimeDays != null && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">{t("reorder.leadTime")}</span>
+                    <span className="font-medium">
+                      {t("reorder.leadTimeDays", { days: reorderData.supplier.leadTimeDays })}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="reorder-qty">{t("reorder.quantity")}</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    id="reorder-qty"
+                    type="number"
+                    min={reorderData.supplier.minOrderQuantity}
+                    value={reorderQty}
+                    onChange={(e) => setReorderQty(Math.max(1, parseInt(e.target.value) || 1))}
+                    className="w-28"
+                  />
+                  <span className="text-sm text-muted-foreground">{reorderData.unit}</span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {t("reorder.suggestedQty")}: {reorderData.suggestedQuantity} {reorderData.unit}
+                </p>
+              </div>
+
+              <Separator />
+
+              <div className="flex items-center justify-between text-lg font-semibold">
+                <span>{t("reorder.totalCost")}</span>
+                <span>CHF {((reorderData.supplier.unitPrice * reorderQty) / 100).toFixed(2)}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <IconAlertTriangle className="size-10 text-amber-500" />
+              <p className="mt-3 font-medium">{t("reorder.noSupplier")}</p>
+              <p className="mt-1 text-sm text-muted-foreground">{t("reorder.noSupplierDesc")}</p>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowReorderDialog(false)}
+              disabled={reorderCreating}
+            >
+              {tc("cancel")}
+            </Button>
+            {reorderData?.supplier && (
+              <Button
+                onClick={handleConfirmReorder}
+                disabled={reorderCreating || reorderLoading}
+                className="bg-amber-500 hover:bg-amber-600 text-white"
+              >
+                {reorderCreating ? (
+                  <>
+                    <IconLoader2 className="size-4 animate-spin" />
+                    {t("reorder.creating")}
+                  </>
+                ) : (
+                  <>
+                    <IconShoppingCart className="size-4" />
+                    {t("reorder.confirm")}
+                  </>
+                )}
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* ─── Delete Dialog ─────────────────────────────────────────── */}
       <Dialog open={showDelete} onOpenChange={setShowDelete}>
         <DialogContent>
