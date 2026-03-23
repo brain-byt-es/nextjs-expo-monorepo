@@ -39,7 +39,7 @@ export default async function ImpressumPage() {
             EIN (Tax ID): 61-2199060
           </p>
           <p>
-            {t("phone")}: +41 (0)76 123456<br />
+            {t("phone")}: +1 (828) 214-7447<br />
             {t("email")}: <a href="mailto:legal@zentory.ch" className="text-primary hover:underline">legal@zentory.ch</a>
           </p>
           <p>
