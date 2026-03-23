@@ -86,6 +86,11 @@ interface Location {
   name: string
 }
 
+interface OrgMember {
+  userId: string
+  user: { name: string; email: string }
+}
+
 // ── Constants ─────────────────────────────────────────────────────────
 const ITEMS_PER_PAGE = 20
 
@@ -117,12 +122,28 @@ export default function KeysPage() {
     notes: "",
   })
 
+  // Edit dialog
+  const [editTarget, setEditTarget] = useState<KeyItem | null>(null)
+  const [editOpen, setEditOpen] = useState(false)
+  const [editing, setEditing] = useState(false)
+  const [editForm, setEditForm] = useState({
+    name: "",
+    number: "",
+    barcode: "",
+    homeLocationId: "",
+    address: "",
+    quantity: 1,
+    notes: "",
+    assignedToId: "",
+  })
+
   // Delete dialog
   const [deleteTarget, setDeleteTarget] = useState<KeyItem | null>(null)
   const [deleting, setDeleting] = useState(false)
 
   // Reference data
   const [locations, setLocations] = useState<Location[]>([])
+  const [members, setMembers] = useState<OrgMember[]>([])
 
   // Debounce search input
   useEffect(() => {
@@ -146,7 +167,20 @@ export default function KeysPage() {
         // silently fail
       }
     }
+    async function fetchMembers() {
+      try {
+        const res = await fetch("/api/organizations/members")
+        if (res.ok) {
+          const data = await res.json()
+          const list = Array.isArray(data) ? data : (data.members ?? data.data ?? [])
+          setMembers(list)
+        }
+      } catch {
+        // silently fail
+      }
+    }
     fetchLocations()
+    fetchMembers()
   }, [])
 
   // Fetch keys
@@ -225,6 +259,69 @@ export default function KeysPage() {
       setDeleteTarget(null)
     }
   }, [deleteTarget])
+
+  // Open edit dialog – pre-fill form with current values
+  const openEdit = useCallback((key: KeyItem) => {
+    setEditTarget(key)
+    setEditForm({
+      name: key.name,
+      number: key.number ?? "",
+      barcode: key.barcode ?? "",
+      homeLocationId: key.homeLocationId ?? "",
+      address: key.address ?? "",
+      quantity: key.quantity,
+      notes: key.notes ?? "",
+      assignedToId: key.assignedToId ?? "",
+    })
+    setEditOpen(true)
+  }, [])
+
+  // Edit handler
+  const handleEdit = useCallback(async () => {
+    if (!editTarget || !editForm.name.trim()) return
+    setEditing(true)
+    try {
+      const res = await fetch(`/api/keys/${editTarget.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: editForm.name.trim(),
+          number: editForm.number.trim() || null,
+          barcode: editForm.barcode.trim() || null,
+          homeLocationId: editForm.homeLocationId || null,
+          address: editForm.address.trim() || null,
+          quantity: editForm.quantity || 1,
+          notes: editForm.notes.trim() || null,
+          assignedToId: editForm.assignedToId || null,
+        }),
+      })
+      if (res.ok) {
+        setEditOpen(false)
+        setEditTarget(null)
+        fetchKeys()
+      }
+    } catch {
+      // TODO: toast error
+    } finally {
+      setEditing(false)
+    }
+  }, [editTarget, editForm, fetchKeys])
+
+  // Inline assignment change
+  const handleAssignChange = useCallback(async (key: KeyItem, newAssignedToId: string | null) => {
+    try {
+      const res = await fetch(`/api/keys/${key.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ assignedToId: newAssignedToId }),
+      })
+      if (res.ok) {
+        fetchKeys()
+      }
+    } catch {
+      // TODO: toast error
+    }
+  }, [fetchKeys])
 
   const totalPages = Math.max(1, Math.ceil(total / ITEMS_PER_PAGE))
 
@@ -356,7 +453,7 @@ export default function KeysPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem className="gap-2">
+                            <DropdownMenuItem className="gap-2" onClick={() => openEdit(key)}>
                               <IconEdit className="size-4" /> {tc("edit")}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />

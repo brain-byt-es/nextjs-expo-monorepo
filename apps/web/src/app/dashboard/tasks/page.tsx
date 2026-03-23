@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, useEffect, useCallback } from "react"
+import { useState, useMemo, useEffect, useCallback, useRef } from "react"
 import { useTranslations } from "next-intl"
 import {
   IconPlus,
@@ -23,6 +23,11 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { toast } from "sonner"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   Table,
@@ -142,6 +147,12 @@ export default function TasksPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [loading, setLoading] = useState(true)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
+  const [createOpen, setCreateOpen] = useState(false)
+  const [createLoading, setCreateLoading] = useState(false)
+  const [newTitle, setNewTitle] = useState("")
+  const [newDescription, setNewDescription] = useState("")
+  const [newTopic, setNewTopic] = useState("maintenance")
+  const [newPriority, setNewPriority] = useState("normal")
 
   const fetchTasks = useCallback(async () => {
     try {
@@ -234,7 +245,7 @@ export default function TasksPage() {
             )}
           </p>
         </div>
-        <Button className="gap-2">
+        <Button className="gap-2" onClick={() => setCreateOpen(true)}>
           <IconPlus className="size-4" />
           {t("addTask")}
         </Button>
@@ -349,7 +360,7 @@ export default function TasksPage() {
                       <TableCell>
                         {task.topic ? (
                           <Badge variant="secondary" className="text-xs font-normal">
-                            {t(`topics.${task.topic}`)}
+                            {t(`topics.${task.topic}`, { defaultValue: task.topic })}
                           </Badge>
                         ) : (
                           <span className="text-muted-foreground text-sm">-</span>
@@ -426,6 +437,72 @@ export default function TasksPage() {
           )}
         </CardContent>
       </Card>
+      {/* Create Task Dialog */}
+      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("addTask")}</DialogTitle>
+          </DialogHeader>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault()
+              if (!newTitle.trim()) return
+              setCreateLoading(true)
+              try {
+                const res = await fetch("/api/tasks", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    title: newTitle.trim(),
+                    description: newDescription.trim() || undefined,
+                    topic: newTopic,
+                    status: "open",
+                  }),
+                })
+                if (!res.ok) throw new Error("Failed")
+                toast.success(t("taskCreated"))
+                setCreateOpen(false)
+                setNewTitle("")
+                setNewDescription("")
+                setNewTopic("maintenance")
+                void fetchTasks()
+              } catch {
+                toast.error(t("taskCreateError"))
+              } finally {
+                setCreateLoading(false)
+              }
+            }}
+            className="space-y-4"
+          >
+            <div className="space-y-2">
+              <Label>{t("titleLabel")}</Label>
+              <Input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} placeholder={t("titlePlaceholder")} required />
+            </div>
+            <div className="space-y-2">
+              <Label>{t("descriptionLabel")}</Label>
+              <Textarea value={newDescription} onChange={(e) => setNewDescription(e.target.value)} placeholder={t("descriptionPlaceholder")} rows={3} />
+            </div>
+            <div className="space-y-2">
+              <Label>{t("topicLabel")}</Label>
+              <Select value={newTopic} onValueChange={setNewTopic}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="maintenance">{t("topics.maintenance")}</SelectItem>
+                  <SelectItem value="repair">{t("topics.repair")}</SelectItem>
+                  <SelectItem value="inspection">{t("topics.inspection")}</SelectItem>
+                  <SelectItem value="procurement">{t("topics.procurement")}</SelectItem>
+                  <SelectItem value="other">{t("topics.other")}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <DialogFooter>
+              <Button type="submit" disabled={createLoading || !newTitle.trim()}>
+                {createLoading ? t("creating") : t("addTask")}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

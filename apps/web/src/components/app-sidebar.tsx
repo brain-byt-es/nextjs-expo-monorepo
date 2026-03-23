@@ -32,6 +32,7 @@ import {
   IconReportAnalytics,
   IconSettings,
   IconTool,
+  IconCar,
 } from "@tabler/icons-react"
 import { useTranslations } from "next-intl"
 import { useShortcutsDialog } from "@/components/shortcuts-dialog"
@@ -323,6 +324,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         hideable: true,
       },
       {
+        title: t("vehicles"),
+        url: "/dashboard/vehicles",
+        icon: IconCar,
+        hideable: true,
+      },
+      {
         title: t("keys"),
         url: "/dashboard/keys",
         icon: IconKey,
@@ -378,7 +385,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         items: [
           { title: t("locations"), url: "/dashboard/locations" },
           { title: t("map"), url: "/dashboard/map" },
-          { title: t("vehicles"), url: "/dashboard/vehicles" },
         ],
       },
       {

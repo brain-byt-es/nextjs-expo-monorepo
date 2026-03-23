@@ -264,36 +264,47 @@ export default function ToolDetailPage() {
   useEffect(() => {
     async function load() {
       setLoading(true)
-      try {
-        const [toolRes, groupsRes, locsRes, deprRes] = await Promise.all([
-          fetch(`/api/tools/${toolId}`),
-          fetch("/api/tool-groups"),
-          fetch("/api/locations"),
-          fetch(`/api/tools/${toolId}/depreciation`),
-        ])
+      setDeprLoading(true)
 
+      // Fetch tool data (critical)
+      try {
+        const toolRes = await fetch(`/api/tools/${toolId}`)
         if (toolRes.ok) {
           const d = await toolRes.json()
           setTool(d)
           setForm(d)
         }
+      } catch {
+        // Tool fetch failed — page will show "not found"
+      }
+
+      // Fetch reference data (non-critical)
+      try {
+        const groupsRes = await fetch("/api/tool-groups")
         if (groupsRes.ok) {
           const g = await groupsRes.json()
           setGroups(Array.isArray(g) ? g : (g.data ?? []))
         }
+      } catch { /* ignore */ }
+
+      try {
+        const locsRes = await fetch("/api/locations")
         if (locsRes.ok) {
           const l = await locsRes.json()
           setLocations(Array.isArray(l) ? l : (l.data ?? []))
         }
+      } catch { /* ignore */ }
+
+      // Fetch depreciation data (non-critical)
+      try {
+        const deprRes = await fetch(`/api/tools/${toolId}/depreciation`)
         if (deprRes.ok) {
           setDeprData(await deprRes.json())
         }
-      } catch {
-        // TODO: handle error
-      } finally {
-        setLoading(false)
-        setDeprLoading(false)
-      }
+      } catch { /* ignore */ }
+
+      setLoading(false)
+      setDeprLoading(false)
     }
     load()
   }, [toolId])

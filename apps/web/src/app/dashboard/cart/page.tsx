@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react"
 import { useTranslations } from "next-intl"
+import { toast } from "sonner"
 import {
   IconShoppingCart,
   IconTrash,
@@ -37,27 +38,7 @@ import {
   EmptyDescription,
 } from "@/components/ui/empty"
 
-// ── Types ──────────────────────────────────────────────────────────────
-interface CartItem {
-  id: string
-  type: "material"
-  number: string
-  materialName: string
-  supplierName: string
-  supplierId: string
-  articleNumber: string
-  purchasePrice: number
-  orderUnit: string
-  quantity: number
-}
-
-// ── Initial Cart Data ──────────────────────────────────────────────────
-const INITIAL_CART: CartItem[] = [
-  { id: "c1", type: "material", number: "M-002", materialName: "Verbindungsbox IP65", supplierName: "Debrunner Acifer", supplierId: "S3", articleNumber: "DA-VB65-10", purchasePrice: 3.80, orderUnit: "Stk", quantity: 20 },
-  { id: "c2", type: "material", number: "M-005", materialName: "Schraubendübelset M6", supplierName: "Bossard AG", supplierId: "S4", articleNumber: "BS-SD-M6-50", purchasePrice: 0.15, orderUnit: "Stk", quantity: 200 },
-  { id: "c3", type: "material", number: "M-001", materialName: "Kabelrohr 20mm grau", supplierName: "Hilti AG", supplierId: "S1", articleNumber: "KR-20G-100", purchasePrice: 1.20, orderUnit: "m", quantity: 300 },
-  { id: "c4", type: "material", number: "M-008", materialName: "Abzweigdose UP 68mm", supplierName: "Würth Schweiz", supplierId: "S2", articleNumber: "WU-AZ68-25", purchasePrice: 1.85, orderUnit: "Stk", quantity: 25 },
-]
+import { type CartItem, getCart, saveCart, clearCart } from "@/lib/cart"
 
 function formatCHF(val: number) {
   return `CHF ${val.toFixed(2)}`
@@ -68,7 +49,10 @@ export default function CartPage() {
   const t = useTranslations("cart")
   const tc = useTranslations("common")
 
-  const [items, setItems] = useState<CartItem[]>(INITIAL_CART)
+  const [items, setItems] = useState<CartItem[]>(() => {
+    if (typeof window === "undefined") return []
+    return getCart()
+  })
   const [supplierFilter, setSupplierFilter] = useState("all")
   const [generatingOrder, setGeneratingOrder] = useState(false)
 
