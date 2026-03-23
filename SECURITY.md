@@ -1,28 +1,31 @@
-# Security Policy
+# Security Policy — Zentory
 
-## Supported Versions
+## Unterstützte Versionen
 
-| Version | Supported |
-|---------|-----------|
-| latest (main) | ✅ |
+| Version | Support |
+|---------|---------|
+| `main` (Production) | Aktiv |
 
-## Reporting a Vulnerability
+## Sicherheitslücke melden
 
-**Please do not report security vulnerabilities through public GitHub issues.**
+**Bitte keine Sicherheitslücken über öffentliche GitHub Issues melden.**
 
-If you discover a security vulnerability, please report it via [GitHub's private vulnerability reporting](https://github.com/brain-byt-es/nextjs-expo-monorepo/security/advisories/new).
+Melde Schwachstellen per E-Mail an: **security@zentory.ch**
 
-Include as much of the following as possible:
-- Type of issue (e.g. SQL injection, XSS, auth bypass)
-- Affected file(s) and line numbers
-- Steps to reproduce
-- Potential impact
+Bitte beschreibe:
+- Art der Schwachstelle (z.B. SQL Injection, XSS, Auth Bypass)
+- Betroffene Dateien und Zeilen
+- Schritte zur Reproduktion
+- Mögliche Auswirkung
 
-You'll receive a response within 48 hours. If the issue is confirmed, a patch will be released as soon as possible.
+Wir antworten innerhalb von 48 Stunden. Bestätigte Schwachstellen werden so schnell wie möglich gepatcht.
 
-## Security Best Practices for Users
+## Sicherheitsrichtlinien
 
-- **Never commit `.env.local`** — all secrets stay local
-- Rotate `BETTER_AUTH_SECRET` and `STRIPE_WEBHOOK_SECRET` if exposed
-- Use environment-specific Stripe keys (test vs. live)
-- Enable Vercel's [Attack Challenge Mode](https://vercel.com/docs/security/attack-challenge-mode) in production
+- **`.env.local` niemals committen** — alle Secrets bleiben lokal
+- Bei Kompromittierung sofort rotieren: `BETTER_AUTH_SECRET`, `STRIPE_WEBHOOK_SECRET`
+- Stripe Keys immer umgebungsspezifisch (Test vs. Live)
+- Kundendaten unterliegen dem Schweizer Datenschutzgesetz (nDSG)
+- Server-Standort: Schweiz (Supabase eu-central-2)
+- Alle API-Routen prüfen Auth via `getSessionAndOrg()`
+- Rate Limiting via Upstash Redis auf allen öffentlichen Endpoints
