@@ -1,32 +1,37 @@
 import type { Metadata } from "next"
+import { getTranslations } from "next-intl/server"
 
-export const metadata: Metadata = {
-  title: "Datenschutzerklärung",
-  description: "Datenschutzerklärung von Zentory gemäss nDSG (Schweiz).",
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("datenschutz")
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+  }
 }
 
-export default function DatenschutzPage() {
+export default async function DatenschutzPage() {
+  const t = await getTranslations("datenschutz")
+
   return (
     <article className="space-y-12">
       {/* Header */}
       <header className="border-b border-border pb-8">
         <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-3">
-          Rechtliches · Datenschutz
+          {t("breadcrumb")}
         </div>
-        <h1 className="text-3xl font-bold leading-tight mb-4">Datenschutzerklärung</h1>
+        <h1 className="text-3xl font-bold leading-tight mb-4">{t("title")}</h1>
         <p className="font-mono text-xs text-muted-foreground">
-          Stand: März 2026 · Gültig für zentory.ch und alle zugehörigen Dienste
+          {t("subtitle")}
         </p>
       </header>
 
       {/* 1. Verantwortliche Stelle */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          1. Verantwortliche Stelle
+          {t("s1Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Verantwortlich für die Bearbeitung Ihrer Personendaten im Sinne des schweizerischen
-          Datenschutzgesetzes (nDSG) und der europäischen Datenschutz-Grundverordnung (DSGVO) ist:
+          {t("s1P1")}
         </p>
         <div className="rounded-lg border border-border bg-muted/30 p-5 font-mono text-sm space-y-1">
           <div className="font-bold text-foreground">HR Online Consulting LLC (DBA Zentory)</div>
@@ -39,57 +44,55 @@ export default function DatenschutzPage() {
       {/* 2. Erhobene Daten */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          2. Welche Daten wir erheben
+          {t("s2Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Wir erheben und bearbeiten folgende Kategorien von Personendaten:
+          {t("s2P1")}
         </p>
 
         <div className="space-y-5">
           <div>
-            <h3 className="text-sm font-semibold mb-2">2.1 Kontodaten</h3>
+            <h3 className="text-sm font-semibold mb-2">{t("s2_1Title")}</h3>
             <ul className="space-y-1.5 text-sm text-muted-foreground leading-relaxed list-none">
-              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Vorname, Nachname</li>
-              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> E-Mail-Adresse</li>
-              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Gehashtes Passwort (nie im Klartext gespeichert)</li>
-              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Benutzerrolle (Admin, Mitarbeiter)</li>
+              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2_1Item1")}</li>
+              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2_1Item2")}</li>
+              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2_1Item3")}</li>
+              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2_1Item4")}</li>
             </ul>
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold mb-2">2.2 Organisationsdaten</h3>
+            <h3 className="text-sm font-semibold mb-2">{t("s2_2Title")}</h3>
             <ul className="space-y-1.5 text-sm text-muted-foreground leading-relaxed list-none">
-              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Firmenname, Branche</li>
-              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Anzahl Mitarbeitende (für Lizenzierung)</li>
-              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Rechnungsadresse</li>
+              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2_2Item1")}</li>
+              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2_2Item2")}</li>
+              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2_2Item3")}</li>
             </ul>
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold mb-2">2.3 Inventardaten</h3>
+            <h3 className="text-sm font-semibold mb-2">{t("s2_3Title")}</h3>
             <ul className="space-y-1.5 text-sm text-muted-foreground leading-relaxed list-none">
-              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Artikel, Werkzeuge, Fahrzeugbestände (von Ihnen erfasst)</li>
-              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Buchungshistorie, Standortzuweisungen</li>
-              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Diese Daten gehören ausschliesslich Ihnen (siehe Abschnitt 9)</li>
+              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2_3Item1")}</li>
+              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2_3Item2")}</li>
+              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2_3Item3")}</li>
             </ul>
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold mb-2">2.4 Nutzungs- und technische Daten</h3>
+            <h3 className="text-sm font-semibold mb-2">{t("s2_4Title")}</h3>
             <ul className="space-y-1.5 text-sm text-muted-foreground leading-relaxed list-none">
-              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> IP-Adresse, Browser-Typ, Betriebssystem (anonymisiert)</li>
-              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Aufgerufene Seiten und Zeitstempel (via PostHog)</li>
-              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Fehlermeldungen und Performance-Daten (via Sentry)</li>
-              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Seitenaufrufe und Web Vitals (via Vercel Analytics)</li>
+              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2_4Item1")}</li>
+              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2_4Item2")}</li>
+              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2_4Item3")}</li>
+              <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2_4Item4")}</li>
             </ul>
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold mb-2">2.5 Zahlungsdaten</h3>
+            <h3 className="text-sm font-semibold mb-2">{t("s2_5Title")}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Zahlungsinformationen (Kreditkarte, IBAN) werden <strong className="text-foreground">nicht</strong> auf unseren Servern gespeichert.
-              Sie werden direkt und verschlüsselt an Stripe (Web) bzw. RevenueCat (Mobile App) übermittelt.
-              Wir speichern lediglich die anonymisierte Transaktions-ID sowie den Abonnementstatus.
+              {t("s2_5P1")} <strong className="text-foreground">{t("s2_5P1Not")}</strong> {t("s2_5P1End")}
             </p>
           </div>
         </div>
@@ -98,48 +101,47 @@ export default function DatenschutzPage() {
       {/* 3. Rechtsgrundlagen */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          3. Rechtsgrundlagen der Bearbeitung
+          {t("s3Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Wir stützen die Bearbeitung Ihrer Personendaten auf folgende Rechtsgrundlagen:
+          {t("s3P1")}
         </p>
         <ul className="space-y-2 text-sm text-muted-foreground leading-relaxed list-none">
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Vertragserfüllung</strong>: Betrieb des Dienstes Zentory gemäss den AGB</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Berechtigte Interessen</strong>: Sicherheit, Missbrauchsverhinderung, Produktverbesserung</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Gesetzliche Pflicht</strong>: Buchführung und Steuerpflichten</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Einwilligung</strong>: Für Marketing-E-Mails (jederzeit widerrufbar)</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">{t("s3Contract")}</strong>: {t("s3ContractDesc")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">{t("s3Interest")}</strong>: {t("s3InterestDesc")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">{t("s3Legal")}</strong>: {t("s3LegalDesc")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">{t("s3Consent")}</strong>: {t("s3ConsentDesc")}</li>
         </ul>
       </section>
 
       {/* 4. Drittanbieter */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          4. Eingesetzte Drittanbieter und Datenübermittlungen
+          {t("s4Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Wir setzen sorgfältig ausgewählte Drittanbieter ein, die alle mit Standardvertragsklauseln
-          oder gleichwertigen Garantien abgesichert sind:
+          {t("s4P1")}
         </p>
 
         <div className="overflow-hidden rounded-lg border border-border">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-muted/40">
-                <th className="px-4 py-3 text-left font-mono text-[10px] tracking-widest uppercase text-muted-foreground">Anbieter</th>
-                <th className="px-4 py-3 text-left font-mono text-[10px] tracking-widest uppercase text-muted-foreground">Zweck</th>
-                <th className="px-4 py-3 text-left font-mono text-[10px] tracking-widest uppercase text-muted-foreground">Serverstandort</th>
+                <th className="px-4 py-3 text-left font-mono text-[10px] tracking-widest uppercase text-muted-foreground">{t("s4ThProvider")}</th>
+                <th className="px-4 py-3 text-left font-mono text-[10px] tracking-widest uppercase text-muted-foreground">{t("s4ThPurpose")}</th>
+                <th className="px-4 py-3 text-left font-mono text-[10px] tracking-widest uppercase text-muted-foreground">{t("s4ThLocation")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {[
-                ["Vercel", "Hosting der Web-Anwendung", "USA / EU (Edge Network)"],
-                ["Supabase", "Datenbank (PostgreSQL)", "EU Frankfurt (AWS)"],
-                ["PostHog", "Produktanalyse (anonymisiert)", "EU Frankfurt"],
-                ["Sentry", "Fehler-Monitoring", "USA (SCCs)"],
-                ["Resend", "Transaktions-E-Mails", "USA (SCCs)"],
-                ["Stripe", "Zahlungsabwicklung Web", "USA / EU (SCCs)"],
-                ["RevenueCat", "In-App-Käufe Mobile", "USA (SCCs)"],
-                ["Vercel Analytics", "Web-Vitals (cookiefrei)", "USA (anonymisiert)"],
+                ["Vercel", t("s4Vercel"), "USA / EU (Edge Network)"],
+                ["Supabase", t("s4Supabase"), "EU Frankfurt (AWS)"],
+                ["PostHog", t("s4PostHog"), "EU Frankfurt"],
+                ["Sentry", t("s4Sentry"), "USA (SCCs)"],
+                ["Resend", t("s4Resend"), "USA (SCCs)"],
+                ["Stripe", t("s4Stripe"), "USA / EU (SCCs)"],
+                ["RevenueCat", t("s4RevenueCat"), "USA (SCCs)"],
+                ["Vercel Analytics", t("s4VercelAnalytics"), "USA"],
               ].map(([anbieter, zweck, standort]) => (
                 <tr key={anbieter} className="hover:bg-muted/20 transition-colors">
                   <td className="px-4 py-3 font-semibold text-foreground">{anbieter}</td>
@@ -152,78 +154,76 @@ export default function DatenschutzPage() {
         </div>
 
         <p className="text-sm text-muted-foreground leading-relaxed">
-          <strong className="text-foreground">SCCs</strong> = EU-Standardvertragsklauseln (Standard Contractual Clauses).
-          Wir verkaufen Ihre Daten <strong className="text-foreground">nicht</strong> an Dritte und nutzen sie
-          nicht für Werbezwecke ausserhalb unseres Dienstes.
+          <strong className="text-foreground">SCCs</strong> = {t("s4SCCs")}{" "}
+          {t("s4P2")} <strong className="text-foreground">{t("s4P2Not")}</strong> {t("s4P2End")}
         </p>
       </section>
 
       {/* 5. Cookies */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          5. Cookies und ähnliche Technologien
+          {t("s5Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Zentory verwendet folgende Arten von Cookies:
+          {t("s5P1")}
         </p>
         <ul className="space-y-2 text-sm text-muted-foreground leading-relaxed list-none">
           <li className="flex gap-2">
             <span className="text-primary shrink-0 font-mono">—</span>
-            <span><strong className="text-foreground">Session-Cookie</strong>: Notwendig für die Authentifizierung (HttpOnly, Secure, SameSite=Lax). Läuft nach 30 Tagen ab.</span>
+            <span><strong className="text-foreground">{t("s5Session")}</strong>: {t("s5SessionDesc")}</span>
           </li>
           <li className="flex gap-2">
             <span className="text-primary shrink-0 font-mono">—</span>
-            <span><strong className="text-foreground">PostHog-Cookie</strong>: Anonymisiertes Analyse-Tracking. Kann in den Einstellungen deaktiviert werden.</span>
+            <span><strong className="text-foreground">{t("s5PostHog")}</strong>: {t("s5PostHogDesc")}</span>
           </li>
           <li className="flex gap-2">
             <span className="text-primary shrink-0 font-mono">—</span>
-            <span><strong className="text-foreground">Theme-Cookie</strong>: Speichert Ihre Hell/Dunkel-Präferenz (LocalStorage).</span>
+            <span><strong className="text-foreground">{t("s5Theme")}</strong>: {t("s5ThemeDesc")}</span>
           </li>
         </ul>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Wir verwenden <strong className="text-foreground">keine</strong> Werbe-Cookies oder Cross-Site-Tracking.
-          Vercel Analytics arbeitet cookiefrei und erfasst keine personenbezogenen Daten.
+          {t("s5P2")} <strong className="text-foreground">{t("s5P2No")}</strong> {t("s5P2End")}
         </p>
       </section>
 
       {/* 6. Speicherdauer */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          6. Speicherdauer
+          {t("s6Title")}
         </h2>
         <ul className="space-y-2 text-sm text-muted-foreground leading-relaxed list-none">
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Kontodaten</strong>: Für die Dauer des Vertragsverhältnisses plus 30 Tage nach Kündigung</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Inventardaten</strong>: Für die Dauer des Abonnements; nach Kündigung Export möglich, danach Löschung</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Zahlungsdaten</strong>: 10 Jahre gemäss Schweizer Buchführungsrecht (OR Art. 958f)</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Log-Daten</strong>: Maximal 90 Tage</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Analyse-Daten</strong>: 12 Monate (anonymisiert)</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">{t("s6Account")}</strong>: {t("s6AccountDesc")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">{t("s6Inventory")}</strong>: {t("s6InventoryDesc")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">{t("s6Payment")}</strong>: {t("s6PaymentDesc")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">{t("s6Log")}</strong>: {t("s6LogDesc")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">{t("s6Analytics")}</strong>: {t("s6AnalyticsDesc")}</li>
         </ul>
       </section>
 
       {/* 7. Ihre Rechte */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          7. Ihre Rechte
+          {t("s7Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Gemäss nDSG und DSGVO haben Sie folgende Rechte bezüglich Ihrer Personendaten:
+          {t("s7P1")}
         </p>
         <ul className="space-y-2 text-sm text-muted-foreground leading-relaxed list-none">
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Auskunft</strong>: Welche Daten wir über Sie gespeichert haben</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Berichtigung</strong>: Korrektur unrichtiger Daten</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Löschung</strong>: Löschung Ihrer Daten (soweit keine gesetzliche Aufbewahrungspflicht besteht)</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Datenportabilität</strong>: Export Ihrer Daten im maschinenlesbaren Format (JSON/CSV)</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Widerspruch</strong>: Gegen die Bearbeitung auf Basis berechtigter Interessen</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">Beschwerde</strong>: Bei der zuständigen Aufsichtsbehörde (EDÖB, edoeb.admin.ch)</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">{t("s7Access")}</strong>: {t("s7AccessDesc")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">{t("s7Rectification")}</strong>: {t("s7RectificationDesc")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">{t("s7Deletion")}</strong>: {t("s7DeletionDesc")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">{t("s7Portability")}</strong>: {t("s7PortabilityDesc")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">{t("s7Objection")}</strong>: {t("s7ObjectionDesc")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> <strong className="text-foreground">{t("s7Complaint")}</strong>: {t("s7ComplaintDesc")}</li>
         </ul>
         <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-sm">
-          <p className="text-foreground font-medium mb-1">Anfrage stellen</p>
+          <p className="text-foreground font-medium mb-1">{t("s7RequestTitle")}</p>
           <p className="text-muted-foreground">
-            Senden Sie Ihre Datenschutzanfrage an{" "}
+            {t("s7RequestP1")}{" "}
             <a href="mailto:datenschutz@zentory.ch" className="text-primary hover:underline font-medium">
               datenschutz@zentory.ch
             </a>
-            . Wir antworten innerhalb von 30 Tagen.
+            {t("s7RequestP2")}
           </p>
         </div>
       </section>
@@ -231,58 +231,53 @@ export default function DatenschutzPage() {
       {/* 8. Datensicherheit */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          8. Datensicherheit
+          {t("s8Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Wir ergreifen angemessene technische und organisatorische Massnahmen zum Schutz Ihrer Daten:
+          {t("s8P1")}
         </p>
         <ul className="space-y-2 text-sm text-muted-foreground leading-relaxed list-none">
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Verschlüsselung aller Datenübertragungen via TLS 1.3</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Verschlüsselung der Datenbank at rest (AES-256)</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Rollenbasierte Zugriffskontrolle (RBAC)</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Stündliche Datenbank-Backups mit 30-Tage-Aufbewahrung</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Automatisches Session-Timeout nach Inaktivität</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Separate Mandantentrennung (keine Datenvermischung zwischen Organisationen)</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s8Item1")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s8Item2")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s8Item3")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s8Item4")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s8Item5")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s8Item6")}</li>
         </ul>
       </section>
 
       {/* 9. Dateneigentum */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          9. Dateneigentum
+          {t("s9Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Alle Inventardaten, die Sie in Zentory erfassen — Artikel, Werkzeuge, Fahrzeuge, Buchungshistorien —
-          verbleiben zu 100 % in Ihrem Eigentum. HR Online Consulting LLC (DBA Zentory) nimmt keine Eigentumsrechte daran in Anspruch
-          und nutzt diese Daten nicht für eigene Zwecke. Sie können Ihre Daten jederzeit exportieren und
-          bei Kündigung innerhalb von 30 Tagen vollständig löschen lassen.
+          {t("s9P1")}
         </p>
       </section>
 
       {/* 10. Änderungen */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          10. Änderungen dieser Datenschutzerklärung
+          {t("s10Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf anzupassen. Bei wesentlichen Änderungen
-          informieren wir Sie per E-Mail mindestens 14 Tage vor Inkrafttreten. Das Datum der letzten Änderung
-          ist oben auf dieser Seite vermerkt.
+          {t("s10P1")}
         </p>
       </section>
 
       {/* 11. Kontakt */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          11. Kontakt
+          {t("s11Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Für alle Fragen zum Datenschutz wenden Sie sich bitte an:
+          {t("s11P1")}
         </p>
         <div className="rounded-lg border border-border bg-muted/30 p-5 font-mono text-sm space-y-1">
-          <div className="font-bold text-foreground">HR Online Consulting LLC (DBA Zentory) — Datenschutz</div>
+          <div className="font-bold text-foreground">{t("s11Privacy")}</div>
           <div className="text-muted-foreground">E-Mail: <a href="mailto:datenschutz@zentory.ch" className="text-primary hover:underline">datenschutz@zentory.ch</a></div>
-          <div className="text-muted-foreground">Aufsichtsbehörde: <a href="https://www.edoeb.admin.ch" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">EDÖB (edoeb.admin.ch)</a></div>
+          <div className="text-muted-foreground">{t("s11Authority")} <a href="https://www.edoeb.admin.ch" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">EDÖB (edoeb.admin.ch)</a></div>
         </div>
       </section>
     </article>

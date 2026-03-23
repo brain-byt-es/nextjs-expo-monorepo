@@ -1,7 +1,10 @@
 import Link from "next/link"
+import { getTranslations } from "next-intl/server"
 import { Logo, Wordmark } from "@/components/logo"
 
-export default function LegalLayout({ children }: { children: React.ReactNode }) {
+export default async function LegalLayout({ children }: { children: React.ReactNode }) {
+  const t = await getTranslations("legalLayout")
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       {/* Top nav bar */}
@@ -12,7 +15,7 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
             href="/"
             className="font-mono text-[11px] tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors"
           >
-            ← Zurück zur Startseite
+            {t("backToHome")}
           </Link>
         </div>
       </header>
@@ -29,9 +32,9 @@ export default function LegalLayout({ children }: { children: React.ReactNode })
             © {new Date().getFullYear()} <Wordmark className="inline" />
           </p>
           <nav className="flex gap-6 font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
-            <Link href="/datenschutz" className="hover:text-foreground transition-colors">Datenschutz</Link>
-            <Link href="/agb"         className="hover:text-foreground transition-colors">AGB</Link>
-            <Link href="/impressum"   className="hover:text-foreground transition-colors">Impressum</Link>
+            <Link href="/datenschutz" className="hover:text-foreground transition-colors">{t("privacy")}</Link>
+            <Link href="/agb"         className="hover:text-foreground transition-colors">{t("terms")}</Link>
+            <Link href="/impressum"   className="hover:text-foreground transition-colors">{t("imprint")}</Link>
           </nav>
         </div>
       </footer>

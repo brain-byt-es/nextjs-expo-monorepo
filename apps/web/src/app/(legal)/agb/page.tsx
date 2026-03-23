@@ -1,126 +1,115 @@
 import type { Metadata } from "next"
+import { getTranslations } from "next-intl/server"
 
-export const metadata: Metadata = {
-  title: "Allgemeine Geschäftsbedingungen",
-  description: "AGB von Zentory — SaaS-Inventarverwaltung für Schweizer KMU.",
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("agb")
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+  }
 }
 
-export default function AGBPage() {
+export default async function AGBPage() {
+  const t = await getTranslations("agb")
+
   return (
     <article className="space-y-12">
       {/* Header */}
       <header className="border-b border-border pb-8">
         <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground mb-3">
-          Rechtliches · AGB
+          {t("breadcrumb")}
         </div>
         <h1 className="text-3xl font-bold leading-tight mb-4">
-          Allgemeine Geschäftsbedingungen
+          {t("title")}
         </h1>
         <p className="font-mono text-xs text-muted-foreground">
-          Stand: März 2026 · HR Online Consulting LLC (DBA Zentory), Zürich · Anwendbar auf alle Zentory-Abonnements
+          {t("subtitle")}
         </p>
       </header>
 
       {/* 1. Geltungsbereich */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          1. Geltungsbereich
+          {t("s1Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Diese Allgemeinen Geschäftsbedingungen (nachfolgend «AGB») regeln das Vertragsverhältnis zwischen
-          der HR Online Consulting LLC (DBA Zentory) (nachfolgend «Anbieter») und dem Kunden (nachfolgend «Kunde») bezüglich der
-          Nutzung der SaaS-Plattform Zentory unter <a href="https://zentory.ch" className="text-primary hover:underline">zentory.ch</a> und
-          der zugehörigen mobilen Applikation.
+          {t("s1P1")} <a href="https://zentory.ch" className="text-primary hover:underline">zentory.ch</a> {t("s1P1End")}
         </p>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Abweichende Bedingungen des Kunden gelten nur, wenn der Anbieter diesen ausdrücklich und schriftlich
-          zugestimmt hat. Mit der Registrierung oder Nutzung des Dienstes akzeptiert der Kunde diese AGB.
+          {t("s1P2")}
         </p>
       </section>
 
       {/* 2. Leistungsbeschreibung */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          2. Leistungsbeschreibung
+          {t("s2Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Zentory ist eine cloudbasierte Software-as-a-Service-Lösung für die Inventar- und
-          Werkzeugverwaltung von kleinen und mittleren Unternehmen (KMU). Der Dienst umfasst:
+          {t("s2P1")}
         </p>
         <ul className="space-y-2 text-sm text-muted-foreground leading-relaxed list-none">
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Verwaltung von Materialien, Werkzeugen, Fahrzeugbeständen und Schlüsseln</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Standort- und Buchungsverwaltung für mehrere Lagerorte</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Buchungshistorie und Rückverfolgung</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Bestellwesen und Lieferantenverwaltung</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Mobile App für iOS und Android (je nach Abonnement)</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Integrationen mit Drittanbieter-Systemen (je nach Abonnement)</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2Item1")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2Item2")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2Item3")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2Item4")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2Item5")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s2Item6")}</li>
         </ul>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Der Anbieter behält sich vor, den Funktionsumfang weiterzuentwickeln und anzupassen. Wesentliche
-          Einschränkungen bestehender Funktionen werden dem Kunden mit einer Frist von 30 Tagen mitgeteilt.
+          {t("s2P2")}
         </p>
       </section>
 
       {/* 3. Vertragsabschluss */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          3. Vertragsabschluss und Registrierung
+          {t("s3Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Der Vertrag kommt zustande, wenn der Kunde ein Konto erstellt und diese AGB akzeptiert.
-          Mit der Registrierung versichert der Kunde, dass er:
+          {t("s3P1")}
         </p>
         <ul className="space-y-2 text-sm text-muted-foreground leading-relaxed list-none">
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Volljährig und geschäftsfähig ist oder im Namen einer juristischen Person handelt</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Korrekte und vollständige Angaben macht</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Zugangsdaten vertraulich behandelt und nicht an Dritte weitergibt</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s3Item1")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s3Item2")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s3Item3")}</li>
         </ul>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Der Anbieter kann die Registrierung ohne Angabe von Gründen ablehnen oder ein bestehendes Konto
-          sperren, wenn ein begründeter Verdacht auf missbräuchliche Nutzung besteht.
+          {t("s3P2")}
         </p>
       </section>
 
       {/* 4. Abonnement und Preise */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          4. Abonnement und Preise
+          {t("s4Title")}
         </h2>
 
         <div>
-          <h3 className="text-sm font-semibold mb-2">4.1 Abonnementmodell</h3>
+          <h3 className="text-sm font-semibold mb-2">{t("s4_1Title")}</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Zentory wird als monatliches oder jährliches Abonnement angeboten. Die aktuellen Preise
-            sind auf der Webseite unter <a href="https://zentory.ch/#pricing" className="text-primary hover:underline">zentory.ch/#pricing</a> einsehbar.
-            Alle Preise sind in CHF und exklusive Mehrwertsteuer angegeben.
+            {t("s4_1P1")} <a href="https://zentory.ch/#pricing" className="text-primary hover:underline">zentory.ch/#pricing</a> {t("s4_1P1End")}
           </p>
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold mb-2">4.2 Testphase</h3>
+          <h3 className="text-sm font-semibold mb-2">{t("s4_2Title")}</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Neukunden erhalten eine kostenlose Testphase von 14 Tagen. Für die Testphase ist keine
-            Kreditkarte erforderlich. Nach Ablauf der Testphase wechselt das Konto automatisch in
-            den kostenlosen Starter-Plan oder wird deaktiviert, sofern kein kostenpflichtiges
-            Abonnement gewählt wurde.
+            {t("s4_2P1")}
           </p>
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold mb-2">4.3 Zahlung</h3>
+          <h3 className="text-sm font-semibold mb-2">{t("s4_3Title")}</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Die Abonnementgebühr wird monatlich oder jährlich im Voraus per Kreditkarte (via Stripe)
-            in Rechnung gestellt. Bei Zahlungsverzug behält sich der Anbieter vor, den Zugang nach
-            einer Frist von 7 Tagen zu sperren.
+            {t("s4_3P1")}
           </p>
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold mb-2">4.4 Preisanpassungen</h3>
+          <h3 className="text-sm font-semibold mb-2">{t("s4_4Title")}</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Der Anbieter kann Preise mit einer Ankündigungsfrist von <strong className="text-foreground">30 Tagen</strong> anpassen.
-            Preisanpassungen werden dem Kunden per E-Mail mitgeteilt. Der Kunde kann den Vertrag
-            innerhalb der Ankündigungsfrist ohne Mehrkosten kündigen.
+            {t("s4_4P1")} <strong className="text-foreground">{t("s4_4P1Days")}</strong> {t("s4_4P1End")}
           </p>
         </div>
       </section>
@@ -128,126 +117,107 @@ export default function AGBPage() {
       {/* 5. Pflichten des Kunden */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          5. Pflichten und Verantwortung des Kunden
+          {t("s5Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Der Kunde verpflichtet sich:
+          {t("s5P1")}
         </p>
         <ul className="space-y-2 text-sm text-muted-foreground leading-relaxed list-none">
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Den Dienst nur für rechtmässige Zwecke zu nutzen</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Keine Schadsoftware, Viren oder schädlichen Code einzuschleusen</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Die Zugangsdaten sicher aufzubewahren und nicht weiterzugeben</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Den Anbieter unverzüglich zu informieren, wenn Zugangsdaten kompromittiert wurden</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Die Nutzungsrechte der eingeladenen Benutzer zu verwalten und zu kontrollieren</li>
-          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> Sicherzustellen, dass eingeladene Benutzer diese AGB einhalten</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s5Item1")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s5Item2")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s5Item3")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s5Item4")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s5Item5")}</li>
+          <li className="flex gap-2"><span className="text-primary shrink-0 font-mono">—</span> {t("s5Item6")}</li>
         </ul>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Für alle Handlungen von Benutzern, die unter dem Konto des Kunden agieren, übernimmt der
-          Kunde die vollständige Verantwortung.
+          {t("s5P2")}
         </p>
       </section>
 
       {/* 6. Dateneigentum */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          6. Dateneigentum und Datenverarbeitung
+          {t("s6Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Alle vom Kunden in Zentory eingegebenen Daten (Inventardaten, Buchungshistorien,
-          Organisationsdaten) bleiben zu 100 % Eigentum des Kunden. Der Anbieter verarbeitet
-          diese Daten ausschliesslich zur Erbringung der vertraglich vereinbarten Leistungen.
+          {t("s6P1")}
         </p>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Der Kunde gewährt dem Anbieter das notwendige Recht zur technischen Verarbeitung
-          (Speicherung, Backup, Übertragung) zum Betrieb des Dienstes.
+          {t("s6P2")}
         </p>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Der Anbieter handelt als Auftragsverarbeiter im Sinne von Art. 9 nDSG. Auf Anfrage
-          wird ein separater Auftragsverarbeitungsvertrag (AVV) zur Verfügung gestellt.
+          {t("s6P3")}
         </p>
       </section>
 
       {/* 7. Verfügbarkeit */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          7. Verfügbarkeit und Wartung
+          {t("s7Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Der Anbieter strebt eine hohe Verfügbarkeit des Dienstes an. Es gelten folgende Bedingungen:
+          {t("s7P1")}
         </p>
         <ul className="space-y-2 text-sm text-muted-foreground leading-relaxed list-none">
           <li className="flex gap-2">
             <span className="text-primary shrink-0 font-mono">—</span>
-            <span><strong className="text-foreground">Starter-Plan</strong>: Best-Effort-Verfügbarkeit, kein SLA</span>
+            <span><strong className="text-foreground">{t("s7Starter")}</strong>: {t("s7StarterDesc")}</span>
           </li>
           <li className="flex gap-2">
             <span className="text-primary shrink-0 font-mono">—</span>
-            <span><strong className="text-foreground">Professional-Plan</strong>: Angestrebte Verfügbarkeit von 99,5 % monatlich</span>
+            <span><strong className="text-foreground">{t("s7Pro")}</strong>: {t("s7ProDesc")}</span>
           </li>
           <li className="flex gap-2">
             <span className="text-primary shrink-0 font-mono">—</span>
-            <span><strong className="text-foreground">Enterprise-Plan</strong>: Verfügbarkeits-SLA gemäss separater Vereinbarung</span>
+            <span><strong className="text-foreground">{t("s7Enterprise")}</strong>: {t("s7EnterpriseDesc")}</span>
           </li>
         </ul>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Geplante Wartungsarbeiten werden im Voraus angekündigt. Notfallwartungen können ohne
-          Vorankündigung durchgeführt werden. Ausfälle ausserhalb der Kontrolle des Anbieters
-          (Force Majeure) begründen keinen Anspruch auf Rückerstattung.
+          {t("s7P2")}
         </p>
       </section>
 
       {/* 8. Haftung */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          8. Haftungsbeschränkung
+          {t("s8Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Der Anbieter haftet für Schäden, die durch grobe Fahrlässigkeit oder Vorsatz verursacht wurden.
-          Für leichte Fahrlässigkeit haftet der Anbieter nur bei Verletzung wesentlicher Vertragspflichten.
+          {t("s8P1")}
         </p>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Die Haftung des Anbieters ist in jedem Fall auf die vom Kunden in den letzten 12 Monaten
-          bezahlten Abonnementgebühren beschränkt. Eine Haftung für entgangenen Gewinn, mittelbare
-          Schäden oder Folgeschäden ist ausgeschlossen, soweit gesetzlich zulässig.
+          {t("s8P2")}
         </p>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Der Anbieter übernimmt keine Haftung für den Inhalt der vom Kunden erfassten Daten sowie
-          für Schäden durch Fehlbedienung oder unberechtigten Zugriff durch Dritte, sofern der Anbieter
-          die erforderlichen Sicherheitsmassnahmen getroffen hat.
+          {t("s8P3")}
         </p>
       </section>
 
       {/* 9. Kündigung */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          9. Laufzeit und Kündigung
+          {t("s9Title")}
         </h2>
 
         <div>
-          <h3 className="text-sm font-semibold mb-2">9.1 Ordentliche Kündigung</h3>
+          <h3 className="text-sm font-semibold mb-2">{t("s9_1Title")}</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Monatliche Abonnements können jederzeit zum Ende des laufenden Abrechnungszeitraums
-            gekündigt werden. Jährliche Abonnements können mit einer Frist von 30 Tagen vor
-            Ablauf des Vertragsjahres gekündigt werden. Die Kündigung erfolgt über die
-            Kontoeinstellungen oder per E-Mail an <a href="mailto:info@zentory.ch" className="text-primary hover:underline">info@zentory.ch</a>.
+            {t("s9_1P1")} <a href="mailto:info@zentory.ch" className="text-primary hover:underline">info@zentory.ch</a>.
           </p>
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold mb-2">9.2 Ausserordentliche Kündigung</h3>
+          <h3 className="text-sm font-semibold mb-2">{t("s9_2Title")}</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Beide Parteien können den Vertrag aus wichtigem Grund fristlos kündigen. Wichtige Gründe
-            seitens des Anbieters umfassen insbesondere wiederholten Zahlungsverzug, schwerwiegende
-            Verstösse gegen diese AGB oder missbräuchliche Nutzung des Dienstes.
+            {t("s9_2P1")}
           </p>
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold mb-2">9.3 Datenlöschung nach Kündigung</h3>
+          <h3 className="text-sm font-semibold mb-2">{t("s9_3Title")}</h3>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Nach Kündigung hat der Kunde 30 Tage Zeit, seine Daten zu exportieren. Danach werden
-            alle Kundendaten unwiderruflich gelöscht, mit Ausnahme von Daten, die gesetzlichen
-            Aufbewahrungspflichten unterliegen.
+            {t("s9_3P1")}
           </p>
         </div>
       </section>
@@ -255,44 +225,36 @@ export default function AGBPage() {
       {/* 10. Geistiges Eigentum */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          10. Geistiges Eigentum
+          {t("s10Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Zentory und alle zugehörigen Marken, Logos, Software, Quellcodes und Inhalte sind
-          ausschliessliches Eigentum der HR Online Consulting LLC (DBA Zentory) und urheberrechtlich geschützt.
-          Das Abonnement gewährt dem Kunden ein nicht-exklusives, nicht-übertragbares Nutzungsrecht
-          für die Dauer des Abonnements. Reverse Engineering, Dekompilierung oder Versuche, den
-          Quellcode abzuleiten, sind untersagt.
+          {t("s10P1")}
         </p>
       </section>
 
       {/* 11. Änderungen der AGB */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          11. Änderungen der AGB
+          {t("s11Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Der Anbieter kann diese AGB mit einer Ankündigungsfrist von <strong className="text-foreground">30 Tagen</strong> anpassen.
-          Kunden werden per E-Mail informiert. Widerspricht der Kunde nicht innerhalb der Frist,
-          gelten die neuen AGB als akzeptiert. Im Falle des Widerspruchs können beide Parteien
-          den Vertrag kündigen.
+          {t("s11P1")} <strong className="text-foreground">{t("s11P1Days")}</strong> {t("s11P1End")}
         </p>
       </section>
 
       {/* 12. Anwendbares Recht */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          12. Anwendbares Recht und Gerichtsstand
+          {t("s12Title")}
         </h2>
         <div className="rounded-lg border border-primary/20 bg-primary/5 p-5 text-sm space-y-2">
-          <p className="text-foreground font-medium">Diese AGB unterliegen ausschliesslich Schweizer Recht.</p>
+          <p className="text-foreground font-medium">{t("s12P1")}</p>
           <p className="text-muted-foreground">
-            Für alle Streitigkeiten aus oder im Zusammenhang mit diesem Vertrag ist der Gerichtsstand
-            <strong className="text-foreground"> Zürich, Schweiz</strong> vereinbart, unter Ausschluss
-            anderer Gerichtsstände.
+            {t("s12P2")}
+            <strong className="text-foreground"> {t("s12P2Jurisdiction")}</strong> {t("s12P2End")}
           </p>
           <p className="text-muted-foreground">
-            Die Anwendung des UN-Kaufrechts (CISG) ist ausdrücklich ausgeschlossen.
+            {t("s12P3")}
           </p>
         </div>
       </section>
@@ -300,15 +262,13 @@ export default function AGBPage() {
       {/* 13. Schlussbestimmungen */}
       <section className="space-y-4">
         <h2 className="text-xl font-bold border-b border-border pb-3">
-          13. Schlussbestimmungen
+          {t("s13Title")}
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Sollten einzelne Bestimmungen dieser AGB ungültig oder nicht durchsetzbar sein, bleiben
-          die übrigen Bestimmungen in Kraft. Die ungültige Bestimmung wird durch eine wirksame Regelung
-          ersetzt, die dem wirtschaftlichen Zweck der ursprünglichen Bestimmung am nächsten kommt.
+          {t("s13P1")}
         </p>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Für Fragen zu diesen AGB wenden Sie sich an:{" "}
+          {t("s13P2")}{" "}
           <a href="mailto:info@zentory.ch" className="text-primary hover:underline">info@zentory.ch</a>
         </p>
       </section>
