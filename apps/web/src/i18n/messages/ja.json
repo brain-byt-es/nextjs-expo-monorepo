@@ -448,6 +448,9 @@
       "permRoleCol": "権限ロール",
       "joined": "参加日",
       "noRole": "ロールなし",
+      "resetPassword": "Reset password",
+      "resetPasswordSent": "Password reset email sent.",
+      "resetPasswordFailed": "Password reset failed.",
       "removeMember": "メンバーを削除",
       "you": "あなた",
       "noOrgFound": "組織が見つかりません。まず組織を作成してください。",
@@ -528,7 +531,14 @@
     "recipients": "受信者",
     "lastSent": "最終送信",
     "createReport": "レポートを作成",
-    "creating": "作成中…"
+    "creating": "作成中…",
+    "linkOrderEmail": "Order Email",
+    "orderEmailTitle": "CC Email for Orders",
+    "orderEmailDesc": "Configure a CC email address that gets notified for every new order.",
+    "orderCcEmailLabel": "CC Email for Orders",
+    "orderCcEmailHint": "This address receives a copy of every new order as a confirmation email.",
+    "orderCcEmailFieldHint": "Leave empty to disable CC emails.",
+    "orderEmailSaved": "CC email setting saved."
   },
   "reports": {
     "title": "Reports",

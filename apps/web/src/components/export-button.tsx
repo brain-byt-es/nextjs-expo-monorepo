@@ -31,7 +31,10 @@ export function ExportButton({
   const handleExport = async (format: "csv" | "json") => {
     setLoading(true)
     try {
-      const res = await fetch(`/api/export?entity=${entity}&format=${format}`)
+      const orgId = typeof window !== "undefined" ? localStorage.getItem("organizationId") : null
+      const res = await fetch(`/api/export?entity=${entity}&format=${format}`, {
+        headers: orgId ? { "x-organization-id": orgId } : {},
+      })
       if (!res.ok) throw new Error(t("exportFailed"))
 
       const blob = await res.blob()

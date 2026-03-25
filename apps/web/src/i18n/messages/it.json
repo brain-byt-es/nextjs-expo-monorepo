@@ -641,7 +641,6 @@
     "noPositions": "Nessuna posizione disponibile.",
     "posCol": "Pos.",
     "articleNo": "Nr. articolo",
-    "designation": "Designazione",
     "quantityCol": "Quantita",
     "unitCol": "Unita",
     "statusCol": "Stato",
@@ -1060,6 +1059,9 @@
       "permRoleCol": "Ruolo autorizzazioni",
       "joined": "Iscritto il",
       "noRole": "Nessun ruolo",
+      "resetPassword": "Reset password",
+      "resetPasswordSent": "Password reset email sent.",
+      "resetPasswordFailed": "Password reset failed.",
       "removeMember": "Rimuovi membro",
       "you": "tu",
       "noOrgFound": "Nessuna organizzazione trovata. Crea prima un'organizzazione.",
@@ -1695,7 +1697,14 @@
     "sessDeviceUnknown": "Sconosciuto",
     "sessBrowserUnknown": "Browser sconosciuto",
     "sessDeviceDesktop": "Desktop",
-    "sessDeviceMobile": "Dispositivo mobile"
+    "sessDeviceMobile": "Dispositivo mobile",
+    "linkOrderEmail": "Email ordini",
+    "orderEmailTitle": "CC Email per gli ordini",
+    "orderEmailDesc": "Configura un indirizzo CC per ogni nuovo ordine.",
+    "orderCcEmailLabel": "CC Email per gli ordini",
+    "orderCcEmailHint": "Questo indirizzo riceve una copia di ogni nuovo ordine.",
+    "orderCcEmailFieldHint": "Lascia vuoto per disabilitare le email CC.",
+    "orderEmailSaved": "Impostazione CC email salvata."
   },
   "reports": {
     "title": "Rapporti",
@@ -4862,7 +4871,9 @@
     "tryDifferentSearch": "Prova una ricerca diversa.",
     "noFilterMatch": "Nessun veicolo corrisponde a questo filtro.",
     "deleteVehicle": "Elimina veicolo",
-    "deleteConfirmMessage": "Vuoi davvero eliminare il veicolo \"{name}\"? Questa azione non può essere annullata."
+    "deleteConfirmMessage": "Vuoi davvero eliminare il veicolo \"{name}\"? Questa azione non può essere annullata.",
+    "designation": "Designazione",
+    "designationPlaceholder": "es. Furgone cantiere Nord"
   },
   "legalLayout": {
     "backToHome": "← Torna alla pagina iniziale",

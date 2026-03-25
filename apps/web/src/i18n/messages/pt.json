@@ -448,6 +448,9 @@
       "permRoleCol": "Função permissões",
       "joined": "Aderiu",
       "noRole": "Sem função",
+      "resetPassword": "Reset password",
+      "resetPasswordSent": "Password reset email sent.",
+      "resetPasswordFailed": "Password reset failed.",
       "removeMember": "Remover membro",
       "you": "tu",
       "noOrgFound": "Nenhuma organização encontrada. Crie uma organização primeiro.",
@@ -528,7 +531,14 @@
     "recipients": "Destinatários",
     "lastSent": "Último envio",
     "createReport": "Criar relatório",
-    "creating": "A criar…"
+    "creating": "A criar…",
+    "linkOrderEmail": "Order Email",
+    "orderEmailTitle": "CC Email for Orders",
+    "orderEmailDesc": "Configure a CC email address that gets notified for every new order.",
+    "orderCcEmailLabel": "CC Email for Orders",
+    "orderCcEmailHint": "This address receives a copy of every new order as a confirmation email.",
+    "orderCcEmailFieldHint": "Leave empty to disable CC emails.",
+    "orderEmailSaved": "CC email setting saved."
   },
   "reports": {
     "title": "Reports",

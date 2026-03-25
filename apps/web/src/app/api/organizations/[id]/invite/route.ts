@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { getSessionAndOrg } from "@/app/api/_helpers/auth";
-import { organizationMembers, users, organizations } from "@repo/db/schema";
+import { organizationMembers, users, organizations, organizationInvites } from "@repo/db/schema";
 import { eq, and } from "drizzle-orm";
 import { sendTeamInviteEmail } from "@/lib/email";
 import * as Sentry from "@sentry/nextjs";
+import crypto from "crypto";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -116,14 +117,35 @@ export async function POST(
       );
     }
 
-    // User does not exist — send a signup invite email
+    // User does not exist — create a token-based invite and send accept link
+    const token = crypto.randomUUID();
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+    // Upsert: delete any existing pending invite for this email+org, then insert
+    await db
+      .delete(organizationInvites)
+      .where(
+        and(
+          eq(organizationInvites.organizationId, orgId),
+          eq(organizationInvites.email, email)
+        )
+      );
+
+    await db.insert(organizationInvites).values({
+      organizationId: orgId,
+      email,
+      role,
+      token,
+      expiresAt,
+    });
+
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? process.env.BETTER_AUTH_URL ?? "http://localhost:3000";
-    const signupUrl = `${appUrl}/signup?email=${encodeURIComponent(email)}`;
+    const acceptUrl = `${appUrl}/accept-invite?token=${token}`;
     await sendTeamInviteEmail(
       inviter?.name ?? session.user.email ?? "Jemand",
       org?.name ?? "Zentory",
       email,
-      signupUrl,
+      acceptUrl,
     ).catch((err) => {
       console.error("Failed to send invite email:", err);
       Sentry.captureException(err, { tags: { route: "/api/organizations/[id]/invite" } });

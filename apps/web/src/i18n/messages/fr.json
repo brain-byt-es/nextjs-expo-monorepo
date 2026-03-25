@@ -641,7 +641,6 @@
     "noPositions": "Aucune position disponible.",
     "posCol": "Pos.",
     "articleNo": "No d'article",
-    "designation": "Designation",
     "quantityCol": "Quantite",
     "unitCol": "Unite",
     "statusCol": "Statut",
@@ -1060,6 +1059,9 @@
       "permRoleCol": "Rôle autorisations",
       "joined": "Inscrit le",
       "noRole": "Aucun rôle",
+      "resetPassword": "Reset password",
+      "resetPasswordSent": "Password reset email sent.",
+      "resetPasswordFailed": "Password reset failed.",
       "removeMember": "Supprimer le membre",
       "you": "vous",
       "noOrgFound": "Aucune organisation trouvée. Veuillez d'abord créer une organisation.",
@@ -1695,7 +1697,14 @@
     "sessDeviceUnknown": "Inconnu",
     "sessBrowserUnknown": "Navigateur inconnu",
     "sessDeviceDesktop": "Bureau",
-    "sessDeviceMobile": "Appareil mobile"
+    "sessDeviceMobile": "Appareil mobile",
+    "linkOrderEmail": "E-mail de commande",
+    "orderEmailTitle": "CC E-mail pour les commandes",
+    "orderEmailDesc": "Configurez une adresse e-mail CC pour chaque nouvelle commande.",
+    "orderCcEmailLabel": "CC E-mail pour les commandes",
+    "orderCcEmailHint": "Cette adresse reçoit une copie de chaque nouvelle commande.",
+    "orderCcEmailFieldHint": "Laisser vide pour désactiver les e-mails CC.",
+    "orderEmailSaved": "Paramètre CC e-mail enregistré."
   },
   "reports": {
     "title": "Rapports",
@@ -4862,7 +4871,9 @@
     "tryDifferentSearch": "Essayez une autre recherche.",
     "noFilterMatch": "Aucun véhicule ne correspond à ce filtre.",
     "deleteVehicle": "Supprimer le véhicule",
-    "deleteConfirmMessage": "Voulez-vous vraiment supprimer le véhicule « {name} » ? Cette action est irréversible."
+    "deleteConfirmMessage": "Voulez-vous vraiment supprimer le véhicule « {name} » ? Cette action est irréversible.",
+    "designation": "Désignation",
+    "designationPlaceholder": "p.ex. Fourgon chantier Nord"
   },
   "legalLayout": {
     "backToHome": "← Retour à l'accueil",

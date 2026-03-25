@@ -2110,3 +2110,27 @@ export const statusChecks = pgTable("status_checks", {
 
 export type StatusCheck = typeof statusChecks.$inferSelect;
 export type NewStatusCheck = typeof statusChecks.$inferInsert;
+
+// ─── Organization Invites (Token-based) ──────────────────────────────────────
+export const organizationInvites = pgTable(
+  "organization_invites",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    email: text("email").notNull(),
+    role: text("role").default("member"),
+    token: text("token").notNull().unique(),
+    expiresAt: timestamp("expires_at").notNull(),
+    acceptedAt: timestamp("accepted_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("idx_org_invites_org_id").on(table.organizationId),
+    uniqueIndex("idx_org_invites_token").on(table.token),
+  ]
+);
+
+export type OrganizationInvite = typeof organizationInvites.$inferSelect;
+export type NewOrganizationInvite = typeof organizationInvites.$inferInsert;

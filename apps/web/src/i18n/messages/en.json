@@ -673,7 +673,6 @@
     "noPositions": "No positions available.",
     "posCol": "Pos.",
     "articleNo": "Article no.",
-    "designation": "Description",
     "quantityCol": "Quantity",
     "unitCol": "Unit",
     "statusCol": "Status",
@@ -1094,6 +1093,9 @@
       "joined": "Joined",
       "noRole": "No role",
       "removeMember": "Remove member",
+      "resetPassword": "Reset password",
+      "resetPasswordSent": "Password reset email sent.",
+      "resetPasswordFailed": "Password reset failed.",
       "you": "you",
       "noOrgFound": "No organisation found. Please create an organisation first.",
       "networkError": "Network error. Please try again.",
@@ -1728,7 +1730,14 @@
     "sessDeviceUnknown": "Unknown",
     "sessBrowserUnknown": "Unknown browser",
     "sessDeviceDesktop": "Desktop",
-    "sessDeviceMobile": "Mobile device"
+    "sessDeviceMobile": "Mobile device",
+    "linkOrderEmail": "Order Email",
+    "orderEmailTitle": "CC Email for Orders",
+    "orderEmailDesc": "Configure a CC email address that gets notified for every new order.",
+    "orderCcEmailLabel": "CC Email for Orders",
+    "orderCcEmailHint": "This address receives a copy of every new order as a confirmation email.",
+    "orderCcEmailFieldHint": "Leave empty to disable CC emails.",
+    "orderEmailSaved": "CC email setting saved."
   },
   "reports": {
     "title": "Reports",
@@ -4907,7 +4916,9 @@
     "nextService": "Next Service",
     "toggleStatus": "Toggle status",
     "statusActivated": "Vehicle activated",
-    "statusDeactivated": "Vehicle deactivated"
+    "statusDeactivated": "Vehicle deactivated",
+    "designation": "Designation",
+    "designationPlaceholder": "e.g. Delivery Van North Site"
   },
   "bookToVehicle": {
     "title": "Book to Vehicle",

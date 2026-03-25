@@ -39,7 +39,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Skeleton } from "@/components/ui/skeleton"
-import { IconUserPlus, IconTrash, IconUsers } from "@tabler/icons-react"
+import { IconUserPlus, IconTrash, IconUsers, IconKey } from "@tabler/icons-react"
+import { toast } from "sonner"
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -115,6 +116,7 @@ export default function TeamPage() {
 
   // Remove state
   const [removingId, setRemovingId] = useState<string | null>(null)
+  const [resettingPasswordFor, setResettingPasswordFor] = useState<string | null>(null)
 
   // Role assignment state: memberId → new rbacRoleId being saved
   const [savingRoleFor, setSavingRoleFor] = useState<string | null>(null)
@@ -277,6 +279,28 @@ export default function TeamPage() {
       setError("Netzwerkfehler beim Entfernen des Mitglieds")
     } finally {
       setRemovingId(null)
+    }
+  }
+
+  // ── Password Reset ────────────────────────────────────────────────────────
+
+  const handlePasswordReset = async (email: string) => {
+    setResettingPasswordFor(email)
+    try {
+      const res = await fetch("/api/auth/request-password-reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, redirectTo: "/reset-password" }),
+      })
+      if (!res.ok) {
+        toast.error(tt("resetPasswordFailed"))
+        return
+      }
+      toast.success(tt("resetPasswordSent"))
+    } catch {
+      toast.error("Netzwerkfehler")
+    } finally {
+      setResettingPasswordFor(null)
     }
   }
 
@@ -532,16 +556,28 @@ export default function TeamPage() {
                       {canInvite && (
                         <TableCell>
                           {!isOwner && (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="size-8 text-muted-foreground hover:text-destructive"
-                              disabled={removingId === member.id}
-                              onClick={() => handleRemove(member.id)}
-                              title={tt("removeMember")}
-                            >
-                              <IconTrash className="size-4" />
-                            </Button>
+                            <div className="flex items-center gap-1">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="size-8 text-muted-foreground hover:text-foreground"
+                                disabled={resettingPasswordFor === member.userEmail}
+                                onClick={() => handlePasswordReset(member.userEmail)}
+                                title={tt("resetPassword")}
+                              >
+                                <IconKey className="size-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="size-8 text-muted-foreground hover:text-destructive"
+                                disabled={removingId === member.id}
+                                onClick={() => handleRemove(member.id)}
+                                title={tt("removeMember")}
+                              >
+                                <IconTrash className="size-4" />
+                              </Button>
+                            </div>
                           )}
                         </TableCell>
                       )}

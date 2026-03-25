@@ -176,6 +176,7 @@ function useSettingsCategories() {
       links: [
         { label: t("linkBranding"), href: "/dashboard/settings/branding" },
         { label: t("linkDataRetention"), href: "/dashboard/settings/data-retention" },
+        { label: t("linkOrderEmail"), href: "/dashboard/settings/order-email" },
       ],
     },
   ]

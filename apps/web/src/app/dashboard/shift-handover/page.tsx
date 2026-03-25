@@ -577,6 +577,28 @@ export default function ShiftHandoverPage() {
             ))}
           </div>
 
+          {/* Hinweise (free-text notes) — prominently placed before data tables */}
+          <Card className="border-amber-200 bg-amber-50/30 dark:bg-amber-950/20 dark:border-amber-900">
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <IconNotes className="size-4 text-amber-600 dark:text-amber-400" />
+                {t("notesTitle")}
+              </CardTitle>
+              <CardDescription className="text-xs">
+                {t("notesDesc")}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Textarea
+                placeholder={t("notesPlaceholder")}
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                rows={5}
+                className="resize-y"
+              />
+            </CardContent>
+          </Card>
+
           {/* Stock Changes */}
           <Card>
             <CardHeader>
@@ -829,28 +851,6 @@ export default function ShiftHandoverPage() {
                   </table>
                 </div>
               )}
-            </CardContent>
-          </Card>
-
-          {/* Hinweise (free-text notes) */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2">
-                <IconNotes className="size-4 text-primary" />
-                {t("notesTitle")}
-              </CardTitle>
-              <CardDescription className="text-xs">
-                {t("notesDesc")}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Textarea
-                placeholder={t("notesPlaceholder")}
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                rows={4}
-                className="resize-y"
-              />
             </CardContent>
           </Card>
 

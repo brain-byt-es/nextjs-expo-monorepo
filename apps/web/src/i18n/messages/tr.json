@@ -448,6 +448,9 @@
       "permRoleCol": "İzin rolü",
       "joined": "Katıldı",
       "noRole": "Rol yok",
+      "resetPassword": "Reset password",
+      "resetPasswordSent": "Password reset email sent.",
+      "resetPasswordFailed": "Password reset failed.",
       "removeMember": "Üyeyi kaldır",
       "you": "sen",
       "noOrgFound": "Organizasyon bulunamadı. Lütfen önce bir organizasyon oluşturun.",
@@ -528,7 +531,14 @@
     "recipients": "Alıcılar",
     "lastSent": "Son gönderim",
     "createReport": "Rapor oluştur",
-    "creating": "Oluşturuluyor…"
+    "creating": "Oluşturuluyor…",
+    "linkOrderEmail": "Order Email",
+    "orderEmailTitle": "CC Email for Orders",
+    "orderEmailDesc": "Configure a CC email address that gets notified for every new order.",
+    "orderCcEmailLabel": "CC Email for Orders",
+    "orderCcEmailHint": "This address receives a copy of every new order as a confirmation email.",
+    "orderCcEmailFieldHint": "Leave empty to disable CC emails.",
+    "orderEmailSaved": "CC email setting saved."
   },
   "reports": {
     "title": "Reports",

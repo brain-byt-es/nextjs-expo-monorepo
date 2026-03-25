@@ -84,6 +84,7 @@ import {
 // Types
 // ---------------------------------------------------------------------------
 interface VehicleMetadata {
+  designation?: string
   make?: string
   model?: string
   year?: number
@@ -142,6 +143,7 @@ function isDateSoon(dateStr: string | null | undefined): boolean {
 function downloadCsv(rows: VehicleRow[], filename: string) {
   const headers = [
     "Kennzeichen",
+    "Bezeichnung",
     "Marke",
     "Modell",
     "Baujahr",
@@ -157,6 +159,7 @@ function downloadCsv(rows: VehicleRow[], filename: string) {
     ...rows.map((r) =>
       [
         r.name,
+        r.metadata?.designation ?? "",
         r.metadata?.make ?? "",
         r.metadata?.model ?? "",
         r.metadata?.year ?? "",
@@ -279,6 +282,7 @@ function CreateVehicleDialog({
   tc: ReturnType<typeof useTranslations<"common">>
 }) {
   const [licensePlate, setLicensePlate] = useState("")
+  const [designation, setDesignation] = useState("")
   const [make, setMake] = useState("")
   const [model, setModel] = useState("")
   const [year, setYear] = useState("")
@@ -338,6 +342,7 @@ function CreateVehicleDialog({
 
   function resetForm() {
     setLicensePlate("")
+    setDesignation("")
     setMake("")
     setModel("")
     setYear("")
@@ -357,6 +362,7 @@ function CreateVehicleDialog({
       const effectiveDriverId = driverId === "none" ? "" : driverId
       const selectedMember = members.find((m) => m.userId === effectiveDriverId)
       const metadata: VehicleMetadata = {
+        designation: designation || undefined,
         make: make || undefined,
         model: model || undefined,
         year: year ? parseInt(year, 10) : undefined,
@@ -409,6 +415,17 @@ function CreateVehicleDialog({
               onChange={(e) => setLicensePlate(e.target.value)}
               placeholder="ZH 123456"
               required
+            />
+          </div>
+
+          {/* Bezeichnung */}
+          <div className="grid gap-2">
+            <Label htmlFor="designation">{t("designation")}</Label>
+            <Input
+              id="designation"
+              value={designation}
+              onChange={(e) => setDesignation(e.target.value)}
+              placeholder={t("designationPlaceholder")}
             />
           </div>
 
@@ -708,6 +725,25 @@ export default function VehiclesPage() {
           >
             {row.original.name}
           </button>
+        ),
+      },
+      {
+        id: "designation",
+        accessorFn: (row) => row.metadata?.designation ?? "",
+        header: ({ column }) => (
+          <button
+            className="flex cursor-pointer select-none items-center"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            {t("designation")}
+            <SortIcon sorted={column.getIsSorted()} />
+          </button>
+        ),
+        size: 160,
+        cell: ({ row }) => (
+          <span className="text-sm text-muted-foreground">
+            {row.original.metadata?.designation ?? "\u2014"}
+          </span>
         ),
       },
       {

@@ -448,6 +448,9 @@
       "permRoleCol": "Machtigingsrol",
       "joined": "Toegetreden",
       "noRole": "Geen rol",
+      "resetPassword": "Reset password",
+      "resetPasswordSent": "Password reset email sent.",
+      "resetPasswordFailed": "Password reset failed.",
       "removeMember": "Lid verwijderen",
       "you": "jij",
       "noOrgFound": "Geen organisatie gevonden. Maak eerst een organisatie aan.",
@@ -528,7 +531,14 @@
     "recipients": "Ontvangers",
     "lastSent": "Laatst verzonden",
     "createReport": "Rapport aanmaken",
-    "creating": "Aanmaken…"
+    "creating": "Aanmaken…",
+    "linkOrderEmail": "Order Email",
+    "orderEmailTitle": "CC Email for Orders",
+    "orderEmailDesc": "Configure a CC email address that gets notified for every new order.",
+    "orderCcEmailLabel": "CC Email for Orders",
+    "orderCcEmailHint": "This address receives a copy of every new order as a confirmation email.",
+    "orderCcEmailFieldHint": "Leave empty to disable CC emails.",
+    "orderEmailSaved": "CC email setting saved."
   },
   "reports": {
     "title": "Reports",

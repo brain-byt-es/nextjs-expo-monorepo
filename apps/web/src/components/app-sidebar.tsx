@@ -377,6 +377,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           { title: t("reservations"), url: "/dashboard/reservations" },
           { title: t("warrantyClaims"), url: "/dashboard/warranty-claims" },
           { title: t("suppliers"), url: "/dashboard/suppliers" },
+          { title: t("team"), url: "/dashboard/settings/team" },
         ],
       },
       {
