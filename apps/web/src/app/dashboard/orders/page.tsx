@@ -12,7 +12,9 @@ import {
   IconUpload,
   IconChevronDown,
   IconChevronRight,
+  IconPackage,
 } from "@tabler/icons-react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
@@ -33,6 +35,17 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 // ── Types ──────────────────────────────────────────────────────────────
 type OrderStatus = "ordered" | "partial" | "delivered" | "cancelled"
+
+interface OrderItem {
+  id: string
+  materialId: string
+  materialName: string | null
+  mainLocationId: string | null
+  quantity: number
+  receivedQuantity: number | null
+  unitPrice: number | null
+  currency: string | null
+}
 
 /** Shape returned by GET /api/orders */
 interface Order {
@@ -93,6 +106,8 @@ export default function OrdersPage() {
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set())
+  const [orderItemsMap, setOrderItemsMap] = useState<Record<string, OrderItem[]>>({})
+  const [loadingItems, setLoadingItems] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     let cancelled = false
@@ -114,13 +129,31 @@ export default function OrdersPage() {
     return () => { cancelled = true }
   }, [])
 
-  function toggleExpand(id: string) {
+  async function toggleExpand(id: string) {
     setExpandedOrders(prev => {
       const next = new Set(prev)
       if (next.has(id)) next.delete(id)
       else next.add(id)
       return next
     })
+    if (!orderItemsMap[id] && !loadingItems.has(id)) {
+      setLoadingItems(prev => new Set(prev).add(id))
+      try {
+        const res = await fetch(`/api/orders/${id}`)
+        if (res.ok) {
+          const data = await res.json()
+          setOrderItemsMap(prev => ({ ...prev, [id]: data.items ?? [] }))
+        }
+      } catch {
+        // silent
+      } finally {
+        setLoadingItems(prev => {
+          const next = new Set(prev)
+          next.delete(id)
+          return next
+        })
+      }
+    }
   }
 
   async function handleCancelOrder(id: string) {
@@ -132,9 +165,39 @@ export default function OrdersPage() {
       })
       if (res.ok) {
         setOrders(prev => prev.map(o => o.id === id ? { ...o, status: "cancelled" } : o))
+        toast.success("Bestellung storniert")
+      } else {
+        toast.error("Fehler beim Stornieren")
       }
     } catch {
-      // silent
+      toast.error("Fehler beim Stornieren")
+    }
+  }
+
+  async function handleBookItem(orderId: string, item: OrderItem) {
+    if (!item.mainLocationId) {
+      toast.error("Kein Hauptlagerort hinterlegt")
+      return
+    }
+    try {
+      const res = await fetch(`/api/materials/${item.materialId}/stock-changes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          changeType: "in",
+          quantity: item.quantity,
+          locationId: item.mainLocationId,
+          notes: `Wareneingang Bestellung ${orderId}`,
+        }),
+      })
+      if (res.ok) {
+        toast.success(`${item.materialName ?? "Material"} eingebucht`)
+      } else {
+        const err = await res.json().catch(() => ({}))
+        toast.error(err.error ?? "Einbuchen fehlgeschlagen")
+      }
+    } catch {
+      toast.error("Einbuchen fehlgeschlagen")
     }
   }
 
@@ -241,6 +304,8 @@ export default function OrdersPage() {
           {filtered.map((order) => {
             const isExpanded = expandedOrders.has(order.id)
             const statusColor = STATUS_COLORS[order.status] ?? STATUS_COLORS.ordered
+            const orderItems = orderItemsMap[order.id]
+            const isLoadingItems = loadingItems.has(order.id)
 
             return (
               <Card key={order.id} className="border-0 shadow-sm overflow-hidden">
@@ -312,9 +377,42 @@ export default function OrdersPage() {
                   </div>
                 </div>
 
-                {/* Expanded: notes / document info */}
+                {/* Expanded: order items + notes */}
                 {isExpanded && (
-                  <div className="border-t border-border px-12 py-4 space-y-2 bg-muted/30">
+                  <div className="border-t border-border px-12 py-4 space-y-4 bg-muted/30">
+                    {isLoadingItems ? (
+                      <div className="space-y-2">
+                        <Skeleton className="h-8 w-full" />
+                        <Skeleton className="h-8 w-2/3" />
+                      </div>
+                    ) : orderItems && orderItems.length > 0 ? (
+                      <div className="space-y-1">
+                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">Positionen</p>
+                        {orderItems.map((item) => (
+                          <div key={item.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
+                            <div className="flex items-center gap-2 flex-1">
+                              <IconPackage className="size-4 text-muted-foreground/60 flex-shrink-0" />
+                              <div>
+                                <p className="text-sm font-medium text-foreground">{item.materialName ?? "—"}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {item.quantity} Stk{item.unitPrice != null ? ` · CHF ${Number(item.unitPrice).toFixed(2)}` : ""}
+                                </p>
+                              </div>
+                            </div>
+                            {order.status !== "cancelled" && order.status !== "delivered" && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-7 text-xs"
+                                onClick={() => handleBookItem(order.id, item)}
+                              >
+                                Buchen
+                              </Button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
                     {order.notes && (
                       <p className="text-sm text-muted-foreground">
                         <span className="font-medium text-foreground">{tc("notes")}:</span> {order.notes}
@@ -331,7 +429,7 @@ export default function OrdersPage() {
                         {t("uploadDocument")}
                       </a>
                     )}
-                    {!order.notes && !order.documentUrl && (
+                    {!order.notes && !order.documentUrl && (!orderItems || orderItems.length === 0) && !isLoadingItems && (
                       <p className="text-sm text-muted-foreground">{tc("noData")}</p>
                     )}
                   </div>

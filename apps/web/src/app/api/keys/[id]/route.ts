@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { getSessionAndOrg } from "@/app/api/_helpers/auth";
 import { keys, locations, users, auditLog } from "@repo/db/schema";
 import { eq, and } from "drizzle-orm";
-import { alias } from "drizzle-orm/pg-core";
 
 export async function GET(
   request: Request,

@@ -6,8 +6,6 @@ import { Logo } from "@/components/logo"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { authClient } from "@/lib/auth-client"
-
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
   const [submitting, setSubmitting] = useState(false)
@@ -20,10 +18,12 @@ export default function ForgotPasswordPage() {
     setSubmitting(true)
     setError(null)
     try {
-      await authClient.forgetPassword({
-        email,
-        redirectTo: "/reset-password",
+      const res = await fetch("/api/auth/request-password-reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, redirectTo: "/reset-password" }),
       })
+      if (!res.ok && res.status !== 200) throw new Error()
       setSent(true)
     } catch {
       setError("Es ist ein Fehler aufgetreten. Bitte versuche es erneut.")

@@ -1,7 +1,49 @@
 import { NextResponse } from "next/server";
 import { getSessionAndOrg } from "@/app/api/_helpers/auth";
-import { orders } from "@repo/db/schema";
+import { orders, orderItems, materials } from "@repo/db/schema";
 import { eq, and } from "drizzle-orm";
+
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const result = await getSessionAndOrg(request);
+    if (result.error) return result.error;
+    const { db, orgId } = result;
+
+    const [order] = await db
+      .select()
+      .from(orders)
+      .where(and(eq(orders.id, id), eq(orders.organizationId, orgId)))
+      .limit(1);
+
+    if (!order) {
+      return NextResponse.json({ error: "Order not found" }, { status: 404 });
+    }
+
+    const items = await db
+      .select({
+        id: orderItems.id,
+        materialId: orderItems.materialId,
+        materialName: materials.name,
+        mainLocationId: materials.mainLocationId,
+        quantity: orderItems.quantity,
+        receivedQuantity: orderItems.receivedQuantity,
+        unitPrice: orderItems.unitPrice,
+        currency: orderItems.currency,
+      })
+      .from(orderItems)
+      .leftJoin(materials, eq(orderItems.materialId, materials.id))
+      .where(eq(orderItems.orderId, id));
+
+    return NextResponse.json({ ...order, items });
+  } catch (error) {
+    console.error("GET /api/orders/[id] error:", error);
+    return NextResponse.json({ error: "Failed to fetch order" }, { status: 500 });
+  }
+}
 
 const VALID_STATUSES = ["ordered", "partial", "delivered", "cancelled"] as const;
 

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import {
   IconShoppingCart,
@@ -36,8 +37,9 @@ import {
   EmptyTitle,
   EmptyDescription,
 } from "@/components/ui/empty"
+import { toast } from "sonner"
 
-import { type CartItem, getCart } from "@/lib/cart"
+import { type CartItem, getCart, clearCart as clearCartStorage } from "@/lib/cart"
 
 function formatCHF(val: number) {
   return `CHF ${val.toFixed(2)}`
@@ -47,6 +49,7 @@ function formatCHF(val: number) {
 export default function CartPage() {
   const t = useTranslations("cart")
   const tc = useTranslations("common")
+  const router = useRouter()
 
   const [items, setItems] = useState<CartItem[]>(() => {
     if (typeof window === "undefined") return []
@@ -69,7 +72,8 @@ export default function CartPage() {
   function removeItem(id: string) {
     setItems(prev => prev.filter(item => item.id !== id))
   }
-  function clearCart() {
+  function clearAll() {
+    clearCartStorage()
     setItems([])
   }
 
@@ -86,9 +90,9 @@ export default function CartPage() {
 
   // Group by supplier for order summary
   const bySupplier = useMemo(() => {
-    const map = new Map<string, { name: string; items: CartItem[]; total: number }>()
+    const map = new Map<string, { supplierId: string; name: string; items: CartItem[]; total: number }>()
     items.forEach(i => {
-      if (!map.has(i.supplierId)) map.set(i.supplierId, { name: i.supplierName, items: [], total: 0 })
+      if (!map.has(i.supplierId)) map.set(i.supplierId, { supplierId: i.supplierId, name: i.supplierName, items: [], total: 0 })
       const g = map.get(i.supplierId)!
       g.items.push(i)
       g.total += i.purchasePrice * i.quantity
@@ -103,31 +107,28 @@ export default function CartPage() {
   async function handleGenerateOrder() {
     setGeneratingOrder(true)
     try {
-      // Create one order per supplier
-      const results = await Promise.allSettled(
-        bySupplier.map(({ name, items: supplierItems }) => {
-          const supplierId = supplierItems[0].supplierId
-          return fetch("/api/orders", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              supplierId,
-              orderDate: new Date().toISOString().split("T")[0],
-              items: supplierItems.map(i => ({
-                materialId: i.id,
-                quantity: i.quantity,
-                unitPrice: i.purchasePrice,
-              })),
-            }),
-          }).then(r => {
-            if (!r.ok) throw new Error(`Order for ${name} failed`)
-          })
+      for (const group of bySupplier) {
+        const res = await fetch("/api/orders", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            supplierId: group.supplierId,
+            orderDate: new Date().toISOString().split("T")[0],
+            items: group.items.map(i => ({
+              materialId: i.id,
+              quantity: i.quantity,
+              unitPrice: i.purchasePrice,
+            })),
+          }),
         })
-      )
-      const failed = results.filter(r => r.status === "rejected").length
-      if (failed === 0) {
-        setItems([])
+        if (!res.ok) throw new Error(`Order for ${group.name} failed`)
       }
+      clearCartStorage()
+      setItems([])
+      toast.success(t("orderCreated") ?? "Bestellung erstellt")
+      router.push("/dashboard/orders")
+    } catch {
+      toast.error(t("orderFailed") ?? "Fehler beim Erstellen der Bestellung")
     } finally {
       setGeneratingOrder(false)
     }
@@ -167,7 +168,7 @@ export default function CartPage() {
             {items.length} {t("items")} · {bySupplier.length} {t("suppliers")} · <span className="font-medium text-foreground">{formatCHF(grandTotal)}</span>
           </p>
         </div>
-        <Button variant="outline" size="sm" className="gap-2 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={clearCart}>
+        <Button variant="outline" size="sm" className="gap-2 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={clearAll}>
           <IconTrash className="size-4" />
           {t("clearCart")}
         </Button>

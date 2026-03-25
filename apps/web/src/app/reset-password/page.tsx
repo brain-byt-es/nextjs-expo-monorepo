@@ -7,7 +7,6 @@ import { Logo } from "@/components/logo"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { PasswordInput } from "@/components/ui/password-input"
-import { authClient } from "@/lib/auth-client"
 
 function ResetPasswordForm() {
   const searchParams = useSearchParams()
@@ -25,7 +24,12 @@ function ResetPasswordForm() {
     setSubmitting(true)
     setError(null)
     try {
-      await authClient.resetPassword({ newPassword: password, token })
+      const res = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ newPassword: password, token }),
+      })
+      if (!res.ok) throw new Error()
       setDone(true)
       setTimeout(() => router.push("/login"), 2000)
     } catch {

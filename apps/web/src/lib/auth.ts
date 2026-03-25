@@ -4,6 +4,7 @@ import { nextCookies } from "better-auth/next-js";
 import { admin, bearer } from "better-auth/plugins";
 import { getDb } from "@repo/db";
 import * as schema from "@repo/db/schema";
+import { sendResetPasswordEmail } from "@/lib/email";
 import type { Auth } from "better-auth";
 
 type AuthInstance = Auth<{
@@ -29,6 +30,9 @@ function initAuth(): AuthInstance {
         : ["http://localhost:3003"],
     emailAndPassword: {
       enabled: true,
+      sendResetPassword: async ({ user, url }: { user: { email: string }; url: string }) => {
+        await sendResetPasswordEmail(user.email, url);
+      },
     },
     socialProviders: {
       google: {

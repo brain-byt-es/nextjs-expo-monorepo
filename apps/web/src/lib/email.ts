@@ -419,3 +419,29 @@ export async function sendShiftReportEmail({
     throw error;
   }
 }
+
+export async function sendResetPasswordEmail(email: string, resetUrl: string) {
+  try {
+    const result = await getResend().emails.send({
+      from: process.env.RESEND_FROM_EMAIL || 'noreply@example.com',
+      to: email,
+      subject: 'Passwort zurücksetzen — Zentory',
+      html: brandedHtml(`
+        <h2 style="${S.h2}">Passwort zur&uuml;cksetzen</h2>
+        <p style="${S.p}">Hallo,</p>
+        <p style="${S.p}">Wir haben eine Anfrage erhalten, das Passwort f&uuml;r dieses Konto zur&uuml;ckzusetzen. Klicke auf den Button, um ein neues Passwort zu w&auml;hlen.</p>
+        <div style="${S.center}">
+          ${primaryButton('Neues Passwort setzen', resetUrl)}
+        </div>
+        <p style="${S.muted}">
+          Falls du diese Anfrage nicht gestellt hast, kannst du diese E-Mail ignorieren.<br/>
+          Der Link ist 1 Stunde g&uuml;ltig.
+        </p>
+      `),
+    });
+    return result;
+  } catch (error) {
+    console.error('Failed to send reset password email:', error);
+    throw error;
+  }
+}
