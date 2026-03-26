@@ -3,12 +3,29 @@ import type { NextRequest } from "next/server";
 
 export const runtime = "edge";
 
+/** Fetch a single Inter weight from the Google Fonts CSS2 API and return its ArrayBuffer. */
+async function loadInterWeight(weight: number): Promise<ArrayBuffer> {
+  const css = await fetch(
+    `https://fonts.googleapis.com/css2?family=Inter:wght@${weight}`,
+    { headers: { "User-Agent": "Mozilla/5.0 (compatible; NextOG/1.0)" } }
+  ).then((r) => r.text());
+  // Extract first `src: url(...)` from the CSS
+  const url = css.match(/src:\s*url\(([^)]+)\)/)?.[1];
+  if (!url) throw new Error(`Inter ${weight}: no font URL in CSS response`);
+  return fetch(url).then((r) => r.arrayBuffer());
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const title = searchParams.get("title") || "Dein Lager. Zentral.";
   const description =
     searchParams.get("description") ||
     "Inventar- und Werkzeugverwaltung für Schweizer KMU.";
+
+  const [interBold, interLight] = await Promise.all([
+    loadInterWeight(700),
+    loadInterWeight(300),
+  ]);
 
   return new ImageResponse(
     (
@@ -87,7 +104,7 @@ export async function GET(request: NextRequest) {
             <span
               style={{
                 fontSize: "64px",
-                fontWeight: 400,
+                fontWeight: 300,
                 color: "#FFFFFF",
                 letterSpacing: "4px",
               }}
@@ -156,6 +173,10 @@ export async function GET(request: NextRequest) {
     {
       width: 1200,
       height: 630,
+      fonts: [
+        { name: "Inter", data: interBold, weight: 700, style: "normal" },
+        { name: "Inter", data: interLight, weight: 300, style: "normal" },
+      ],
     },
   );
 }

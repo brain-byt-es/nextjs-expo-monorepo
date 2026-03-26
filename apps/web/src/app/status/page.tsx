@@ -273,10 +273,10 @@ export default function StatusPage() {
       <div className="mb-10 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <LogoMark size={28} />
-          <span className="text-base font-semibold tracking-tight text-foreground">
-            <Wordmark className="inline" />
-            <span className="ml-2 text-sm font-normal text-muted-foreground">Systemstatus</span>
-          </span>
+          <div className="flex items-baseline gap-2">
+            <Wordmark className="text-base text-foreground" />
+            <span className="text-sm text-muted-foreground">Systemstatus</span>
+          </div>
         </div>
         <button
           onClick={() => fetchStatus(true)}

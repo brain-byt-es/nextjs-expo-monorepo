@@ -112,6 +112,10 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: pnpm playwright:install
 
+      - name: Install Playwright system dependencies
+        # Always run — system libs are not cached, only browser binaries are
+        run: npx playwright install-deps chromium
+
       - name: Build web app
         run: pnpm build --filter=@repo/web
         env:

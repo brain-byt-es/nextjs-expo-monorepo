@@ -19,11 +19,11 @@ export function LogoMark({ className, size = 32 }: LogoMarkProps) {
   )
 }
 
-/** Styled brand wordmark: ZEN (bold) + TORY (normal), all caps */
+/** Styled brand wordmark: ZEN (bold 700) + TORY (light 300), all caps */
 export function Wordmark({ className }: { className?: string }) {
   return (
     <span className={cn("tracking-tight uppercase", className)}>
-      <span className="font-bold">Zen</span><span className="font-normal">tory</span>
+      <span className="font-bold">Zen</span><span className="font-light">tory</span>
     </span>
   )
 }
