@@ -40,6 +40,8 @@ export async function proxy(request: NextRequest) {
 
   // status.zentory.ch/* → /status/*  (public, no auth)
   if (subdomain === 'status') {
+    // API calls must pass through unchanged — don't rewrite /api/* to /status/api/*
+    if (pathname.startsWith('/api/')) return NextResponse.next()
     const target = pathname === '/' ? '/status' : `/status${pathname}`
     return NextResponse.rewrite(new URL(target, request.url))
   }
