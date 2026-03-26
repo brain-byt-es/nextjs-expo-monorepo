@@ -5,26 +5,8 @@ import {
   materials,
   toolBookings,
 } from "@repo/db/schema"
-import { eq, or } from "drizzle-orm"
-
-// ---------------------------------------------------------------------------
-// Rate-limit: simple in-memory store per Node process.
-// For production at scale, swap for Upstash.
-// ---------------------------------------------------------------------------
-const _rateMap = new Map<string, number[]>()
-const RATE_WINDOW_MS = 60_000
-const RATE_MAX = 10
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now()
-  const timestamps = (_rateMap.get(ip) ?? []).filter(
-    (t) => now - t < RATE_WINDOW_MS
-  )
-  if (timestamps.length >= RATE_MAX) return true
-  timestamps.push(now)
-  _rateMap.set(ip, timestamps)
-  return false
-}
+import { eq } from "drizzle-orm"
+import { checkRateLimit } from "@/lib/rate-limit"
 
 // ---------------------------------------------------------------------------
 // Lookup helper
@@ -40,7 +22,7 @@ async function findItem(code: string) {
       isActive: tools.isActive,
     })
     .from(tools)
-    .where(or(eq(tools.barcode, code), eq(tools.id, code)))
+    .where(eq(tools.barcode, code))
     .limit(1)
 
   if (toolRow.length > 0 && toolRow[0]!.isActive) {
@@ -55,7 +37,7 @@ async function findItem(code: string) {
       isActive: materials.isActive,
     })
     .from(materials)
-    .where(or(eq(materials.barcode, code), eq(materials.id, code)))
+    .where(eq(materials.barcode, code))
     .limit(1)
 
   if (matRow.length > 0 && matRow[0]!.isActive) {
@@ -76,7 +58,8 @@ export async function GET(
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown"
 
-  if (isRateLimited(ip)) {
+  const rateLimitOk = await checkRateLimit(`self-service:${ip}`)
+  if (!rateLimitOk) {
     return NextResponse.json({ error: "Zu viele Anfragen" }, { status: 429 })
   }
 
@@ -103,7 +86,8 @@ export async function POST(
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown"
 
-  if (isRateLimited(ip)) {
+  const rateLimitOk = await checkRateLimit(`self-service:${ip}`)
+  if (!rateLimitOk) {
     return NextResponse.json({ error: "Zu viele Anfragen" }, { status: 429 })
   }
 

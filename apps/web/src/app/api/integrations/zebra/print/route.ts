@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import * as net from "net"
 
+function isPrivateIp(ip: string): boolean {
+  return /^(10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.|127\.|169\.254\.|::1|fc|fd)/i.test(ip)
+}
+
 export async function POST(req: NextRequest) {
   const session = await auth.api.getSession({ headers: req.headers })
   if (!session) {
@@ -21,6 +25,11 @@ export async function POST(req: NextRequest) {
 
   const [host, portStr] = printerIp.split(":")
   const port = parseInt(portStr ?? "9100", 10)
+
+  // Block SSRF: reject RFC-1918, loopback, and link-local addresses
+  if (isPrivateIp(host!)) {
+    return NextResponse.json({ error: "Ungültige Drucker-IP-Adresse" }, { status: 400 })
+  }
 
   return new Promise<NextResponse>(resolve => {
     const socket = new net.Socket()

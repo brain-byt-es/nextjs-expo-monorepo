@@ -10,7 +10,7 @@ const ACCEPTED_MIME_TYPES = new Set([
   "image/png",
   "image/gif",
   "image/webp",
-  "image/svg+xml",
+  // image/svg+xml intentionally excluded — SVG can contain embedded scripts (stored XSS)
   "application/pdf",
   "application/msword",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",

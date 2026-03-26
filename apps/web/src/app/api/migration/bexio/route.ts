@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSessionAndOrg } from "@/app/api/_helpers/auth";
-import { materials, suppliers } from "@repo/db/schema";
+import { materials, suppliers, integrationTokens } from "@repo/db/schema";
 import {
   mapBexioArticle,
   mapBexioContact,
@@ -20,14 +20,29 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     const {
-      apiToken,
+      apiToken: bodyApiToken,
       importTypes = ["articles"],
       action = "preview",
     }: {
-      apiToken: string
+      apiToken?: string
       importTypes: ("articles" | "contacts")[]
       action: "preview" | "import"
     } = body;
+
+    // Prefer the stored bexio token for the org; only fall back to the
+    // request-supplied token for the initial setup case.
+    const [storedToken] = await db
+      .select({ accessToken: integrationTokens.accessToken })
+      .from(integrationTokens)
+      .where(
+        and(
+          eq(integrationTokens.organizationId, orgId),
+          eq(integrationTokens.provider, "bexio")
+        )
+      )
+      .limit(1);
+
+    const apiToken = storedToken?.accessToken ?? bodyApiToken;
 
     if (!apiToken) {
       return NextResponse.json(

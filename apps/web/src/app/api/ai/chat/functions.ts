@@ -663,65 +663,84 @@ export async function bookStockChange(
     });
   }
 
-  // Get current stock
-  const [currentStock] = await db
-    .select({ id: materialStocks.id, quantity: materialStocks.quantity })
-    .from(materialStocks)
-    .where(
-      and(
-        eq(materialStocks.organizationId, orgId),
-        eq(materialStocks.materialId, mat.id),
-        eq(materialStocks.locationId, loc.id)
-      )
-    )
-    .limit(1);
-
-  const previousQty = currentStock?.quantity ?? 0;
   const changeQty =
     args.type === "out" ? -Math.abs(args.quantity) : Math.abs(args.quantity);
-  const newQty = previousQty + changeQty;
-
-  // Prevent negative stock on withdrawal
-  if (newQty < 0) {
-    return JSON.stringify({
-      error: true,
-      message: `Nicht genügend Bestand. Aktuell: ${previousQty}, angefordert: ${Math.abs(args.quantity)}.`,
-    });
-  }
-
-  // Upsert materialStocks
-  if (currentStock) {
-    await db
-      .update(materialStocks)
-      .set({ quantity: newQty, updatedAt: new Date() })
-      .where(eq(materialStocks.id, currentStock.id));
-  } else {
-    await db.insert(materialStocks).values({
-      organizationId: orgId,
-      materialId: mat.id,
-      locationId: loc.id,
-      quantity: newQty,
-    });
-  }
-
-  // Record stock change
-  await db.insert(stockChanges).values({
-    organizationId: orgId,
-    materialId: mat.id,
-    locationId: loc.id,
-    userId,
-    changeType: args.type,
-    quantity: changeQty,
-    previousQuantity: previousQty,
-    newQuantity: newQty,
-    notes: args.notes ?? "Gebucht via KI-Assistent",
-  });
 
   const typeLabels: Record<string, string> = {
     in: "Zugang",
     out: "Abgang",
     correction: "Korrektur",
   };
+
+  // Wrap in a transaction with FOR UPDATE locking to prevent race conditions
+  // on concurrent stock updates.
+  let previousQty: number;
+  let newQty: number;
+
+  try {
+    const result = await db.transaction(async (tx) => {
+      const [currentStock] = await tx
+        .select({ id: materialStocks.id, quantity: materialStocks.quantity })
+        .from(materialStocks)
+        .where(
+          and(
+            eq(materialStocks.organizationId, orgId),
+            eq(materialStocks.materialId, mat.id),
+            eq(materialStocks.locationId, loc.id)
+          )
+        )
+        .limit(1)
+        .for("update");
+
+      const prev = currentStock?.quantity ?? 0;
+      const next = prev + changeQty;
+
+      if (next < 0) {
+        // Return sentinel — avoids using exceptions for control flow inside tx
+        return { insufficientStock: true, prev, requested: Math.abs(args.quantity) } as const;
+      }
+
+      if (currentStock) {
+        await tx
+          .update(materialStocks)
+          .set({ quantity: next, updatedAt: new Date() })
+          .where(eq(materialStocks.id, currentStock.id));
+      } else {
+        await tx.insert(materialStocks).values({
+          organizationId: orgId,
+          materialId: mat.id,
+          locationId: loc.id,
+          quantity: next,
+        });
+      }
+
+      await tx.insert(stockChanges).values({
+        organizationId: orgId,
+        materialId: mat.id,
+        locationId: loc.id,
+        userId,
+        changeType: args.type,
+        quantity: changeQty,
+        previousQuantity: prev,
+        newQuantity: next,
+        notes: args.notes ?? "Gebucht via KI-Assistent",
+      });
+
+      return { insufficientStock: false as const, prev, next };
+    });
+
+    if (result.insufficientStock) {
+      return JSON.stringify({
+        error: true,
+        message: `Nicht genügend Bestand. Aktuell: ${result.prev}, angefordert: ${result.requested}.`,
+      });
+    }
+
+    previousQty = result.prev;
+    newQty = result.next;
+  } catch (err) {
+    throw err;
+  }
 
   return JSON.stringify({
     message: `${typeLabels[args.type] ?? args.type}: ${Math.abs(args.quantity)}x ${mat.name} an ${loc.name}.`,

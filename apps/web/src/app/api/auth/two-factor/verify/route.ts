@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/app/api/_helpers/auth";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { twoFactorSecrets } from "@repo/db/schema";
 import { eq } from "drizzle-orm";
 import crypto from "crypto";
@@ -67,6 +68,15 @@ export async function POST(request: Request) {
     if ("error" in result && result.error instanceof Response) return result.error;
     const { session, db } = result as { session: NonNullable<typeof result.session>; db: NonNullable<typeof result.db> };
     const userId = session.user.id;
+
+    // Strict rate limit: 5 attempts per 15 minutes per user
+    const rateLimitOk = await checkRateLimit(`2fa:verify:${userId}`);
+    if (!rateLimitOk) {
+      return NextResponse.json(
+        { error: "Zu viele Versuche. Bitte warten Sie eine Minute." },
+        { status: 429 }
+      );
+    }
 
     const body = await request.json();
     const { code } = body as { code?: string };

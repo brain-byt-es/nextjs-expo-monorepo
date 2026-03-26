@@ -31,6 +31,40 @@ export interface WebhookPayload {
   data: Record<string, unknown>;
 }
 
+// ─── SSRF Guard ───────────────────────────────────────────────────────────────
+
+/**
+ * Returns true when the URL is safe to POST to.
+ * Blocks private IPs, loopback, link-local, and non-HTTPS schemes.
+ */
+export function isAllowedWebhookUrl(rawUrl: string): boolean {
+  let parsed: URL;
+  try {
+    parsed = new URL(rawUrl);
+  } catch {
+    return false;
+  }
+
+  // Only allow HTTPS
+  if (parsed.protocol !== "https:") return false;
+
+  const hostname = parsed.hostname;
+
+  // Block private, loopback, and link-local ranges
+  if (
+    /^(10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.|127\.|169\.254\.|::1$|fc|fd)/i.test(
+      hostname
+    )
+  ) {
+    return false;
+  }
+
+  // Block raw localhost
+  if (hostname === "localhost") return false;
+
+  return true;
+}
+
 // ─── Secret Generation ───────────────────────────────────────────────────────
 
 export function generateWebhookSecret(): string {
@@ -50,6 +84,10 @@ async function deliverWebhook(
   secret: string,
   payload: WebhookPayload
 ): Promise<{ ok: boolean; status?: number; error?: string }> {
+  if (!isAllowedWebhookUrl(url)) {
+    return { ok: false, error: "Blocked: URL failed SSRF validation" };
+  }
+
   const body = JSON.stringify(payload);
   const signature = signPayload(secret, body);
 

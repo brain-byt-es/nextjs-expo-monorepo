@@ -1,5 +1,8 @@
 import { getSessionAndOrg } from "@/app/api/_helpers/auth";
 import { getOrgOpenAiKey } from "@/lib/get-org-openai-key";
+import { hasPermission } from "@/lib/rbac";
+import type { Resource, Action as RbacAction } from "@/lib/rbac";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { organizations } from "@repo/db/schema";
 import { eq } from "drizzle-orm";
 import { aiFunctionDefinitions, executeFunction } from "./functions";
@@ -19,33 +22,13 @@ interface ChatRequestBody {
 }
 
 // ---------------------------------------------------------------------------
-// Rate limiting (in-memory, per-org)
+// Write functions that require explicit RBAC permission checks
 // ---------------------------------------------------------------------------
 
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-
-function checkRateLimit(orgId: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(orgId);
-
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(orgId, { count: 1, resetAt: now + 60_000 });
-    return true;
-  }
-
-  if (entry.count >= 20) return false;
-
-  entry.count++;
-  return true;
-}
-
-// Periodically clean up stale entries (every 5 min)
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, val] of rateLimitMap) {
-    if (now > val.resetAt) rateLimitMap.delete(key);
-  }
-}, 5 * 60_000);
+const WRITE_FUNCTIONS: Record<string, { resource: Resource; action: RbacAction }> = {
+  create_order: { resource: "orders", action: "create" },
+  book_stock_change: { resource: "materials", action: "update" },
+};
 
 // ---------------------------------------------------------------------------
 // System Prompt Builder
@@ -128,8 +111,9 @@ export async function POST(request: Request) {
     if (result.error) return result.error;
     const { session, orgId, db } = result;
 
-    // Rate limit
-    if (!checkRateLimit(orgId)) {
+    // Rate limit (Redis-backed, per-org)
+    const rateLimitOk = await checkRateLimit(`ai:chat:${orgId}`);
+    if (!rateLimitOk) {
       return new Response(
         JSON.stringify({
           error: "Rate-Limit erreicht. Bitte warten Sie eine Minute.",
@@ -218,6 +202,28 @@ export async function POST(request: Request) {
       for (const toolCall of assistantMessage.tool_calls) {
         const fnName = toolCall.function.name;
         const fnArgs = toolCall.function.arguments;
+
+        // RBAC check for write operations
+        const writeRequirement = WRITE_FUNCTIONS[fnName];
+        if (writeRequirement) {
+          const allowed = await hasPermission(
+            session.user.id,
+            orgId,
+            writeRequirement.resource,
+            writeRequirement.action
+          );
+          if (!allowed) {
+            openAiMessages.push({
+              role: "tool",
+              content: JSON.stringify({
+                error: true,
+                message: "Keine Berechtigung für diese Aktion.",
+              }),
+              tool_call_id: toolCall.id,
+            });
+            continue;
+          }
+        }
 
         let fnResult: string;
         try {

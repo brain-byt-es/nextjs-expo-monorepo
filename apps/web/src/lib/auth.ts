@@ -20,9 +20,12 @@ function initAuth(): AuthInstance {
   authInstance = betterAuth({
     baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3003",
     basePath: "/api/auth",
-    secret: process.env.BETTER_AUTH_SECRET || "dev-secret-key",
+    secret: (() => {
+      const s = process.env.BETTER_AUTH_SECRET;
+      if (!s) throw new Error("BETTER_AUTH_SECRET environment variable is required");
+      return s;
+    })(),
     // Allow requests with missing/null Origin (React Native doesn't send one).
-    // TODO: restrict to specific origins in production.
     trustedOrigins: process.env.TRUSTED_ORIGINS
       ? process.env.TRUSTED_ORIGINS.split(",")
       : process.env.NODE_ENV === "production"

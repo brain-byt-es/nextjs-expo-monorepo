@@ -245,22 +245,30 @@ async function executeAction(
         return;
       }
 
-      // Fire-and-forget task creation via internal API
+      // Fire-and-forget task creation via internal API.
+      // The request is signed with an HMAC using BETTER_AUTH_SECRET so the
+      // tasks endpoint can verify it came from the rules engine.
       const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "";
       try {
+        const taskBody = JSON.stringify({
+          title: interpolate(title, context),
+          assigneeEmail,
+          priority: taskPriority ?? "medium",
+          source: "rules_engine",
+        });
+        const { createHmac } = await import("crypto");
+        const hmacSecret = process.env.BETTER_AUTH_SECRET ?? "";
+        const internalToken = createHmac("sha256", hmacSecret)
+          .update(taskBody, "utf8")
+          .digest("hex");
         await fetch(`${appUrl}/api/tasks`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "x-organization-id": orgId,
-            "x-internal-rules-engine": "1",
+            "x-internal-rules-engine": internalToken,
           },
-          body: JSON.stringify({
-            title: interpolate(title, context),
-            assigneeEmail,
-            priority: taskPriority ?? "medium",
-            source: "rules_engine",
-          }),
+          body: taskBody,
         });
       } catch (err) {
         console.error("[rules-engine] create_task failed:", err);
@@ -281,6 +289,12 @@ async function executeAction(
       const { url, secret } = action.config as { url?: string; secret?: string };
       if (!url) {
         console.warn("[rules-engine] webhook action missing 'url'");
+        return;
+      }
+
+      const { isAllowedWebhookUrl } = await import("./webhooks");
+      if (!isAllowedWebhookUrl(url)) {
+        console.warn("[rules-engine] webhook action blocked: URL failed SSRF validation:", url);
         return;
       }
 

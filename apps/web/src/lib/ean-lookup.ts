@@ -199,7 +199,7 @@ async function queryOpenGtinDb(barcode: string): Promise<EanResult | null> {
 
   try {
     const res = await fetchWithTimeout(
-      `http://opengtindb.org/?ean=${barcode}&cmd=query&queryid=${queryId}`
+      `https://opengtindb.org/?ean=${barcode}&cmd=query&queryid=${queryId}`
     );
     if (!res.ok) return null;
 

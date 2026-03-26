@@ -2,10 +2,7 @@ import { NextResponse } from "next/server";
 import { getSessionAndOrg } from "@/app/api/_helpers/auth";
 import { collectUserData } from "@/lib/dsgvo-collector";
 import { toCsv } from "@/lib/dsgvo-csv";
-
-// Simple in-memory rate limit per user (resets on restart — good enough for export)
-const lastExportMap = new Map<string, number>();
-const RATE_LIMIT_MS = 60 * 60 * 1000; // 1 hour
+import { checkDailyRateLimit } from "@/lib/rate-limit";
 
 export async function GET(request: Request) {
   try {
@@ -15,15 +12,12 @@ export async function GET(request: Request) {
 
     const userId = session.user.id;
 
-    // Rate limit check
-    const lastExport = lastExportMap.get(userId);
-    if (lastExport && Date.now() - lastExport < RATE_LIMIT_MS) {
-      const waitMinutes = Math.ceil(
-        (RATE_LIMIT_MS - (Date.now() - lastExport)) / 60_000
-      );
+    // Rate limit: 1 export per day per user (Redis-backed, survives restarts)
+    const rateLimitOk = await checkDailyRateLimit(`dsgvo:export:${userId}`);
+    if (!rateLimitOk) {
       return NextResponse.json(
         {
-          error: `Bitte warten Sie noch ${waitMinutes} Minuten bevor Sie erneut exportieren.`,
+          error: "Bitte warten Sie bis morgen bevor Sie erneut exportieren.",
         },
         { status: 429 }
       );
@@ -33,9 +27,6 @@ export async function GET(request: Request) {
     const format = url.searchParams.get("format") === "csv" ? "csv" : "json";
 
     const data = await collectUserData(userId);
-
-    // Record export timestamp
-    lastExportMap.set(userId, Date.now());
 
     const dateStr = new Date().toISOString().slice(0, 10);
     const filename = `zentory-daten-export-${dateStr}.${format === "csv" ? "csv" : "json"}`;

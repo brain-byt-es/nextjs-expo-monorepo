@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSessionAndOrg } from "@/app/api/_helpers/auth";
+import { isAllowedWebhookUrl } from "@/lib/webhooks";
 import { plugins, pluginInstallations } from "@repo/db/schema";
 import { eq, and } from "drizzle-orm";
 import { BUILTIN_PLUGINS } from "@/lib/plugin-registry";
@@ -136,6 +137,16 @@ export async function POST(request: Request) {
         { error: "Plugin bereits installiert" },
         { status: 409 }
       );
+    }
+
+    // Validate webhook URL in config if present
+    if (config?.webhookUrl && typeof config.webhookUrl === "string") {
+      if (!isAllowedWebhookUrl(config.webhookUrl)) {
+        return NextResponse.json(
+          { error: "Ungültige Webhook-URL in der Konfiguration" },
+          { status: 400 }
+        );
+      }
     }
 
     const [installation] = await db

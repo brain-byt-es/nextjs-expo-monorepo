@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { getDb } from "@repo/db";
+import { organizationMembers } from "@repo/db/schema";
+import { eq } from "drizzle-orm";
 import * as Sentry from "@sentry/nextjs";
 import {
   getParsedEmails,
@@ -20,6 +23,22 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    // Resolve the user's current org and scope results to it
+    const db = getDb();
+    const orgId =
+      req.headers.get("x-organization-id") ??
+      new URL(req.url).searchParams.get("orgId");
+
+    let resolvedOrgId = orgId;
+    if (!resolvedOrgId) {
+      const [firstMembership] = await db
+        .select({ organizationId: organizationMembers.organizationId })
+        .from(organizationMembers)
+        .where(eq(organizationMembers.userId, session.user.id))
+        .limit(1);
+      resolvedOrgId = firstMembership?.organizationId ?? null;
+    }
+
     const { searchParams } = new URL(req.url);
     const status = searchParams.get("status"); // draft | accepted | rejected
     const type = searchParams.get("type"); // order | delivery | invoice
@@ -29,7 +48,10 @@ export async function GET(req: NextRequest) {
     );
     const offset = parseInt(searchParams.get("offset") ?? "0", 10);
 
-    let emails = getParsedEmails();
+    // Filter to the user's org only
+    let emails = getParsedEmails().filter(
+      (e) => !resolvedOrgId || e.orgId === resolvedOrgId
+    );
 
     // Filter by status
     if (status) {

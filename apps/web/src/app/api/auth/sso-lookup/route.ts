@@ -2,12 +2,21 @@ import { NextResponse } from "next/server";
 import { getDb } from "@repo/db";
 import { ssoConfigs, organizations } from "@repo/db/schema";
 import { eq, and } from "drizzle-orm";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 // GET /api/auth/sso-lookup?domain=firma.ch
 // Public endpoint — returns only the provider name and org name if an active
 // SSO config exists for that email domain. Never returns credentials.
 export async function GET(request: Request) {
   try {
+    // Rate limit: 10 req/min per IP to prevent org enumeration
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+    const rateLimitOk = await checkRateLimit(`sso-lookup:${ip}`);
+    if (!rateLimitOk) {
+      return NextResponse.json({ sso: null }, { status: 429 });
+    }
+
     const { searchParams } = new URL(request.url);
     const domain = searchParams.get("domain")?.toLowerCase().replace(/^@/, "");
 

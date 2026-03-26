@@ -98,19 +98,24 @@ export async function POST(req: NextRequest) {
   try {
     const webhookSecret = process.env.INBOUND_EMAIL_WEBHOOK_SECRET;
 
-    // Verify webhook signature if secret is configured
-    if (webhookSecret) {
-      const rawBody = await req.clone().text();
-      const signature =
-        req.headers.get("x-webhook-signature") ??
-        req.headers.get("x-sendgrid-signature");
+    // Signature verification is mandatory — reject if secret is not configured
+    if (!webhookSecret) {
+      return NextResponse.json(
+        { error: "Webhook not configured" },
+        { status: 401 }
+      );
+    }
 
-      if (!verifyWebhookSignature(rawBody, signature, webhookSecret)) {
-        return NextResponse.json(
-          { error: "Invalid webhook signature" },
-          { status: 401 }
-        );
-      }
+    const rawBody = await req.clone().text();
+    const signature =
+      req.headers.get("x-webhook-signature") ??
+      req.headers.get("x-sendgrid-signature");
+
+    if (!verifyWebhookSignature(rawBody, signature, webhookSecret)) {
+      return NextResponse.json(
+        { error: "Invalid webhook signature" },
+        { status: 401 }
+      );
     }
 
     const body = await req.json();

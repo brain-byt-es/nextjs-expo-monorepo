@@ -87,6 +87,18 @@ export async function executePlugin(
       };
     }
 
+    // SSRF guard: validate the webhook URL before making the request
+    const { isAllowedWebhookUrl } = await import("./webhooks");
+    if (!isAllowedWebhookUrl(webhookUrl)) {
+      return {
+        success: false,
+        pluginId,
+        event,
+        message: "Webhook-URL nicht erlaubt (SSRF-Schutz)",
+        duration: Date.now() - start,
+      };
+    }
+
     // Build context
     const context: PluginExecutionContext = {
       pluginId: plugin.id,
@@ -98,8 +110,14 @@ export async function executePlugin(
 
     const body = JSON.stringify({ context, payload });
 
-    // Sign with HMAC-SHA256
-    const secret = plugin.slug; // In production: per-installation secret
+    // Sign with HMAC-SHA256 using a per-installation signing secret when
+    // available, falling back to a deterministic secret derived from the
+    // installation ID so every installation gets a unique value.
+    const installationConfig = (installation.config as Record<string, unknown>) ?? {};
+    const secret =
+      typeof installationConfig.signingSecret === "string" && installationConfig.signingSecret
+        ? installationConfig.signingSecret
+        : installation.id; // unique per-installation fallback
     const signature = await signPayload(body, secret);
 
     // POST to webhook

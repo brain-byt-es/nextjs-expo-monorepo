@@ -62,6 +62,8 @@ export async function GET(request: Request) {
   }
 }
 
+const VALID_TASK_STATUSES = ["open", "in_progress", "done", "cancelled"] as const;
+
 export async function POST(request: Request) {
   try {
     const result = await getSessionAndOrg(request);
@@ -70,12 +72,38 @@ export async function POST(request: Request) {
 
     const body = await request.json();
 
+    // Input validation
+    if (!body.title || typeof body.title !== "string" || !body.title.trim()) {
+      return NextResponse.json(
+        { error: "title is required and must be a non-empty string" },
+        { status: 400 }
+      );
+    }
+
+    const status = body.status ?? "open";
+    if (!VALID_TASK_STATUSES.includes(status)) {
+      return NextResponse.json(
+        { error: `status must be one of: ${VALID_TASK_STATUSES.join(", ")}` },
+        { status: 400 }
+      );
+    }
+
+    if (body.dueDate !== undefined && body.dueDate !== null) {
+      const parsed = new Date(body.dueDate);
+      if (isNaN(parsed.getTime())) {
+        return NextResponse.json(
+          { error: "dueDate must be a valid date string" },
+          { status: 400 }
+        );
+      }
+    }
+
     const [created] = await db
       .insert(tasks)
       .values({
         organizationId: orgId,
-        title: body.title,
-        status: body.status ?? "open",
+        title: body.title.trim(),
+        status,
         topic: body.topic ?? null,
         description: body.description ?? null,
         dueDate: body.dueDate ?? null,

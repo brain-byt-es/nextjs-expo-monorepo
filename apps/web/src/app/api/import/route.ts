@@ -89,6 +89,14 @@ export const POST = withPermission("materials", "create")(async (request, { db, 
       );
     }
 
+    const MAX_ROWS = 5000;
+    if (!Array.isArray(rows) || rows.length > MAX_ROWS) {
+      return NextResponse.json(
+        { error: `Import ist auf ${MAX_ROWS} Zeilen begrenzt` },
+        { status: 400 }
+      );
+    }
+
     const fieldMap = getFieldMap(entityType);
     let imported = 0;
     let skipped = 0;
