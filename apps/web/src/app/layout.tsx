@@ -40,10 +40,12 @@ export const metadata: Metadata = {
   description: "Inventar- und Werkzeugverwaltung für Schweizer KMU.",
   icons: {
     icon: [
-      { url: "/favicon.ico" },
-      { url: "/favicon.png", type: "image/png" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/favicon.png", type: "image/png", sizes: "32x32" },
+      { url: "/logo-512.png", type: "image/png", sizes: "512x512" },
     ],
-    apple: "/apple-touch-icon.png",
+    apple: { url: "/apple-touch-icon.png", sizes: "180x180" },
   },
   openGraph: {
     title: "Zentory — Dein Lager. Zentral.",
